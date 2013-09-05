@@ -1,0 +1,32 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/kernel_netlink.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/kernel_netlink.c	2006-12-03 19:34:25.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/kernel_netlink.c	2006-12-03 19:34:32.000000000 +0200
+@@ -793,6 +793,11 @@
+     unsigned transport_proto;
+     err_t ugh = NULL;
+ 
++#if 1 /* l2tp-workaround: never trigger. */
++    openswan_log("l2tp-workaround: netlink_acquire: skip.");
++    return;
++#endif
++
+     if (n->nlmsg_len < NLMSG_LENGTH(sizeof(*acquire)))
+     {
+ 	openswan_log("netlink_acquire got message with length %lu < %lu bytes; ignore message"
+Index: openswan-2.4.0rc4.quilt/programs/pluto/kernel_pfkey.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/kernel_pfkey.c	2006-12-03 19:34:25.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/kernel_pfkey.c	2006-12-03 19:34:32.000000000 +0200
+@@ -393,6 +393,11 @@
+      * keep going as long as things are OK.
+      */
+ 
++#if 1 /* l2tp-workaround: never trigger. */
++    openswan_log("l2tp-workaround: process_pfkey_acquire: skip.");
++    return;
++#endif
++
+     if (buf->msg.sadb_msg_pid == 0	/* we only wish to hear from kernel */
+ 	&& !(ugh = src_proto == dst_proto? NULL : "src and dst protocols differ")
+ 	&& !(ugh = addrtypeof(src) == addrtypeof(dst)? NULL : "conflicting address types")

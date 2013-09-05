@@ -1,0 +1,20 @@
+Format: 1.7
+Date: Sat,  7 Oct 2006 19:46:17 +0300
+Source: libnfnetlink
+Binary: libnfnetlink0 libnfnetlink-dev
+Architecture: source
+Version: 0.0.16
+Distribution: unstable
+Urgency: low
+Maintainer: Max Kellermann <max@duempel.org>
+Changed-By: root <root@dapper-builder-2>
+Description: 
+ libnfnetlink-dev - Netfilter netlink library
+ libnfnetlink0 - Netfilter netlink library
+Changes: 
+ libnfnetlink (0.0.16) unstable; urgency=low
+ .
+   * new upstream release
+Files: 
+ 002c8b1a00eeae48dc6fc8336a14a5d5 316 libs optional libnfnetlink_0.0.16.dsc
+ 70bd59bccb8e1f16fad48a253d35a660 305665 libs optional libnfnetlink_0.0.16.tar.gz

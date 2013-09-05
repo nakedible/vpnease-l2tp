@@ -1,0 +1,53 @@
+diff -ru python-apsw-3.2.7r1.orig/debian/control python-apsw-3.2.7r1/debian/control
+--- python-apsw-3.2.7r1.orig/debian/control	2007-06-08 03:40:26.000000000 +0300
++++ python-apsw-3.2.7r1/debian/control	2007-06-08 03:41:42.000000000 +0300
+@@ -2,21 +2,9 @@
+ Section: python
+ Priority: optional
+ Maintainer: Joel Rosdahl <joel@debian.org>
+-Build-Depends: debhelper (>> 4.0.0), libsqlite3-dev (>= 3.0.0), python, python2.3-dev, python2.4-dev
++Build-Depends: debhelper (>> 4.0.0), libsqlite3-dev (>= 3.0.0), python, python2.4-dev
+ Standards-Version: 3.6.2
+ 
+-Package: python2.3-apsw
+-Architecture: any
+-Depends: ${shlibs:Depends}, ${python:Depends}
+-Description: another Python SQLite 3 wrapper
+- APSW (Another Python SQLite Wrapper) is an SQLite 3 wrapper that
+- provides the thinnest layer over SQLite 3 possible. Everything you
+- can do from the C API to SQLite 3, you can do from Python. Although
+- APSW's API looks vaguely similar to Python's DB-API, it is not
+- compliant with that API and instead works the way SQLite 3 does.
+- .
+- This package is built for Python 2.3.
+-
+ Package: python2.4-apsw
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${python:Depends}
+diff -ru python-apsw-3.2.7r1.orig/debian/rules python-apsw-3.2.7r1/debian/rules
+--- python-apsw-3.2.7r1.orig/debian/rules	2007-06-08 03:40:26.000000000 +0300
++++ python-apsw-3.2.7r1/debian/rules	2007-06-08 03:41:20.000000000 +0300
+@@ -6,7 +6,6 @@
+ # This is the debhelper compatibility version to use.
+ export DH_COMPAT=4
+ 
+-PYTHON2.3 = /usr/bin/python2.3
+ PYTHON2.4 = /usr/bin/python2.4
+ 
+ configure: configure-stamp
+@@ -17,7 +16,6 @@
+ build: configure-stamp build-stamp
+ build-stamp:
+ 	dh_testdir
+-	$(PYTHON2.3) setup.py build
+ 	$(PYTHON2.4) setup.py build
+ 	touch build-stamp
+ 
+@@ -33,7 +31,6 @@
+ 	dh_testroot
+ 	dh_clean -k
+ 	dh_installdirs
+-	$(PYTHON2.3) setup.py install --root=debian/python2.3-apsw
+ 	$(PYTHON2.4) setup.py install --root=debian/python2.4-apsw
+ 	find debian/python*-apsw -name '*.pyc' | xargs rm -f
+ 

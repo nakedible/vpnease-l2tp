@@ -1,0 +1,103 @@
+iptables v1.2.10 Changelog
+======================================================================
+This version requires kernel >= 2.4.4
+This version recommends kernel >= 2.4.18
+
+Bugs Fixed from 1.2.9:
+
+- physdev match: fix new structure layout for kernel > 2.6.0-test8
+	[ Bart De Schuymer ]
+
+- Better 64bit / 32bit split architecture detection
+- IPv6 LOG target: Fix compiler warnings on 64bit
+- LOG target: Fix compiler warnings on 64bit
+- IPv6 MARK target: Use full 64bit mark on 64bit archs
+- MARK target: Use full 64bit mark on 64bit archs
+- SAME target: Fix 64bit/32bit splitarch problems
+- ULOG target: Fix 64bit/32bit splitarch problems
+- conntrack match: Fix 64bit/32bit splitarch problem
+- IPv6 limit match: Fix 64bit/32bit splitarch problem
+- limit match: Fix 64bit/32bit splitarch problem
+- IPv6 mark match: Use full 64bit mark on 64bit archs
+- mark match: Use full 64bit mark on 64bit archs
+- owner match: Fix compiler warnings on 64bit
+	[ Martin Jofsefsson ]
+
+- connbytes match: Fix signedness / unsigned issue
+	[ Martin Josefsson ]
+
+- connlimit match: Fix '/0' netmask
+	[ David Ahern ]
+
+- ipv6 owner match: fix possibly not zero terminated string
+- helper match: fix possibly not zero terminated string
+- recent match: fix possibly not zero terminated string
+	[ Karsten Desler ]
+
+- ICMP match: fix '--icmp-type any' case
+	[ Harald Welte ]
+
+- CONNMARK target: major update (add mark/mask matching)
+	[ Henrik Nordstrom ]
+
+- DSCP target: Fix cosmetic help message problem 
+	[ Maciej Soltysiak ]
+
+- string match: Fix iptables-save/restore for ascii strings with spaces
+	[ Michael Rash ]
+
+- ip(6)tables-restore: Make sure matches are used in the same order
+	[ Martin Josefsson ]
+
+- ip(6)tables-restore: Fix '--verbose' option
+- ip(6)tables-restore: Add '--test' option
+- ip(6)tables-restore: Complain about missing 'COMMIT'
+	[ Martin Josefsson ]
+
+- ip(6)tables-restore: Allow embedding of quote character in quoted strings
+	[ Michael Rash ]
+	
+- libipq: Protect against spoofed queue messages (check if sender is kernel)
+	[ Harald Welte ]
+
+
+Changes from 1.2.9:
+
+- time match: add 'datestart' and 'datestop' parameters
+	[ Fabrice Marie ]
+
+- modular manpage build, depending on actually compiled-in features
+	[ Henrik Nordstrom ]
+
+- additional documentation in manpage snippets formerly missing
+	[ Harald Welte ]
+
+- support new CLUSTERIP Target
+	[ Harald Welte ]
+
+- support new account match
+	[ Piotr Gasid'o ]
+
+- support new connrate match
+	[ Nuuti Kotivuori ]
+
+- support new dstlimit match
+	[ Harald Welte ]
+
+- support new 'set' match / 'SET' target
+	[ Jozsef Kadlecsik ]
+
+- osf match: add support for netlink reporting
+	[ Evgeniy Polyakov ]
+
+- new SCTP protocol match
+	[ Kiran Kumar ]
+
+
+Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
+iptables but rather distributed as a seperate package
+(ftp://ftp.netfilter.org/pub/patch-o-matic/)
+
+Please also note: Since Kernel 2.6.x is out, we now use patch-o-matic-ng, distributed as seperate package:
+(ftp://ftp.netfilter.org/pub/patch-o-matic-ng)
+

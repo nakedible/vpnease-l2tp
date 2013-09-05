@@ -1,0 +1,16 @@
+CONFIG_IP_NF_TARGET_MARK
+ROUTE target support
+CONFIG_IP_NF_TARGET_ROUTE
+  This option adds a `ROUTE' target, which enables you to setup unusual
+  routes. For example, the ROUTE lets you route a received packet through 
+  an interface or towards a host, even if the regular destination of the 
+  packet is the router itself. The ROUTE target is also able to change the 
+  incoming interface of a packet.
+
+  The target can be or not a final target. It has to be used inside the 
+  mangle table.
+  
+  If you want to compile it as a module, say M here and read
+  Documentation/modules.txt.  The module will be called ipt_ROUTE.o.
+  If unsure, say `N'.
+

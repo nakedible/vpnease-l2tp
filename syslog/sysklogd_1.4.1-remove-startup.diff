@@ -1,0 +1,36 @@
+diff -Nru sysklogd-1.4.1.orig/debian/postinst sysklogd-1.4.1/debian/postinst
+--- sysklogd-1.4.1.orig/debian/postinst	2007-08-10 10:58:24.000000000 +0300
++++ sysklogd-1.4.1/debian/postinst	2007-08-10 11:04:58.000000000 +0300
+@@ -44,7 +44,7 @@
+ 	set -e
+     fi
+ 
+-    update-rc.d sysklogd defaults 10 90 >/dev/null
++    # update-rc.d sysklogd defaults 10 90 >/dev/null
+ 
+     adduser --system --group --no-create-home --quiet syslog
+ 
+@@ -63,6 +63,12 @@
+     #
+     rm -f /etc/rc?.d/[SK]*.syslogd
+ 
++    # Never autostart from system startup
++    update-rc.d -f sysklogd remove >/dev/null
++
++    # Never restart
++    exit 0
++
+     # restarting daemon
+     #
+     if [ -f /etc/init.d/sysklogd ]
+diff -Nru sysklogd-1.4.1.orig/debian/rules sysklogd-1.4.1/debian/rules
+--- sysklogd-1.4.1.orig/debian/rules	2007-08-10 10:58:24.000000000 +0300
++++ sysklogd-1.4.1/debian/rules	2007-08-10 11:25:11.000000000 +0300
+@@ -23,6 +23,7 @@
+ package = $(shell grep "^Package: " debian/control|head -n 1|sed 's/Package: \(.*\)/\1/g')
+ version = $(shell grep "^$(source) " debian/changelog|head -n 1 |sed 's/.*(\(.*\)\-[^\-]*).*/\1/g')
+ revision = $(shell grep "^$(source) " debian/changelog|head -n 1 |sed 's/.*([^\-]*\-\(.*\)).*/\1/g')
++revision =
+ 
+ installbin = install -g root -o root -m 755
+ installdoc = install -g root -o root -m 644

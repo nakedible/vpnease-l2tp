@@ -1,0 +1,409 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 16-l2tpd-libgc.dpatch, by Stinghorn
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+diff -ru l2tpd-0.69.orig/Makefile l2tpd-0.69/Makefile
+--- l2tpd-0.69.orig/Makefile	2005-11-03 17:30:29.000000000 +0200
++++ l2tpd-0.69/Makefile	2005-11-08 10:53:48.000000000 +0200
+@@ -27,7 +27,7 @@
+ # become runtime options) debugging flags
+ #
+ #DFLAGS= -g -O2 -DDEBUG_PPPD
+-DFLAGS= -g -O2 -DDEBUG_PPPD -DDEBUG_CONTROL -DDEBUG_ENTROPY
++DFLAGS= -g -O0 -DDEBUG_PPPD -DDEBUG_CONTROL -DDEBUG_ENTROPY -DDEBUG_ZLB -DDEBUG_CLOSE -DDEBUG_PAYLOAD
+ #
+ # Uncomment the next line for Linux
+ #
+@@ -60,7 +60,7 @@
+ CFLAGS= $(DFLAGS) -Wall -DSANITY $(OSFLAGS) $(FFLAGS)
+ HDRS=l2tp.h avp.h misc.h control.h call.h scheduler.h file.h aaa.h md5.h
+ OBJS=l2tpd.o pty.o misc.o control.o avp.o call.o network.o avpsend.o scheduler.o file.o aaa.o md5.o
+-LIBS= $(OSLIB) # -lefence # efence for malloc checking
++LIBS= $(OSLIB) -lgc # -lefence # efence for malloc checking
+ BIN=l2tpd
+ BINDIR=/usr/sbin
+ ETCDIR=/etc
+diff -ru l2tpd-0.69.orig/aaa.c l2tpd-0.69/aaa.c
+--- l2tpd-0.69.orig/aaa.c	2002-04-23 22:50:49.000000000 +0300
++++ l2tpd-0.69/aaa.c	2005-11-08 13:06:09.000000000 +0200
+@@ -65,7 +65,7 @@
+     if (ip_used (addr))
+         return;
+     tmp = uaddr[addr % ADDR_HASH_SIZE];
+-    tmp2 = (struct addr_ent *) malloc (sizeof (struct addr_ent));
++    tmp2 = (struct addr_ent *) SAFE_MALLOC (sizeof (struct addr_ent));
+     uaddr[addr % ADDR_HASH_SIZE] = tmp2;
+     tmp2->next = tmp;
+     tmp2->addr = addr;
+@@ -90,7 +90,7 @@
+             }
+             z = tmp;
+             tmp = tmp->next;
+-            free (z);
++            SAFE_FREE (z);
+         }
+         else
+         {
+diff -ru l2tpd-0.69.orig/avp.c l2tpd-0.69/avp.c
+--- l2tpd-0.69.orig/avp.c	2005-11-03 17:30:29.000000000 +0200
++++ l2tpd-0.69/avp.c	2005-11-08 12:23:41.000000000 +0200
+@@ -11,6 +11,7 @@
+  *
+  * Attribute Value Pair handler routines
+  */
++
+ #include <stdlib.h>
+ #include <string.h>
+ #include <stdio.h>
+@@ -1107,7 +1108,7 @@
+              __FUNCTION__, size, MD_SIG_SIZE);
+         return -EINVAL;
+     } */
+-    t->chal_us.challenge = malloc(size+1);
++    t->chal_us.challenge = SAFE_MALLOC(size+1);
+     if (t->chal_us.challenge == NULL)
+     {
+         return -ENOMEM;
+diff -ru l2tpd-0.69.orig/call.c l2tpd-0.69/call.c
+--- l2tpd-0.69.orig/call.c	2005-11-03 17:30:29.000000000 +0200
++++ l2tpd-0.69/call.c	2005-11-08 13:06:30.000000000 +0200
+@@ -236,7 +236,7 @@
+                     ose->next = se->next;
+                     if ((struct tunnel *) se->data != c->container)
+                         toss ((struct buffer *) (se->data));
+-                    free (se);
++                    SAFE_FREE (se);
+                     se = ose->next;
+                 }
+                 else
+@@ -244,7 +244,7 @@
+                     events = se->next;
+                     if ((struct tunnel *) se->data != c->container)
+                         toss ((struct buffer *) (se->data));
+-                    free (se);
++                    SAFE_FREE (se);
+                     se = events;
+                 }
+             }
+@@ -470,7 +470,7 @@
+         }
+     }
+ 
+-    free (c);
++    SAFE_FREE (c);
+ 
+ }
+ 
+@@ -478,7 +478,7 @@
+ struct call *new_call (struct tunnel *parent)
+ {
+     char entropy_buf[2] = "\0";
+-    struct call *tmp = malloc (sizeof (struct call));
++    struct call *tmp = SAFE_MALLOC (sizeof (struct call));
+     if (!tmp)
+         return NULL;
+     tmp->tx_pkts = 0;
+@@ -535,7 +535,7 @@
+     tmp->container = parent;
+ /*	tmp->rws = -1; */
+     tmp->fd = -1;
+-    tmp->oldptyconf = malloc (sizeof (struct termios));
++    tmp->oldptyconf = SAFE_MALLOC (sizeof (struct termios));
+     tmp->pnu = 0;
+     tmp->cnu = 0;
+     tmp->needclose = 0;
+diff -ru l2tpd-0.69.orig/control.c l2tpd-0.69/control.c
+--- l2tpd-0.69.orig/control.c	2005-11-03 17:30:30.000000000 +0200
++++ l2tpd-0.69/control.c	2005-11-08 12:09:28.000000000 +0200
+@@ -442,7 +442,7 @@
+         }
+         if (t->lns->challenge)
+         {
+-            t->chal_them.challenge = malloc(MD_SIG_SIZE);
++            t->chal_them.challenge = SAFE_MALLOC(MD_SIG_SIZE);
+             if (!(t->chal_them.challenge))
+             {
+                 log (LOG_WARN, "%s: malloc failed\n", __FUNCTION__);
+diff -ru l2tpd-0.69.orig/file.c l2tpd-0.69/file.c
+--- l2tpd-0.69.orig/file.c	2005-11-03 17:30:29.000000000 +0200
++++ l2tpd-0.69/file.c	2005-11-08 13:06:49.000000000 +0200
+@@ -44,7 +44,7 @@
+     gconfig.listenaddr = htonl(INADDR_ANY); /* Default is to bind (listen) to all interfaces */
+     lnslist = NULL;
+     laclist = NULL;
+-    deflac = (struct lac *) malloc (sizeof (struct lac));
++    deflac = (struct lac *) SAFE_MALLOC (sizeof (struct lac));
+ 
+     f = fopen (gconfig.configfile, "r");
+     if (!f) 
+@@ -72,7 +72,7 @@
+ struct lns *new_lns ()
+ {
+     struct lns *tmp;
+-    tmp = (struct lns *) malloc (sizeof (struct lns));
++    tmp = (struct lns *) SAFE_MALLOC (sizeof (struct lns));
+     if (!tmp)
+     {
+         log (LOG_CRIT, "%s: Unable to allocate memory for new LNS\n",
+@@ -116,7 +116,7 @@
+ struct lac *new_lac ()
+ {
+     struct lac *tmp;
+-    tmp = (struct lac *) malloc (sizeof (struct lac));
++    tmp = (struct lac *) SAFE_MALLOC (sizeof (struct lac));
+     if (!tmp)
+     {
+         log (LOG_CRIT, "%s: Unable to allocate memory for lac entry!\n",
+@@ -703,13 +703,13 @@
+                   "format is '%s <host or ip> - <host or ip>'\n", word);
+         return NULL;
+     }
+-    ipr = (struct iprange *) malloc (sizeof (struct iprange));
++    ipr = (struct iprange *) SAFE_MALLOC (sizeof (struct iprange));
+     ipr->next = NULL;
+     hp = gethostbyname (value);
+     if (!hp)
+     {
+         snprintf (filerr, sizeof (filerr), "Unknown host %s\n", value);
+-        free (ipr);
++        SAFE_FREE (ipr);
+         return NULL;
+     }
+     bcopy (hp->h_addr, &ipr->start, sizeof (unsigned int));
+@@ -719,7 +719,7 @@
+         if (!hp)
+         {
+             snprintf (filerr, sizeof (filerr), "Unknown host %s\n", d);
+-            free (ipr);
++            SAFE_FREE (ipr);
+             return NULL;
+         }
+         bcopy (hp->h_addr, &ipr->end, sizeof (unsigned int));
+@@ -729,7 +729,7 @@
+     if (ntohl (ipr->start) > ntohl (ipr->end))
+     {
+         snprintf (filerr, sizeof (filerr), "start is greater than end!\n");
+-        free (ipr);
++        SAFE_FREE (ipr);
+         return NULL;
+     }
+     if (word[0] == 'n')
+@@ -903,7 +903,7 @@
+             snprintf (filerr, sizeof (filerr), "no such host '%s'\n", value);
+             return -1;
+         }
+-        ipr = malloc (sizeof (struct host));
++        ipr = SAFE_MALLOC (sizeof (struct host));
+         ipr->next = NULL;
+         pos = l->lns;
+         if (!pos)
+diff -ru l2tpd-0.69.orig/l2tp.h l2tpd-0.69/l2tp.h
+--- l2tpd-0.69.orig/l2tp.h	2005-11-03 17:30:30.000000000 +0200
++++ l2tpd-0.69/l2tp.h	2005-11-08 15:46:13.000000000 +0200
+@@ -21,6 +21,19 @@
+ 
+ #define MAXSTRLEN 120           /* Maximum length of common strings */
+ 
++#define GC_DEBUG
++#include <gc/gc.h>
++
++#define SAFE_MALLOC(x) safe_malloc(x)
++#define SAFE_CALLOC(x,y) safe_calloc(x,y)
++#define SAFE_FREE(x)
++/*#define SAFE_FREE(x) safe_free(x) */
++/*#define SAFE_REALLOC(x) safe_realloc(x)*/
++extern void *safe_malloc(size_t size);
++extern void *safe_calloc(size_t nelem, size_t elsize);
++extern void safe_free(void *ptr);
++
++
+ #include <netinet/in.h>
+ #include <termios.h>
+ #include "osport.h"
+diff -ru l2tpd-0.69.orig/l2tpd.c l2tpd-0.69/l2tpd.c
+--- l2tpd-0.69.orig/l2tpd.c	2005-11-03 17:30:30.000000000 +0200
++++ l2tpd-0.69/l2tpd.c	2005-11-08 13:37:47.000000000 +0200
+@@ -41,6 +41,19 @@
+ #endif
+ #include "l2tp.h"
+ 
++void *safe_malloc(size_t size)
++{
++   return GC_MALLOC(size + 64) + 32;
++}
++void *safe_calloc(size_t nelem, size_t elsize)
++{
++   return GC_MALLOC((nelem*elsize) + 64) + 32;
++}
++void safe_free(void *ptr)
++{
++   return GC_FREE(ptr);
++}
++
+ struct tunnel_list tunnels;
+ int max_tunnels = DEF_MAX_TUNNELS;
+ struct utsname uts;
+@@ -277,7 +290,7 @@
+     stropt[0] = strdup (PPPD);
+     while (p)
+     {
+-        stropt[pos] = (char *) malloc (strlen (p->option) + 1);
++        stropt[pos] = (char *) SAFE_MALLOC (strlen (p->option) + 1);
+         strncpy (stropt[pos], p->option, strlen (p->option) + 1);
+         pos++;
+         p = p->next;
+@@ -301,7 +314,7 @@
+         co.ourcid = c->ourcid;
+         ioctl (server_socket, L2TPIOCGETCALLOPTS, &co);
+         stropt[pos++] = strdup ("channel");
+-        stropt[pos] = (char *) malloc (10);
++        stropt[pos] = (char *) SAFE_MALLOC (10);
+         snprintf (stropt[pos], 10, "%d", co.id);
+         pos++;
+         stropt[pos] = NULL;
+@@ -396,7 +409,7 @@
+     pos = 0;
+     while (stropt[pos])
+     {
+-        free (stropt[pos]);
++        SAFE_FREE (stropt[pos]);
+         pos++;
+     };
+     return 0;
+@@ -486,8 +499,8 @@
+      */
+     if (t->lns)
+         t->lns->t = NULL;
+-    free (t);
+-    free (me);
++    SAFE_FREE (t);
++    SAFE_FREE (me);
+ }
+ 
+ struct tunnel *l2tp_call (char *host, int port, struct lac *lac,
+@@ -685,7 +698,7 @@
+ 
+ struct tunnel *new_tunnel ()
+ {
+-    struct tunnel *tmp = malloc (sizeof (struct tunnel));
++    struct tunnel *tmp = SAFE_MALLOC (sizeof (struct tunnel));
+     char entropy_buf[2] = "\0";
+     if (!tmp)
+         return NULL;
+@@ -736,7 +749,7 @@
+     tmp->secret[0] = 0;
+     if (!(tmp->self = new_call (tmp)))
+     {
+-        free (tmp);
++        SAFE_FREE (tmp);
+         return NULL;
+     };
+     tmp->ourrws = DEFAULT_RWS_SIZE;
+@@ -749,7 +762,7 @@
+     tmp->chal_them.state = 0;
+     tmp->chal_them.secret[0] = 0;
+     memset (tmp->chal_them.reply, 0, MD_SIG_SIZE);
+-    tmp->chal_them.vector = (unsigned char *) malloc (VECTOR_SIZE);
++    tmp->chal_them.vector = (unsigned char *) SAFE_MALLOC (VECTOR_SIZE);
+     tmp->chal_us.vector = NULL;
+     tmp->hbit = 0;
+     return tmp;
+@@ -1112,8 +1125,9 @@
+ 
+ int main (int argc, char *argv[])
+ {
++    GC_INIT();
+     init(argc,argv);
+-    dial_no_tmp = calloc (128, sizeof (char));
++    dial_no_tmp = SAFE_CALLOC (128, sizeof (char));
+     network_thread ();
+     return 0;
+ }
+diff -ru l2tpd-0.69.orig/misc.c l2tpd-0.69/misc.c
+--- l2tpd-0.69.orig/misc.c	2002-08-10 03:42:22.000000000 +0300
++++ l2tpd-0.69/misc.c	2005-11-08 13:07:49.000000000 +0200
+@@ -60,13 +60,13 @@
+ 
+ struct buffer *new_buf (int size)
+ {
+-    struct buffer *b = malloc (sizeof (struct buffer));
++    struct buffer *b = SAFE_MALLOC (sizeof (struct buffer));
+     if (!b || !size || size < 0)
+         return NULL;
+-    b->rstart = malloc (size);
++    b->rstart = SAFE_MALLOC (size);
+     if (!b->rstart)
+     {
+-        free (b);
++        SAFE_FREE (b);
+         return NULL;
+     }
+     b->start = b->rstart;
+@@ -180,8 +180,8 @@
+      * Toss a frame and free up the buffer that contained it
+      */
+ 
+-    free (buf->rstart);
+-    free (buf);
++    SAFE_FREE (buf->rstart);
++    SAFE_FREE (buf);
+ }
+ 
+ inline void safe_copy (char *a, char *b, int size)
+@@ -196,7 +196,7 @@
+ {
+     va_list args;
+     struct ppp_opts *new, *last;
+-    new = (struct ppp_opts *) malloc (sizeof (struct ppp_opts));
++    new = (struct ppp_opts *) SAFE_MALLOC (sizeof (struct ppp_opts));
+     if (!new)
+     {
+         log (LOG_WARN,
+@@ -225,7 +225,7 @@
+     while (option)
+     {
+         tmp = option->next;
+-        free (option);
++        SAFE_FREE (option);
+         option = tmp;
+     };
+ }
+diff -ru l2tpd-0.69.orig/scheduler.c l2tpd-0.69/scheduler.c
+--- l2tpd-0.69.orig/scheduler.c	2002-04-10 23:09:33.000000000 +0300
++++ l2tpd-0.69/scheduler.c	2005-11-08 13:08:34.000000000 +0200
+@@ -70,7 +70,7 @@
+                It is expected that p->func will free p->data
+                if it is necessary */
+             (*p->func) (p->data);
+-            free (p);
++            SAFE_FREE (p);
+         }
+         else
+             break;
+@@ -145,12 +145,12 @@
+     if (q)
+     {
+         q->next =
+-            (struct schedule_entry *) malloc (sizeof (struct schedule_entry));
++            (struct schedule_entry *) SAFE_MALLOC (sizeof (struct schedule_entry));
+         q = q->next;
+     }
+     else
+     {
+-        q = (struct schedule_entry *) malloc (sizeof (struct schedule_entry));
++        q = (struct schedule_entry *) SAFE_MALLOC (sizeof (struct schedule_entry));
+         events = q;
+         need_timer = -1;
+     }
+@@ -203,7 +203,7 @@
+             {
+                 events = events->next;
+             }
+-            free (p);
++            SAFE_FREE (p);
+             break;
+         }
+         q = p;

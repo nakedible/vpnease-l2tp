@@ -1,0 +1,1961 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.databases.mssql</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_databases_oracle.html">module sqlalchemy.databases.oracle</a>
+
+               |   
+            Next: <a href="sqlalchemy_databases_firebird.html">module sqlalchemy.databases.firebird</a>
+    </div>
+
+        <h2>module sqlalchemy.databases.mssql</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_modfunc">Module Functions</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_modfunc_descriptor">descriptor()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_AdoMSNVarchar">class AdoMSNVarchar(MSNVarchar)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_AdoMSUnicode">class AdoMSUnicode(MSUnicode)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSBinary">class MSBinary(Binary)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSBoolean">class MSBoolean(Boolean)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSChar">class MSChar(CHAR)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSDate">class MSDate(Date)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSDateTime">class MSDateTime(DateTime)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSFloat">class MSFloat(Float)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSInteger">class MSInteger(Integer)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSNChar">class MSNChar(NCHAR)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSNVarchar">class MSNVarchar(MSString)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSNumeric">class MSNumeric(Numeric)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLCompiler">class MSSQLCompiler(ANSICompiler)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDefaultRunner">class MSSQLDefaultRunner(ANSIDefaultRunner)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect">class MSSQLDialect(ANSIDialect)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect">class MSSQLDialect(ANSIDialect)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect_adodbapi">class MSSQLDialect_adodbapi(MSSQLDialect)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect_pymssql">class MSSQLDialect_pymssql(MSSQLDialect)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect_pyodbc">class MSSQLDialect_pyodbc(MSSQLDialect)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLExecutionContext">class MSSQLExecutionContext(DefaultExecutionContext)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLIdentifierPreparer">class MSSQLIdentifierPreparer(ANSIIdentifierPreparer)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLSchemaDropper">class MSSQLSchemaDropper(ANSISchemaDropper)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLSchemaGenerator">class MSSQLSchemaGenerator(ANSISchemaGenerator)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSmallInteger">class MSSmallInteger(SmallInteger)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSString">class MSString(String)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSText">class MSText(TEXT)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSTinyInteger">class MSTinyInteger(Integer)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSUnicode">class MSUnicode(Unicode)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.databases.mssql</h3>
+    
+    
+    <div class="darkcell"><p>MSSQL backend, thru either pymssq, adodbapi or pyodbc interfaces.</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">IDENTITY</span></tt> columns are supported by using SA <tt class="docutils literal"><span class="pre">schema.Sequence()</span></tt>
+objects. In other words:</p>
+<pre class="literal-block">
+Table('test', mss_engine,
+       Column('id',   Integer, Sequence('blah',100,10), primary_key=True),
+       Column('name', String(20))
+     ).create()
+</pre>
+<p>would yield:</p>
+<pre class="literal-block">
+CREATE TABLE test (
+  id INTEGER NOT NULL IDENTITY(100,10) PRIMARY KEY,
+  name VARCHAR(20)
+  )
+</pre>
+<p>Note that the start &amp; increment values for sequences are optional
+and will default to 1,1.</p>
+</li>
+<li><p class="first">Support for <tt class="docutils literal"><span class="pre">SET</span> <span class="pre">IDENTITY_INSERT</span> <span class="pre">ON</span></tt> mode (automagic on / off for
+<tt class="docutils literal"><span class="pre">INSERT</span></tt> s)</p>
+</li>
+<li><p class="first">Support for auto-fetching of <tt class="docutils literal"><span class="pre">&#64;&#64;IDENTITY</span></tt> on <tt class="docutils literal"><span class="pre">INSERT</span></tt></p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">select.limit</span></tt> implemented as <tt class="docutils literal"><span class="pre">SELECT</span> <span class="pre">TOP</span> <span class="pre">n</span></tt></p>
+</li>
+</ul>
+<p>Known issues / TODO:</p>
+<ul class="simple">
+<li>No support for more than one <tt class="docutils literal"><span class="pre">IDENTITY</span></tt> column per table</li>
+<li>No support for table reflection of <tt class="docutils literal"><span class="pre">IDENTITY</span></tt> columns with
+(seed,increment) values other than (1,1)</li>
+<li>No support for <tt class="docutils literal"><span class="pre">GUID</span></tt> type columns (yet)</li>
+<li>pymssql has problems with binary and unicode data that this module
+does <strong>not</strong> work around</li>
+</ul>
+</div>
+    
+
+        
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_modfunc"></a>
+    
+    <div class="subsection">
+
+    <h3>Module Functions</h3>
+    
+    
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_modfunc_descriptor"></a>
+    <b>def descriptor()</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+        
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_AdoMSNVarchar"></a>
+    
+    <div class="subsection">
+
+    <h3>class AdoMSNVarchar(<a href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSNVarchar">MSNVarchar</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_AdoMSUnicode"></a>
+    
+    <div class="subsection">
+
+    <h3>class AdoMSUnicode(<a href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSUnicode">MSUnicode</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSBinary"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSBinary(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Binary">Binary</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSBoolean"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSBoolean(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Boolean">Boolean</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSChar"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSChar(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_CHAR">CHAR</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSDate"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSDate(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Date">Date</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>*a</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSDateTime"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSDateTime(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_DateTime">DateTime</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>*a</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSFloat"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSFloat(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Float">Float</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    <p>By converting to string, we can use Decimal types round-trip.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSInteger"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSInteger(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Integer">Integer</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSNChar"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSNChar(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_NCHAR">NCHAR</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSNVarchar"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSNVarchar(<a href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSString">MSString</a>)</h3>
+    
+    
+    <div class="darkcell"><p>NVARCHAR string, does Unicode conversion if <cite>dialect.convert_encoding</cite> is True.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSNumeric"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSNumeric(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Numeric">Numeric</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLCompiler"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLCompiler(ANSICompiler)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>dialect</i>, <i>statement</i>, <i>parameters</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def for_update_clause(<i>self</i>, <i>select</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def limit_clause(<i>self</i>, <i>select</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def order_by_clause(<i>self</i>, <i>select</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_alias(<i>self</i>, <i>alias</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_binary(<i>self</i>, <i>binary</i>)</b>
+    <div class="docstring">
+    <p>Move bind parameters to the right-hand side of an operator, where possible.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_column(<i>self</i>, <i>column</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_function(<i>self</i>, <i>func</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_select_precolumns(<i>self</i>, <i>select</i>)</b>
+    <div class="docstring">
+    <p>MS-SQL puts TOP, it's version of LIMIT here</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_table(<i>self</i>, <i>table</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLDefaultRunner"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLDefaultRunner(ANSIDefaultRunner)</h3>
+    
+    
+    
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLDialect"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLDialect(ANSIDialect)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>module_name=None</i>, <i>module=None</i>, <i>auto_identity_insert=True</i>, <i>**params</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def compiler(<i>self</i>, <i>statement</i>, <i>bindparams</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def connection(<i>self</i>)</b>
+    <div class="docstring">
+    <p>returns a managed DBAPI connection from this SQLEngine's connection pool.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_connect_args(<i>self</i>, <i>url</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_execution_context(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dbapi(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def defaultrunner(<i>self</i>, <i>engine</i>, <i>proxy</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_execute(<i>self</i>, <i>cursor</i>, <i>statement</i>, <i>params</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_default_schema_name(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def has_table(<i>self</i>, <i>connection</i>, <i>tablename</i>, <i>schema=None</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def last_inserted_ids(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def preparer(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def raw_connection(<i>self</i>, <i>connection</i>)</b>
+    <div class="docstring">
+    <p>Pull the raw pymmsql connection out--sensative to &quot;pool.ConnectionFairy&quot; and pymssql.pymssqlCnx Classes</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def reflecttable(<i>self</i>, <i>connection</i>, <i>table</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemadropper(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemagenerator(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def set_default_schema_name(<i>self</i>, <i>schema_name</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def supports_sane_rowcount(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def type_descriptor(<i>self</i>, <i>typeobj</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def uppercase_table(<i>self</i>, <i>t</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLDialect"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLDialect(ANSIDialect)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>module_name=None</i>, <i>module=None</i>, <i>auto_identity_insert=True</i>, <i>**params</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def compiler(<i>self</i>, <i>statement</i>, <i>bindparams</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def connection(<i>self</i>)</b>
+    <div class="docstring">
+    <p>returns a managed DBAPI connection from this SQLEngine's connection pool.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_connect_args(<i>self</i>, <i>url</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_execution_context(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dbapi(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def defaultrunner(<i>self</i>, <i>engine</i>, <i>proxy</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_execute(<i>self</i>, <i>cursor</i>, <i>statement</i>, <i>params</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_default_schema_name(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def has_table(<i>self</i>, <i>connection</i>, <i>tablename</i>, <i>schema=None</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def last_inserted_ids(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def preparer(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def raw_connection(<i>self</i>, <i>connection</i>)</b>
+    <div class="docstring">
+    <p>Pull the raw pymmsql connection out--sensative to &quot;pool.ConnectionFairy&quot; and pymssql.pymssqlCnx Classes</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def reflecttable(<i>self</i>, <i>connection</i>, <i>table</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemadropper(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemagenerator(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def set_default_schema_name(<i>self</i>, <i>schema_name</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def supports_sane_rowcount(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def type_descriptor(<i>self</i>, <i>typeobj</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def uppercase_table(<i>self</i>, <i>t</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLDialect_adodbapi"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLDialect_adodbapi(<a href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect">MSSQLDialect</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def make_connect_string(<i>self</i>, <i>keys</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def supports_sane_rowcount(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLDialect_pymssql"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLDialect_pymssql(<a href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect">MSSQLDialect</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_connect_args(<i>self</i>, <i>url</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_rollback(<i>self</i>, <i>connection</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def make_connect_string(<i>self</i>, <i>keys</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def supports_sane_rowcount(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLDialect_pyodbc"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLDialect_pyodbc(<a href="sqlalchemy_databases_mssql.html#docstrings_sqlalchemy.databases.mssql_MSSQLDialect">MSSQLDialect</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def make_connect_string(<i>self</i>, <i>keys</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def supports_sane_rowcount(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLExecutionContext"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLExecutionContext(DefaultExecutionContext)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def post_exec(<i>self</i>, <i>engine</i>, <i>proxy</i>, <i>compiled</i>, <i>parameters</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Turn off the INDENTITY_INSERT mode if it's been activated,
+and fetch recently inserted IDENTIFY values (works only for
+one column).</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def pre_exec(<i>self</i>, <i>engine</i>, <i>proxy</i>, <i>compiled</i>, <i>parameters</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>MS-SQL has a special mode for inserting non-NULL values
+into IDENTITY columns.</p>
+<p>Activate it if the feature is turned on and needed.</p>
+
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLIdentifierPreparer"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLIdentifierPreparer(ANSIIdentifierPreparer)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLSchemaDropper"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLSchemaDropper(ANSISchemaDropper)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_index(<i>self</i>, <i>index</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSQLSchemaGenerator"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSQLSchemaGenerator(ANSISchemaGenerator)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_column_specification(<i>self</i>, <i>column</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSSmallInteger"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSmallInteger(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_SmallInteger">SmallInteger</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSString"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSString(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_String">String</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSText"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSText(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_TEXT">TEXT</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSTinyInteger"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSTinyInteger(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Integer">Integer</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mssql_MSUnicode"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSUnicode(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Unicode">Unicode</a>)</h3>
+    
+    
+    <div class="darkcell"><p>Unicode subclass, does Unicode conversion in all cases, uses NVARCHAR impl.</p>
+</div>
+    
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_databases_oracle.html">module sqlalchemy.databases.oracle</a>
+
+               |   
+            Next: <a href="sqlalchemy_databases_firebird.html">module sqlalchemy.databases.firebird</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,1 @@
+This adds netfilter hooks to layer 2 packet processing.

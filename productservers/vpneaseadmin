@@ -1,0 +1,6 @@
+#!/usr/bin/python2.4
+#
+# XXX: currently we're fixated on Python 2.4.
+
+from codebay.l2tpadmin import vpneaseadmin
+vpneaseadmin.main()

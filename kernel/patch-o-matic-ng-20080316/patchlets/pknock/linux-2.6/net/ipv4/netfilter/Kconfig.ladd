@@ -1,0 +1,14 @@
+config IP_NF_MATCH_PKNOCK
+	tristate  'Port Knocking and SPA match support'
+	depends on IP_NF_IPTABLES
+	help
+	  This option allows you to implement Port Knocking, a stealthy
+	  system for network authentication across closed ports. For
+	  instance, this can be used to avoid brute force attacks to ssh
+	  or ftp services. It is also implement SPA (Simple Packet
+	  Authentication).
+
+	  For more information go to:
+	  http://portknocko.berlios.de/
+
+          To compile it as a module, choose M here.  If unsure, say N.

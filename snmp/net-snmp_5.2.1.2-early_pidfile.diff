@@ -1,0 +1,71 @@
+diff -ru net-snmp-5.2.1.2.orig/agent/snmpd.c net-snmp-5.2.1.2/agent/snmpd.c
+--- net-snmp-5.2.1.2.orig/agent/snmpd.c	2004-10-07 00:11:23.000000000 +0300
++++ net-snmp-5.2.1.2/agent/snmpd.c	2007-08-21 15:59:58.000000000 +0300
+@@ -865,6 +865,31 @@
+             Exit(1);                /*  Exit logs exit val for us  */
+     }
+ 
++#if HAVE_GETPID
++    if (pid_file != NULL) {
++        /*
++         * unlink the pid_file, if it exists, prior to open.  Without
++         * doing this the open will fail if the user specified pid_file
++         * already exists.
++         */
++        unlink(pid_file);
++        fd = open(pid_file, O_CREAT | O_EXCL | O_WRONLY, 0600);
++        if (fd == -1) {
++            snmp_log_perror(pid_file);
++	    exit(1);
++        } else {
++            if ((PID = fdopen(fd, "w")) == NULL) {
++                snmp_log_perror(pid_file);
++                exit(1);
++            } else {
++                fprintf(PID, "%d\n", (int) getpid());
++                fclose(PID);
++            }
++            close(fd);
++        }
++    }
++#endif
++
+     SOCK_STARTUP;
+     init_agent("snmpd");        /* do what we need to do first. */
+     init_mib_modules();
+@@ -914,34 +939,6 @@
+      */
+     send_easy_trap(0, 0);
+ 
+-#if HAVE_GETPID
+-    if (pid_file != NULL) {
+-        /*
+-         * unlink the pid_file, if it exists, prior to open.  Without
+-         * doing this the open will fail if the user specified pid_file
+-         * already exists.
+-         */
+-        unlink(pid_file);
+-        fd = open(pid_file, O_CREAT | O_EXCL | O_WRONLY, 0600);
+-        if (fd == -1) {
+-            snmp_log_perror(pid_file);
+-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+-                                        NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
+-                exit(1);
+-            }
+-        } else {
+-            if ((PID = fdopen(fd, "w")) == NULL) {
+-                snmp_log_perror(pid_file);
+-                exit(1);
+-            } else {
+-                fprintf(PID, "%d\n", (int) getpid());
+-                fclose(PID);
+-            }
+-            close(fd);
+-        }
+-    }
+-#endif
+-
+ #if HAVE_UNISTD_H
+ #ifdef HAVE_SETGID
+     if ((gid = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 
+Only in net-snmp-5.2.1.2/agent: snmpd.c~

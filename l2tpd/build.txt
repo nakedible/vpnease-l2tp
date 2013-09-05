@@ -1,0 +1,7 @@
+- sudo rpm -i l2tpd-0.69-11jdl.src.rpm
+- sudo cp *.patch /usr/src/rpm/SOURCES/
+- sudo /usr/bin/rpmbuild -bs l2tpd.spec
+- sudo /usr/bin/rpmbuild --rebuild /usr/src/rpm/SRPMS/l2tpd-0.69-11jdl.src.rpm
+
+- sudo alien /usr/src/rpm/RPMS/i386/l2tpd-0.69-11jdl.i386.rpm
+=> l2tpd_0.69-12_i386.deb

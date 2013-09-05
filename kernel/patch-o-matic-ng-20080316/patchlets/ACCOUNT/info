@@ -1,0 +1,4 @@
+Author: Intra2net AG <opensource@intra2net.com>
+Status: Stable
+Repository: external
+Recompile: netfilter, iptables

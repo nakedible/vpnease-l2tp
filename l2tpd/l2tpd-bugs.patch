@@ -1,0 +1,343 @@
+diff -ru l2tpd-0.69.orig/call.c l2tpd-0.69/call.c
+--- l2tpd-0.69.orig/call.c	2005-11-16 15:50:36.000000000 +0200
++++ l2tpd-0.69/call.c	2005-11-16 15:28:51.000000000 +0200
+@@ -124,7 +124,8 @@
+                 return 0;
+ /*			} else if ((errno == EINTR ) || (errno == EAGAIN)) { */
+             }
+-            else if ((errno == EIO) || (errno == EINTR) || (errno == EAGAIN))
++	    /* NOTE: EIO should not be ignored here. */
++            else if ((errno == EINTR) || (errno == EAGAIN))
+             {
+ 
+                 /*
+diff -ru l2tpd-0.69.orig/control.c l2tpd-0.69/control.c
+--- l2tpd-0.69.orig/control.c	2005-11-16 15:50:36.000000000 +0200
++++ l2tpd-0.69/control.c	2005-11-16 16:02:04.000000000 +0200
+@@ -645,7 +645,7 @@
+                      __FUNCTION__);
+             return -EINVAL;
+         }
+-        if ((t->qtid != t->ourtid) && (t->ourtid > 0))
++        if ((t->qtid != t->tid) && (t->tid > 0))
+         {
+             if (DEBUG)
+                 log (LOG_DEBUG,
+@@ -1044,7 +1044,7 @@
+         }
+         else
+             p = c;
+-        if ((c->qcid != p->ourcid) && p->ourcid > 0)
++        if ((c->qcid != p->cid) && p->cid > 0)
+         {
+             if (DEBUG)
+                 log (LOG_DEBUG,
+@@ -1123,9 +1123,7 @@
+                  "%s: Received out of order control packet on tunnel %d (%d != %d)\n",
+                  __FUNCTION__, t->tid, h->Ns, t->control_rec_seq_num);
+         if (((h->Ns < t->control_rec_seq_num) && 
+-            ((t->control_rec_seq_num - h->Ns) < 32768)) ||
+-            ((h->Ns > t->control_rec_seq_num) &&
+-            ((t->control_rec_seq_num - h->Ns) > 32768)))
++            ((t->control_rec_seq_num - h->Ns) < 32768)))
+         {
+             /*
+                * Woopsies, they sent us a message we should have already received
+@@ -1142,6 +1140,16 @@
+             udp_xmit (zlb);
+             toss (zlb);
+         }
++	else if (((h->Ns > t->control_rec_seq_num) &&
++		  ((t->control_rec_seq_num - h->Ns) > 32768))) {
++	    /*
++	     * Send a ZLB also in this case.
++	     */
++            zlb = new_outgoing (t);
++            control_zlb (zlb, t, c);
++            udp_xmit (zlb);
++            toss (zlb);
++	}
+         else if (!t->control_rec_seq_num && (t->tid == -1))
+         {
+             /* We made this tunnel just for this message, so let's
+@@ -1154,7 +1162,7 @@
+     else
+     {
+         t->control_rec_seq_num++;
+-        c->cnu = -1;
++        c->cnu = -1; /* this is highly suspicious but seems to work. */
+     }
+     /*
+      * So we know what the other end has received
+@@ -1468,6 +1476,7 @@
+     return 0;
+ }
+ 
++#if 0 /* dead code removed */
+ void send_zlb (void *data)
+ {
+     /*
+@@ -1501,6 +1510,7 @@
+     udp_xmit (buf);
+     toss (buf);
+ }
++#endif
+ 
+ inline int write_packet (struct buffer *buf, struct tunnel *t, struct call *c,
+                          int convert)
+@@ -1626,6 +1636,7 @@
+     return 0;
+ }
+ 
++#if 0 /* no more needed */
+ void handle_special (struct buffer *buf, struct call *c, _u16 call)
+ {
+     /*
+@@ -1640,7 +1651,8 @@
+     /* Don't do anything unless it's a control packet */
+     if (!CTBIT (*((_u16 *) buf->start)))
+         return;
+-    /* Temporarily, we make the tunnel have cid of call instead of 0,
++   
++   /* Temporarily, we make the tunnel have cid of call instead of 0,
+        but we need to stop any scheduled events (like Hello's in
+        particular) which might use this value */
+     c->cid = call;
+@@ -1669,6 +1681,7 @@
+             log (LOG_DEBUG, "%s: invalid control packet\n", __FUNCTION__);
+     }
+ }
++#endif
+ 
+ inline int handle_packet (struct buffer *buf, struct tunnel *t,
+                           struct call *c)
+diff -ru l2tpd-0.69.orig/l2tpd.c l2tpd-0.69/l2tpd.c
+--- l2tpd-0.69.orig/l2tpd.c	2005-11-16 15:50:36.000000000 +0200
++++ l2tpd-0.69/l2tpd.c	2005-11-17 16:11:04.008720552 +0200
+@@ -64,6 +64,8 @@
+ char *dial_no_tmp;              /* jz: Dialnumber for Outgoing Call */
+ int switch_io = 0;              /* jz: Switch for Incoming or Outgoing Call */
+ 
++int devnull_fd = -1;
++
+ void init_tunnel_list (struct tunnel_list *t)
+ {
+     t->head = NULL;
+@@ -104,11 +106,13 @@
+         {
+             fprintf (f, "%d: Magic dial on %s\n", s, tlac->entname);
+         }
++#if 0 /* this is dead code */
+         else if (se->func == &send_zlb)
+         {
+             fprintf (f, "%d: Send payload ZLB on call %d:%d\n", s,
+                      c->container->tid, c->cid);
+         }
++#endif
+         else if (se->func == &dethrottle)
+         {
+             fprintf (f, "%d: Dethrottle call %d:%d\n", s, c->container->tid,
+@@ -203,36 +207,27 @@
+     struct call *c;
+     pid_t pid;
+     int status;
+-    t = tunnels.head;
+-    pid = waitpid (-1, &status, WNOHANG);
+-    if (pid < 1)
+-    {
+-        /*
+-         * Oh well, nobody there.  Maybe we reaped it
+-         * somewhere else already
+-         */
+-        return;
+-    }
+-    while (t)
+-    {
+-        c = t->call_head;
+-        while (c)
+-        {
+-            if (c->pppd == pid)
+-            {
+-                log (LOG_DEBUG, "%s : pppd died for call %d\n", __FUNCTION__,
+-                     c->cid);
+-                c->needclose = -1;
+-                /* 
+-                 * OK...pppd died, we can go ahead and close the pty for
+-                 * it
+-                 */
+-                close (c->fd);
+-                return;
+-            }
+-            c = c->next;
+-        }
+-        t = t->next;
++
++    while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
++	t = tunnels.head;
++	while (t) {
++	    c = t->call_head;
++	    while (c) {
++		if (c->pppd == pid) {
++		    log (LOG_DEBUG, "%s : pppd died for call %d\n", __FUNCTION__,
++			 c->cid);
++		    c->needclose = -1;
++		    /* 
++		     * OK...pppd died, we can go ahead and close the pty for
++		     * it
++		     */
++		    close (c->fd);
++		    return;
++		}
++		c = c->next;
++	    }
++	    t = t->next;
++	}
+     }
+ }
+ 
+@@ -1013,6 +1008,11 @@
+     close(1);
+     close(2);
+ 
++    devnull_fd=open("/dev/null", O_RDWR);
++    dup2(devnull_fd,0); /* stdin */
++    dup2(devnull_fd,1); /* stdout */
++    dup2(devnull_fd,2); /* stderr */
++
+     /* Read previous pid file. */
+     if ((i = open(gconfig.pidfile,O_RDONLY)) > 0) {
+         l=read(i,buf,sizeof(buf)-1);
+diff -ru l2tpd-0.69.orig/network.c l2tpd-0.69/network.c
+--- l2tpd-0.69.orig/network.c	2005-11-03 17:30:29.000000000 +0200
++++ l2tpd-0.69/network.c	2005-11-17 16:04:24.989380712 +0200
+@@ -319,10 +319,57 @@
+         FD_SET (control_fd, &readfds);
+         if (control_fd > max)
+             max = control_fd;
++
+         tv.tv_sec = 1;
+         tv.tv_usec = 0;
+         schedule_unlock ();
+-        select (max + 1, &readfds, NULL, NULL, NULL);
++        if (select (max + 1, &readfds, NULL, NULL, NULL) < 0) {
++	    int err = errno;
++	    static int eio_errors = 0;
++	    static int eagain_errors = 0;
++	    static int eexist_errors = 0;
++	    static int ebadf_errors = 0;
++
++	    fprintf(stderr, "%s: select returned an error: %d: %s.\n",
++		    __FUNCTION__, err, strerror(err));
++
++	    if (err == EIO) { /* 5 */
++		/* this indicates a potential live-loop problem. */
++		if (eio_errors++ > 1000) {
++		    fprintf(stderr, "seen too many (>1000) EIO errors from select, exiting.");
++		    log (LOG_CRIT, "seen too many (>1000) EIO errors from select, exiting.");
++		    exit(2);
++		}
++	    } else if (err == EBADF) { /* 9 */
++		/* */
++		if (ebadf_errors++ > 1000) {
++		    fprintf(stderr, "seen too many (>1000) EBADF errors from select, exiting.");
++		    log (LOG_CRIT, "seen too many (>1000) EBADF errors from select, exiting.");
++		    exit(3);
++		}
++	    } else if (err == EINTR) { /* 4 */ 
++		/* this happens normally */
++	    } else if (err == EAGAIN) { /* 11 */
++		/* eat this error because it seems "normal" to l2tpd. */
++		eagain_errors++;
++		if (eagain_errors++ >= 1000) {
++		    fprintf(stderr, "got 1000 EAGAIN errors from select(), continuing anyway.");
++		    log (LOG_WARN, "got 1000 EAGAIN errors from select(), continuing anyway.");
++		    eagain_errors = 0;
++		}
++	    } else {
++		/* don't tolerate other errors from select() */
++		perror ("select: ");
++		fprintf(stderr, "%s: select returned error: %d: %s, exiting now.\n",
++			__FUNCTION__, err, strerror(err));
++
++		/* try to log.. */
++		log (LOG_CRIT,
++		     "%s: select returned error %d (%s), exiting now.\n",
++		     __FUNCTION__, err, strerror (err));
++		exit (4);
++	    }
++	}
+         schedule_lock ();
+         if (FD_ISSET (control_fd, &readfds))
+         {
+@@ -387,11 +434,18 @@
+                          * tunnel, but not with a valid CID, we'll just send a ZLB
+                          * to ack receiving the packet.
+                          */
++#if 0 /* no need for this hack, just drop the packet and the call will die.*/
+                         if (debug_tunnel)
+                             log (LOG_DEBUG,
+                                  "%s: no such call %d on tunnel %d.  Sending special ZLB\n",
+                                  __FUNCTION__);
+                         handle_special (buf, c, call);
++#else
++                        if (debug_tunnel)
++			    log (LOG_DEBUG,
++				 "%s: unable to find call to handle packet.  call = %d, tunnel = %d Dumping.\n",
++				 __FUNCTION__, call, tunnel);
++#endif
+                     }
+                     else
+                         log (LOG_DEBUG,
+@@ -411,6 +465,9 @@
+                     };
+                     if (c->cnu)
+                     {
++#if 0 /* should not be here */
++		        exit (1);
++#endif
+                         /* Send Zero Byte Packet */
+                         control_zlb (buf, c->container, c);
+                         c->cnu = 0;
+diff -ru l2tpd-0.69.orig/scheduler.c l2tpd-0.69/scheduler.c
+--- l2tpd-0.69.orig/scheduler.c	2005-11-16 15:50:36.000000000 +0200
++++ l2tpd-0.69/scheduler.c	2005-11-16 15:37:44.000000000 +0200
+@@ -19,6 +19,9 @@
+ #include "l2tp.h"
+ #include "scheduler.h"
+ 
++#include <errno.h>
++#include <stdio.h>
++
+ struct schedule_entry *events;
+ static struct timeval zero;
+ static sigset_t alarm;
+@@ -87,6 +90,14 @@
+             then.tv_sec -= 1;
+             then.tv_usec += 1000000;
+         }
++#if 1 /* check for negative */
++	if (then.tv_sec < 0) {
++            log (LOG_WARN, "%s: Whoa...  Scheduling for <=0 time? Adjusting to 1000 usecs\n",
++                 __FUNCTION__);
++	    then.tv_sec = 0;
++	    then.tv_usec = 1000;
++	}
++#endif
+         if ((then.tv_sec <= 0) && (then.tv_usec <= 0))
+         {
+             log (LOG_WARN, "%s: Whoa...  Scheduling for <=0 time???\n",
+@@ -96,7 +107,14 @@
+         {
+             itv.it_interval = zero;
+             itv.it_value = then;
++#if 1 /* check return value */
++            if (setitimer (ITIMER_REAL, &itv, NULL) != 0) {
++		perror("setitimer: ");
++		exit (1);
++	    }
++#else
+             setitimer (ITIMER_REAL, &itv, NULL);
++#endif
+         }
+     }
+     cnt--;

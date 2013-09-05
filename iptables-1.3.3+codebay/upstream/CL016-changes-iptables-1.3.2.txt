@@ -1,0 +1,77 @@
+iptables v1.3.2 Changelog
+======================================================================
+This version requires kernel >= 2.4.0
+This version recommends kernel >= 2.4.18
+
+Bugs fixed from 1.3.1:
+
+- Fix TCPLAG version
+	[ Torsten Luettgert ]
+
+- More error checking in SET target
+	[ Michal Pokrywka ]
+
+- Fix optflags value for OPT_LINENUMBERS
+	[ Jonas Berlin ]
+
+- Allow NULL init function in ip6tables plugins
+	[ Jonas Berlin ]
+
+- Don't allow newlines in LOG prefix
+	[ Phil Oester ]
+
+- Introduce ip_conntrack_old_tuple to userspace header copy
+	[ Pablo Neira ]
+
+- Fix connbytes command line parsing bug
+	[ Piotrek Kaczmarek ]
+
+- Ignore unknown arguments in libipt_ULOG 
+	[ Patrick McHardy ]
+
+- Correct error in multiport manpage wrt. "--ports"
+	[ Rusty Russell ]
+
+- Fix CONNMARK save/restore 
+	[ Tom Eastep, Pawel Sikora ]
+
+- Make sure chain name doesn't start with '!' 
+	[ Yasuyuki Kozakai ]
+
+- Prevent user to specify negative ports in SNAT/DNAT
+	[ Yasuyuki Kozakai ]
+
+- Fix deletion of targets where kernel size != userspace size 
+	[ Pablo Neira ]
+
+- Fix save/restore of '! --uid-owner squid' problem in ip6t_owner
+	[ Harald Welte ]
+
+Changes from 1.3.1:
+
+- Add ``--log-uid'' option to ip6t_LOG target
+	[ Patrick McHardy ]
+
+- Improve REDIRECT manpage
+	[ Jonas Berlin ]
+
+- Add a number of missing manpage snippets
+	[ Jonas Berlin ]
+
+- Include FIN bit in mask of "--syn" bits
+	[ Harald Welte ]
+
+- Release previously merged options from merge_opts(), reduces memory-usage of
+  ipt ables-restore dramatically 
+  	[ Pablo Neira ]
+
+- OSF: changes to support connector notifications
+	[ Evgeniy Polyakov ]
+
+- Reduce code replication of parse_interface() 
+	[ Yasuyuki Kozakai ]
+
+Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
+iptables but rather distributed as a seperate package
+(ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot)
+

@@ -1,0 +1,9 @@
+CONFIG_IP_NF_AMANDA
+RTSP protocol support
+CONFIG_IP_NF_RTSP
+  Support the RTSP protocol.  This allows UDP transports to be setup
+  properly, including RTP and RDT.
+
+  If you want to compile it as a module, say 'M' here and read
+  Documentation/modules.txt.  If unsure, say 'Y'.
+

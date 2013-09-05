@@ -1,0 +1,244 @@
+#!/usr/bin/python
+
+"""
+Handle updating/installing the backup files needed to do run
+main update process.
+"""
+import os, stat, md5, sys
+
+# Tolerate logger errors
+try:
+    from codebay.common import logger
+    _log = logger.get('l2tpgw-postupdate-script')
+except:
+    _log = None
+
+# Get and log update result
+update_result = None
+try:
+    update_result = sys.argv[1]
+except:
+    if _log is not None: _log.exception('update_result parameter not given')
+
+if _log is not None:
+    _log.info('l2tpgw-postupdate-script executing, update_result=%s' % update_result)
+
+# Check and import required helpers
+try:
+    from codebay.l2tpserver import runcommand
+    run_command = runcommand.run_command
+except:
+    msg = 'failed to import helpers, cannot update backup files'
+    print msg
+    if _log is not None: _log.error(msg)
+    sys.exit(1)
+
+# File lists
+startup_files = [
+    ['/usr/lib/l2tpgw/postupdate/vpnease-update',
+     '/usr/lib/l2tpgw/postupdate/vpnease-update.md5',
+     '/etc/init.d/vpnease-update',
+     0755],
+    ['/usr/lib/l2tpgw/postupdate/vpnease-init',
+     '/usr/lib/l2tpgw/postupdate/vpnease-init.md5',
+     '/etc/init.d/vpnease-init',
+     0755]
+    ]
+
+backup_files = startup_files + [
+    ['/usr/lib/l2tpgw/postupdate/update-files.zip',
+     '/usr/lib/l2tpgw/postupdate/update-files.zip.md5',
+     '/var/lib/l2tpgw-permanent/update-files.zip',
+     0644]
+    ]
+
+def _enable_startup():
+    """Enable init.d startup of update code."""
+
+    if _log is not None: _log.info('(re-)enabling startup of update code')
+    
+    for fname, md5sum, dest, mode in startup_files:
+        try:
+            os.chown(dest, 0, 0)
+        except:
+            if _log is not None: _log.exception('failed to chown file: %s' % dest)
+
+        try:
+            os.chmod(dest, mode)
+        except:
+            if _log is not None: _log.exception('failed to chmod file: %s' % dest)
+
+    try:
+        run_command(['/usr/sbin/update-rc.d', '-f', 'vpnease-update', 'remove'])
+    except:
+        if _log is not None: _log.exception('failed to remove update from startup')
+
+    # XXX: here we have a chance for an extremely unlikely race, but it is hard
+    # to do better
+
+    try:
+        run_command(['/usr/sbin/update-rc.d', 'vpnease-update', 'stop', '99', '0', '1', '6', '.', 'start', '12', '2', '3', '4', '5', '.'])
+    except:
+        if _log is not None: _log.exception('failed to include update in startup')
+
+def _naftalin_update_check():
+    """Check if naftalin requires updating.
+
+    For every naftalin file:
+    1. Check if source file is present
+    2. Check if update is required
+       1. Check if system file is present
+       2. Check if system file md5sum and permission differ from source
+       3. Check if system file md5sum and permission differ from known-good values
+    3. Copy source to system naftalin
+    """
+
+    def _readfile(filename):
+        f = None
+        rv = None
+        try:
+            f = open(filename, 'rb')
+            rv = f.read()
+        finally:
+            if f is not None: f.close()
+            return rv
+
+    def _read_digest(filename):
+        s = _readfile(filename)
+        if s is None: return None
+        s = s.strip()
+        if len(s) < 32: return None
+        return s[0:32].lower()
+
+    def _check_md5sum(filename, digest):
+        contents = _readfile(filename)
+        if contents is None:
+            return False
+        try:
+            if md5.new(contents).digest().encode('hex').lower() == digest:
+                return True
+        except:
+            if _log is not None: _log.exception('failed to check md5 %s against file %s' % (digest, filename))
+        return False
+
+    def _check_md5sum_from_file(filename, md5sum_filename):
+        md5sum = _read_digest(md5sum_filename)
+        if md5sum is None: return False
+        return _check_md5sum(filename, md5sum)
+
+    def _check_mode(filename, mode):
+        if stat.S_IMODE(os.stat(filename).st_mode) == mode:
+            return True
+        return False
+
+    def _check_owner(filename, uid, gid):
+        if os.stat(filename).st_uid != uid:
+            return False
+        if os.stat(filename).st_gid != gid:
+            return False
+        return True
+
+    def _update_is_possible():
+        """Check whether update is possible, i.e. that backup files exist and have good MD5s."""
+        for fname, md5sum, dest, mode in backup_files:
+            if not os.path.exists(fname):
+                return False
+            if md5sum is not None:
+                try:
+                    if not _check_md5sum_from_file(fname, md5sum):
+                        return False
+                except:
+                    return False
+        return True
+
+    def _update_is_required():
+        """Check whether update is required, i.e. that current naftalin files are not desired."""
+        for fname, md5sum, dest, mode in backup_files:
+            if not os.path.exists(dest):
+                # File doesn't exist => we need an update
+                return True
+            if md5sum is not None:
+                # Currently we only accept that latest (our) naftalin files.  Later on,
+                # this check can check whether existing MD5 is "known good" or "known bad"
+                # and react accordingly.
+                try:
+                    if not _check_md5sum_from_file(dest, md5sum):
+                        return True
+                except:
+                    return True
+            if mode is not None:
+                # Mode incorrect => we need an update
+                try:
+                    if not _check_mode(dest, mode):
+                        return True
+                except:
+                    return True
+            try:
+                # Owner incorrect => we need an update
+                if not _check_owner(dest, 0, 0):
+                    return True
+            except:
+                return True
+        return False
+
+    def _do_update():
+        for fname, md5sum, dest, mode in backup_files:
+            if _log is not None: _log.info('updating %s to %s' % (fname, dest))
+            
+            try:
+                run_command(['/bin/mkdir', '-p', os.path.split(dest)[0]])
+                os.chmod(os.path.split(dest)[0], 0755)
+                os.chown(os.path.split(dest)[0], 0, 0)
+            except:
+                if _log is not None: _log.exception('failed to create destination directory: %s' % (os.path.split(dest)[0]))
+
+            try:
+                run_command(['/bin/cp', '-f', fname, dest], retval=runcommand.FAIL)
+            except:
+                if _log is not None: _log.exception('failed to update file: %s -> %s' % (fname, dest))
+
+            try:
+                os.chmod(dest, mode)
+            except:
+                if _log is not None: _log.exception('failed to update file mode: %s (%.4o)' % (fname, mode))
+
+            try:
+                os.chown(dest, 0, 0)
+            except:
+                if _log is not None: _log.exception('failed to update file owner: %s (0:0)' % (fname))
+
+    if _log is not None: _log.info('checking for naftalin update')
+
+    can_do_update = False
+    try:
+        can_do_update = _update_is_possible()
+    finally:
+        if not can_do_update:
+            if _log is not None: _log.error('backup files update not possible, skipped')
+            return
+
+    try:
+        if not _update_is_required():
+            if _log is not None: _log.info('backup files update not required, skipped')
+            return
+    except:
+        if _log is not None: _log.exception('checking for required backup files update failed, update forced')
+
+    if _log is not None: _log.info('updating naftalin files')
+
+    _do_update()
+ 
+if __name__ == '__main__':
+    if update_result == 'failure':
+        pass
+    else:
+        # success (or unknown)
+        try:
+            _naftalin_update_check()
+        except:
+            if _log is not None: _log.exception('update check failed')
+
+        try:
+            _enable_startup()
+        except:
+            if _log is not None: _log.exception('enable startup failed')

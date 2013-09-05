@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          Click <strong class="cb-guilabel">Export diagnostics</strong> to export a
+          diagnostics file containing system information useful to <n:invisible n:macro="productname" />
+          support.
+        </p>
+
+        <div class="cb-note">
+          <p>
+            The diagnostics file contains system log information which may include some sensitive
+            information, such as hardware details and usernames.
+          </p>
+          <p>
+            However, the diagnostics file does not contain password or pre-shared key information.
+          </p>
+        </div>
+
+        <n:invisible n:render="form buttons" />
+
+      </div>
+    </n:invisible>
+    
+    <n:invisible n:pattern="contexthelp">
+    <div class="context-help-items">
+        <div id="ctx-page">
+            <div class="ctx-title">
+            </div>
+            <div class="ctx-content">
+            </div>
+        </div>
+    </div>
+    </n:invisible>
+  </body>
+</html>

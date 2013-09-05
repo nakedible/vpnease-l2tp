@@ -1,0 +1,39 @@
+/*
+ *  VPNease IE specific hacks, loaded using a conditional HTML HEAD element
+ *
+ *  See: http://www.positioniseverything.net/articles/ie7-dehacker.html
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+/*
+ *  cb.css
+ */
+
+/* http://bytes.com/forum/thread99178.html */
+/* http://www.quirksmode.org/bugreports/archives/2005/07/Wrapped_inlinenowrap_elements_lose_padding_left_in.html */
+/* http://www.ejeliot.com/blog/63 */
+.cb-section a.cb-external,
+.cb-section a.cb-external:link,
+.cb-section a.cb-external:visited { 
+        display: inline-block;
+        white-space: nowrap;
+
+        /* 
+         *  These rules are intended to disable background images for IE5 only. 
+         *  The background image approach does not work (at all) with IE5, so 
+         *  it's better to disable it.  However, we want it for IE5Mac, IE6, 
+         *  and IE7.  See: http://www.ejeliot.com/blog/63. 
+         */ 
+ 
+        background: url(external.gif) no-repeat 100% 55%;    /* all, including Mac IE */ 
+        *background: url(external.gif) no-repeat 100% 55%;   /* IE 7 and below */ 
+        _background: none;                                   /* IE 6 and below */ 
+        _bac\kground: url(external.gif) no-repeat 100% 55%;  /* IE 6 only */ 
+ 
+        padding-right: 12px; 
+        *padding-right: 12px; 
+        _padding-right: 0; 
+        _padd\ing-right: 12px; 
+}

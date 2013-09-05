@@ -1,0 +1,15 @@
+diff -ru ppp-2.4.4b1.orig/pppd/plugins/radius/radius.c ppp-2.4.4b1/pppd/plugins/radius/radius.c
+--- ppp-2.4.4b1.orig/pppd/plugins/radius/radius.c	2005-07-10 13:28:55.000000000 +0300
++++ ppp-2.4.4b1/pppd/plugins/radius/radius.c	2007-08-29 14:37:46.000000000 +0300
+@@ -157,8 +157,10 @@
+     ip_choose_hook = radius_choose_ip;
+     allowed_address_hook = radius_allowed_address;
+ 
++#if 0 /* Prevent RADIUS accounting */
+     add_notifier(&ip_up_notifier, radius_ip_up, NULL);
+     add_notifier(&ip_down_notifier, radius_ip_down, NULL);
++#endif
+ 
+     memset(&rstate, 0, sizeof(rstate));
+ 
+Only in ppp-2.4.4b1/pppd/plugins/radius: radius.c~

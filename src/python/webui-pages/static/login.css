@@ -1,0 +1,20 @@
+/*
+ *  VPNease login CSS
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+#login {
+	background: transparent url(bg-login-1.gif) top left no-repeat;
+	padding: 3em;
+}
+
+#login-w {
+	margin: 0 auto;
+	margin-top: 6em;
+	width: 594px;  
+	background: #fff url(bg-login-2.gif) bottom left no-repeat;
+	/* centering reset */
+	text-align: left;		
+}

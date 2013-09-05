@@ -1,0 +1,293 @@
+Index: openswan-2.4.0rc4.quilt/debian/control
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/debian/control	2006-12-03 17:33:24.000000000 +0200
++++ openswan-2.4.0rc4.quilt/debian/control	2006-12-18 11:43:14.000000000 +0200
+@@ -8,8 +8,7 @@
+ Package: openswan
+ Architecture: any
+ Depends: ${shlibs:Depends}, bsdmainutils, makedev | devfsd, ${debconf-depends}, debianutils (>=1.7), openssl, gawk, host, iproute (>= 2.6.8)
+-Suggests: openswan-modules-source | kernel-patch-openswan, curl
+-Provides: ike-server
++Provides: ike-server, vpnease-openswan
+ Conflicts: ike-server, freeswan
+ Description: IPSEC utilities for Openswan
+  IPSEC is Internet Protocol SECurity. It uses strong cryptography to provide
+@@ -38,33 +37,33 @@
+  native ones, you will need to install either openswan-modules-source or
+  kernel-patch-openswan and build the respective modules for your kernel.
+  
+-Package: openswan-modules-source
+-Architecture: all
+-Depends: coreutils | fileutils, debhelper
+-Recommends: kernel-package (>= 7.04), kernel-source
+-Suggests: openswan
+-Description: IPSEC kernel modules source for Openswan
+- This package contains the source for the Openswan modules to get the necessary
+- kernel support to use Openswan.
+- .
+- It includes the NAT Traversal patches, which will need to be applied to the
+- kernel tree if NAT Traversal is needed.
+- .
+- It currently works only for 2.4 series kernels!
++# Package: openswan-modules-source
++# Architecture: all
++# Depends: coreutils | fileutils, debhelper
++# Recommends: kernel-package (>= 7.04), kernel-source
++# Suggests: openswan
++# Description: IPSEC kernel modules source for Openswan
++#  This package contains the source for the Openswan modules to get the necessary
++#  kernel support to use Openswan.
++#  .
++#  It includes the NAT Traversal patches, which will need to be applied to the
++#  kernel tree if NAT Traversal is needed.
++#  .
++#  It currently works only for 2.4 series kernels!
+ 
+-Package: kernel-patch-openswan
+-Architecture: all
+-Depends: coreutils | fileutils
+-Recommends: kernel-package (>= 7.04)
+-Suggests: openswan
+-Description: IPSEC kernel support for Openswan
+- This package contains the patches for the Linux kernel to get the necessary
+- kernel support to use Openswan. If you want to build a kernel module for
+- IPSec, it is much easier to use the openswan-modules-source package instead.
+- This kernel-patch package should probably only be used when building a
+- non-modular kernel or when compiling IPSec non-modular.
+- .
+- It includes the NAT Traversal patches and applies them automatically to the
+- kernel after inserting KLIPS.
+- .
+- It will only work for 2.4 series kernels!
++# Package: kernel-patch-openswan
++# Architecture: all
++# Depends: coreutils | fileutils
++# Recommends: kernel-package (>= 7.04)
++# Suggests: openswan
++# Description: IPSEC kernel support for Openswan
++#  This package contains the patches for the Linux kernel to get the necessary
++#  kernel support to use Openswan. If you want to build a kernel module for
++#  IPSec, it is much easier to use the openswan-modules-source package instead.
++#  This kernel-patch package should probably only be used when building a
++#  non-modular kernel or when compiling IPSec non-modular.
++#  .
++#  It includes the NAT Traversal patches and applies them automatically to the
++#  kernel after inserting KLIPS.
++#  .
++#  It will only work for 2.4 series kernels!
+Index: openswan-2.4.0rc4.quilt/debian/rules
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/debian/rules	2006-12-03 17:33:24.000000000 +0200
++++ openswan-2.4.0rc4.quilt/debian/rules	2006-12-18 11:42:46.000000000 +0200
+@@ -38,7 +38,7 @@
+ 		done ; \
+ 		touch patch-awk-to-gawk.stamp; \
+ 	fi
+-	
++
+ 	touch patch-stamp
+ 
+ unpatch: 
+@@ -64,7 +64,7 @@
+ 	# on demand, e.g. in the postinst script)
+ 	touch $(CURDIR)/debian/ipsec.secrets
+ 	$(MAKE) programs INC_USRLOCAL=/usr \
+-        		 FINALBINDIR=/usr/lib/ipsec \
++			 FINALBINDIR=/usr/lib/ipsec \
+ 			 FINALLIBEXECDIR=/usr/lib/ipsec \
+ 			 PUBDIR=/usr/sbin \
+ 			 MANTREE=/usr/share/man \
+@@ -73,8 +73,8 @@
+ 	rm -f $(CURDIR)/debian/ipsec.secrets
+ 
+ 	# here we re-generate the upstream HTML documentation
+-	$(MAKE) -C doc/ index.html
+-	
++	# $(MAKE) -C doc/ index.html
++
+ 	# also generate the fswcert tool
+ 	$(MAKE) -C debian/fswcert/
+ 
+@@ -92,8 +92,6 @@
+ 	-find $(CURDIR)/lib/libcrypto -name "*.a" | xargs --no-run-if-empty rm
+ 
+ 	-$(MAKE) -f debian/rules unpatch
+-	
+-	rm -rf debian/openswan-modules-source-build/
+ 
+ 	# just in case something went wrong
+ 	rm -f $(CURDIR)/debian/ipsec.secrets
+@@ -121,7 +119,7 @@
+ 
+ 	# Add here commands to install the package into debian/tmp.
+ 	$(MAKE) install INC_USRLOCAL=/usr \
+-        		FINALBINDIR=/usr/lib/ipsec \
++			FINALBINDIR=/usr/lib/ipsec \
+ 			FINALLIBEXECDIR=/usr/lib/ipsec \
+ 			PUBDIR=$(CURDIR)/debian/openswan/usr/sbin \
+ 			MANTREE=$(CURDIR)/debian/openswan/usr/share/man \
+@@ -142,21 +140,21 @@
+ 	# this is handled by update-rc.d
+ 	rm -rf $(CURDIR)/debian/openswan/etc/rc?.d
+         
+-	dh_installdocs -popenswan -n
++	# dh_installdocs -popenswan -n
+ 	# change the paths in the installed doc files (but only in regular 
+ 	# files, not in links to the outside of the build tree !)
+-	( cd $(CURDIR)/debian/openswan/; \
+-	  for f in `grep "/usr/local/" --recursive --files-with-match *`; \
+-	  do \
+-		if [ -f $$f -a ! -L $$f ]; then \
+-		    cp $$f $$f.old; \
+- 		    sed 's/\/usr\/local\//\/usr\//' $$f.old > $$f; \
+-		    rm $$f.old; \
+-		fi; \
+-	  done )
++	# ( cd $(CURDIR)/debian/openswan/; \
++	#   for f in `grep "/usr/local/" --recursive --files-with-match *`; \
++	#   do \
++	# 	if [ -f $$f -a ! -L $$f ]; then \
++	# 	    cp $$f $$f.old; \
++	# 	    sed 's/\/usr\/local\//\/usr\//' $$f.old > $$f; \
++	# 	    rm $$f.old; \
++	# 	fi; \
++	#   done )
+ 	# but remove the doc/src dir, which just duplicates the HTML files
+-	rm -rf $(CURDIR)/debian/openswan/usr/share/doc/openswan/doc/src
+-	  
++	# rm -rf $(CURDIR)/debian/openswan/usr/share/doc/openswan/doc/src
++
+ 	# the logcheck ignore files
+ 	install -D --mode=0600 $(CURDIR)/debian/logcheck.ignore.paranoid $(CURDIR)/debian/openswan/etc/logcheck/ignore.d.paranoid/openswan
+ 	install -D --mode=0600 $(CURDIR)/debian/logcheck.ignore.server $(CURDIR)/debian/openswan/etc/logcheck/ignore.d.server/openswan
+@@ -173,109 +171,6 @@
+ 	find $(CURDIR)/debian/openswan -name ".cvsignore" | xargs --no-run-if-empty rm -f
+ 	find $(CURDIR)/debian/openswan -name "/.svn/" | xargs --no-run-if-empty rm -rf
+ 
+-install-openswan-modules-source: DH_OPTIONS=-i
+-install-openswan-modules-source: PKGDIR=$(CURDIR)/debian/openswan-modules-source
+-install-openswan-modules-source: BUILDDIR=$(CURDIR)/debian/openswan-modules-source-build
+-install-openswan-modules-source: patch-stamp
+-	dh_testdir
+-	dh_testroot
+-	dh_installdirs
+-	mkdir -p "$(BUILDDIR)/modules/openswan"
+-	mkdir -p "$(BUILDDIR)/modules/openswan/lib"
+-	mkdir -p "$(BUILDDIR)/modules/openswan/debian"
+-	cp -r Makefile.inc Makefile.ver linux/ \
+-		"$(BUILDDIR)/modules/openswan"
+-	# if we don't have the crypto-ext patches, this can fail
+-	-cp -r lib/libcrypto \
+-		"$(BUILDDIR)/modules/openswan/lib/"
+-	-find "$(BUILDDIR)/modules/openswan/lib/" -name "*.o" | xargs --no-run-if-empty rm
+-	install --mode=644 debian/openswan-modules-source.kernel-config "$(BUILDDIR)/modules/openswan/config-all.h"
+-	install --mode=755 debian/openswan-modules-source.rules "$(BUILDDIR)/modules/openswan/debian/rules"
+-	install --mode=644 debian/openswan-modules-source.control.in "$(BUILDDIR)/modules/openswan/debian/control.in"
+-	install --mode=644 debian/changelog "$(BUILDDIR)/modules/openswan/debian/"
+-
+-	# This creates the NAT-T patch that can be used on the kernel tree 
+-	# even with openswan-modules-source.
+-	make nattpatch > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
+-        
+-	tar -C $(BUILDDIR) -c modules/ | gzip -9 > \
+-        	"$(PKGDIR)/usr/src/openswan-modules.tar.gz"
+-		
+-	dh_installdocs -popenswan-modules-source -n
+-
+-	# more lintian cleanups
+-	find $(CURDIR)/debian/openswan-modules-source -name ".cvsignore" | xargs --no-run-if-empty rm -f
+-	find $(PKGDIR) -name "/.svn/" | xargs --no-run-if-empty rm -rf
+-
+-install-kernel-patch-openswan: DH_OPTIONS=-i
+-install-kernel-patch-openswan: PKGDIR=$(CURDIR)/debian/kernel-patch-openswan
+-install-kernel-patch-openswan: patch-stamp
+-	dh_testdir
+-	dh_testroot
+-	dh_installdirs
+-	# some of this has been taken from Tommi Virtanen's package
+-	install --mode=0755 debian/kernel-patch-openswan.apply \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/apply/openswan"
+-	install --mode=0755 debian/kernel-patch-openswan.unpatch \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/unpatch/openswan"
+-	install --mode=0755 packaging/utils/patcher \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	cp -r Makefile Makefile.inc Makefile.ver lib/ linux/ packaging/ nat-t/ \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	# also don't generate the out.kpatch file under /usr/src/....
+-	sed 's/>>out.kpatch//' \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile" \
+-			> "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp"
+-	mv "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp" \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile"
+-	sed 's/>out.kpatch//' \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile" \
+-			> "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp"
+-	mv "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp" \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile"
+-	sed 's/rm -f out.kpatch//' \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile" \
+-			> "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp"
+-	mv "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp" \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile"
+-	chmod u=rwX,go=rX "$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	# remove extra junk not needed on linux / that lintian would complain about
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan" \
+-		-name '*.o' -print0 | xargs --no-run-if-empty -0 rm -f
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan" \
+-		-name '*.a' -print0 | xargs --no-run-if-empty -0 rm -f
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libopenswan/"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libdes/"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/liblwres/"
+-	rm -f "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/COPYING.LIB"
+-	rm -f "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/README"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/linus"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/ipkg"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/makefiles"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/redhat"
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/linux/crypto/ciphers/des/asm/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 \
+-		perl -pi -e 's{^#!/usr/local/bin/perl}{#!/usr/bin/perl}g'
+-	# if we don't have the crypto-ext patches, this can fail
+-	-find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libcrypto/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 \
+-		perl -pi -e 's{^#!/usr/local/bin/perl}{#!/usr/bin/perl}g'
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/linux/crypto/ciphers/des/asm/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 chmod a+x
+-	# if we don't have the crypto-ext patches, this can fail
+-	-find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libcrypto/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 chmod a+x
+-	# if we don't have the crypto-ext patches, this can fail
+-	-find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/linux/net/ipsec/alg/scripts/" \
+-		-name '*.sh' -print0 | xargs --no-run-if-empty -0 chmod a+x
+-	chmod -R u=rwX,go=rX "$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	
+-	dh_installdocs -pkernel-patch-openswan -n
+-
+-	# more lintian cleanups
+-	find $(PKGDIR) -name ".cvsignore" | xargs --no-run-if-empty rm -f
+-	find $(PKGDIR) -name "/.svn/" | xargs --no-run-if-empty rm -rf
+-
+ binary-common:
+ 	#dh_testversion 2
+ 	dh_testdir
+@@ -295,10 +190,6 @@
+ 	dh_md5sums
+ 	dh_builddeb
+ 
+-# Build architecture-independent files here.
+-binary-indep: install-openswan-modules-source install-kernel-patch-openswan
+-	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+-
+ # Build architecture-dependent files here.
+ binary-arch: install-openswan
+ 	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+@@ -306,6 +197,6 @@
+ # Any other binary targets build just one binary package at a time.
+ #binary-%: build install
+ #	make -f debian/rules binary-common DH_OPTIONS=-p$*
+-             
+-binary: binary-indep binary-arch
+-.PHONY: clean binary-indep binary-arch
++
++binary: binary-arch
++.PHONY: clean binary-arch

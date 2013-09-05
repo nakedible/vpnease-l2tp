@@ -1,0 +1,356 @@
+diff -ru linux-2.6.16.13.orig/net/ipv4/esp4.c linux-2.6.16.13/net/ipv4/esp4.c
+--- linux-2.6.16.13.orig/net/ipv4/esp4.c	2006-05-03 00:38:44.000000000 +0300
++++ linux-2.6.16.13/net/ipv4/esp4.c	2006-05-04 20:45:20.000000000 +0300
+@@ -12,6 +12,161 @@
+ #include <net/protocol.h>
+ #include <net/udp.h>
+ 
++#include <linux/time.h>
++#include <linux/jhash.h>
++
++/*
++ *  l2tp-workaround
++ *
++ *  (remote address, remote nat-t port) --> (remote inner port) mapping
++ */
++
++#define L2TP_MAP_SIZE   (4096)
++#define L2TP_MAX_AGE    (5*60*1000)  /* milliseconds */
++
++#define L2TP_HASH(addr,port) \
++    (jhash_2words ((u32) (addr), (u32) (port), (u32) 0) % \
++     ((u32) L2TP_MAP_SIZE))
++
++struct l2tp_mapping {
++        /* key */
++        u32 rem_addr;
++        u16 rem_natt_port;
++
++        /* value */
++        u16 rem_inner_port;
++
++        /* timestamp of last use */
++        u32 last_use;
++};
++
++static struct l2tp_mapping l2tp_map[L2TP_MAP_SIZE] = { {0, 0, 0, 0} };
++
++static struct l2tp_mapping *l2tp_mapping_get (u32 rem_addr,
++                                              u16 rem_natt_port)
++{
++        int i;
++        u32 ipos = L2TP_HASH (rem_addr, rem_natt_port);
++
++        for (i = 0; i < L2TP_MAP_SIZE; i++) {
++                u32 pos = (ipos + i) % L2TP_MAP_SIZE;
++                struct l2tp_mapping *m = &l2tp_map[pos];
++
++                if (m->last_use == 0) {
++                        continue;
++                }
++
++                if (m->rem_addr == rem_addr  &&
++                    m->rem_natt_port == rem_natt_port) {
++                        return m;
++                }
++        }
++        return NULL;
++}
++
++static void l2tp_mapping_cleanup (void)
++{
++        int i;
++        u32 now = jiffies_to_msecs(jiffies);
++
++        printk ("l2tp-workaround: cleaning mappings: ");
++        for (i = 0; i < L2TP_MAP_SIZE; i++) {
++                struct l2tp_mapping *m = &l2tp_map[i];
++                if (m->last_use != 0) {
++                        u32 age = now - m->last_use;
++                        if (age > L2TP_MAX_AGE) {
++                                printk ("%d %d [%d.%d.%d.%d:%d->%d, %d]  ",
++                                        i,
++                                        (int) age,
++                                        (int) (((m->rem_addr) >> 24) & 0xff),
++                                        (int) (((m->rem_addr) >> 16) & 0xff),
++                                        (int) (((m->rem_addr) >> 8) & 0xff),
++                                        (int) (((m->rem_addr) >> 0) & 0xff),
++                                        (int) m->rem_natt_port,
++                                        (int) m->rem_inner_port,
++                                        (int) m->last_use);
++                                m->rem_addr = 0;
++                                m->rem_natt_port = 0;
++                                m->rem_inner_port = 0;
++                                m->last_use = 0;
++                        }
++                }
++        }
++        printk ("\n");
++}
++
++static void l2tp_mapping_dprint (void)
++{
++        int i;
++
++        printk ("l2tp-workaround: mapping dump starts\n");
++        for (i = 0; i < L2TP_MAP_SIZE; i++) {
++                struct l2tp_mapping *m = &l2tp_map[i];
++                if (m->last_use == 0) { /* unused? */
++                        ;
++                        /* printk ("%d: [unused]\n", i); */
++                } else {
++                        printk ("   %d: [%d.%d.%d.%d:%d->%d, %d]\n",
++                                i,
++                                (int) (((m->rem_addr) >> 24) & 0xff),
++                                (int) (((m->rem_addr) >> 16) & 0xff),
++                                (int) (((m->rem_addr) >> 8) & 0xff),
++                                (int) (((m->rem_addr) >> 0) & 0xff),
++                                (int) m->rem_natt_port,
++                                (int) m->rem_inner_port,
++                                (int) m->last_use);
++                }
++        }
++        printk ("l2tp-workaround: mapping dump ends\n");
++}
++
++static void l2tp_mapping_set (struct l2tp_mapping *m)
++{
++        int i;
++        u32 ipos = L2TP_HASH (m->rem_addr, m->rem_natt_port);
++
++        l2tp_mapping_cleanup ();
++
++        printk ("l2tp-workaround: setting mapping [%d.%d.%d.%d:%d->%d, %d]: ",
++                (int) (((m->rem_addr) >> 24) & 0xff),
++                (int) (((m->rem_addr) >> 16) & 0xff),
++                (int) (((m->rem_addr) >> 8) & 0xff),
++                (int) (((m->rem_addr) >> 0) & 0xff),
++                (int) m->rem_natt_port,
++                (int) m->rem_inner_port,
++                (int) m->last_use);
++
++        for (i = 0; i < L2TP_MAP_SIZE; i++) {
++                u32 pos = (ipos + i) % L2TP_MAP_SIZE;
++                struct l2tp_mapping *m_new = &l2tp_map[pos];
++                if (m_new->last_use == 0) {
++                        m_new->rem_addr = m->rem_addr;
++                        m_new->rem_natt_port = m->rem_natt_port;
++                        m_new->rem_inner_port = m->rem_inner_port;
++                        m_new->last_use = m->last_use;
++                        printk ("%d (ok)", pos);
++                        break;
++                } else {
++                        printk ("%d! ", pos);
++                }
++        }
++        printk ("\n");
++
++        if (i == L2TP_MAP_SIZE) {
++                printk ("l2tp-workaround: no space in mapping\n");
++        }
++
++        l2tp_mapping_dprint();
++}
++
++
++/*
++ *  l2tp-workaround
++ *
++ *  end l2tp_mapping stuff
++ */
++
++
+ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
+ {
+ 	int err;
+@@ -25,12 +180,42 @@
+ 	int alen;
+ 	int nfrags;
+ 
++	/*
++	 *  l2tp-workaround
++	 *
++	 *  Grab remote IPv4 address before stripping
++	 */
++	struct iphdr *l2tp_iph = skb->nh.iph;
++	u32 l2tp_remaddr = (u32) ntohl(l2tp_iph->daddr);
++
+ 	/* Strip IP+ESP header. */
+ 	__skb_pull(skb, skb->h.raw - skb->data);
+ 	/* Now skb is pure payload to encrypt */
+ 
+ 	err = -ENOMEM;
+ 
++	/*
++	 *  l2tp-workaround
++	 *
++	 *  Replace unencapsulated (inner) destination port with original
++	 *  inner port.  Also fix the UDP checksum (set to zero).
++	 */
++	if (x->encap) {
++		struct udphdr *iuh = (struct udphdr *) (skb->data);
++
++		if (skb->len >= 8) {
++			struct l2tp_mapping *m_old = l2tp_mapping_get (l2tp_remaddr,
++								       (u16) ntohs(iuh->dest));
++			if (m_old != NULL) {
++				m_old->last_use = jiffies_to_msecs(jiffies);
++				iuh->dest = htons (m_old->rem_inner_port);
++				iuh->check = htons (0);
++			} else {
++				printk ("l2tp-workaround: dropped packet, no mapping\n");
++			}
++		}
++	}
++
+ 	/* Round to block size */
+ 	clen = skb->len;
+ 
+@@ -214,6 +399,41 @@
+ 		encap_len = (void*)esph - (void*)uh;
+ 
+ 		/*
++		 *  l2tp-workaround
++		 * 
++		 *  Replace decapsulated source UDP port with remote NAT-T UDP port
++		 *  (i.e. the NATted port) = uh->source.
++		 *
++		 *  Note that esp4_post_input() will ensure the UDP checksum is not
++		 *  checked in higher layers, so we don't need to fix the checksum.
++		 */
++		do {
++			struct udphdr *iuh = (struct udphdr *)
++				(((char *) esph) + sizeof(struct ip_esp_hdr) + esp->conf.ivlen);
++			u32 min_len = (u32) ((char *)(iuh+1) - (char *)skb->data);
++			
++			if ((u32) skb->len >= min_len) {
++				struct l2tp_mapping *m_old = l2tp_mapping_get ((u32) ntohl(iph->saddr),
++									       (u16) ntohs(uh->source));
++				if (m_old != NULL) {
++					m_old->last_use = jiffies_to_msecs(jiffies);
++					/* always update inner port -- it may change */
++					m_old->rem_inner_port = (u16) ntohs(iuh->source);
++				} else {
++					struct l2tp_mapping m;
++					m.rem_addr = (u32) ntohl(iph->saddr);
++					m.rem_natt_port = (u16) ntohs(uh->source);
++					m.rem_inner_port = (u16) ntohs(iuh->source);
++					m.last_use = jiffies_to_msecs(jiffies);
++					
++					l2tp_mapping_set (&m);
++				}
++				
++				iuh->source = uh->source;
++			}
++		} while(0);
++
++		/*
+ 		 * 1) if the NAT-T peer's IP or port changed then
+ 		 *    advertize the change to the keying daemon.
+ 		 *    This is an inbound SA, so just compare
+diff -ru linux-2.6.16.13.orig/net/xfrm/xfrm_policy.c linux-2.6.16.13/net/xfrm/xfrm_policy.c
+--- linux-2.6.16.13.orig/net/xfrm/xfrm_policy.c	2006-05-03 00:38:44.000000000 +0300
++++ linux-2.6.16.13/net/xfrm/xfrm_policy.c	2006-05-04 21:30:31.000000000 +0300
+@@ -535,6 +535,46 @@
+ 
+ 		match = xfrm_selector_match(sel, fl, family);
+ 
++                /* l2tp-workaround */
++                if (0) {
++			int n_bundles = 0;
++			struct dst_entry *tmp;
++ 
++			printk ("l2tp - dir=%d matching pkt src=%08x:%d dst=%08x:%d (%d) with sel src=%08x:%d(%04x) dst=%08x:%d(%04x) (%d) => match %d\n",
++				(int) dir,
++				ntohl(fl->fl4_src), ntohs(fl->fl_ip_sport),
++				ntohl(fl->fl4_dst), ntohs(fl->fl_ip_dport),
++				(int) fl->proto,
++				ntohl(sel->saddr.a4), ntohs(sel->sport), ntohs(sel->sport_mask),
++				ntohl(sel->daddr.a4), ntohs(sel->dport), ntohs(sel->dport_mask),
++				(int) sel->proto,
++				match);
++ 
++			for (tmp = pol->bundles; tmp; tmp = tmp->child) {
++				struct xfrm_state *st = tmp->xfrm;
++				struct xfrm_selector *sel = st ? &st->sel : NULL;
++				
++				printk ("  --> bundle[%d] = %p (child=%p,xfrm_state=%p,dst=%08x,spi=%08x,proto=%d,sel=[src=%08x:%d(%04x) dst=%08x:%d(%04x) (%d)])\n",
++					n_bundles,
++					tmp, tmp->child, st,
++					st ? ntohl(st->id.daddr.a4) : -1,
++					st ? ntohl(st->id.spi) : -1,
++					st ? (int) st->id.proto : -1,
++					sel ? ntohl(sel->saddr.a4) : -1,
++					sel ? ntohs(sel->sport) : -1,
++					sel ? ntohs(sel->sport_mask) : -1,
++					sel ? ntohl(sel->daddr.a4) : -1,
++					sel ? ntohs(sel->dport) : -1,
++					sel ? ntohs(sel->dport_mask) : -1,
++					sel ? (int) sel->proto : -1);
++				
++				n_bundles ++;
++			}
++			printk ("   --> xfrm_nr=%d #bundles=%d\n",
++				(int) pol->xfrm_nr,
++				(int) n_bundles);
++                }
++
+ 		if (match) {
+  			if (!security_xfrm_policy_lookup(pol, sk_sid, dir)) {
+ 				xfrm_pol_hold(pol);
+@@ -1351,5 +1391,10 @@
+ 	xfrm_state_init();
+ 	xfrm_policy_init();
+ 	xfrm_input_init();
++
++	/*
++	 *  l2tp-workaround
++	 */
++	printk ("l2tp-workaround (sami.vaarala@stinghorn.com)\n");
+ }
+ 
+diff -ru linux-2.6.16.13.orig/net/xfrm/xfrm_state.c linux-2.6.16.13/net/xfrm/xfrm_state.c
+--- linux-2.6.16.13.orig/net/xfrm/xfrm_state.c	2006-05-03 00:38:44.000000000 +0300
++++ linux-2.6.16.13/net/xfrm/xfrm_state.c	2006-05-04 20:25:05.000000000 +0300
+@@ -20,6 +20,8 @@
+ #include <linux/module.h>
+ #include <asm/uaccess.h>
+ 
++#include <linux/udp.h>
++
+ /* Each xfrm_state may be linked to two tables:
+ 
+    1. Hash table by (spi,daddr,ah/esp) to find SA by SPI. (input,ctl)
+@@ -347,6 +349,31 @@
+ 				if (!xfrm_selector_match(&x->sel, fl, family) ||
+ 				    !xfrm_sec_ctx_match(pol->security, x->security))
+ 					continue;
++
++				/*
++				 *  l2tp-workaround
++				 *
++				 *  Also match ports (for UDP encapsulated traffic).
++				 *
++				 *  FIXME: also check that transport mode in use (not done now)
++				 */
++				if (fl->proto == 17  &&            /* UDP */
++				    x->encap  &&                   /* UDP encapsulated */
++				    (x->encap->encap_type == UDP_ENCAP_ESPINUDP_NON_IKE  ||
++				     x->encap->encap_type == UDP_ENCAP_ESPINUDP)) {
++				        if (0) {
++					        printk ("l2tp: eligible comparison, encap %d, flow %d\n",
++							(int) ntohs(x->encap->encap_dport),
++							(int) ntohs(fl->fl_ip_dport));
++					}
++					if (ntohs(x->encap->encap_dport) != ntohs(fl->fl_ip_dport)) {
++					        if (0) {
++						        printk ("l2tp: comparison failed, continue\n");
++						}
++						continue;
++					}
++				}  /* end l2tp-workaround */
++
+ 				if (!best ||
+ 				    best->km.dying > x->km.dying ||
+ 				    (best->km.dying == x->km.dying &&
+Only in linux-2.6.16.13/net/xfrm: xfrm_state.c.orig

@@ -1,0 +1,418 @@
+/*
+ *  VPNease Formal CSS
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+.nevow-form {
+}
+
+/* first level */
+
+.nevow-form fieldset.group {
+   	margin: 0;
+	margin-top: 2.5em;
+	margin-bottom: 1.5em;
+	background: #eee;
+	border: none;
+	clear: both;
+}
+
+.nevow-form fieldset.collapsible-group {
+	background: #eee url(bg-fieldset1-top.gif) top left no-repeat;
+}
+
+/* collapsible-group-contents is used for lower rounded edge and only works if surrounding div is .collapsible-group */
+.nevow-form fieldset.group .collapsible-group-contents {
+	background: transparent url(bg-fieldset1-bottom.gif) bottom left no-repeat;
+	/* vert. .75 takes into account fields 
+	margin-bottom */	
+	padding: 0 .75em .75em .75em;
+	margin-top: 0em;
+	/* for IE, we need to take into account abs. positioned legend elements (see below) */
+	_margin-top: 1.5em;
+}
+
+/* background on error */
+.nevow-form fieldset.child-error { 
+	background-color: #ffdddd;
+	background-image: url(bg-fieldset1-top-err.gif);    
+}
+
+.nevow-form fieldset.child-error .collapsible-group-contents { 
+	background-image: url(bg-fieldset1-bottom-err.gif);    
+}
+
+/*
+ * The layout for the first level is tricky because of IE margin issues
+ * with absolutely positioned elements.  The layout fix is to use an extra
+ * margin in FF but an extra *padding* in IE.  The extra rules are in
+ * iehacks.css.
+ */
+.nevow-form fieldset.group .collapsible-group-summary {
+}
+.nevow-form fieldset.group .collapsible-group-summary .collapsible-show {
+	display: block;
+	margin-top: 0;	
+	padding: .75em 0 0 .75em;
+}
+.nevow-form fieldset.group .collapsible-group-summary .collapsible-hide {
+	display: none;
+}
+
+.nevow-form fieldset.group .collapsible-group-contents {
+}
+.nevow-form fieldset.group .collapsible-group-contents .collapsible-show {
+	display: block;
+	padding: .75em 0 0 0;
+}
+.nevow-form fieldset.group .collapsible-group-contents .collapsible-hide {
+	display: none;
+}
+
+/* second level */
+
+.nevow-form fieldset.group .collapsible-group-contents .collapsible-group {
+	background: #e0e0e0 url(bg-fieldset2-top.gif) top left no-repeat;			
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+
+}
+
+.nevow-form fieldset.group .collapsible-group-contents fieldset.group .collapsible-group-contents {	
+	background: transparent url(bg-fieldset2-bottom.gif) bottom left no-repeat;	
+}
+
+/* background on error */
+.nevow-form fieldset.group .collapsible-group-contents fieldset.child-error { 
+	background-color: #ffcccc;
+	background-image: url(bg-fieldset2-top-err.gif);    
+}
+
+.nevow-form fieldset.group .collapsible-group-contents fieldset.child-error .collapsible-group-contents { 
+	background-image: url(bg-fieldset2-bottom-err.gif);    
+}
+
+.nevow-form fieldset.group fieldset.group .collapsible-group-summary {
+}
+.nevow-form fieldset.group fieldset.group .collapsible-group-summary .collapsible-show {
+	display: block;
+	padding: .75em 0 0 .75em;
+}
+.nevow-form fieldset.group fieldset.group .collapsible-group-summary .collapsible-hide {
+	display: none;
+}
+
+.nevow-form fieldset.group fieldset.group .collapsible-group-contents {
+}
+.nevow-form fieldset.group fieldset.group .collapsible-group-contents .collapsible-show {
+	display: block;
+	padding: .75em 0 0 .75em;
+}
+.nevow-form fieldset.group fieldset.group .collapsible-group-contents .collapsible-hide {
+	display: none;
+}
+
+/* ---- highlight ----- */
+
+.nevow-form fieldset.highlight {
+	/* this overrides both group and 
+	collapsible-group classes
+	*/
+	background: #ffffcc !important;
+}
+
+
+/* we need to apply a different bg to inner elements too */
+.nevow-form fieldset.highlight  .collapsible-group-contents {
+	/* first and second level */
+	background: #ffffcc !important;
+}
+
+/* ------------------------------------------------ */
+
+.nevow-form fieldset.group legend {
+ 	font-weight: bold;  
+ 	background: #B2D9AD;
+ 	background: #D0EBF5;
+ 	padding: 0 2px;
+}
+
+/* IE6 BUG FIXES ==================================================================== */
+.nevow-form fieldset {
+
+	position:expression('relative'); /* Fixes IE problem with fieldset+legend boundaries */
+	overflow: expression('visible');
+}
+.nevow-form fieldset legend { 	
+ 	margin-left: expression('-7px');
+	position: expression('absolute'); 
+	top: expression('-.75em'); /* Fixes IE problem with fieldset+legend boundaries */
+	/*left:expression('.75em');*/
+}
+
+/* /IE6 BUG FIXES ==================================================================== */
+
+.nevow-form fieldset.group description {
+	display: none;
+	font-style: italic;
+}
+
+.nevow-form fieldset.group .field {
+	margin-bottom: .75em;
+ 	/* auto-clear floated children */
+	overflow: hidden;	
+	/* don't use height, or IE5 will complain */
+	_width: 90%;
+}
+
+.nevow-form fieldset.group .field .label {
+  	margin: 0;
+	float: left;
+	width: 21em;  
+  	margin-right: 1em;
+}
+.nevow-form fieldset.group .field .inputs {  
+	/* 21em + 1em gap */
+	/*margin-left: 22em;*/
+	float: left;
+}
+
+/* labels used next to widgets */
+.nevow-form fieldset.group .field label {
+	display: inline; 	
+	cursor: pointer;  
+}
+
+/* labels used on the left, not clickable */
+.nevow-form fieldset.group .field label.label {
+	cursor: default;  
+}
+
+.nevow-form fieldset.group .field .inputs input,
+.nevow-form fieldset.group .field .inputs textarea,
+.nevow-form fieldset.group .field .inputs select {
+ 	background: #fff;
+ 	border: 1px solid #999;
+ 	padding: 3px 3px;      
+ 	color: #000;	
+}
+.nevow-form fieldset.group .field .inputs textarea {
+	display: block;
+	font: 12px/14px Courier, "Courier New", monospace;
+	width: 95%;
+	margin-right: auto;
+}
+/* NB: specificity equal or larger than '.nevow-form fieldset.group .field .label' above */
+.nevow-form fieldset.group .textarea .label {
+	display: block;
+	float: none;
+	width: 95%;
+	margin-right: auto;
+}
+
+.nevow-form fieldset.group .field .inputs input.disabled,
+.nevow-form fieldset.group .field .inputs select.disabled,
+.nevow-form fieldset.group .field .inputs textarea.disabled
+{
+ 	background: #EEEEEE; 	
+ 	border: 1px solid #fff;
+ 	border-left: 1px solid #666; 	    
+ 	border-top: 1px solid #666; 	    
+ 	color: #666;
+}
+
+.nevow-form fieldset.group .checkbox .inputs input.disabled,
+.nevow-form fieldset.group .radiochoice .inputs input.disabled
+{ 	
+	/* do not apply borders for checkboxes 
+	and radio buttons */
+ 	border: none;	
+}
+
+.nevow-form fieldset.group .field .inputs input:focus,
+.nevow-form fieldset.group .field .inputs input.focus,
+.nevow-form fieldset.group .field .inputs select:focus,
+.nevow-form fieldset.group .field .inputs select.focus,
+.nevow-form fieldset.group .field .inputs textarea:focus,
+.nevow-form fieldset.group .field .inputs textarea.focus
+{
+	background: #ffffcc;	
+	border-color: #d9d982;
+}
+
+/* reset styles for radio groups and checkboxes */
+.nevow-form fieldset.group .radiochoice .inputs input,
+.nevow-form fieldset.group .checkbox .inputs input
+{
+ 	background: transparent; 	
+ 	border: none;
+ 	padding: 0;      
+}
+
+
+/*
+ *  XXX: SELECT and OPTION are really ugly and difficult to style.
+ *
+ *  See: http://www.easy-designs.net/articles/replaceSelect/
+ */
+
+.nevow-form fieldset.group .field .inputs option {
+	background: #fff;
+	padding: 0 3px;
+}
+
+.nevow-form .actions {
+	display: none;
+}
+
+.nevow-form .actions input {
+	display: none;
+}
+
+/* this ensures that floated buttons are contained, fixing some layout issues */
+.nevow-form .submit-group-clear {
+	display: block;
+	clear: both;
+	font-size: 0px;
+}
+
+.nevow-form div.submit-group {
+	position: relative !important;  /* to position floats */
+	margin-left: 0;
+}
+
+.nevow-form fieldset.group div.submit-group {
+	position: relative !important;  /* to position floats */
+	margin-left: 1.0em;
+}
+
+.nevow-form div.submit-field {
+	float: left;
+	clear: none;
+	padding: 0px;
+	margin-left: 0;
+	margin-right: 0.5em;
+	margin-top: 1.5em;
+}
+
+.nevow-form fieldset.group div.submit-field {
+	float: left;
+	clear: none;
+	padding: 0px;
+	margin-left: 0;
+	margin-right: 0.5em;
+}
+
+.nevow-form input.submit-input {
+	font-weight: bold;	
+	padding: 3px 5px;
+	/* IE */
+	_padding: 3px 0;
+	line-height: 1.0;			
+	margin: 0;
+	margin-right: 1.5em; /* space between the next button */
+	color: #0b4f70;	
+	border: 1px solid #afd0db;
+	border-bottom: 1px solid #286073;
+	border-right: 1px solid #286073;
+	cursor: pointer;
+	background: #d0ebf5 url(bg-button.gif) bottom left repeat-x;
+}
+
+/* XXX: too generic? */
+.nevow-form .message {
+	color: #d7202d;
+	float:left;
+	clear:both;
+	background:#fff;
+	padding: 1px 2px;
+}
+
+.nevow-form .errors { 
+	display: block;
+	background: #ffeeee;
+	padding: 1em;
+	border: 2px solid #ff4444;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.nevow-form .errors ul {
+	margin-left: 3em;
+}
+
+/* counteract styling for .error */
+.nevow-form .field.error {
+	background: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-weight: normal;
+}
+
+/*
+ *  Misc
+ */
+
+.child-error { 
+}
+
+.listbuttons { 
+	float: right !important;
+}
+
+.listbuttons a { 
+	text-decoration: none;
+	border: none;
+}
+
+.listbuttons img { 
+	text-decoration: none;
+	border: none;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+.listbuttons-last { 
+	/*
+	float: right !important;
+	*/
+	text-align:right;		
+	padding-top: .375em;
+}
+
+.listbuttons-last a:link,
+.listbuttons-last a:visited { 
+	text-decoration: none;
+	border: none;
+}
+
+.listbuttons-last img { 
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+/* XXX, separate images */
+.listbuttons-last img:hover { 
+}
+
+.nevow-form .textinput input,
+.nevow-form .semihidden input.semihidden,
+.nevow-form .semihiddenpassword input.semihidden,
+.nevow-form .hiddenpassword input {
+	width: 15em;
+}
+
+/*
+.nevow-form .selectchoice select {
+	width: 25em;
+}
+*/
+
+/*
+.nevow-form input.semihidden {
+	background: #ffcccc !important;
+}
+*/

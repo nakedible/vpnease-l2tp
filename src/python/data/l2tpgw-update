@@ -1,0 +1,110 @@
+#!/usr/bin/python
+
+"""
+Tries to update system.
+
+Return values 0-1 indicate success and 2-127 indicate failures.
+Reboot is required for return values 1-2, and for return values
+0, 3-127 caller may try again.  128-255 indicate fatal failures,
+and called should not try again.
+"""
+
+import sys
+from optparse import OptionParser
+
+ALARM_TIMEOUT = 3*60*60  # 3 hours, see #770
+
+parser = OptionParser()
+parser.add_option("-i", "--import-path", dest="importpath", default="system")
+parser.add_option("-s", "--scripts-path", dest="scriptspath", default=None)
+parser.add_option("-t", "--timesync", action="store_true", dest="timesync", default=False)
+parser.add_option("-u", "--update", action="store_true", dest="update", default=False)
+parser.add_option("-f", "--force-update", action="store_true", dest="force_update", default=False)
+(options, args) = parser.parse_args()
+
+if options.importpath is not None and options.importpath != "system":
+    sys.path = options.importpath.split(' ') + sys.path
+else:
+    scriptspath = None
+
+try:
+    # Tolerate logger errors
+    from codebay.common import logger
+    _log = logger.get('l2tpserver.l2tpgw-update')
+    _log.info('starting update check')
+except:
+    _log = None
+
+try:
+    from codebay.l2tpserver.update import update
+    from codebay.l2tpserver import constants
+    from codebay.l2tpserver import runcommand
+
+    run_command = runcommand.run_command
+except:
+    if _log is not None:
+        _log.exception('Failed to import update components, stop.')
+    sys.exit(127)
+
+# Ensure that the runtime directory is created: this is required by startstop
+run_command([constants.CMD_MKDIR, '-p', constants.RUNTIME_DIRECTORY], retval=runcommand.FAIL)
+
+try:
+    import sys, signal, os
+    def _sigalrm_handler(signum, stackframe):
+        if _log is not None:
+            _log.error('SIGALRM handler called, panic timeout')
+        # XXX: apparently this was not hard enough, exit me harder..
+        # sys.exit(128)
+        os._exit(128)
+    ign = signal.alarm(ALARM_TIMEOUT)
+    ign = signal.signal(signal.SIGALRM, _sigalrm_handler)
+except:
+    if _log is not None:
+        _log.exception('setting signal handler failed')
+    sys.exit(128)
+
+try:
+    authenticate = options.update  # require authentication when updating, not when time syncing
+    update.Update(options.importpath, options.scriptspath, force_update=options.force_update, do_update_check=options.update, do_timesync=options.timesync, authenticate=authenticate).run()
+except update.UpdateNotRequired:
+    if _log is not None:
+        _log.info('Update not required by policy, stop.')
+    sys.exit(0)
+
+except update.UpdateDone:
+    if _log is not None:
+        _log.info('Update done')
+    sys.exit(2)
+
+except update.UpdateFailedError:
+    # This is pretty normal.
+    if _log is not None:
+        _log.exception('Update script failed to do update, stop.')
+    sys.exit(3)
+
+except update.RdfDatabaseMissingError:
+    if _log is not None:
+        _log.exception('Update cannot find RDF database, stop.')
+    sys.exit(4)
+
+except update.UpdateUnknownError:
+    if _log is not None:
+        _log.exception('Update failed with unknown error, stop.')
+    sys.exit(5)
+
+except update.UpdateNotDoneError:
+    if _log is not None:
+        _log.exception('Update not done, stop.')
+    sys.exit(6)
+
+except:
+    if _log is not None:
+        _log.exception('Update encountered an error, stop.')
+    sys.exit(7)
+
+
+if _log is not None:
+    _log.error('Unexpected result from update')
+
+sys.exit(128)

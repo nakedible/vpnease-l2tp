@@ -1,0 +1,2 @@
+  dep_tristate '  ULOG target support' CONFIG_IP_NF_TARGET_ULOG $CONFIG_IP_NF_IPTABLES
+  dep_tristate '  ACCOUNT target support' CONFIG_IP_NF_TARGET_ACCOUNT $CONFIG_IP_NF_IPTABLES

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+  </head>
+
+  <body>
+    <n:invisible n:pattern="content">
+
+      <n:invisible n:render="check_finished" />
+
+      <div class="cb-section">
+        <p>
+          Formatting target device.  This should take about 10-30 seconds, please wait.
+        </p>
+
+        <br />
+        <br />
+
+        <div class="progress-bar">
+          <img id="progress-image" src="/static/progress-1.gif" width="0" height="18" alt="*" /><span><b id="progress-percentage">0%</b> completed</span>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+        // <![CDATA[
+        _livecd_ajax_update_uri = "ajaxformatprogress.html";
+        _livecd_ajax_success_uri = "formatcomplete.html";
+        _livecd_ajax_failure_uri = "formatfailed.html";
+        // ]]>
+      </script>
+
+      <script src="/static/livecd_ajaxupdate.js" type="text/javascript" />
+
+    </n:invisible>
+  </body>
+</html>

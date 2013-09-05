@@ -1,0 +1,299 @@
+gfxboot-theme-ubuntu (0.1.27) dapper-updates; urgency=low
+
+  * Add/update translations from Rosetta: Afrikaans, Arabic, Belarusian,
+    Bengali, Catalan, Kashubian, Danish, Esperanto, Spanish, Estonian,
+    Basque, Persian, Filipino, Galician, Hindi, Croatian, Hungarian,
+    Indonesian, Icelandic, Italian, Japanese, Kannada, Korean, Kurdish,
+    Lithuanian, Latvian, Mongolian, Malay, Low German, Occitan, Polish,
+    Portuguese, Romanian, Russian, Slovak, Slovenian, Somali, Swedish,
+    Tamil, Thai, Urdu, Chinese (Taiwan).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sat,  5 Aug 2006 11:24:27 +0100
+
+gfxboot-theme-ubuntu (0.1.26) dapper-updates; urgency=low
+
+  * Rename identifier for "Install in text mode" from txt_menuitem_install
+    to txt_menuitem_install_text, to avoid clashing with "Install to the
+    hard disk" (closes: Malone #47615).
+  * Make "lang" file work with locales that require _CC (pt_BR, zh_CN,
+    zh_TW).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 18 Jul 2006 14:33:15 +0100
+
+gfxboot-theme-ubuntu (0.1.25) dapper; urgency=low
+
+  * "Install to first hard disk" -> "Install to the hard disk". Whoops.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 26 May 2006 14:38:02 +0100
+
+gfxboot-theme-ubuntu (0.1.24) dapper; urgency=low
+
+  * Restore old "Install to first hard disk" string alongside "Install in
+    text mode", so that it can be used for Edubuntu and the Ubuntu server
+    CDs.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 26 May 2006 14:16:28 +0100
+
+gfxboot-theme-ubuntu (0.1.23) dapper; urgency=low
+
+  * Fix check for whether we're running on a live CD.
+  * Drop "Motor Difficulties - pointing devices" from the accessibility
+    menu, as gok doesn't work on the Dapper live CD (Henrik Nilsen Omma).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 22 May 2006 17:08:40 +0100
+
+gfxboot-theme-ubuntu (0.1.22) dapper; urgency=low
+
+  * Update boot menu label text (Matt Zimmerman, Jane Silber):
+    - "Start (Ubuntu|Kubuntu|Edubuntu|Xubuntu)" -> "Start or install
+      (Ubuntu|Kubuntu|Edubuntu|Xubuntu)".
+    - "Install to first hard disk" -> "Install in text mode".
+    Although it's a bit evil, I've unfuzzied all translations, on the basis
+    that the existing translations are better than no translations.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 22 May 2006 12:40:44 +0100
+
+gfxboot-theme-ubuntu (0.1.21) dapper; urgency=low
+
+  * Update translations from Rosetta: Bulgarian, Bengali, Czech, German,
+    Greek, Spanish, Finnish, French, Hungarian, Italian, Georgian, Kurdish,
+    Norwegian Bokmål, Dutch, Polish, Portuguese, Portuguese (Brazil),
+    Russian, Slovak, Slovenian, Swedish, Thai, Turkish, Ukrainian, Urdu,
+    Chinese (China), Chinese (Taiwan).
+  * Update font to add newly-required characters.
+  * Fix accessibility and d-i mode menus to display correct text when the
+    language is changed (closes: Malone #32028).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 15 May 2006 11:01:07 +0100
+
+gfxboot-theme-ubuntu (0.1.20) dapper; urgency=low
+
+  * Update keymaps from console-keymaps-at 2002.12.04dbs-52.1ubuntu8, adding
+    Thai.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 12 Apr 2006 23:52:37 +0100
+
+gfxboot-theme-ubuntu (0.1.19) dapper; urgency=low
+
+  * Print debugging messages in white, not black (which is invisible on our
+    default background).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sun,  9 Apr 2006 22:32:32 +0100
+
+gfxboot-theme-ubuntu (0.1.18) dapper; urgency=low
+
+  * Fix parsing of gfxboot-foreground keyword.
+  * Add translations for new xforcevesa boot options (closes: Malone
+    #27020).
+  * Update language names from localechooser 0.27ubuntu13, adding Thai.
+  * Fix comments in .po/.pot files: maintainer comments should start with
+    "#.", not "# ".
+  * Update translations from Rosetta: Breton, German, Greek, Spanish,
+    Finnish, French, Galician, Hungarian, Italian, Lithuanian, Norwegian
+    Bokmål, Polish, Portuguese, Portuguese (Brazil), Romanian, Russian,
+    Slovak, Swedish, Chinese (China), Chinese (Taiwan).
+  * Update font to add newly-required characters.
+  * Fix memory handling in isolinux.cfg parser: take copies of all labels,
+    and free a pointer to the start of the file, not the end (closes: Malone
+    #34592).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri,  7 Apr 2006 18:02:33 +0100
+
+gfxboot-theme-ubuntu (0.1.17) dapper; urgency=low
+
+  * Update Portuguese translation (thanks, Rui Azevedo).
+  * Interpret gfxboot-foreground and gfxboot-background keywords in the
+    isolinux configuration file, using them to control the menu item colours
+    (closes: Malone #31847).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon,  6 Mar 2006 13:36:13 +0000
+
+gfxboot-theme-ubuntu (0.1.16) dapper; urgency=low
+
+  * Add localisation for the boot menu items currently added by the Ubuntu
+    debian-cd branch.
+  * Handle ^ in boot menu item labels a bit later to accommodate
+    localisation.
+  * Update Portuguese translation (thanks, Rui Azevedo).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 28 Feb 2006 08:34:17 +0000
+
+gfxboot-theme-ubuntu (0.1.15) dapper; urgency=low
+
+  * Replace "Severe Motor Difficulties" with "Motor Difficulties" to avoid
+    causing offence.
+  * Drop "Motor Difficulties - switch devices" and "Everything" from the
+    accessibility menu, at least for now.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 22 Feb 2006 23:33:42 +0000
+
+gfxboot-theme-ubuntu (0.1.14) dapper; urgency=low
+
+  * Add the keymap menu to the short panel too, and move it to F3 next to
+    language.
+  * Update locale-to-keymap mappings from console-keymaps-at
+    2002.12.04dbs-52.1ubuntu3.
+  * Don't map keys that are special when unshifted; this caused problems for
+    the French keymap, and made it difficult in general to get out of a
+    keymap you selected by accident (closes: Malone #31767).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 22 Feb 2006 10:40:36 +0000
+
+gfxboot-theme-ubuntu (0.1.13) dapper; urgency=low
+
+  * pa is Punjabi (Gurmukhi), not Persian.
+  * Update language names from localechooser 0.27ubuntu4, adding Kazakh.
+  * Fix encoding of Galician translation.
+  * Update font to add characters necessary for Kazakh ("Қазақ").
+  * Pass debian-installer/locale=pt_PT rather than just pt for Portuguese,
+    allowing localechooser to do a better job of handling the preseeding
+    (part of Malone #31477).
+  * Teach setkeymap to try looking for a keymap based just on the language
+    code in case it can't find it based on ll_CC.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 16 Feb 2006 13:39:41 +0000
+
+gfxboot-theme-ubuntu (0.1.12) dapper; urgency=low
+
+  * Switch selected and deselected colours in boot option menu, since blue
+    is a better deselected/background colour (thanks, Paul Sladen).
+  * Enlarge help window.
+  * Adjust help keybindings to make more sense with our help screens.
+  * Open the first help page if the context doesn't match anything.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue,  7 Feb 2006 16:50:48 +0000
+
+gfxboot-theme-ubuntu (0.1.11) dapper; urgency=low
+
+  * Disable transparent menus: they make it too difficult for visually
+    impaired users to read the menu labels.
+  * Reduce the width of the keymap menu a bit by removing some unnecessary
+    text from the German option.
+  * Try to ensure that menus don't overflow the right-hand edge of the
+    screen, even when their panel entry is placed quite far to the right.
+  * Add an accessibility menu, per
+    https://wiki.ubuntu.com/UbuntuExpress/Accessibility.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed,  1 Feb 2006 19:38:05 +0000
+
+gfxboot-theme-ubuntu (0.1.10) dapper; urgency=low
+
+  * Add /syslinux.cfg to the list of files we parse for menu item names.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 31 Jan 2006 12:45:13 +0000
+
+gfxboot-theme-ubuntu (0.1.9) dapper; urgency=low
+
+  * Fix comment syntax in keytables.inc.
+  * Remove obsolete keymap.*.inc files.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 23 Jan 2006 11:53:38 +0000
+
+gfxboot-theme-ubuntu (0.1.8) dapper; urgency=low
+
+  * Rename languages to langlist to avoid running into 8.3 file name
+    restrictions on ISO9660.
+  * Remove langlist from the bootlogo file and just include it on the file
+    system.
+  * Add a keymap menu.
+  * Allow mapping multiple locales to a single keymap.
+  * Update keymaps and locale-to-keymap mappings from console-keymaps-at
+    2002.12.04dbs-50ubuntu2.
+  * If a non-default keymap is selected, put it on the kernel command line
+    as kbd-chooser/method=%s.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 20 Jan 2006 14:17:58 +0000
+
+gfxboot-theme-ubuntu (0.1.7) dapper; urgency=low
+
+  * Move boot option menu up 32 pixels and allow two more menu entries to be
+    displayed by default.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 16 Jan 2006 17:36:50 +0000
+
+gfxboot-theme-ubuntu (0.1.6) dapper; urgency=low
+
+  * Remove timeout clock graphics, which seem to break on some machines and
+    were scary-looking anyway (closes: Ubuntu #21210).
+  * Add Galician translation (thanks, Pedro Silva; closes: Ubuntu #21806).
+  * Consider bit depth while sorting video modes.
+  * Remove duplicates from video mode list (closes: Ubuntu #21578).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 11 Jan 2006 12:32:46 +0000
+
+gfxboot-theme-ubuntu (0.1.5) dapper; urgency=low
+
+  * debian/rules: Stop trying to install *.dat.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 21 Dec 2005 16:23:37 +0000
+
+gfxboot-theme-ubuntu (0.1.4) dapper; urgency=low
+
+  * Remove kroete.dat idle animation, which doesn't fit with the Ubuntu
+    theme.
+  * Show colour bit depth of each mode in VGA menu.
+  * Include video modes with at least 16-bit colour, not just exactly 16-bit
+    colour.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 19 Dec 2005 18:40:12 +0000
+
+gfxboot-theme-ubuntu (0.1.3) dapper; urgency=low
+
+  * Add live CD test function (looks for /casper/filesystem.cloop).
+  * Offer normal/expert mode panel option on media other than live CDs.
+  * Swap round "VGA" and "Other Options" panel entries.
+  * Restore the short and full panel modes, the latter accessed using "Other
+    Options"; put the normal/expert mode choice only in the full mode.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 19 Dec 2005 10:41:38 +0000
+
+gfxboot-theme-ubuntu (0.1.2) dapper; urgency=low
+
+  * Don't add "64" to the end of certain kernel names when booting on amd64.
+  * Remove obsolete alternate kernel feature.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 14 Dec 2005 10:47:48 +0000
+
+gfxboot-theme-ubuntu (0.1.1) dapper; urgency=low
+
+  * Make this Architecture: amd64 i386 rather than all, since it depends on
+    gfxboot which is only supported on those architectures.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 12 Dec 2005 16:44:06 +0000
+
+gfxboot-theme-ubuntu (0.1.0) dapper; urgency=low
+
+  * Initial release, based on the SuSE theme in gfxboot 3.2.5. Notable
+    changes in this theme versus SuSE:
+    - Remove "Christmas penguins" theme.
+    - Remove driver update disk feature.
+    - Remove boot loader splash; usplash should be able to provide
+      everything we need along these lines.
+    - Remove SuSE-specific images and sounds.
+    - Drop back to just 640x480 modes (with a last-resort fallback to
+      640x400x4), at least for now.
+    - Use "splash.pcx" in the syslinux configuration directory as the
+      background image if we find it. We'll use this for alternate
+      Ubuntu/Kubuntu/Edubuntu branding.
+    - Interpret a subset of the syslinux simple menu configuration syntax in
+      the isolinux configuration file to allow hiding menu items and setting
+      human-readable labels.
+    - Remove all help texts (which were SuSE-specific anyway); the intent is
+      for this to be a generic theme and to put help texts elsewhere,
+      probably in debian-installer. Disable the help panel item if no help
+      texts are available.
+    - Various visual rearrangements.
+    - Use the installed version of getx11font rather than that in the
+      grandparent directory.
+    - Always show the full panel rather than having multiple modes.
+    - Remove bizarre "move down one boot menu option the first time a key is
+      pressed" weirdness.
+    - Use subtler boot menu selection colours in place of inverse-video.
+    - Change the font to GNU unifont, from the unifont package.
+    - Update language codes and names from localechooser 0.22ubuntu2.
+    - Include /usr/share/gfxboot/themes/Ubuntu/bootlogo.tar.gz, which can be
+      unpacked directly into /isolinux on a CD rather than having to unpack
+      and repack cpio archives.
+    - Avoid mentioning the distribution name in "insert boot disk" messages.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 12 Dec 2005 11:01:59 +0000

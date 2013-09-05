@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <div class="cb-note">
+          <p>
+            These instructions are for Microsoft&#x00ae; Windows Mobile&#x2122; Version 5.0
+            (OS 5.1.1702 Build 14366.1.0.1 on a HP iPAQ).  There may be minor differences between
+            operating system versions.
+          </p>
+        </div>
+
+        <h2 class="step-heading">Step 1: Create VPN connection</h2>
+        <ul>
+          <li>
+            Open <strong class="cb-guilabel">Start</strong> &rarr;
+            <strong class="cb-guilabel">Settings</strong> &rarr; 
+            <strong class="cb-guilabel">Connections</strong> &rarr;
+            <strong class="cb-guilabel">Connections</strong>.
+          </li>  
+          <li>
+            Click <strong class="cb-guilabel">Add a new VPN server connection</strong>.
+            If you have already defined a VPN connection, click
+            <strong class="cb-guilabel">Edit my VPN servers</strong> and then click <strong class="cb-guilabel">New...</strong>.
+            We suggest you remove any unnecessary VPN connections before configuring a new VPN connection.
+            You can delete a connection by tapping and holding over the connection name and selecting
+            <strong class="cb-guilabel">Delete</strong> from the menu that opens.
+          </li>
+          <li>
+            Enter a <strong class="cb-guilabel">Name</strong> for the VPN connection, 
+            enter <n:invisible n:macro="productname" /> server address into the <strong class="cb-guilabel">Host name/IP</strong> field,
+            and set <strong class="cb-guilabel">VPN type</strong> to <strong class="cb-guilabel">IPSec/L2TP</strong>.
+            Click <strong class="cb-guilabel">Next</strong>.
+          </li>
+          <li>
+            Select authentication type <strong class="cb-guilabel">A pre-shared key</strong> and enter the
+            <n:invisible n:macro="productname" /> server pre-shared key:
+            <img src="/static/hidden.gif" class="print-only" /><span class="screen-only"><strong class="cb-userinput"><n:invisible n:render="primary_psk" /></strong></span>.
+            Click <strong class="cb-guilabel">Next</strong>.
+          </li>
+          <li>
+            Enter your <n:invisible n:macro="productname" /> username to the <strong class="cb-guilabel">User name</strong> field and
+            your <n:invisible n:macro="productname" /> password to the <strong class="cb-guilabel">Password</strong> field.  Leave the
+            <strong class="cb-guilabel">Domain</strong> field empty.  Click <strong class="cb-guilabel">Finish</strong>.
+          </li>
+        </ul>
+        
+        <h2 class="step-heading">Step 2: Configure intranet addresses</h2>
+        <p>
+          To use the Windows Mobile VPN, you need to define which IP addresses and/or
+          domain names (URIs) reside in your intranet.
+          Windows Mobile VPN automatically opens the VPN connection when intranet
+          resources are accessed.
+          The Windows Mobile VPN differs from the desktop Windows VPN in this respect.
+        </p>
+        <ul>
+          <li>
+            Open <strong class="cb-guilabel">Start</strong> &rarr;
+            <strong class="cb-guilabel">Settings</strong> &rarr; 
+            <strong class="cb-guilabel">Connections</strong> &rarr;
+            <strong class="cb-guilabel">Connections</strong>
+            (should already be open).
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">Advanced</strong> &rarr;
+            <strong class="cb-guilabel">Exceptions...</strong>.
+          </li>
+          <li>
+            For each intranet resource, do as follows:
+            click <strong class="cb-guilabel">Add new URL...</strong>, enter the IP subnet or domain name
+            into the <strong class="cb-guilabel">Work URL</strong> box and click <strong class="cb-guilabel">ok</strong>.
+            Finally, click <strong class="cb-guilabel">ok</strong> to close the Exceptions dialog.
+            You may use the following formats to specify resources:
+            <ul>
+              <li>All addresses: <strong class="cb-userinput">*.*</strong> (matches all IP addresses and domain names)</li>
+              <li>IP address: <strong class="cb-userinput">196.168.0.1</strong> (matches the 192.168.0.1 address)</li>
+              <li>IP subnet: <strong class="cb-userinput">196.168.*</strong> (matches the 192.168.0.0/16 subnet)</li>
+              <li>Domain name: <strong class="cb-userinput">test.intra.example.com</strong> (matches the test.intra.example.com only)</li>
+              <li>Domain name wildcard: <strong class="cb-userinput">*.intra.example.com</strong> (matches all sub-domains of intra.example com, e.g. test.intra.example.com and long.test.intra.example.com)</li>
+            </ul>
+          </li>
+          <li>
+            Finally, click <strong class="cb-guilabel">ok</strong> to close the connection settings dialog.
+          </li>
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+    </n:invisible>
+  </body>
+</html>
+

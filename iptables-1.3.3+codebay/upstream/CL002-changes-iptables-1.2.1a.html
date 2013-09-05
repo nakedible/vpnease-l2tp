@@ -1,0 +1,73 @@
+<html>
+<head><title>The Netfilter HomePage: 1.2.1</title></head>
+<body bgcolor="#ffffff" text="#101010">
+<center><h1>The Netfilter HomePage: 1.2.1</h1></center>
+
+This version requires kernel 2.4.0 or above.
+<p>
+<strong>Bugs Fixed from 1.2:</strong>
+<ul>
+<li> Missing quotes around log-prefix<br>
+	[ Bart Theunissen ]
+<li> Bug in save function of string match<br>
+	[ Gianni Tedesco ]
+<li> ip6tables.c string buffer size fixes<br>
+	[ Andras Kis-Szabo ]
+<li> dependency problem with iptables-save / iptables-restore<br>
+	[ Harald Welte ]
+<li> strtok problem with iptables-save / iptables-restore<br>
+	[ Harald Welte ]
+<li> Problems with tcp/udp extension and multiple calls of do_command()<br>
+	[ Sven Koch ]
+
+<li> Kernel bugfixes in patch-o-matic:
+  <ul>
+	<li> Updated rpc-record patch to work with 2.4.0<br>
+		[ Marc Boucher ]
+	<li> New ftp-pasv patch for fixing PASV detection with some ftpd's<br>
+		[ Erik Hensema ]
+	<li> Fix checksum calculation of TOS target<br>
+		[ Rusty Russell ]
+  </ul>
+</ul>
+
+<strong>Changes from 1.2:</strong>
+<ul>
+<li> New `pending-patches' target<br>
+	[ Rusty Russell ]
+<li> build all shared library extensions regardless of kernel tree<br>
+	[ Rusty Russell ]
+<li> New counter-restore functions for iptables<br>
+	[ Harald Welte ]
+<li> Added libiptc and libipulog to `devel' Makefile target<br>
+	[ Harald Welte ]
+<li> Ported iptables-save/restore to IPv6<br>
+	[ Andras Kis-Szabo ]
+<li> Updated ULOG target (now in-kernel accumulation [= higher performance])<br>
+	[ Harald Welte ]
+<li> Added fxp support to ftp-multi patch<br>
+	[ Magnus Sandin ]
+<li> Implemented Boyer Moore Sublinear search algorithm for string match<br>
+	[ Gianni Tedesco ]
+<li> Fixed tcp-window-tracking incompatibility with NAT helpers<br>
+	[ Harald Welte ]
+
+<li> New patch-o-matic patches:
+  <ul>
+<li> New generic sequence number offset API for nat helpers<br>
+	[ Harald Welte ]
+<li> New psd (port-scan-detection) match<br>
+	[ Dennis Koslowski, Markus Henning ]
+<li> New NETLINK target for old ipchains -o behaviour<br>
+	[ Gianni Tedesco ]
+<li> New SAME target as a special case of SNAT<br>
+	[ Martin Josefsson ]
+<li> Ported LOG target to IPv6<br>
+	[ Jan Rekorajski ]
+<li> Ported owner, limit, mac and multiport match to IPv6<br>
+	[ Jan Rekorajski ]
+  </ul>
+
+</ul>
+
+</body></html>

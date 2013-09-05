@@ -1,0 +1,206 @@
+/*
+ *  VPNease print UI CSS
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+/* --------------------
+=page blocks
+--------------------- */
+
+#main {
+	margin: 0;
+	padding: 0;
+	
+	width: auto;
+}
+
+#content
+{
+	margin: 0;
+	padding: 0;
+}
+
+#current-time,
+#current-time-heading,
+#status,
+#nav,
+#context
+{
+	display: none;
+}
+
+/* --------------------
+changelog
+--------------------- */
+.changelog h3 {
+	font-size: 13px;
+}
+
+.changelog ul {
+	font-size: 11px;
+	margin-left: 2em;
+}
+
+.changelog li {
+	font-size: 11px;
+}
+
+.changelog .changelog-date {
+	float: right;
+	color: #888888;
+	font-size: 9px;
+}
+
+.changelog .new-version {
+	background: #ffffff;
+	margin-bottom: 1.5em;
+	border: .1em solid #269ABF;
+	border-left: .75em solid #269ABF;
+	padding: .75em;
+	padding-right: 3.0em;  /* FF Linux kludge */
+}
+
+.changelog .new-version h3 {
+	margin-top: 0;
+}
+
+.changelog .current-version {
+	background: #ffffff;
+	margin-bottom: 1.5em;
+	border: .1em solid #B2D9AD;
+	border-left: .75em solid #B2D9AD;
+	padding: .75em;
+	padding-right: 3.0em;  /* FF Linux kludge */
+}
+
+.changelog .current-version h3 {
+	margin-top: 0;
+}
+
+.changelog .old-version {
+	background: #ffffff;
+	margin-bottom: 1.5em;
+	border: .1em solid #aaaaaa;
+	border-left: .75em solid #aaaaaa;
+	padding: .75em;
+	padding-right: 3.0em;  /* FF Linux kludge */
+}
+
+.changelog .old-version h3 {
+	margin-top: 0;
+}
+
+#updatebutton {
+	text-align: right;
+	margin-top: .75em;
+}
+
+/* --------------------
+generic tables
+--------------------- */
+
+table {
+	margin-top: 1em;
+	margin-bottom: 2em;
+}
+
+table caption {
+	color: #3333ff;
+	font-weight: normal;
+	font-size: 14px;
+	text-align: left;
+	text-decoration: underline;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+}
+
+table th {
+	color: #3333ff;
+	font-weight: normal;
+	font-size: 11px;
+	text-align: left;
+	padding: 0.25em 1.0em 0.25em 1.0em;
+}
+
+table td {
+	color: #000000;
+	font-weight: normal;
+	font-size: 11px;
+	text-align: left;
+	padding: 0.25em 1.0em 0.25em 1.0em;
+}
+
+table tr {
+	border-bottom: 1px solid #cccccc;
+}
+
+/* --------------------
+key-value tables
+--------------------- */
+
+table.key-value {
+	margin-top: 1em;
+	margin-bottom: 2em;
+}
+
+table.key-value caption {
+	color: #3333ff;
+	font-weight: normal;
+	font-size: 14px;
+	text-align: left;
+	text-decoration: underline;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+}
+
+table.key-value th {
+	color: #3333ff;
+	font-weight: normal;
+	font-size: 11px;
+	text-align: left;
+	padding: 0.25em 1.0em 0.25em 1.0em;
+}
+
+table.key-value td {
+	color: #000000;
+	font-weight: normal;
+	font-size: 11px;
+	text-align: left;
+	padding: 0.25em 1.0em 0.25em 4.0em;
+}
+
+table.key-value tr {
+	border-bottom: 1px solid #cccccc;
+}
+
+/* --------------------
+progress/activity bars
+--------------------- */
+
+.progress-bar,
+.activity-bar {
+	background: #fff;
+	border: 1px solid #668c62;
+	width: 300px;
+	margin: 0 auto;
+	margin-bottom: .75em;
+	position: relative;
+}
+
+.progress-bar img,
+.activity-bar img {
+	display: block;
+}
+
+.progress-bar span,
+.activity-bar span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-size: 11px;
+	width: 300px;
+	text-align: center;
+	display: block;
+}

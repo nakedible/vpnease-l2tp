@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <n:invisible n:render="check_disks_multiple">
+          <p>
+            Select installation target from the list below.
+            Installation will erase all data from the selected target.
+            It is recommended to have only one hard drive or USB stick attached to the
+            computer during installation.
+            If you want to keep more than one device attached, see product support
+            pages at <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/multiple-installation-targets" n:render="link_maybe">www.vpnease.com</a> for details.
+            Minimum target size is 2 GB (1.86 GiB).
+          </p>
+
+          <p>
+            If you check the <strong class="cb-guilabel">Attempt recovery</strong> checkbox,
+            the installer will look for a previous installation on the target device.
+            If a previous installation is found, you can recover previous configuration settings
+            for the new installation.  See <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/installation-recovery" n:render="link_maybe">www.vpnease.com</a>
+            for recovery details.
+          </p>
+
+          <n:invisible n:render="form select_target" />
+        </n:invisible>
+
+        <n:invisible n:render="check_disks_one">
+          <p>
+            The installer found only one target device on your system.
+            Verify that the device is correct, select the device, and click
+            <strong class="cb-guilabel">Next</strong> to continue.  You can
+            also plug in a new device and click <strong class="cb-guilabel">Rescan</strong>.
+            Minimum target size is 2 GB (1.86 GiB).
+          </p>
+
+          <p>
+            If you check the <strong class="cb-guilabel">Attempt recovery</strong> checkbox,
+            the installer will look for a previous installation on the target device.
+            If a previous installation is found, you can recover previous configuration settings
+            for the new installation.  See <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/installation-recovery" n:render="link_maybe">www.vpnease.com</a>
+            for recovery details.
+          </p>
+
+          <n:invisible n:render="form select_target" />
+        </n:invisible>
+
+        <n:invisible n:render="check_disks_none">
+          <div class="cb-warning">
+            <p>
+              The installer did not find a suitable installation target device.
+              Minimum target size is 2 GB (1.86 GiB).  Supported devices include
+              IDE (PATA), Serial ATA (SATA), SCSI, and USB drives.  Most hardware
+              RAID devices require operating system support, and are not supported
+              by <n:invisible n:macro="productname" />.
+            </p>
+
+            <p>
+              If you intend to install the product on a USB stick, connect the
+              USB stick now, wait for a few seconds for the device to be detected,
+              and click <strong class="cb-guilabel">Rescan</strong>.
+            </p>
+          </div>
+
+          <p>
+            If you check the <strong class="cb-guilabel">Attempt recovery</strong> checkbox,
+            the installer will look for a previous installation on the target device.
+            If a previous installation is found, you can recover previous configuration settings
+            for the new installation.  See <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/installation-recovery" n:render="link_maybe">www.vpnease.com</a>
+            for recovery details.
+          </p>
+
+          <n:invisible n:render="form rescan_targets" />
+        </n:invisible>
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

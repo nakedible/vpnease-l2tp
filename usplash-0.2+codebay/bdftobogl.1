@@ -1,0 +1,52 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH bdftobogl 1 "17 August 2002" "BOGL"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+bdftobogl - bogl/bterm font convertor
+.SH SYNOPSIS
+.B bdftobogl
+.RI font.bdf
+>
+.RI font.c
+
+.B bdftobogl
+.B -b
+.RI font.bdf
+>
+.RI font.bgf
+.SH DESCRIPTION
+.B bdftobogl
+is a conversion program for
+.B BOGL
+fonts.  By default it generates a C source file containing the converted
+.B BDF
+font.
+
+.SH OPTIONS
+.TP
+.B -b
+Generate a
+.B .bgf
+font (for \f[B]bterm\f[R]) instead of C source.
+.SH NOTES
+On Debian systems, one appropriate BDF font can be found in the
+.B bf-utf-source
+package.
+.SH SEE ALSO
+.BR bterm (1)
+.SH AUTHOR
+This manual page was written by Daniel Jacobowitz <dan@debian.org>.

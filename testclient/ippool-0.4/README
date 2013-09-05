@@ -1,0 +1,52 @@
+IpPool Software
+===============
+
+IpPool is a userspace daemon for managing one or more pools of IP
+addresses. It was developed as part of the OpenL2TP project
+(http://www.sourceforge.net/projects/openl2tp/) but has since been
+repackaged so that it may be used independently of OpenL2TP.
+
+IpPool is not intended for use where DHCP is used. Rather, IpPool
+provides a generic IP address allocation mechanism for applications
+such as VPN servers which hand out IP addresses to VPN clients.
+
+Planned Work
+============
+
+The following features (in priority order) are planned for a future
+release:-
+
+- Move usl and cli subdirectories into separate components. They are
+  identical to the files released with openl2tp.
+
+Suggested Projects
+==================
+
+- A GUI management application using the RPC binary interface. A Java
+  application would be ideal, using one of the Java RPC tools to
+  implement the API, e.g. http://netbula.com/ or
+  http://www.onc-rpc-xdr.com/.
+
+- Make binary packages for the popular Linux distributions,
+  e.g. RedHat, SuSE, Debian. Write startup scripts for each which
+  would load the pppol2tp kernel module (if appropriate) and start the
+  openl2tpd daemon.
+
+License
+=======
+
+See the LICENSE file in this directory. 
+
+About Katalix Systems Ltd
+=========================
+
+Katalix Systems Ltd is a privately held company based Reading, UK and
+in Fort Lauderdale, FL, USA, specializing in custom Embedded Linux
+work. 
+
+Please visit us at http://www.katalix.com
+
+Suggestions for feature enhancements are always welcome. Send them to
+openl2tp-users@lists.sourceforge.net which is an open mailing list
+for OpenL2TP users.
+

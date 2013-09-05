@@ -1,0 +1,6 @@
+Title: iptables ``set'' match
+Author: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Status: Beta
+Repository: base
+Requires: iptables > 1.2.11
+Recompile: kernel, netfilter, iptables

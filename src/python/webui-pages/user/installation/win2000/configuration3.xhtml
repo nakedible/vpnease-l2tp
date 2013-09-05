@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Step 5: Configure IPsec protection</h2>
+        <ul>
+        <li>
+          For background information about this step, see
+          <a class="cb-external" target="_blank" href="http://support.microsoft.com/kb/240262">Microsoft KB article #240262</a>.
+        </li>
+
+        <li>
+          Disable automatic L2TP/IPsec IPsec policy by running the following registry file:
+          <a href="win2k-disable-ipsec-policy.reg">win2k-disable-ipsec-policy.reg</a>.
+          If you want to stop using <n:invisible n:macro="productname" /> later, you can undo the registry change 
+          by running the following registry file: <a href="win2k-enable-ipsec-policy.reg">win2k-enable-ipsec-policy.reg</a>.
+        </li>
+
+        <li>
+          Open <strong class="cb-guilabel">Microsoft Management Console</strong> trough
+          <strong class="cb-guilabel">Start</strong> &rarr; <strong class="cb-guilabel">Run</strong>, enter
+          <strong class="cb-userinput">mmc</strong> to <strong class="cb-guilabel">Open</strong> field, and press <strong class="cb-guilabel">Enter</strong>.
+        </li>
+
+        <li>
+          Open <strong class="cb-guilabel">Console</strong> menu and select <strong class="cb-guilabel">Add/Remove Snap-In</strong> to open
+          Add/Remove Snap-in dialog.
+        </li>
+        <li>
+          Click <strong class="cb-guilabel">Add</strong> to open Add Standalone Snap-in dialog and select 
+          <strong class="cb-guilabel">IP Security Policy Management</strong> from the list.
+          Click <strong class="cb-guilabel">Add</strong> to open Select Computer dialog. Accept current selection
+          by clicking <strong class="cb-guilabel">Finish</strong>.
+          Click <strong class="cb-guilabel">Close</strong> to close Add Standalone Snap-in dialog, 
+          then <strong class="cb-guilabel">OK</strong> to close Add/Remove Snap-in dialog.
+        </li>
+
+        <li>
+          Right click on <strong class="cb-guilabel">IP Security Policies on Local Machine</strong>
+          to open the context menu, and select <strong class="cb-guilabel">Create IP Security Policy</strong>
+          to open IP Security Policy Wizard.
+          Click <strong class="cb-guilabel">Next</strong> to start the wizard.
+        </li>
+        
+        <li>
+          Enter a name for the policy in the <strong class="cb-guilabel">Name</strong> field
+          (e.g. <strong class="cb-userinput">L2TP/IPsec Policy</strong>).  Click <strong class="cb-guilabel">Next</strong>.
+        </li>
+
+        <li>
+          Clear the <strong class="cb-guilabel">Activate the default response rule</strong> checkbox and click
+          <strong class="cb-guilabel">Next</strong>.
+        </li>
+
+        <li>
+          Ensure that the <strong class="cb-guilabel">Edit properties</strong> checkbox is checked and click
+          <strong class="cb-guilabel">Finish</strong> to close IP Security Policy Wizard. New IP Security
+          Policy Properties dialog is shown.
+        </li>
+
+        <li>
+          Click <strong class="cb-guilabel">Add</strong> to open Security Rule Wizard. Click
+          <strong class="cb-guilabel">Next</strong> to start the wizard.
+        </li>
+
+        <li>
+          Select <strong class="cb-guilabel">This rule does not specify a tunnel</strong> and click
+          <strong class="cb-guilabel">Next</strong>.
+        </li>
+
+        <li>
+          Select <strong class="cb-guilabel">All network connections</strong> and click <strong class="cb-guilabel">Next</strong>.
+        </li>
+
+        <li>
+          Select <strong class="cb-guilabel">Use this string to protect the key exchange (pre-shared key)</strong>
+          and type <n:invisible n:macro="productname" /> server pre-shared key:
+          <img src="/static/hidden.gif" class="print-only" /><span class="screen-only"><strong class="cb-userinput"><n:invisible n:render="primary_psk" /></strong></span>.
+          Click <strong class="cb-guilabel">Next</strong>.
+        </li>
+
+        <li>
+          Click <strong class="cb-guilabel">Add</strong> to open IP Filter List dialog.
+        </li>
+        
+        <li>
+          Enter a name for the filter (e.g. <strong class="cb-userinput">L2TP/IPsec Filter</strong>) and
+          click <strong class="cb-guilabel">Add</strong> to open IP Filter Wizard. 
+          Click <strong class="cb-guilabel">Next</strong> to start the wizard.
+        </li>
+        
+        <li>
+          Change <strong class="cb-guilabel">Source address</strong> to <strong class="cb-guilabel">Any IP Address</strong>
+          and click <strong class="cb-guilabel">Next</strong>.
+        </li>
+        
+        <li>
+          Change <strong class="cb-guilabel">Destination address</strong> to <strong class="cb-guilabel">A specific IP Address</strong>.
+          Enter the <n:invisible n:macro="productname" /> server IP address (e.g. <strong class="cb-userinput">123.123.123.123</strong>) into 
+          the <strong class="cb-guilabel">IP Address</strong> field and
+          click <strong class="cb-guilabel">Next</strong>.
+        </li>
+            
+        <li>
+          Change <strong class="cb-guilabel">Protocol type</strong> to <strong class="cb-guilabel">UDP</strong> and
+          click <strong class="cb-guilabel">Next</strong>.
+        </li>
+        
+        <li>
+          Select <strong class="cb-guilabel">From this port</strong> and enter
+          <strong class="cb-userinput">1701</strong> in the text field below.  
+          Select <strong class="cb-guilabel">To any port</strong> and
+          click <strong class="cb-guilabel">Next</strong>.
+        </li>
+        
+        <li>
+          Ensure that the <strong class="cb-guilabel">Edit properties</strong> checkbox is checked and click
+          <strong class="cb-guilabel">Finish</strong> to close IP Filter Wizard. Filter Properties dialog is shown.
+        </li>
+        
+        <li>
+          Ensure that the checkbox <strong class="cb-guilabel">Mirrored. Also match packets with the exact opposite source and
+          destination addresses.</strong> is checked.  Click <strong class="cb-guilabel">OK</strong> to close Filter Properties dialog.
+          Click <strong class="cb-guilabel">Close</strong> to close IP Filter List dialog.
+        </li>
+              
+        <li>
+          Check the newly created IP filter (e.g. <strong class="cb-userinput">L2TP/IPsec Filter</strong>) radiobutton and click 
+          <strong class="cb-guilabel">Next</strong>.
+        </li>
+        
+        <li>
+          Click <strong class="cb-guilabel">Add</strong> to open Filter Action Wizard and click <strong class="cb-guilabel">Next</strong> 
+          to start the wizard.
+        </li>
+         
+        <li>
+          Enter a name for the filter action (e.g. <strong class="cb-userinput">L2TP/IPsec Action</strong>) and click
+          <strong class="cb-guilabel">Next</strong>.
+        </li>
+        
+        <li>
+          Select <strong class="cb-guilabel">Negotiate security</strong> and click <strong class="cb-guilabel">Next</strong>.
+        </li>
+            
+        <li>
+          Select <strong class="cb-guilabel">Do not communicate with computers that do not support IPSec</strong> and
+          click <strong class="cb-guilabel">Next</strong>.
+        </li>
+            
+        <li>
+          Select <strong class="cb-guilabel">Custom</strong> and click <strong class="cb-guilabel">Settings...</strong>
+          to open Custom Security Method Settings dialog.
+        </li>
+        
+        <li>
+          Make the following settings
+          <ul>
+          <li>Ensure that <strong class="cb-guilabel">Data and address integrity without encryption (AH)</strong> is not checked.</li>
+          <li>Ensure that <strong class="cb-guilabel">Data integrity and encryption</strong> is checked.</li> 
+          <li>Select <strong class="cb-guilabel">Integrity Algorithm</strong> to <strong class="cb-guilabel">MD5</strong>.</li>
+          <li>Select <strong class="cb-guilabel">Encryption Algorithm</strong> to <strong class="cb-guilabel">3DES</strong>.</li>
+          </ul>
+          Click <strong class="cb-guilabel">OK</strong> to close Custom Security Method Settings dialog.
+        </li>
+        
+        <li>
+          Click <strong class="cb-guilabel">Next</strong>, then <strong class="cb-guilabel">Finish</strong> to close 
+          Filter Action Wizard.
+        </li>
+        
+        <li>
+          Select the newly created action (e.g. <strong class="cb-userinput">L2TP/IPsec Action</strong>) and click 
+          <strong class="cb-guilabel">Edit</strong> to open Filter Action Properties dialog.
+        </li>
+        
+        <li>
+          Uncheck <strong class="cb-guilabel">Accept unsecured communication, but always respond using IPSec</strong>.
+          Select the topmost entry in the <strong class="cb-guilabel">Security Method preference order</strong> list and
+          click <strong class="cb-guilabel">Edit</strong> to open Modify Security Method dialog.
+        </li> 
+          
+        <li>  
+          Select <strong class="cb-guilabel">Custom (for expert users)</strong> and click
+          <strong class="cb-guilabel">Settings...</strong> to open Custom Security Method Settings dialog.
+        </li>
+        
+        <li>
+          Check the rightmost <strong class="cb-guilabel">Generate a new key every</strong> and enter
+          <strong class="cb-userinput">300</strong> in the text field. 
+          Click <strong class="cb-guilabel">OK</strong> to close Custom Security Method Settings dialog.
+        </li>
+        
+        <li>
+          Click <strong class="cb-guilabel">OK</strong> to close Modify Security Method dialog, then
+          <strong class="cb-guilabel">OK</strong> to close New Filter Action Properties.
+        </li> 
+          
+        <li>
+          Select the newly created action (e.g. <strong class="cb-userinput">L2TP/IPsec Action</strong>) radiobutton          
+          and click <strong class="cb-guilabel">Next</strong>. Click <strong class="cb-guilabel">Finish</strong>
+          to close Security Rule Wizard, then <strong class="cb-guilabel">Close</strong> to close
+          New IP Security Policy Properties dialog.
+        </li>
+
+        <li>
+          Right click the newly created IPsec policy (e.g. <strong class="cb-userinput">L2TP/IPsec Policy</strong>) and select 
+          <strong class="cb-guilabel">Assign</strong> from the context menu.
+        </li>
+
+        <li>
+          Close the <strong class="cb-guilabel">Microsoft Management Console</strong>. Do not save the console settings.
+        </li>
+
+        <li>
+          Reboot your computer to complete <n:invisible n:macro="productname" /> configuration.
+        </li>
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>
+

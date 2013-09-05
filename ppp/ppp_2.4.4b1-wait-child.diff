@@ -1,0 +1,21 @@
+diff -ru ppp-2.4.4b1.orig/pppd/main.c ppp-2.4.4b1/pppd/main.c
+--- ppp-2.4.4b1.orig/pppd/main.c	2006-10-09 19:52:12.000000000 +0300
++++ ppp-2.4.4b1/pppd/main.c	2006-10-09 20:01:46.000000000 +0300
+@@ -1707,14 +1707,14 @@
+     if (pid != 0) {
+ 	if (debug)
+ 	    dbglog("Script %s started (pid %d)", prog, pid);
+-	record_child(pid, prog, done, arg);
+ 	if (wait) {
+ 	    while (waitpid(pid, &status, 0) < 0) {
+ 		if (errno == EINTR)
+ 		    continue;
+ 		fatal("error waiting for script %s: %m", prog);
+ 	    }
+-	    reap_kids();
++	} else {
++	    record_child(pid, prog, done, arg);
+ 	}
+ 	return pid;
+     }
+Only in ppp-2.4.4b1/pppd: main.c~

@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 15-l2tpd-gcc40.dpatch, by Stinghorn
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+Only in l2tpd-0.69: aaa.c~
+diff -ru l2tpd-0.69.orig/aaa.h l2tpd-0.69/aaa.h
+--- l2tpd-0.69.orig/aaa.h	2002-04-10 23:09:33.000000000 +0300
++++ l2tpd-0.69/aaa.h	2005-10-28 17:40:44.191021488 +0300
+@@ -46,7 +46,6 @@
+ };
+ 
+ extern struct lns *get_lns (struct tunnel *);
+-extern struct addr_ent *uaddr[];
+ extern unsigned int get_addr (struct iprange *);
+ extern void reserve_addr (unsigned int);
+ extern void unreserve_addr (unsigned int);

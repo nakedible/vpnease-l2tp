@@ -1,0 +1,66 @@
+diff -rauN ez-ipupdate-3.0.11b8/ez-ipupdate.c ez-ipupdate-3.0.11b8-new/ez-ipupdate.c
+--- ez-ipupdate-3.0.11b8/ez-ipupdate.c	2002-03-12 01:31:47.000000000 +0200
++++ ez-ipupdate-3.0.11b8-new/ez-ipupdate.c	2008-02-05 20:51:19.000000000 +0200
+@@ -4495,7 +4495,7 @@
+ #endif
+ 
+   if(options & OPT_DAEMON)
+-  {
++  { /* OPT_DAEMON */
+     int local_update_period = update_period;
+ #if IF_LOOKUP
+     struct sockaddr_in sin;
+@@ -4586,6 +4586,23 @@
+ 
+       if(get_if_addr(sock, interface, &sin2) == 0)
+       {
++	/*
++	 *  sami.vaarala@codebay.fi:
++	 *
++	 *  If in daemon mode but address has been set, *don't* update address
++	 *  because the intent is probably to use a fixed address instead of the
++	 *  interface address - but still behave like a daemon otherwise.
++	 *
++	 *  This is accomplished here by pretending that the interface address
++	 *  is the same as the "address" parameter given to us.
++	 */
++#if 1
++	if (address) {
++	  show_message("address given in daemon mode, faking interface address to %s\n", address);
++	  inet_aton(address, &sin2.sin_addr);
++	}
++#endif
++
+         ifresolve_warned = 0;
+         if(memcmp(&sin.sin_addr, &sin2.sin_addr, sizeof(struct in_addr)) != 0 || 
+             (max_interval > 0 && time(NULL) - last_update > max_interval))
+@@ -4595,7 +4612,7 @@
+           // save this new ipaddr
+           memcpy(&sin, &sin2, sizeof(sin));
+ 
+-          // update the address buffer
++          // update the address buffer	  
+           if(address) { free(address); }
+           address = strdup(inet_ntoa(sin.sin_addr));
+ 
+@@ -4716,9 +4733,9 @@
+     fprintf(stderr, " though.\n");
+     exit(1);
+ #endif
+-  }
++  } /* OPT_DAEMON */
+   else
+-  {
++  { /* !OPT_DAEMON */
+     int need_update = 1;
+ 
+     if(cache_file)
+@@ -4875,7 +4892,7 @@
+     {
+       fprintf(stderr, "no update needed at this time\n");
+     }
+-  }
++  } /* !OPT_DAEMON */
+ 
+ #ifdef IF_LOOKUP
+   if(sock > 0) { close(sock); }

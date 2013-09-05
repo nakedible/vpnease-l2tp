@@ -1,0 +1,58 @@
+iptables v1.2.7a (== fixed 1.2.7) Changelog
+======================================================================
+This version requires kernel >= 2.4.4
+This version recommends kernel >= 2.4.18
+
+Bugs Fixed from 1.2.6a:
+
+- fix compiler warning in userspace support for ipv6 REJECT target
+	[ Fabrice Marie ]
+- check for invalid portranges in tcp+udp helper (e.g. 2000:100)
+	[ Thomas Poehnitz ]
+- fix save save/restore functions of ip6tables tcp/udp extension
+	[ Harald Welte / Andras Kis-Szabo ]
+- check for invalid (out of range) nfmark values in MARK target
+	[ Alexey ??? ]
+- fix save function of MASQUERADE userspace support
+	[ A. van Schie ]
+- compile fixes for userspace suppot of experimental POOL target
+	[ ? ]
+- fix save function of userspace support for ah and esp match
+	[ ? ]
+- fix static build (NO_SHARED_LIBS)
+	[ Roberto Nibali ]
+- fix save/restore function of userspace support for mport match
+	[ Bob Hockney ]
+- update manpages to reflect recent changes
+	[ Herve Eychenne, Harald Welte ]
+- remove all remnants of the 'check' option
+	[ ? ]
+
+
+Changes from 1.2.6a:
+
+- patch-o-matic is now no longer part of iptables but rather distributed
+  as a seperate package (ftp://ftp.netfilter.org/pub/patch-o-matic/)
+  	[ Harald Welte ]
+- userspace support for dscp match and target
+	[ Harald Welte ] 
+- userspace supprot for ecn match and target
+	[ Harald Welte ]
+- userspace support for helper match
+	[ Martin Josefsson ]
+- userspace supprot for conntrack match
+	[ Marc Boucher ]
+- userspace support for pkttype match
+	[ Martin Ludvig ]
+- userspace support for experimental ROUTE target
+	[ Cédric de Launois ]
+- userspace support for experimental ipv6 ahesp match
+	[ Andras Kis-Szabo ]
+- userspace support for experimental ipv6 option header match
+	[ Andras Kis-Szabo ]
+- userspace support for experimental ipv6 routing header match
+	[ Andras Kis-Szabo ]
+- add matching of process name to userspace support of owner match
+	[ Marc Boucher ]
+- new version of userspace support for 'recent' match
+	[ Stephen Frost ]

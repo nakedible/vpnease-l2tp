@@ -1,0 +1,4 @@
+Author: Stephane Ouellette <ouellettes@videotron.ca> and Massimiliano Hofer <max@nucleus.it>
+Status: ItWorksForMe(tm)
+Requires: linux == 2.4 || linux >= 2.6.16
+Repository: external

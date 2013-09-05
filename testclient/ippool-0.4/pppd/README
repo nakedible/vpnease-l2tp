@@ -1,0 +1,19 @@
+Unix pppd plugin
+================
+
+This directory contains source code for a Unix pppd plugin which lets
+pppd use the IpPool for address assignment.
+
+The pppd plugin adds extra arguments to pppd for IpPool.
+
+Arguments are:-
+
+ippool_name <pool_name>         - IP address pool name from which addresses
+                                  are to be allocated. Required.
+ippool_name2 <pool_name>        - Optional IP address pool name to be 
+                                  used for allocating local addresses.
+                                  Default: use ippool_name.
+ippool_server <server>          - Name or IP address of the system running
+                                  ippoold. Default: localhost.
+ippool_debug                    - Enables debug messages about address
+                                  allocations.

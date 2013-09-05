@@ -1,0 +1,17 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 06-l2tpd-pty-noecho.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/l2tpd.c
++++ l2tpd-0.69/l2tpd.c
+@@ -321,6 +321,7 @@
+         tcgetattr (c->fd, &ptyconf);
+         *(c->oldptyconf) = ptyconf;
+         ptyconf.c_cflag &= ~(ICANON | ECHO);
++        ptyconf.c_lflag &= ~ECHO;
+         tcsetattr (c->fd, TCSANOW, &ptyconf);
+ 
+         snprintf (tty, sizeof (tty), "/dev/tty%c%c", a, b);

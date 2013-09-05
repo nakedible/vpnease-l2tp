@@ -1,0 +1,241 @@
+diff -Nru casper-1.57.orig/casper-bottom/02hardware_check casper-1.57/casper-bottom/02hardware_check
+--- casper-1.57.orig/casper-bottom/02hardware_check	1970-01-01 02:00:00.000000000 +0200
++++ casper-1.57/casper-bottom/02hardware_check	2007-02-27 09:19:34.000000000 +0200
+@@ -0,0 +1,37 @@
++#!/bin/sh
++
++PREREQ=""
++DESCRIPTION="Checking preliminary hardware requirements..."
++
++. /scripts/functions
++
++prereqs()
++{
++       echo "$PREREQ"
++}
++
++case $1 in
++# get pre-requisites
++prereqs)
++       prereqs
++       exit 0
++       ;;
++esac
++
++log_begin_msg "$DESCRIPTION"
++
++# Ubuntu won't boot properly without 128Mb memory even to init-scripts.
++# This is a preliminary check: init-scripts check that memory is over 256M
++
++memsize=`cat /proc/meminfo | sed -ne '1 {s/[^0-9]//g;p}'`
++if test $memsize -lt 131072; then
++    /sbin/usplash_write "TIMEOUT 0"
++    /sbin/usplash_write "FAILURE failed"
++    /sbin/usplash_write "TEXT The detected memory size is too small (< 128M), cannot start."
++    /sbin/usplash_write "TEXT Press ctrl-alt-del to reboot the system."
++    while true; do
++	read ans
++    done
++fi
++
++log_end_msg
+diff -Nru casper-1.57.orig/casper-bottom/10adduser casper-1.57/casper-bottom/10adduser
+--- casper-1.57.orig/casper-bottom/10adduser	2006-05-11 14:35:21.000000000 +0300
++++ casper-1.57/casper-bottom/10adduser	2007-02-27 09:20:12.000000000 +0200
+@@ -20,10 +20,12 @@
+ 
+ log_begin_msg "$DESCRIPTION"
+ 
++# Note: user has no password: sudo root access is granted without password
++# for admin users.
+ chroot /root debconf-communicate -fnoninteractive casper > /dev/null <<EOF
+ set passwd/root-password-crypted *
+-set passwd/user-password-crypted U6aMy0wojraho
+-set passwd/user-fullname $USERFULLNAME 
++set passwd/user-password-crypted *
++set passwd/user-fullname $USERFULLNAME
+ set passwd/username $USERNAME
+ set passwd/user-uid 999
+ EOF
+@@ -39,23 +41,32 @@
+ set passwd/user-uid
+ EOF
+ 
+-if [ -f /root/etc/sudoers ]; then
+-    grep -q '^%admin' /root/etc/sudoers && sed -i -e '/^%admin/s/ALL$/NOPASSWD: ALL/' /root/etc/sudoers || echo '%admin  ALL=(ALL) NOPASSWD: ALL' >> /root/etc/sudoers
+-fi
++# Ensure that the default user has sudo rights because user-setup-apply fails
++# when username is "admin".
++cat <<EOF >> /root/etc/sudoers
++
++# Ensure that the default user has admin rights always.
++$USERNAME ALL=(ALL) NOPASSWD: ALL
++EOF
++
++#if [ -f /root/etc/sudoers ]; then
++#    grep -q '^%admin' /root/etc/sudoers && sed -i -e '/^%admin/s/ALL$/NOPASSWD: ALL/' /root/etc/sudoers || echo '%admin  ALL=(ALL) NOPASSWD: ALL' >> /root/etc/sudoers
++#fi
+ 
+ # XXX - awful hack to stop xscreensaver locking the screen (#7150)
+ echo 'RUNNING_UNDER_GDM="yes"' >> /root/etc/environment
+ 
+-for file in /usr/share/applications/ubiquity-gtkui.desktop /usr/share/applications/kde/ubiquity-kdeui.desktop; do
+-    if [ -f "/root/$file" ]; then
+-        chroot /root install -D -o $USERNAME -g $USERNAME $file /home/$USERNAME/Desktop/$(basename "$file")
+-        break
+-    fi
+-done
+-
+-if [ -L /root/home/$USERNAME/Examples ]; then
+-    chroot /root install -o $USERNAME -g $USERNAME -d /home/$USERNAME/Desktop/
+-    mv /root/home/$USERNAME/Examples /root/home/$USERNAME/Desktop/
+-fi
++
++#for file in /usr/share/applications/ubiquity-gtkui.desktop /usr/share/applications/kde/ubiquity-kdeui.desktop; do
++#    if [ -f "/root/$file" ]; then
++#        chroot /root install -D -o $USERNAME -g $USERNAME $file /home/$USERNAME/Desktop/$(basename "$file")
++#        break
++#    fi
++#done
++
++#if [ -L /root/home/$USERNAME/Examples ]; then
++#    chroot /root install -o $USERNAME -g $USERNAME -d /home/$USERNAME/Desktop/
++#    mv /root/home/$USERNAME/Examples /root/home/$USERNAME/Desktop/
++#fi
+ 
+ log_end_msg
+diff -Nru casper-1.57.orig/casper-bottom/13swap casper-1.57/casper-bottom/13swap
+--- casper-1.57.orig/casper-bottom/13swap	2006-05-11 13:06:13.000000000 +0300
++++ casper-1.57/casper-bottom/13swap	2007-02-27 09:19:34.000000000 +0200
+@@ -20,25 +20,4 @@
+ esac
+ 
+ log_begin_msg "$DESCRIPTION"
+-
+-devices=""
+-for device in /dev/[hs]d[a-z][0-9]*; do
+-    if ! [ -b "$device" ]; then
+-        continue
+-    fi
+-
+-    magic=$(dd if="$device" bs=4086 skip=1 count=1 2>/dev/null | dd bs=10 count=1 2>/dev/null) || continue
+-    
+-    if [ "$magic" = "SWAPSPACE2" -o "$magic" = "SWAP-SPACE" ]; then
+-#        log "Found $device"
+-        devices="$devices $device"
+-        fi
+-done
+-
+-for device in $devices; do
+-    cat >> $FSTAB <<EOF
+-$device swap swap defaults 0 0
+-EOF
+-done
+-
+ log_end_msg
+diff -Nru casper-1.57.orig/casper-bottom/23networking casper-1.57/casper-bottom/23networking
+--- casper-1.57.orig/casper-bottom/23networking	2006-05-11 13:05:11.000000000 +0300
++++ casper-1.57/casper-bottom/23networking	2007-02-27 09:19:34.000000000 +0200
+@@ -27,25 +27,4 @@
+ 
+ EOF
+ 
+-udevplug -Bpci -Iclass="0x02*"
+-
+-for interface in /sys/class/net/eth* /sys/class/net/ath* /sys/class/net/wlan*; do
+-    [ -e $interface ] || continue
+-    i="$(basename $interface)"
+-    cat >> "$IFFILE" <<EOF
+-auto $i
+-iface $i inet dhcp
+-
+-EOF
+-done
+-
+-for i in eth0 eth1 eth2 ath0 wlan0; do
+-    [ ! -e /sys/class/net/$i ] || continue
+-    cat >> "$IFFILE" <<EOF
+-auto $i
+-iface $i inet dhcp
+-
+-EOF
+-done
+-
+ log_end_msg
+diff -Nru casper-1.57.orig/casper.conf casper-1.57/casper.conf
+--- casper-1.57.orig/casper.conf	2006-05-02 15:16:55.000000000 +0300
++++ casper-1.57/casper.conf	2007-02-27 09:19:34.000000000 +0200
+@@ -3,7 +3,7 @@
+ # Supported variables are:
+ # USERNAME, USERFULLNAME, HOST
+ 
+-export USERNAME="ubuntu"
+-export USERFULLNAME="Custom LiveCD user"
+-export HOST="ubuntu"
++export USERNAME="admin"
++export USERFULLNAME="Administrator"
++export HOST="l2tpgw"
+ 
+diff -Nru casper-1.57.orig/debian/casper.initramfs casper-1.57/debian/casper.initramfs
+--- casper-1.57.orig/debian/casper.initramfs	2006-05-11 14:56:55.000000000 +0300
++++ casper-1.57/debian/casper.initramfs	2007-02-27 09:19:34.000000000 +0200
+@@ -11,9 +11,9 @@
+     overlay_method=devmapper
+ fi
+ 
+-USERNAME=ubuntu
+-USERFULLNAME="Ubuntu LiveCD user"
+-HOST=ubuntu
++USERNAME=admin
++USERFULLNAME="Administrator"
++HOST=l2tpgw
+ 
+ [ -f /etc/casper.conf ] && . /etc/casper.conf
+ 
+diff -Nru casper-1.57.orig/debian/casper.install casper-1.57/debian/casper.install
+--- casper-1.57.orig/debian/casper.install	2006-05-11 12:51:10.000000000 +0300
++++ casper-1.57/debian/casper.install	2007-02-27 09:19:34.000000000 +0200
+@@ -2,3 +2,4 @@
+ bin/casper-preseed usr/share/casper
+ share/shutdown usr/share/casper
+ casper-bottom usr/share/initramfs-tools/scripts
++casper.conf etc
+diff -Nru casper-1.57.orig/debian/rules casper-1.57/debian/rules
+--- casper-1.57.orig/debian/rules	2006-05-02 15:15:42.000000000 +0300
++++ casper-1.57/debian/rules	2007-02-27 09:19:34.000000000 +0200
+@@ -30,6 +30,9 @@
+ 	install -m644 debian/casper.initramfs debian/casper/usr/share/initramfs-tools/scripts/casper
+ 	install -m755 debian/casper.initramfs-hooks debian/casper/usr/share/initramfs-tools/hooks/casper
+ 	install -m755 casper-md5check/casper-md5check debian/casper/usr/lib/casper
++	# This script comes from a patch and thus have no execute permissions
++	# set beforehand.
++	chmod 0755 debian/casper/usr/share/initramfs-tools/scripts/casper-bottom/02hardware_check
+ 
+ # Build architecture-independent files here.
+ binary-indep: build install
+diff -Nru casper-1.57.orig/ubiquity-hooks/15autologin casper-1.57/ubiquity-hooks/15autologin
+--- casper-1.57.orig/ubiquity-hooks/15autologin	1970-01-01 02:00:00.000000000 +0200
++++ casper-1.57/ubiquity-hooks/15autologin	2007-02-27 09:19:34.000000000 +0200
+@@ -0,0 +1,22 @@
++#!/bin/sh
++set -e
++
++if chroot /target [ -f /etc/gdm/gdm-cdd.conf ]; then
++    GDMCONF=/etc/gdm/gdm-cdd.conf
++else
++    GDMCONF=/etc/gdm/gdm.conf
++fi
++
++if chroot /target [ -f ${GDMCONF} ]; then
++    # Configure GDM autologin
++    chroot /target sed -i \
++        -e "s/^AutomaticLoginEnable=.*\$/AutomaticLoginEnable=true/" \
++        -e "s/^AutomaticLogin=.*\$/AutomaticLogin=$USERNAME/" \
++        -e "s/^TimedLoginEnable=.*\$/TimedLoginEnable=true/" \
++        -e "s/^TimedLogin=.*\$/TimedLogin=$USERNAME/" \
++        -e "s/^TimedLoginDelay=.*\$/TimedLoginDelay=10/" \
++        ${GDMCONF}
++fi
++
++exit 0
++

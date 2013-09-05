@@ -1,0 +1,50 @@
+diff -ru matplotlib-0.82.orig/debian/control matplotlib-0.82/debian/control
+--- matplotlib-0.82.orig/debian/control	2007-04-30 10:26:06.000000000 +0300
++++ matplotlib-0.82/debian/control	2007-04-30 10:35:47.000000000 +0300
+@@ -8,7 +8,7 @@
+ 
+ Package: python-matplotlib
+ Architecture: all
+-Depends: ${python:Depends}, python2.4-matplotlib(=0.82-5ubuntu1)
++Depends: ${python:Depends}, python2.4-matplotlib(>=0.82)
+ Suggests: ipython(>=0.6.3), latex
+ Description: python based plotting system in a style similar to Matlab
+  Matplotlib is a pure python plotting library designed to bring publication 
+@@ -48,7 +48,7 @@
+ 
+ Package: python2.4-matplotlib
+ Architecture: any
+-Depends: ${python:Depends}, ttf-bitstream-vera, python2.4-numeric | python2.4-numarray, python2.4-gd(>=0.52) | python-pypaint | python2.4-gtk2 | libwxgtk2.4-python | python2.4-qt3, python2.4-numeric-ext | python2.4-numarray-ext, python2.4-dev, dvipng, python-matplotlib-data(=0.82-5ubuntu1)
++Depends: ${python:Depends}, ttf-bitstream-vera, python2.4-numeric | python2.4-numarray, python2.4-gd(>=0.52) | python-pypaint | python2.4-gtk2 | libwxgtk2.4-python | python2.4-qt3, python2.4-numeric-ext | python2.4-numarray-ext, python-matplotlib-data(>=0.82)
+ Suggests: ipython(>=0.6.3), latex
+ Description: python based plotting system (Python 2.4 version)
+  Matplotlib is a pure python plotting library designed to bring publication 
+diff -ru matplotlib-0.82.orig/debian/rules matplotlib-0.82/debian/rules
+--- matplotlib-0.82.orig/debian/rules	2007-04-30 10:26:06.000000000 +0300
++++ matplotlib-0.82/debian/rules	2007-04-30 10:35:34.000000000 +0300
+@@ -58,7 +58,7 @@
+ 	#python2.4 ./setup.py install_scripts \
+ 	#	-d $(CURDIR)/debian/$(p24)/usr/lib/python2.4/site-packages/
+ 	dh_install -p$(p24) lib/dateutil usr/lib/python2.4/site-packages/
+-	dh_install -p$(p24) lib/pytz usr/lib/python2.4/site-packages/
++	#dh_install -p$(p24) lib/pytz usr/lib/python2.4/site-packages/
+ 
+ install-indep: build-indep
+ 	dh_testdir -i
+diff -ru matplotlib-0.82.orig/setup.py matplotlib-0.82/setup.py
+--- matplotlib-0.82.orig/setup.py	2007-04-30 10:26:06.000000000 +0300
++++ matplotlib-0.82/setup.py	2007-04-30 10:35:34.000000000 +0300
+@@ -153,9 +153,10 @@
+         except ImportError:
+             add_dateutil()
+ 
+-        try: import pytz
+-        except ImportError:
+-            add_pytz()
++# Never add pytz
++#        try: import pytz
++#        except ImportError:
++#            add_pytz()
+ 
+ build_swigagg(ext_modules, packages)
+ build_transforms(ext_modules, packages, NUMERIX)

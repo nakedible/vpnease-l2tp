@@ -1,0 +1,5 @@
+Title: RTSP connection tracking and nat helper
+Author: Tom Marshall <tmarshall@real.com>
+Status: Beta - needs some testing and porting to 2.6.x
+Repository: extra
+Requires: linux < 2.6.0

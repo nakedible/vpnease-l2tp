@@ -1,0 +1,228 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/ikev1_quick.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/ikev1_quick.c	2006-12-04 11:43:15.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/ikev1_quick.c	2006-12-04 11:56:58.000000000 +0200
+@@ -878,6 +878,16 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1 /* l2tp-workaround: initiator, may safely include nat-oa.
++       * Does not work with racoon: we do not care. */
++    if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)
++	&& (!(st->st_policy & POLICY_TUNNEL))) {
++	if (!nat_traversal_add_natoa(ISAKMP_NEXT_NONE, &rbody, st)) {
++	    reset_cur_state();
++	    return STF_INTERNAL_ERROR;
++	}
++    }
++#else
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)
+ 	&& (!(st->st_policy & POLICY_TUNNEL))
+ 	&& (st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME))) {
+@@ -888,6 +898,7 @@
+ 	}
+     }
+ #endif
++#endif
+ 
+     /* finish computing  HASH(1), inserting it in output */
+     (void) quick_mode_hash12(r_hashval, r_hash_start, rbody.cur
+@@ -1739,11 +1750,17 @@
+ 	else {
+ 	    st->hidden_variables.st_nat_traversal = 0;
+ 	}
++
++
++#if 1  /* l2tp-workaround: nat-oa update not done => no nat-oa address
++	* in kernel SA, which is fine for us.. */
++#else
+ 	if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	    (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)) {
+ 	    nat_traversal_natoa_lookup(md);
+ 	}
+ #endif
++#endif
+ 
+ 	passert(st->st_connection != NULL);
+ 	passert(st->st_connection == c);
+@@ -1910,6 +1927,15 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1 /* l2tp-workaround: add_natoa() now handles NAT check other than
++       * if the natoa is at all desirable. */
++    if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA) &&
++	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT)) {
++	if (!nat_traversal_add_natoa(ISAKMP_NEXT_NONE, &md->rbody, md->st)) {
++	    return STF_INTERNAL_ERROR;
++	}
++    }
++#else
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA) &&
+ 	(st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME)) &&
+ 	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT)) {
+@@ -1918,6 +1944,7 @@
+ 	    return STF_INTERNAL_ERROR;
+ 	}
+     }
++#endif
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT) &&
+ 	(c->spd.that.has_client)) {
+@@ -2034,11 +2061,14 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1  /* l2tp-workaround: nat-oa lookup not needed. */
++#else
+ 	if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	    (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)) {
+ 	    nat_traversal_natoa_lookup(md);
+ 	}
+ #endif
++#endif
+ 
+     /* ??? We used to copy the accepted proposal into the state, but it was
+      * never used.  From sa_pd->pbs.start, length pbs_room(&sa_pd->pbs).
+Index: openswan-2.4.0rc4.quilt/programs/pluto/nat_traversal.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/nat_traversal.c	2006-12-04 11:43:15.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/nat_traversal.c	2006-12-04 11:56:19.000000000 +0200
+@@ -408,6 +408,9 @@
+  * 
+  * Look for NAT-OA in message
+  */
++/* l2tp-workaround:
++ * FIXME: store the number of nat-oa payloads actually received.
++ */
+ void nat_traversal_natoa_lookup(struct msg_digest *md)
+ {
+ 	struct payload_digest *p;
+@@ -502,10 +505,119 @@
+ 		       , "NAT-Traversal: received %%any NAT-OA...");
+ 	}
+ 	else {
++#if 1 /* l2tp-workaround: no need for this in kernel SA. */
++		openswan_log("l2tp-workaround: ignore NAT-OA address.");
++#else
+ 		st->hidden_variables.st_nat_oa = ip;
++#endif
++	}
++}
++
++#if 1 /* l2tp-workaround: add two nat-oa payloads instead of one when using
++       * rfc nat-t and peer did actually use two payloads.
++       * FIXME: use nat-oa payload count from peer message.
++       * FIXME: only works as responder, initiator needs different handling */
++bool nat_traversal_add_natoa(u_int8_t np, pb_stream *outs,
++	struct state *st)
++{
++	struct isakmp_nat_oa natoa;
++	pb_stream pbs;
++	unsigned char ip_val[sizeof(struct in6_addr)];
++	size_t ip_len = 0;
++	ip_address *ip;
++	unsigned int nat_np;
++
++	if ((!st) || (!st->st_connection)) {
++		loglog(RC_LOG_SERIOUS, "NAT-Traversal: assert failed %s:%d",
++		       __FILE__, __LINE__);
++		return FALSE;
++	}
++
++	/* Note: with other than rfc NAT-T values, we check if we are not
++	 * behind nat, then prevent sending NAT-OA. */
++	if (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) && !(st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME))) {
++		return TRUE;
++	}
++
++	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES
++		  ? ISAKMP_NEXT_NATOA_RFC : (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES ? ISAKMP_NEXT_NATOA_OSX : ISAKMP_NEXT_NATOA_DRAFTS));
++
++	if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) {
++		struct isakmp_nat_oa natoa;
++		pb_stream pbs;
++		unsigned char ip_val[sizeof(struct in6_addr)];
++		size_t ip_len = 0;
++		ip_address *ip;
++
++		ip = &(st->st_remoteaddr);
++
++		if (!out_modify_previous_np(nat_np, outs)) {
++			return FALSE;
++		}
++
++		memset(&natoa, 0, sizeof(natoa));
++		natoa.isanoa_np = np;
++
++		switch (addrtypeof(ip)) {
++		case AF_INET:
++			ip_len = sizeof(ip->u.v4.sin_addr.s_addr);
++			memcpy(ip_val, &ip->u.v4.sin_addr.s_addr, ip_len);
++			natoa.isanoa_idtype = ID_IPV4_ADDR;
++			break;
++		default:
++			loglog(RC_LOG_SERIOUS, "NAT-Traversal: "
++			       "invalid addrtypeof()=%d", addrtypeof(ip));
++			return FALSE;
++		}
++
++		if (!out_struct(&natoa, &isakmp_nat_oa, outs, &pbs))
++			return FALSE;
++
++		if (!out_raw(ip_val, ip_len, &pbs, "NAT-OA"))
++			return FALSE;
++
++		DBG(DBG_NATT,
++		        DBG_dump("Remote NAT-OA (S):", ip_val, ip_len);
++		);
++		close_output_pbs(&pbs);
++	}
++
++	ip = &(st->st_localaddr);
++
++	if (!out_modify_previous_np(nat_np, outs)) {
++		return FALSE;
++	}
++
++	memset(&natoa, 0, sizeof(natoa));
++	natoa.isanoa_np = np;
++
++	switch (addrtypeof(ip)) {
++		case AF_INET:
++			ip_len = sizeof(ip->u.v4.sin_addr.s_addr);
++			memcpy(ip_val, &ip->u.v4.sin_addr.s_addr, ip_len);
++			natoa.isanoa_idtype = ID_IPV4_ADDR;
++			break;
++		default:
++			loglog(RC_LOG_SERIOUS, "NAT-Traversal: "
++				"invalid addrtypeof()=%d", addrtypeof(ip));
++			return FALSE;
+ 	}
++
++	if (!out_struct(&natoa, &isakmp_nat_oa, outs, &pbs))
++		return FALSE;
++
++	if (!out_raw(ip_val, ip_len, &pbs, "NAT-OA"))
++		return FALSE;
++
++	DBG(DBG_NATT,
++		DBG_dump("Local NAT-OA (S):", ip_val, ip_len);
++	);
++
++	close_output_pbs(&pbs);
++	return TRUE;
+ }
+ 
++#else
+ bool nat_traversal_add_natoa(u_int8_t np, pb_stream *outs,
+ 	struct state *st)
+ {
+@@ -562,6 +674,7 @@
+ 	close_output_pbs(&pbs);
+ 	return TRUE;
+ }
++#endif /* 1 */
+ 
+ void nat_traversal_show_result (u_int32_t nt, u_int16_t sport)
+ {

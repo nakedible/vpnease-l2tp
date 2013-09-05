@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <ul>
+          <li>
+            Download and open the following <a href="../../vpnease_autoconfigure_macosx.networkConnect"><n:invisible n:macro="productname" /> configuration file</a>
+            to open a Network window with basic configuration settings for <n:invisible n:macro="productname" /> already filled in.
+            If you wish to configure your VPN connection manually, <a href="configuration.html">click here</a>.
+          </li>
+          <li>
+            Enter remote access information into the configuration fields:
+            <ul>
+              <li><strong class="cb-guilabel">Description</strong>: Name for the VPN connection (e.g. <strong class="cb-userinput">My Company VPN</strong>).</li>
+              <li><strong class="cb-guilabel">Server Address</strong>: <n:invisible n:macro="productname" /> server address (e.g. <strong class="cb-userinput">vpn.company.com</strong> or  <strong class="cb-userinput">123.123.123.123</strong>).</li>
+              <li><strong class="cb-guilabel">Account Name</strong>: Your <n:invisible n:macro="productname" /> username (e.g. <strong class="cb-userinput">john.doe</strong>).</li>
+              <li><strong class="cb-guilabel">User Authentication</strong>:
+              If you want to save your <n:invisible n:macro="productname" /> password to this computer, 
+              enter your <n:invisible n:macro="productname" /> password here.
+              If you leave the <strong class="cb-guilabel">User Authentication</strong> field empty,
+              your <n:invisible n:macro="productname" /> password will be asked every time the VPN connection is opened.</li>
+              <li><strong class="cb-guilabel">Machine Authentication</strong>:
+              Your <n:invisible n:macro="productname" /> server pre-shared key is
+              <img src="/static/hidden.gif" class="print-only" /><span class="screen-only"><strong class="cb-userinput"><n:invisible n:render="primary_psk" /></strong></span></li>
+            </ul>
+          </li>
+
+          <li>
+            Click <strong class="cb-guilabel">OK</strong> to finish configuration.
+          </li>
+
+          <li>
+            The newly created profile is selected in the <strong class="cb-guilabel">Configuration</strong> drop-down menu.
+            Check the <strong class="cb-guilabel">Show VPN status in menu bar</strong> checkbox
+            to make the VPN connection accessible directly from the menu.
+          </li>
+          <li>
+            <n:invisible n:macro="productname" /> configuration is completed.  Close the Internet Connect dialog.
+          </li>
+
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

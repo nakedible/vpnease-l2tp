@@ -1,0 +1,633 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/crypt_dh.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/crypt_dh.c	2005-07-06 00:58:14.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/crypt_dh.c	2006-12-03 20:09:45.000000000 +0200
+@@ -424,7 +424,14 @@
+     struct pluto_crypto_req r;
+     struct pcr_skeyid_q *dhq = &r.pcr_d.dhq;
+     struct pcr_skeyid_r *dhr = &r.pcr_d.dhr;
++#if 1 /* l2tp-workaround: use store pss here. */
++    const chunk_t *pss = get_cached_preshared_secret(st);
++#if L2TP_DEBUG
++    dump_chunk(pss, "l2tp-debug: perform_dh_secretiv using secret");
++#endif
++#else
+     const chunk_t *pss = get_preshared_secret(st->st_connection);
++#endif
+ 
+     passert(st->st_sec_in_use);
+ 
+@@ -487,7 +494,14 @@
+     struct pluto_crypto_req r;
+     struct pcr_skeyid_q *dhq = &r.pcr_d.dhq;
+     struct pcr_skeyid_r *dhr = &r.pcr_d.dhr;
++#if 1 /* l2tp-workaround: use store pss here. */
++    const chunk_t *pss = get_cached_preshared_secret(st);
++#if L2TP_DEBUG
++    dump_chunk(pss, "l2tp-debug: perform_dh_secret using secret");
++#endif
++#else
+     const chunk_t *pss = get_preshared_secret(st->st_connection);
++#endif
+ 
+     passert(st->st_sec_in_use);
+ 
+Index: openswan-2.4.0rc4.quilt/programs/pluto/demux.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/demux.c	2006-12-03 19:58:50.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/demux.c	2006-12-03 20:10:12.000000000 +0200
+@@ -161,6 +161,11 @@
+ #include "dpd.h"
+ #include "udpfromto.h"
+ 
++#if 1 /* l2tp-workaround: get pss. */
++#include "oswalloc.h"
++#include "secrets.h"
++#endif
++
+ /* This file does basic header checking and demux of
+  * incoming packets.
+  */
+@@ -2041,8 +2046,103 @@
+ 		}
+ 	    } 
+ 
++
++#if 1 /* l2tp-workaround: try to find the correct preshared
++       * secret by using a brute-force attack over all
++       * matching configured preshared secrets. */
++
++	    /* The 5th message in main-mode is received: MAIN_R2 */
++	    if (from_state == STATE_MAIN_R2) {
++		int index = 0;
++		int success = 0;
++
++		char *msg_cur = md->message_pbs.cur;
++		int msg_len = pbs_left(&md->message_pbs);
++		char msg_buf[4096];
++
++		if (msg_len > 4096) {
++		    openswan_log("l2tp-workaround: received packet too big (%d): dropping it.", msg_len);
++		    return;
++		}
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: ");
++#endif
++		memcpy (msg_buf, msg_cur, msg_len);
++
++		while (!success) {
++		    const chunk_t *pss = get_preshared_secret_with_index(st->st_connection, index);
++		    if (pss == NULL) {
++			openswan_log("l2tp-workaround: run out of preshared secret candidates, giving up: mismatch of preshared secrets?");
++			SEND_NOTIFICATION(PAYLOAD_MALFORMED);
++			return;
++		    }
++		    openswan_log("l2tp-workaround: trying to decrypt packet in state MAIN_R2 with preshared secret index: %d", index);
++
++		    /* Store pss for this packet as well as for future use. */
++		    cache_preshared_secret(st, pss);
++#if L2TP_DEBUG
++		    dump_cached_secret(st, "l2tp-debug: demux secret cached");
++#endif
++
++		    /* Force update of iv from new pss. */
++		    (void)perform_dh_secretiv(st, RESPONDER, st->st_oakley.group->group);
++		    update_iv(st);
++
++		    /* Try encrypting it. */
++		    crypto_cbc_encrypt(e, FALSE, md->message_pbs.cur,
++				       pbs_left(&md->message_pbs) , st);
++
++#if L2TP_DEBUG
++		    openswan_log("l2tp-debug: decrypt done.");
++#endif
++		    {
++			/*
++			  struct payload_digest *pd = md->digest;
++			  u_int8_t *s = pd->pbs.start;
++			*/
++
++			u_int8_t *s = md->message_pbs.cur;
++
++			u_int8_t np = s[0];                     /* Next payload type. */
++			u_int8_t res = s[1];                    /* Reserved field. */
++			u_int16_t len = 256*s[2] + s[3];        /* Length of the payload in network byteorder. */
++
++#if L2TP_DEBUG
++			openswan_log("l2tp-debug: sanitycheck decrypt result...");
++#endif
++
++			if ((np == 8) &&                        /* ISAKMP_NEXT_HASH */
++			    (res == 0) &&                       /* Unused. */
++			    (len >= 8) &&                       /* Minimum allowed for a ISAKMP payload. */
++			    (len <= 256)) {                     /* A sensible maximum payload length. */
++			    /* Assume pss was ok. */
++			    openswan_log("l2tp-workaround: first payload passed sanity check: assume used preshared secret was good.");
++
++			    /* Store match index to state. */
++			    st->st_pss_index = index;
++			    break;
++			}
++			openswan_log("l2tp-workaround: first payload failed sanity check [%x:%x:%x:%x]: assume used preshared secret was wrong and try next possible secret.", s[0], s[1], s[2], s[3]);
++
++
++			/* Restore original encrypted packet from saved state.
++			 * The the following calls restore both the packet_pbs and message_pbs
++			 * from original data. The message headers is parsed again as a side-effect. */
++#if L2TP_DEBUG
++			openswan_log("l2tp-debug: Restore encrypted packet for next try.");
++#endif
++			memcpy (msg_cur, msg_buf, msg_len);
++		    }
++		    index++;
++		}
++	    } else {
++		crypto_cbc_encrypt(e, FALSE, md->message_pbs.cur,
++				   pbs_left(&md->message_pbs) , st);
++	    }
++#else
+ 	    crypto_cbc_encrypt(e, FALSE, md->message_pbs.cur, 
+ 			    pbs_left(&md->message_pbs) , st);
++#endif
+ 	}
+ 
+ 	DBG_cond_dump(DBG_CRYPT, "decrypted:\n", md->message_pbs.cur
+Index: openswan-2.4.0rc4.quilt/programs/pluto/kernel.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/kernel.c	2006-12-03 19:38:51.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/kernel.c	2006-12-03 20:09:45.000000000 +0200
+@@ -170,6 +170,75 @@
+         }
+ };
+ 
++#if 1 /* l2tp-workaround. */
++static char *sainfo_filename_stem = "/var/run/l2tpgw/sainfo/sainfo";
++
++static u_int32_t get_esp_spi(struct state *st) {
++    u_int32_t spi = st->st_esp.our_spi;
++    return ntohl(spi);
++}
++
++static void replace_sainfo_file(struct state *st) {
++    FILE *fp;
++    int len, rv;
++    static char buf[4096];
++    static char filename[128];
++
++    u_int32_t spi = get_esp_spi(st);
++
++    len = snprintf(buf, 4096, "preshared secret index: %d\n", st->st_pss_index);
++    if (len <= 0) {
++	openswan_log("l2tp-workaround: cannot write buffer, not replacing sainfo.", filename);
++	return;
++    }
++
++    if (len >= 4096) {
++	openswan_log("l2tp-workaround: warning: sainfo for spi %08x was truncated.", spi);
++    }
++
++    snprintf(filename, 128, "%s_%08x", sainfo_filename_stem, spi);
++
++    fp = fopen(filename, "w");
++    if (fp == NULL) {
++	openswan_log("l2tp-workaround: cannot open file: %s, not replacing sainfo.", filename);
++	return;
++    }
++
++    /* NB: dont care of errors too much. */
++    rv = fwrite(buf, len, 1, fp);
++    fclose(fp);
++
++    if (rv != 1) {
++	openswan_log("l2tp-workaround: cannot write file: %s, not replacing sainfo.", filename);
++	return;
++    }
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: sainfo file write success. filename: %s, contents: %s", filename, buf);
++#endif
++}
++
++static void remove_sainfo_file(struct state *st) {
++    FILE *fp;
++    int rv;
++    static char filename[128];
++
++    u_int32_t spi = get_esp_spi(st);
++
++    snprintf(filename, 128, "%s_%08x", sainfo_filename_stem, spi);
++
++    rv = unlink(filename);
++    if (rv < 0) {
++	openswan_log("l2tp-workaround: cannot remove file: %s, not removing sainfo.", filename);
++	return;
++    }
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: sainfo file remove success. filename: %s", filename);
++#endif
++}
++#endif /* l2tp-workaround. */
++
+ void
+ record_and_initiate_opportunistic(const ip_subnet *ours
+                                   , const ip_subnet *his
+@@ -2622,6 +2691,13 @@
+     || !setup_half_ipsec_sa(st, FALSE))
+         return FALSE;
+ 
++#if 1 /* l2tp-workaround: Store SA state to a file, indexed by our spi. */
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: add/replace sainfo file.");
++#endif
++    replace_sainfo_file(st);
++#endif
++
+     for (sr = &st->st_connection->spd; sr != NULL; sr = sr->next)
+     {
+         DBG(DBG_CONTROL, DBG_log("sr for #%ld: %s"
+@@ -2723,6 +2799,14 @@
+         (void) teardown_half_ipsec_sa(st, FALSE);
+     }
+     (void) teardown_half_ipsec_sa(st, TRUE);
++
++#if 1 /* l2tp-workaround: Remove SA info file based on our spi. */
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: removing sainfo file.");
++#endif
++    remove_sainfo_file(st);
++#endif
++
+ #else /* !KLIPS */
+     DBG(DBG_CONTROL, DBG_log("if I knew how, I'd eroute() and teardown_ipsec_sa()"));
+ #endif /* !KLIPS */
+Index: openswan-2.4.0rc4.quilt/programs/pluto/keys.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/keys.c	2005-08-19 20:52:42.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/keys.c	2006-12-03 20:09:45.000000000 +0200
+@@ -575,10 +575,292 @@
+     return best;
+ }
+ 
+-/* find the appropriate preshared key (see get_secret).
+- * Failure is indicated by a NULL pointer.
+- * Note: the result is not to be freed by the caller.
+- */
++#if 1 /* l2tp-workaround: handle multiple preshared secrets with
++       * equal (or equally good) selectors. */
++
++/* Helpers to manipulate the list of best preshared secret
++ * matches. */
++
++struct sec {
++    struct secret *s;
++    struct sec *next;
++};
++
++#if L2TP_DEBUG
++void dump_chunk(const chunk_t *c, char *pre) {
++    char buf[512];
++    char *out = "%s: %s";
++
++    if (c == NULL) {
++	openswan_log(out, pre, "<null chunk>");
++	return;
++    }
++
++    if (c->len + 1 > 512) {
++	snprintf(buf, 512, "%s", c->ptr);
++	out = "%s: %s (truncated, > 511)";
++    } else {
++	snprintf(buf, c->len + 1, "%s", c->ptr);
++    }
++    openswan_log(out, pre, buf);
++}
++
++void dump_cached_secret(const struct state *st, char *pre) {
++    dump_chunk(&(st->st_stored_pss), pre);
++}
++
++void _dump_secret(struct secret *s, int index) {
++    char *pre = "l2tp-debug: dump secret";
++
++    if (s == NULL) {
++	openswan_log("%s: <null secret>", pre);
++	return;
++    }
++
++    if (s->kind != PPK_PSK) {
++	openswan_log("%s: <not psk>", pre);
++	return;
++    }
++    dump_chunk(&(s->u.preshared_secret), pre);
++}
++
++void _dump_secrets(struct sec *l) {
++    struct sec *p = l;
++    int i = 0;
++
++    openswan_log("l2tp-debug: dump secrets list:");
++    while (p != NULL) {
++	_dump_secret(p->s, i++);
++	p = p->next;
++    }
++}
++#endif /* L2TP_DEBUG */
++
++static struct sec *_prepend(struct sec *l, struct secret *s) {
++    struct sec *n = alloc_thing(struct sec, "secret");
++
++    n->s = s;
++    n->next = l;
++    return n;
++}
++
++static void _destroy(struct sec *l) {
++    struct sec *p;
++
++    while (l != NULL) {
++	p = l->next;
++	pfree(l);
++	l = p;
++    }
++}
++
++static struct secret *_get_nth(struct sec *l, int index) {
++    int i;
++    struct sec *p = l;
++
++    for (i = 0; i < index; i++) {
++	if (p == NULL) break;
++	p = p->next;
++    }
++    return p == NULL ? NULL : p->s;
++}
++
++static int _count(struct sec *l) {
++    int i = 0;
++    struct sec *p = l;
++
++    while (p != NULL) {
++	p = p->next;
++	i++;
++    }
++    return i;
++}
++
++static int _compare_secrets(struct secret *a, struct secret *b) {
++    if (a->u.preshared_secret.len !=
++	b->u.preshared_secret.len) return 1;
++    if (memcmp(a->u.preshared_secret.ptr,
++	       b->u.preshared_secret.ptr,
++	       a->u.preshared_secret.len) != 0) return 1;
++
++    return 0;
++}
++
++static struct secret *_find(struct sec *l, struct secret *s) {
++    struct sec *p = l;
++
++    while (p != NULL) {
++	if (_compare_secrets(s, p->s) == 0) return p;
++	p = p->next;
++    }
++    return NULL;
++}
++
++/* Cache argument pss to state st or clear cache with NULL pss. */
++void
++cache_preshared_secret(struct state *st, const chunk_t *pss)
++{
++    if (pss == NULL) {
++	st->st_stored_pss_in_use = 0;
++    } else {
++	clonetochunk(st->st_stored_pss, pss->ptr, pss->len, "cloned pss");
++	st->st_stored_pss_in_use = 1;
++    }
++}
++
++/* Get cached or fetch and cache the first matching preshared secret.
++ * If no secret found, return NULL. */
++chunk_t *
++get_cached_preshared_secret(struct state *st)
++{
++    if (st->st_stored_pss_in_use) {
++	return &(st->st_stored_pss);
++    } else {
++	const chunk_t *pss = get_preshared_secret_with_index(st->st_connection, 0);
++	cache_preshared_secret(st, pss);
++	st->st_pss_index = 0; /* Ensure that the index is in sync. */
++	return pss;
++    }
++}
++
++
++/* Get nth of the shared secrets whose match is best and equally good.
++ * NB: index starts from 0. */
++chunk_t *
++get_preshared_secret_with_index(const struct connection *c, int index)
++{
++    enum {	/* bits */
++	match_none = 00,
++	match_default = 01,
++	match_him = 02
++    };
++
++    unsigned int best_match = match_none;
++    struct secret *best = NULL;
++    struct secret *s;
++    const struct id *my_id = &c->spd.this.id;
++    const struct id *his_id = &c->spd.that.id;
++    unsigned char idstr1[IDTOA_BUF], idme[IDTOA_BUF], idhim[IDTOA_BUF], idhim2[IDTOA_BUF];
++
++    struct sec *best_list = NULL;
++    int secnum;
++
++    idtoa(my_id,  idme,  IDTOA_BUF);
++    idtoa(his_id, idhim, IDTOA_BUF);
++    strcpy(idhim2, idhim);
++
++    DBG(DBG_CONTROL, DBG_log("started looking for preshared secret for %s->%s with index: %d", idme, idhim, index));
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: looking for preshared secret (%s->%s) with index: %d", idme, idhim, index);
++#endif
++
++    DBG(DBG_CONTROL, DBG_log("actually looking for preshared secret for %s->%s", idme, idhim2));
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: all loaded secrets:");
++    {
++	int i = 0;
++	for (s = secrets; s != NULL; s = s->next) {
++	    _dump_secret(s, i++);
++	}
++    }
++#endif
++
++    for (s = secrets, secnum = 0; s != NULL; s = s->next, secnum++) {
++	unsigned int match = match_none;
++
++	DBG(DBG_CONTROL, DBG_log("examine secret number (%d) on line (%d)", secnum, s->secretlineno));
++
++	if (s->ids == NULL) {
++	    match = match_default; /* default with no ids. */
++	} else if (s->ids->next != NULL) {
++	    match = match_none;    /* not supported. */
++	    openswan_log("l2tp-workaruond: warning: PSK entry with two IDs unsupported: secret number (%d) on line (%d)", secnum, s->secretlineno);
++	} else {
++	    if (IS_INITIATOR(c)) {
++		if (same_id(his_id, &(s->ids->id))) {
++		    match = match_him;
++		} else {
++		    match = match_none;
++		}
++	    } else {
++		/* Only our initiated connections may have IP matching PSK entries, others use default match. */
++		match = match_none;
++	    }
++	}
++
++	DBG(DBG_CONTROL, DBG_log("match (%d) with best match (%d)", match, best_match));
++
++	switch (match) {
++	case match_default:	/* default all */
++	case match_him:	        /* match peer */
++	    if (match == best_match) {
++		if (_find(best_list, s) != NULL) {
++		    openswan_log("l2tp-workaround: warning: duplicate preshared secret number (%d) found on line (%d)", secnum, s->secretlineno);
++		}
++		best_list = _prepend(best_list, s); /* NB: list is reversed, so prepend is the right action here. */
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: multiple preshared secrets (%d) match endpoints, continue scan.", _count(best_list));
++#endif
++	    } else if (match > best_match) {
++		best_match = match;
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: old best list:");
++		_dump_secrets(best_list);
++#endif
++		_destroy(best_list);
++		best_list = NULL;
++		best_list = _prepend(best_list, s);
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: best list started from scratch:");
++		_dump_secrets(best_list);
++#endif
++	    } else {
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: match (%d) was not best (%d), continue", match, best_match);
++#endif
++		;
++	    }
++	    break;
++	case match_none:
++	    break;
++	default:
++	    openswan_log("l2tp-workaround: error: broken switch-case.. bailing out.");
++	    return NULL;
++	}
++    }
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: best secrets:");
++    _dump_secrets(best_list);
++#endif
++
++    best = _get_nth(best_list, index);
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: selected secret:");
++    _dump_secret(best, index);
++#endif
++
++    DBG(DBG_CONTROL, DBG_log("concluding with best_match=%d best=%p (lineno=%d), index=%d", best_match, best, best? best->secretlineno : -1, index));
++
++    return best == NULL ? NULL : &best->u.preshared_secret;
++}
++
++
++/* Wrapper for old calls. */
++const chunk_t *
++get_preshared_secret(const struct connection *c) {
++    chunk_t *pss = get_preshared_secret_with_index(c, 0);
++#if L2TP_DEBUG
++    dump_chunk(pss, "l2tp-debug: get_preshared_secret wrapper got secret");
++#endif
++    return pss;
++}
++
++#else
++
+ const chunk_t *
+ get_preshared_secret(const struct connection *c)
+ {
+@@ -595,6 +877,9 @@
+     return s == NULL? NULL : &s->u.preshared_secret;
+ }
+ 
++#endif /* l2tp-workaround */
++
++
+ /* check the existence of an RSA private key matching an RSA public
+  * key contained in an X.509 or OpenPGP certificate
+  */
+Index: openswan-2.4.0rc4.quilt/programs/pluto/secrets.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/secrets.h	2005-02-15 03:52:10.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/secrets.h	2006-12-03 20:09:45.000000000 +0200
+@@ -23,6 +23,19 @@
+ 
+ extern const chunk_t *get_preshared_secret(const struct connection *c);
+ 
++#if 1 /* l2tp-workaround */
++extern void dump_chunk(const chunk_t *c, char *pre);
++
++extern void dump_cached_secret(const struct state *st, char *pre);
++
++extern void cache_preshared_secret(struct state *st, const chunk_t *pss);
++
++extern chunk_t * get_cached_preshared_secret(struct state *st);
++
++extern chunk_t * get_preshared_secret_with_index(const struct connection *c, int index);
++
++extern stf_status perform_dh_secretiv(struct state *st, enum phase1_role init, u_int16_t oakley_group);
++#endif
+ 
+ #endif /* _SECRETS_H_ */
+ 
+Index: openswan-2.4.0rc4.quilt/programs/pluto/state.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/state.c	2005-08-12 20:04:08.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/state.c	2006-12-03 20:09:45.000000000 +0200
+@@ -599,6 +599,12 @@
+     clone_chunk(st_skeyid_e, "st_skeyid_e in duplicate_state");
+     clone_chunk(st_enc_key, "st_enc_key in duplicate_state");
+ 
++#if 1 /* l2tp-workaround: clone also stored pss and it's index. */
++    clone_chunk(st_stored_pss, "st_stored_pss in duplicate_state");
++    nst->st_stored_pss_in_use = st->st_stored_pss_in_use;
++    nst->st_pss_index = st->st_pss_index;
++#endif
++
+ #   undef clone_chunk
+ 
+     nst->st_oakley = st->st_oakley;
+Index: openswan-2.4.0rc4.quilt/programs/pluto/state.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/state.h	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/state.h	2006-12-03 20:09:45.000000000 +0200
+@@ -197,6 +197,13 @@
+ 						* operations
+ 						*/
+ 
++#if 1 /* l2tp-workaround: store brute-forced preshared secret. */
++    chunk_t            st_stored_pss;          /* Found and stored preshared
++						* secret for later use. */
++    int                st_stored_pss_in_use;   /* Does the stored pss exist. */
++    u_int32_t          st_pss_index;           /* Preshared secret matched index. */
++#endif
++
+     /* In a Phase 1 state, preserve peer's public key after authentication */
+     struct pubkey     *st_peer_pubkey;
+ 

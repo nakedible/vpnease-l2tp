@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Using the VPN connection</h2>
+
+        <ul>
+        <li>
+          Double click the connection icon (e.g. <strong class="cb-guilabel">My Company VPN</strong>) on your desktop, or use
+          <strong class="cb-guilabel">Control panel</strong> &rarr; <strong class="cb-guilabel">Network connections</strong> 
+          to open your connection.
+        </li>
+
+        <li>
+          Enter your <n:invisible n:macro="productname" /> username and password to the dialog.
+          If you want to save your <n:invisible n:macro="productname" /> username and password to this computer, check
+          <strong class="cb-guilabel">Save this user name and password for the following users</strong>
+          checkbox and select either <strong class="cb-guilabel">Me only</strong> or 
+          <strong class="cb-guilabel">Anyone who uses this computer</strong> depending on your preferences.
+          Click <strong class="cb-guilabel">Connect</strong>.
+        </li>
+        <li>
+          The connection dialog will disappear and a tray balloon will indicate that the connection is active.
+        </li>
+        <li>
+          Ensure that connectivity to your company network resources works correctly by e.g. using your
+          e-mail client or opening a web page from an intranet server.
+        </li>
+        <li>
+          You have several options to disconnect your VPN connection:
+          <ul>
+            <li>
+              Click right mouse button over the VPN connection icon on Windows desktop and select <strong class="cb-guilabel">Disconnect</strong>
+              from the context menu.
+            </li>
+            <li>
+              Click taskbar connection icon to open Status dialog. Click <strong class="cb-guilabel">Disconnect</strong>.
+            </li>
+            <li>
+              Click right mouse button over taskbar connection icon and select <strong class="cb-guilabel">Disconnect</strong>
+              from the context menu.
+            </li>
+          </ul>  
+        </li>
+        </ul>
+
+        <h2 class="step-heading">Optional: Improving reliability</h2>
+        <p>
+          If you wish to improve the reliability of your VPN connection,
+          you can enable automatic redialing.  Click <strong class="cb-guilabel">Properties</strong> from the 
+          connection dialog and select the <strong class="cb-guilabel">Options</strong> tab.  Alter settings
+          e.g. as follows:
+        <ul>
+          <li>Redial attempts &rarr; <strong class="cb-userinput">50</strong></li>
+          <li>Time between redial attempts &rarr; <strong class="cb-userinput">10 seconds</strong></li>
+          <li>Idle time before hanging up &rarr; <strong class="cb-userinput">never</strong></li>
+          <li>Check the <strong class="cb-guilabel">Redial if line is dropped</strong> checkbox</li>
+        </ul>
+        </p>
+        <p>  
+          These settings ensure that Windows automatically reconnects if the server is temporarily unavailable.
+          However, other settings may be more appropriate for your environment.
+        </p>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

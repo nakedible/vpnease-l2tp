@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <div class="cb-note">
+          <p>
+            Windows Vista prompts for administrative confirmation several times during the configuration process.
+            You must confirm all actions in the configuration process.  These confirmations are not described in
+            the configuration process below.
+          </p>
+        </div>
+
+        <h2 class="step-heading">Step 1: Modify Windows registry</h2>
+        <ul>
+          <li>
+            In order to enable wider support for different kinds of networks, run the following registry
+            file: <a href="vista-natt-enable.reg">vista-natt-enable.reg</a>. For more information, see
+            <a href="http://support.microsoft.com/kb/926179" target="_blank" class="cb-external">Microsoft KB article #926179</a>.
+            If you want to stop using <n:invisible n:macro="productname" /> later, 
+            you can undo the registry change by running the following registry file: 
+            <a href="vista-natt-disable.reg">vista-natt-disable.reg</a>.
+          </li>
+          <li>
+            Reboot the computer after running the registry file for the change to take effect.  
+          </li>  
+        </ul>
+        
+        <h2 class="step-heading">Step 2: Create VPN connection</h2>
+        <ul>
+          <li>
+            Open <strong class="cb-guilabel">Network and Sharing Center</strong> through
+            <strong class="cb-guilabel">Start</strong> &rarr;
+            <strong class="cb-guilabel">Control Panel</strong> &rarr;
+            <strong class="cb-guilabel">Network and Internet</strong> &rarr;
+            <strong class="cb-guilabel">Network and Sharing Center</strong>.
+            (If you use Classic view, this path will be different.)
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">Set up a connection or network</strong> to
+            start the connection creation wizard.
+            <ul>
+              <li>Select <strong class="cb-guilabel">Connect to a Workplace</strong> and click
+                  <strong class="cb-guilabel">Next</strong>.</li>
+              <li>If you have an existing connection of this type, Windows will prompt whether
+                  you want to use the existing connection or create new one.  Select
+                  <strong class="cb-guilabel">No, create a new connection</strong> and click
+                  <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select <strong class="cb-guilabel">Use my Internet connection (VPN)</strong>.</li>
+              <li>If you have not defined an internet connection, Windows will prompt whether you want
+                  to set up an internet connection before continuing. If your computer is already
+                  connected to the internet, select <strong class="cb-guilabel">I'll set up an internet connection later</strong>.
+              </li>
+              <li>Enter the <n:invisible n:macro="productname" /> server address into the
+                  <strong class="cb-guilabel">Internet address</strong> field (e.g. 
+                  <strong class="cb-userinput">vpn.company.com</strong> or 
+                  <strong class="cb-userinput">123.123.123.123</strong>).
+              </li> 
+              <li>Enter a name for this profile into the
+                  <strong class="cb-guilabel">Destination name</strong> field
+                  (e.g. <strong class="cb-userinput">My Company VPN</strong>).
+              </li>
+              <li>Ensure that the <strong class="cb-guilabel">Use a smart card</strong> checkbox is cleared.</li>
+              <li>Select whether you want to share this connection with other Windows Vista users.
+                  If so, select the <strong class="cb-guilabel">Allow other people to use this connection</strong>
+                  checkbox, otherwise clear it.</li>
+              <li>Check the
+                  <strong class="cb-guilabel">Don't connect now; just set it up so I can connect later</strong>
+                  checkbox.</li>
+              <li>Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Username and password dialog is shown.  
+                  Click <strong class="cb-guilabel">Create</strong>
+                  without entering any information (<n:invisible n:macro="productname" /> username and password will be entered later).
+              </li>
+              <li>Click <strong class="cb-guilabel">Close</strong> to complete VPN connection setup.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h2 class="step-heading">Step 3: Configure VPN settings</h2>
+        <ul>
+          <li>
+            Go to <strong class="cb-guilabel">Network Connections</strong> through
+            <strong class="cb-guilabel">Start</strong> &rarr;
+            <strong class="cb-guilabel">Control Panel</strong> &rarr;
+            <strong class="cb-guilabel">Network and Internet</strong> &rarr;
+            <strong class="cb-guilabel">Network and Sharing Center</strong> &rarr;
+            <strong class="cb-guilabel">Manage network connections</strong>.
+            (If you use Classic view, this path will be different.)
+          </li>
+          <li>
+            Select the newly created VPN connection (e.g. <strong class="cb-guilabel">My Company VPN</strong>), right click to get the context menu,
+            and select <strong class="cb-guilabel">Properties</strong>.
+          </li>
+          <li>
+            Select <strong class="cb-guilabel">Networking</strong> tab and do the following:
+            <ul> <!-- networking -->
+              <li>
+                Change <strong class="cb-guilabel">Type of VPN</strong> to 
+                <strong class="cb-guilabel">L2TP IPsec VPN</strong>.
+                <!--
+                You can also use the <strong class="cb-guilabel">Automatic</strong> VPN type,
+                but automatic VPN type detection adds unnecessary delay to connection setup.
+                We recommend you select the <strong class="cb-guilabel">L2TP IPsec VPN</strong> type.
+                -->
+              </li>
+              <li>
+                Click <strong class="cb-guilabel">IPSec settings</strong>.  Check
+                <strong class="cb-guilabel">Use pre-shared key for authentication</strong> and enter
+                the pre-shared key of the <n:invisible n:macro="productname" /> server: 
+                <img src="/static/hidden.gif" class="print-only" /><span class="screen-only"><strong class="cb-userinput"><n:invisible n:render="primary_psk" /></strong></span>.
+                Click <strong class="cb-guilabel">OK</strong>.
+              </li>
+              <li>
+                Select <strong class="cb-guilabel">Internet Protocol Version 4 (TCP/IPv4)</strong> from the connection items list and
+                click <strong class="cb-guilabel">Properties</strong>.
+                Click <strong class="cb-guilabel">Advanced...</strong> and ensure that
+                <strong class="cb-guilabel">Use default gateway on remote network</strong> is selected.
+              </li>
+              <li>  
+                Click
+                <strong class="cb-guilabel">OK</strong> to close the Advanced TCP/IP Settings dialog, then click
+                <strong class="cb-guilabel">OK</strong> to close the Internet Protocol Version 4 (TCP/IPv4) dialog.
+              </li>
+            </ul> <!-- networking -->
+          </li>
+          <li>
+            Select the
+            <strong class="cb-guilabel">Options</strong> tab, click <strong class="cb-guilabel">PPP Settings...</strong>,
+            and check the <strong class="cb-guilabel">Enable software compression</strong> checkbox.
+            Click <strong class="cb-guilabel">OK</strong> to close PPP Settings dialog.
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">OK</strong> to close VPN Connection Properties dialog. 
+          </li>
+          <li>
+            <n:invisible n:macro="productname" /> configuration is completed.
+          </li>
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+    </n:invisible>
+  </body>
+</html>
+

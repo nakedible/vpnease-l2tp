@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          Click <strong class="cb-guilabel">Export configuration</strong> to export a
+          <n:invisible n:macro="productname" /> configuration file, which contains
+          all configuration settings (including passwords set by users).
+          This allows you to back up your settings, to retain settings when reinstalling a server,
+          and to transfer settings from one server to another.
+        </p>
+
+        <n:invisible n:render="form buttons" />
+
+      </div>
+    </n:invisible>
+    
+    <n:invisible n:pattern="contexthelp">
+    <div class="context-help-items">
+        <div id="ctx-page">
+            <div class="ctx-title">
+            </div>
+            <div class="ctx-content">
+            </div>
+        </div>
+    </div>
+    </n:invisible>
+  </body>
+</html>

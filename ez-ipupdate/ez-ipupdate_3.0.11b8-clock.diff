@@ -1,0 +1,14 @@
+diff -ru ez-ipupdate-3.0.11b8.orig/ez-ipupdate.c ez-ipupdate-3.0.11b8/ez-ipupdate.c
+--- ez-ipupdate-3.0.11b8.orig/ez-ipupdate.c	2006-10-06 19:28:18.000000000 +0300
++++ ez-ipupdate-3.0.11b8/ez-ipupdate.c	2007-05-07 15:49:03.000000000 +0300
+@@ -4597,7 +4597,8 @@
+       {
+         ifresolve_warned = 0;
+         if(memcmp(&sin.sin_addr, &sin2.sin_addr, sizeof(struct in_addr)) != 0 || 
+-            (max_interval > 0 && time(NULL) - last_update > max_interval))
++            (max_interval > 0 && time(NULL) - last_update > max_interval) ||
++	   (last_update - time(NULL) > 2*24*3600) ) /* Update if clock jumped backwards more than two days */
+         {
+           int updateres;
+ 
+Only in ez-ipupdate-3.0.11b8: ez-ipupdate.c~

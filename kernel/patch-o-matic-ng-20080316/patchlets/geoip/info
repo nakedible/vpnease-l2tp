@@ -1,0 +1,5 @@
+Title:      iptables geoip match
+Author:     Samuel Jean <peejix@people.netfilter.org>; Nicolas Bouliane <acidfu@people.netfilter.org>
+Status:     Stable
+Repository: external
+Recompile:  netfilter, iptables

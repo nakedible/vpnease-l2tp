@@ -1,0 +1,19 @@
+This directory contains regression tests of IpPool. In order to run
+the tests, ippoold must be built with IPPOOL_TEST enabled. See
+../INSTALL for how to do that. The daemon must be run with all
+debugging enabled, i.e.
+
+	cd ..
+	./ippoold -d
+
+The tests are written using the tcltest package from the tcl
+distribution. The easiest way to run the tests is
+
+	make test
+
+in this directory after starting the daemon using the above
+method. Results are written to the results/ subdirectory.
+
+When making code changes to IpPool, please re-run the regression
+tests before submitting patches.
+

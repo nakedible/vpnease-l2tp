@@ -1,0 +1,4 @@
+Author: Filip Sneppe <filip.sneppe@cronos.be>
+Status: WorksForMe(tm)
+Repository: extra
+Requires: linux < 2.6.0

@@ -1,0 +1,810 @@
+iptables (1.3.3-2ubuntu4.1) dapper-proposed; urgency=low
+
+  * patches/all/090_enable-ipv6-rt.patch: enable "rt" module to enhance
+    ip6tables matching capabilities. (LP: #114184)
+
+ -- Kees Cook <kees@ubuntu.com>  Wed, 04 Jul 2007 17:42:08 -0700
+
+iptables (1.3.3-2ubuntu4) dapper; urgency=low
+
+  * Took references to 2.4 kernel out of  doc-base control files 
+    (closes:Malone #25972) 
+
+ -- Jordan Mantha <mantha@ubuntu.com>  Fri, 17 Mar 2006 04:13:06 -0800
+
+iptables (1.3.3-2ubuntu3) dapper; urgency=low
+
+  * Fix variable KERNEL_DIR. It is just '/usr'. not '/usr/include'. 
+    This reenables nearly all extension modules (Ubuntu: #19978)
+
+ -- Reinhard Tartler <siretart@ubuntu.com>  Wed, 23 Nov 2005 19:10:47 +0000
+
+iptables (1.3.3-2ubuntu2) dapper; urgency=low
+
+  * fixed borked merge. MoM does not deal with binary changes in debdiffs
+
+ -- Reinhard Tartler <siretart@ubuntu.com>  Wed, 23 Nov 2005 10:16:49 +0100
+
+iptables (1.3.3-2ubuntu1) dapper; urgency=low
+
+  * Resynchronise with Debian.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 08 Nov 2005 07:29:09 +0000
+
+iptables (1.3.3-2) unstable; urgency=low
+
+  * added pomng exclude hack to prep.sh
+  * excluded pomng's ip_queue_vwmark. Thanks ubuntu.
+  * updated README.Debian
+  * removed Suggests for ipmasq
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  6 Aug 2005 18:01:31 -0400
+
+iptables (1.3.3-1) unstable; urgency=low
+
+  * New upstream release 
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu,  4 Aug 2005 22:08:27 -0400
+
+iptables (1.3.2-1) unstable; urgency=low
+
+  * New upstream release
+  * removed libipt_physdev.c and libip6t_physdev.c from weird_*.patch
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 24 Jul 2005 21:03:39 -0400
+
+iptables (1.3.1-2ubuntu1) breezy; urgency=low
+
+  * Drop ip_queue_vwmark from patch-o-matic-ng-20050618 tarball and ippool:
+    - These extensions require kernel patches that are not part of the
+      stock kernel.
+  * Switch to use linux-kernel-headers instead of local copy of
+    kernel-headers:
+    - Add patches/all/003-no-local-kernel-headers.patch to cope with a missing
+      define.
+    - Change debian/rules KERNEL_DIR to point to /usr/include.
+    - Add build-dep on linux-kernel-headers (>= 2.6.11.2-0ubuntu10) to ensure
+      we have recent enough headers to build.
+
+ -- Fabio M. Di Nitto <fabbione@ubuntu.com>  Tue, 12 Jul 2005 07:37:51 +0200
+
+iptables (1.3.1-2) unstable; urgency=low
+
+  * added missing 2.6.12 kernel headers
+  * added libip6t_physdev.c to weird_spelling.patch
+  * added libip6t_physdev.c to weird_character.patch
+  * updated README.Debian, removed dead firewall package names
+    and added a disclaimer about such packages, closes: #307934
+  * removed iptables-dev's build dependency on iptables, closes: #288193
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 19 Jun 2005 19:15:36 -0400
+
+iptables (1.3.1-1) unstable; urgency=low
+
+  * New upstream release, closes: #299638
+  * build with 2.6.12 kernel source and patch-o-matic-ng-20050618
+  * hashlimit module added upstream, closes: #312374
+  * removed example ppp scripts, closes: #287346
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 18 Jun 2005 20:45:11 -0400
+
+iptables (1.2.11-10) unstable; urgency=medium
+
+  * fixed scripts/prep.sh: patching and patch ordering
+  * fixed a bashism reported by Geller Sandor in Bug#283822. Thanks.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed,  1 Dec 2004 19:11:34 -0500
+
+iptables (1.2.11-9) unstable; urgency=medium                                                                                      
+                                                                                                                                  
+  * another prep.sh tweak for patch ordering                                                                                      
+  * Bug#283721, Policy match save code puts in line feed that makes                                                               
+    iptables-restore error, reported and fixed by Matthew Grant. Thanks.                                                          
+                                                                                                                                  
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 30 Nov 2004 23:04:01 -0500                                                         
+
+iptables (1.2.11-8) unstable; urgency=medium
+
+  * fixed broken atomic_t_silly_hack.patch 
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun,  7 Nov 2004 16:12:22 -0500
+
+iptables (1.2.11-7) unstable; urgency=medium
+
+  * oops, corrected prep.sh for arch specific patches again
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  6 Nov 2004 22:46:20 -0500
+
+iptables (1.2.11-6) unstable; urgency=medium
+
+  * corrected prep.sh so arch specific patches are applied 
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  6 Nov 2004 12:22:25 -0500
+
+iptables (1.2.11-5) unstable; urgency=low
+
+  * 1.2.11-3 never really existed, changelog entry removed 
+  * restored missing all/###-man_pages.patch
+  * Closes:#279285, Compile fails - declaration after code, reported and
+    fixed by  Kevin Shanahan. Thanks. all/###-libpt_time_struct.patch
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed,  3 Nov 2004 22:40:26 -0500
+
+iptables (1.2.11-4) unstable; urgency=medium
+
+  * Closes: #219686, CAN-2004-0986, modprobe load error, reported by
+    Faheem Mitha, fixed by upstream. Thanks. (modprobe.patch)
+  * added missing upstream changelogs 
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 31 Oct 2004 18:56:52 -0500
+
+iptables (1.2.11-2) unstable; urgency=low
+
+  * Closes: #263154, upstream fix, corrects segfault on hostnames that 
+    resolve to multiple IPs. Reported by guillot. Thanks.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue,  3 Aug 2004 22:09:55 -0400
+
+iptables (1.2.11-1) unstable; urgency=low
+
+  * new upstream release
+    * Closes: #256975, new upstream release
+    * Closes: #229892, include man page additions for new extensions
+    * Closes: #248605: iptables CONNMARK update
+    * Closes: #218837: corrects limit module for sparc64
+    * obviates minor_buffer_overflows.patch and 64_32.patch
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  9 Jul 2004 01:04:58 -0400
+
+iptables (1.2.9-10) unstable; urgency=low
+
+  * Closes: #246037, added default logging level to man pages, requested
+    by Max Vozeler. Thanks.
+  * conslidated all man page patches to 003-man_pages.patch.
+  * added 006-64_32.patch, CVS pull, Sparc64 and HPPA makefile clean up
+    for 64/32-bit builds. Reported by Igor Genibel. Thanks.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 15 Jun 2004 20:38:42 -0400
+
+iptables (1.2.9-9) unstable; urgency=low
+
+  * Closes: #248605, s390 FTBS, reported by Andreas Henriksson. Thanks.
+    Removed extraneous patch from the s390 directory.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 15 May 2004 08:07:12 -0400
+
+iptables (1.2.9-8) unstable; urgency=low
+
+  * Closes: #247056, hppa (and s390) FTBFS, reported by Lamont Jones.
+    Thanks. Resynced local patches.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun,  2 May 2004 22:26:03 -0400
+
+iptables (1.2.9-7) unstable; urgency=low
+
+  * Closes: #246554, debian/rules missing KERNEL_DIR for install target,
+    reported by Paul Hampson. Thanks.
+  * removed the debian/install kludge for the brain flub noted above
+  * removed owner module support for version 2.4.19 and lower kernels
+  * removed dead code from examples/oldinitscript and corrected logical 
+    errors, some discovered by by Adam Heath. Thanks.
+  * updated kernel source to 2.4.26
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  1 May 2004 07:25:19 -0400
+
+iptables (1.2.9-6) unstable; urgency=low
+
+  * updated iptable's description in debian/control
+  * renamed local patches and updated descriptions in README
+  * added 002-weird_character.patch to accept dashes in interface names.
+    This problem has been reported numerous times over the years.
+  * updated 001-spell_weird.patch to include libipt_physdev.c
+  * altered prep.sh to check build/stamp/prep
+  * fixed this changelog, which was doubled at some point
+  * updated doc-base files
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 13 Mar 2004 13:33:33 -0500
+
+iptables (1.2.9-5) unstable; urgency=low
+
+  * added 005-atomic_t_silly_hack.patch for hppa and s390. Explicitly
+    declare atomic_t typedef in ip_conntrack_icmp.h.  FTBFS reported by
+    Lamont Jones. Thanks. (see: #232418)
+  * updated to kernel 2.4.25 headers
+  * removed failed ip6tables owner module detection
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 29 Feb 2004 09:24:44 -0500
+
+iptables (1.2.9-4) unstable; urgency=low
+
+  * added Suggests: iproute
+  * updated package descriptions
+  * removed iptables 1.2.9rc1 changelog
+  * updated patch-o-matic to 20031219
+  * updated kernel headers to 2.4.24
+  * added patches/004-minor_buffer_overflows.patch
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 10 Feb 2004 20:08:55 -0500
+
+iptables (1.2.9-3) unstable; urgency=low
+
+  * removed include/libulog/. Reported by rv@eychenne.org. Thanks.
+    (closes: #226740)
+  * updated toplevel README
+  * added linux kernel copyright info to debian/copyright
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  9 Jan 2004 18:21:29 -0500
+
+iptables (1.2.9-2) unstable; urgency=low
+
+  * updated README.Debian
+  * added ip6tables owner module detection
+  * removed debian/iptables.prerm
+  * added linux kenel source 2.4.23
+  * removed linux kernel sources: 2.4.20 2.4.20 2.6.0-test9
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 30 Dec 2003 14:55:40 -0500
+
+iptables (1.2.9-1) unstable; urgency=low
+
+  * new upstream release, 1.2.9 final
+  * removed local physdev patch, corrected upstream
+  * dropped p-o-m connbytes
+  * updated ppp example scripts from Kiryanov Vasiliy. Thanks.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun,  2 Nov 2003 20:53:31 -0500
+
+iptables (1.2.9-0rc1+1) unstable; urgency=low
+
+  * this is a test upload
+  * new upstream release
+  * removed local ROUTE patch, corrected upstream
+  * added local physdev patch, see Bug#207954
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon, 27 Oct 2003 16:17:11 -0500
+
+iptables (1.2.8-8) unstable; urgency=low
+
+  * corrected distro
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 19 Oct 2003 14:32:49 -0400
+
+iptables (1.2.8-7) unstable; urgency=low
+
+  * corrected control file for priority and kernel versions, again
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 19 Oct 2003 09:03:36 -0400
+
+iptables (1.2.8-6) unstable; urgency=low
+
+  * updated z_owner, thanks to Eddie and Godwin
+  * changed Priority to important, Bug#206685
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 18 Oct 2003 16:18:39 -0400
+
+iptables (1.2.8-5) unstable; urgency=low
+
+  * updated z_owner patch to handle 2.6.0-X kernels
+  * updated package description, sync'd kerenel versions
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 17 Oct 2003 13:17:37 -0400
+
+iptables (1.2.8-4) unstable; urgency=low
+
+  * added bzip2 build dependecy
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 22 Jun 2003 23:41:05 -0400
+
+iptables (1.2.8-3) unstable; urgency=low
+
+  * added bzip2 build dependency
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 22 Jun 2003 22:36:30 -0400
+
+iptables (1.2.8-2) unstable; urgency=low
+
+  * added ROUTE target corrections from Cedric de Launois
+  * added reduced kernel source archives, netfilter only
+  * removed extraneous "the" from iptables.8
+  * removed kernel source build dependencies
+  * changed all description kernel versions to 2.4.xx
+  * rewrote prep.sh
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 22 Jun 2003 18:56:36 -0400
+
+iptables (1.2.8-1) unstable; urgency=low
+
+  * New upstream release
+  * update to patch-o-matic-20030107
+  * added Kiryanov Vasiliy's ppp example scripts
+  * removed 000-iptables-1.2.7a-tcpmss.patch, corrected upstream
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 30 May 2003 06:10:01 -0400
+
+iptables (1.2.7-12) unstable; urgency=low
+
+  * moved iptables-dev to section devel
+  * removed owner module information from README.Debian
+  * restored local lintian overrides
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 23 Mar 2003 04:22:56 -0500
+
+iptables (1.2.7-11) unstable; urgency=low
+
+  * added Goswin Brederlow's owner module detection patch
+  * removed owner module alternatives
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 22 Mar 2003 12:58:03 -0500
+
+iptables (1.2.7-10) unstable; urgency=low
+
+  * use kernel-source-2.4.20 instead of kernel-headers-2.4.20
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed,  5 Feb 2003 04:07:14 -0500
+
+iptables (1.2.7-9) unstable; urgency=low
+
+  * added a temporary ugly hack for Bug #171167, alternate owner
+    plug-in for 2.4.20+ kernels. See README.Debian for details.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 26 Jan 2003 15:17:23 -0500
+
+iptables (1.2.7-8) unstable; urgency=low
+
+  * corrected -dev include dirs
+  * removed init.d, /var/lib/iptables, and debconf-ization
+  * added Suggests: ipmasq
+  * rewrote README.Debian
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  7 Dec 2002 14:31:40 -0500
+
+iptables (1.2.7-7) unstable; urgency=low
+
+  * Provide HOWTOs in English. Oops.
+  * cosmetic bug in initd_{auto,}save, s/iptables/\$iptables_command/
+  * prime the pump in the init.d with "ip{6}tables -nL"
+  * remove leading space in debconf template
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 22 Sep 2002 21:28:28 -0400
+
+iptables (1.2.7-6) unstable; urgency=low
+
+  * init.d script $libdir correction, Bug#160646
+  * created libip{6,}tables.a for iptables-dev, Bug#160490
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu, 12 Sep 2002 13:54:40 -0400
+
+iptables (1.2.7-5) unstable; urgency=low
+
+  * blah, correct Maintainer and Standards Version
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun,  8 Sep 2002 00:44:10 -0400
+
+iptables (1.2.7-4) unstable; urgency=low
+
+  * let's try uploading the correct packages
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  7 Sep 2002 23:50:58 -0400
+
+iptables (1.2.7-3) unstable; urgency=low
+
+  * changed topdir Makefile, default to cat README
+  * corrected debian/*.install and dh_install* calls
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  7 Sep 2002 22:56:39 -0400
+
+iptables (1.2.7-2) unstable; urgency=low
+
+  * init.d, remove errant debugging enable_ipv6=true
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  6 Sep 2002 23:53:25 -0400
+
+iptables (1.2.7-1) unstable; urgency=low
+
+  * added wacky source+patch build system
+  * updated to debhelper 4
+  * init.d, dropped iptables_command variable, added enable_ipv6 variable
+  * added --mss port/range fix
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  6 Sep 2002 06:33:07 -0400
+
+iptables (1.2.6a-6) unstable; urgency=low
+
+  * debian/iptables.init:
+    * initd_save: s/Savinging/Saving/, #148284
+    * init_load and initd_save: abort missing <ruleset> gracefully
+    * added initd_abort
+    * s/$@/$*/g parameter change
+    * corrected sed call problem, #149241
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu,  6 Jun 2002 23:57:59 -0400
+
+iptables (1.2.6a-5) unstable; urgency=high
+
+  * removed ownercmd patch, closes: 142649
+  * removed postinst init.d call, closes: 142791
+  * corrected source URIs in copyright
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 14 Apr 2002 10:44:57 -0400
+
+iptables (1.2.6a-4) unstable; urgency=high
+
+  * removed MARK_operations patch, severe breakage
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon,  8 Apr 2002 22:41:32 -0400
+
+iptables (1.2.6a-3) unstable; urgency=high
+
+  * posinst: merged in missing bits from 1.2.5-x and remove bogus "/1"
+  * undo MARK and REJECT changes, severe breakage
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed,  3 Apr 2002 14:38:12 -0500
+
+iptables (1.2.6a-2) unstable; urgency=low
+
+  * corrected typo and bug in initd_autosave()
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon,  1 Apr 2002 06:38:01 -0500
+
+iptables (1.2.6a-1) unstable; urgency=medium
+
+  * New upstream release, closes: 140202
+  * upstream man page update, closes: 137933
+  * upstream SEGV fix, closes: 134518
+  * new init.d setup, changes:
+    * {en,dis}able via debconf rc.d symlink management, closes: 139282
+    * deprecated "save_active" and "save_inactive"
+    * accept "load <ruleset>" instead of "[ruleset name]"
+    * added uniform policy compliant output, closes: 140400
+    * removed init.d clear from dev scripts, closes: 139102
+    * deprecated enable_iptables_initd and iptables_prerm_default
+  * replaced README.Debian
+  * chmod /etc/default/iptables 0644, closes: 1.2.73
+  * build depend on kernel 2.4.18 source
+  * adjusted update-rc.d runlevels, closes: 140428
+  * updated pom patch handling, more extension modules, closes: 117536
+  * removed debian/ip6tables*.8
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 31 Mar 2002 22:54:25 -0500
+
+iptables (1.2.5-7) unstable; urgency=low
+
+  * iptables.c: upstream patch for proto_num segfault
+  * init.d, shut down rc.d change from K10 to K90, closes: #135599
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  1 Mar 2002 15:59:23 -0500
+
+iptables (1.2.5-6) unstable; urgency=low
+
+  * removed extraneous -e in echo call, closes: #133838
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu, 14 Feb 2002 13:28:06 -0500
+
+iptables (1.2.5-5) unstable; urgency=low
+
+  * diginix inspired most-of-pom build
+  * debian/control: Build-Depends + kernel-source-2.4.17
+  * debian/control: corrected section override disparity warning
+  * init.d adjustments, increased verbosity, warn for no active/inactive
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 13 Feb 2002 12:49:12 -0500
+
+iptables (1.2.5-4) unstable; urgency=low
+
+  * /etc/default/iptables was still confusing people
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu,  7 Feb 2002 13:04:41 -0500
+
+iptables (1.2.5-3) unstable; urgency=low
+
+  * use explicit init.d variable defaults, closes: #132464
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue,  5 Feb 2002 11:23:58 -0500
+
+iptables (1.2.5-2) unstable; urgency=low
+
+  * used a silver bullet on /var/state/iptables/, closes: #130710
+  * default to 'nothing' instead of halt before start/stop in init.d
+    because halt effectively disables all IP traffic.
+  * allow saved ruleset filenames as init.d arguments, load the ruleset
+  * Added text to disavow any sense of security afforded by merely
+    installing the iptables package. iptables a tool that can be used
+    to configure firewalls, among other things. The package is most
+    defintely not a one-stop-system-security-solution. closes: #130729
+  * updated README and descriptions (control)
+  * added netfilter-extensions and netfilter-hacking HOWTOs
+  * resurrected ip6tables-{sav,restor}e.8 from an older package
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  2 Feb 2002 23:44:14 -0500
+
+iptables (1.2.5-1) unstable; urgency=low
+
+  * new upstream release
+  * moved /var/state/iptables to /var/lib/iptables, closes: #130337
+  * moved state dir definitions from default/iptables to init.d/iptables
+  * corrected autosave behavior
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 23 Jan 2002 13:36:58 -0500
+
+iptables (1.2.4-4) unstable; urgency=low
+
+  * official upload with new init.d setup
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 20 Jan 2002 19:24:43 -0500
+
+iptables (1.2.4-3.2) unstable; urgency=low
+
+  * added optional ip6tables support init.d
+  * changed prerm script init.d call default from "nothing" to "clear"
+  * adjust file permissions on "default" file and state dir in postinst
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu, 17 Jan 2002 20:58:00 -0500
+
+iptables (1.2.4-3.1) unstable; urgency=low
+
+  * README.Debian update
+  * debian/rules: remove dh_testroot from clean target
+  * s/wierd/weird/ in ip{,6}tables.c, see Bug #102771
+  * indicate -C option not available in manpage/help, see Bug #108199
+  * added init.d script
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 15 Jan 2002 19:10:12 -0500
+
+iptables (1.2.4-3) unstable; urgency=low
+
+  * gcc linking patch by LaMont Jones
+  * Debian README update
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu, 13 Dec 2001 07:47:48 -0500
+
+iptables (1.2.4-2) unstable; urgency=low
+
+  * corrected upstream changelog compilation
+  * debian/control: corrected Sections
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  9 Nov 2001 00:46:03 -0500
+
+iptables (1.2.4-1) unstable; urgency=low
+
+  * new upstream version
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu,  1 Nov 2001 11:19:05 -0500
+
+iptables (1.2.3-2) unstable; urgency=low
+
+  * Everett Coleman II's <gcc80x86@colemanTECH.tzo.com>
+    string_to_number() correction for libipt_TOS.c
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 22 Sep 2001 14:10:45 -0400
+
+iptables (1.2.3-1) unstable; urgency=low
+
+  * new upstream version
+  * debian/changelog: removed emacs mode settings
+  * added /usr/share/doc/iptables/changelog.gz
+  * Olivier Baudron's <Olivier.Baudron@ens.fr> string_to_number() /
+    --log-level corrections for iptables.c, libip6t_LOG.c, and
+    libip6t_length.c
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue,  4 Sep 2001 10:41:29 -0400
+
+iptables (1.2.2-10) unstable; urgency=low
+
+  * ip6tables.c: correct IP6T_LIB_DIR path
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon, 13 Aug 2001 07:01:15 -0400
+
+iptables (1.2.2-9) unstable; urgency=low
+
+  * debian/rules: extraneous MAKE caused build failures on some archs
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 11 Aug 2001 16:47:07 -0400
+
+iptables (1.2.2-8) unstable; urgency=low
+
+  * debian/rules: move EXTRA_VARS to correct KERNEL_DIR build failures
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 10 Aug 2001 10:23:03 -0400
+
+iptables (1.2.2-7) unstable; urgency=low
+
+  * Makefile: set LIBDIR and BINDIR
+  * ip6tables.c: set IP6T_LIB_DIR
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed,  8 Aug 2001 04:47:56 -0400
+
+iptables (1.2.2-6) unstable; urgency=low
+
+  * replace HTML guides with sgml2html (linuxdoc-tools) processed SGML,
+    closes: #107872
+  * debian/changelog: updated source location, author names, et cetera
+  * debian/rules: s/EXTRAVARS/EXTRA_VARS/g
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon,  6 Aug 2001 22:58:22 -0400
+
+iptables (1.2.2-5) unstable; urgency=low
+
+  * debian/rules:
+    * set $(EXTRAVARS) on command line before $(MAKE) (corrects
+      all variable settings, including LIBDIR, closes: #107839)
+    * use find/xarg in clean target to remove *.{a,o,so}
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon,  6 Aug 2001 19:22:42 -0400
+
+iptables (1.2.2-4) unstable; urgency=low
+
+  * debian/control: updated package descriptions and upgrade standards
+    version to 3.5.6.0
+  * restore original Makefile, all target and evironment variable hacks
+    moved to debian/rules
+  * reverted to libc6-dev kernel headers (unresolved issues here)
+  * 1.2.2-3 changelog updates:
+    * REJECT.c: CVS code corrects reject-with output (#99728, #105271)
+    * iptables.8: CVS code corrects man page formatting (#97079)
+    * debian/control: Build-Depend on kernel-headers-2.4.7
+    * debian/rules: remove object files with the clean target and use
+      kernel-headers-2.4.7 for KERNEL headers
+    * enabled libipq build
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri,  3 Aug 2001 20:41:13 -0400
+
+iptables (1.2.2-3) unstable; urgency=low
+
+  * debian/rules: converted from debmake to debhelper
+  * applied fixes from CVS tree, closes: #99728, #97079, #105271
+  * added iptables-dev package, closes: #106689, #101493
+  * README.Debian: update
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 31 Jul 2001 22:45:45 -0400
+
+iptables (1.2.2-2) unstable; urgency=low
+
+  * removed debian/rules bash expansions, Closes: #98794
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 26 May 2001 12:26:55 -0400
+
+iptables (1.2.2-1) unstable; urgency=low
+
+  * new upstream version
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 11 May 2001 14:02:25 -0400
+
+iptables (1.2.1a-2) unstable; urgency=low
+
+  * restore ip6tables, patch provided by Marc Martinez
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 25 Apr 2001 00:05:26 -0400
+
+iptables (1.2.1a-1) unstable; urgency=low
+
+  * new upstream release and enabled save/restore, Closes: #94211
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu, 19 Apr 2001 21:02:20 -0400
+
+iptables (1.2.1-1) unstable; urgency=low
+
+  * new upstream release, Closes: #85318
+  * removed symlinks to bins
+  * applied debian/patch-ULOG (minor build issue)
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 16 Mar 2001 16:37:27 -0500
+
+iptables (1.2-10) unstable; urgency=low
+
+  * bins and libs moved from /usr to /, provided symlinks, Closes: #89529
+  * added lintian overrides for shared-lib-without-dependency-information
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 14 Mar 2001 04:24:47 -0500
+
+iptables (1.2-9) unstable; urgency=low
+
+  * change to libc6's kernel 2.4 headers so sparc can build
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed,  7 Mar 2001 13:04:14 -0500
+
+iptables (1.2.7) unstable; urgency=low
+
+  * --rename-chain correction by sfrost@debian.org, closes: #84275
+  * debian/rules custom KERNEL_DIR example, closes: #86617
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon, 19 Feb 2001 10:11:16 -0500
+
+iptables (1.2-7) unstable; urgency=low
+
+  * Build-Depend on kernel-headers-2.4.0-test11, closes: #85871
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 17 Feb 2001 07:44:46 -0500
+
+iptables (1.2-6) unstable; urgency=low
+
+  * Corrected modprobe call, closes: #85299
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu,  8 Feb 2001 22:33:09 -0500
+
+iptables (1.2-5) unstable; urgency=low
+
+  * Added Build-Depends, closes #84764
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun,  4 Feb 2001 11:46:44 -0500
+
+iptables (1.2-4) unstable; urgency=low
+
+  * Recompiled without patch-o-matic headers (closes: #81902)
+
+ - Laurence J. Lane <ljlane@debian.org>  Thu, 11 Jan 2001 07:03:38 -0500
+
+iptables (1.2-3) unstable; urgency=low
+
+  * Corrected ip6tables lib path (closes: #81403)
+  * Added temporary ip6tables.8.gz
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue,  9 Jan 2001 19:59:40 -0500
+
+iptables (1.2-2) unstable; urgency=low
+
+  * Removed iptables-{save,restore}.8
+  * Corrected orig.tar.gz source upload
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue,  9 Jan 2001 08:28:55 -0500
+
+iptables (1.2-1) unstable; urgency=low
+
+  * New maintainer
+  * Enabled ip6tables build
+
+ -- Laurence J. Lane <ljlane@debian.org>  Mon,  8 Jan 2001 19:51:02 -0500
+
+iptables (1.1.2-1.0) unstable; urgency=low
+
+  * Non-maintainer upload
+  * New upstream release
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 14 Oct 2000 13:15:34 -0400
+
+iptables (1.1.1-1.1) unstable; urgency=low
+
+  * Non-maintainer upload
+  * Bypass kernel patch checks in Makefile, see Bug#67397
+
+ -- Laurence J. Lane <ljlane@debian.org>  Thu,  5 Oct 2000 17:34:53 -0400
+
+iptables (1.1.1-1.0) unstable; urgency=low
+
+  * Non-maintainer upload
+  * New upstream release
+  * Added Packet Filtering and NAT HOWTOs
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 15 Jul 2000 22:44:17 -0400
+
+iptables (1.1.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Christoph Lameter <christoph@lameter.com>  Sun, 14 May 2000 12:09:55 -0700
+
+iptables (1.0.0-3) unstable; urgency=low
+
+  * Remove Makefile.orig (closes: #63434)
+
+ -- Christoph Lameter <christoph@lameter.com>  Wed,  3 May 2000 11:23:33 -0700
+
+iptables (1.0.0-2) unstable; urgency=low
+
+  * make distclean rather than make clean in debian/rules to wipe out
+    platform specific dependendies before shipping source. (closes: #62967)
+
+ -- Christoph Lameter <christoph@lameter.com>  Mon, 24 Apr 2000 12:12:39 -0700
+
+iptables (1.0.0-1) unstable; urgency=low
+
+  * Added some more docs.
+  * Rewrote copyright file
+  * Upstream final 1.0.0 release.
+
+ -- Christoph Lameter <christoph@lameter.com>  Sun, 26 Mar 2000 19:19:19 -0800
+
+iptables (1.0.0alpha-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Christoph Lameter <christoph@lameter.com>  Sun, 26 Mar 2000 18:49:18 -0800

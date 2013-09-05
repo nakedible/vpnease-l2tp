@@ -1,0 +1,82 @@
+<html>
+<head><title>The Netfilter HomePage: iptables 1.2.3</title></head>
+<body bgcolor="#ffffff" text="#101010">
+<center><h1>The Netfilter HomePage: iptables 1.2.3</h1></center>
+
+This version requires kernel 2.4.4 or above.
+This version recommends kernel 2.4.9 or above.
+
+<p>
+<strong>Bugs Fixed from 1.2.2:</strong>
+<ul>
+<li> fix ICMPv6 support for IPv6<br>
+	[ Kis-Szabo Andras ]
+<li> fix problems with REJECT and iptables-restore / iptables-save<br>
+	[ Harald Welte ]
+<li> fix possible string overflow in psd match<br>
+	[ Dennis Koslowski ]
+<li> fix string match compile problems<br>
+	[ Gianni Tedesco ] 
+<li> support interfaces with '_' (underscore) in device names<br>
+	[ Harald Welte ]
+<li> support rules without target in iptables-save<br>
+	[ Emmanuel Fleury ]
+<li> correct handling of "eth+" type interface names in iptables-save/restore<br>
+	[ Harald Welte ]
+<li> do incremental checksumming when altering TTL in TTL target<br>
+	[ Harald Welte ]
+<li> fix no-srr case in ipv4options match<br>
+	[ Fabrice Marie ]
+
+
+<li> Kernel bugfixes in patch-o-matic:
+  <ul>
+	<li> Fix unexported ip6_table symbols
+		[ Brad Chapman ]
+	<li> Decrement TTL in MIRROR target if used in FORWARD chain
+		[ Harald Welte, Fabian Melzow ]
+	<li> Replace SACKPERM TCP option with NOOP (instead of ENDOFOPT)
+		[ Guillaume Morin ]
+  </ul>
+</ul>
+
+<strong>Changes from 1.2.2:</strong>
+<ul>
+<li> New "make most-of-pom" feature for application of non-confliction
+     patches.  This should be used instead of "make patch-o-matic" by most
+     users.<br>
+	[ Harald Welte ]
+<li> support for statically linking iptables, without need for .so plugins<br>
+	[ David McCullough ]
+<li> support for multiple ranges in SAME target<br>
+	[ Martin Josefsson ]
+<li> support for router alert options in ipv4options match<br>
+	[ Fabrice Marie ]
+<li> modprobe() modules when doing iptables-restore<br>
+	[ Andries van Schie ]
+<li> remove obsolete fragment matching code in IPv6<br>
+	[ Kis-Szabo Andras ]
+<li> add support for dns hostnames to IPv6 code<br>
+	[ Kis-Szabo Andras ]
+
+<li> New patch-o-matic patches:
+  <ul>
+<li> New multiport (mport) match<br>
+	[ Andreas Ferber ]
+<li> New nth match for matching every n-th packet<br>
+	[ Fabrice Marie ]
+<li> New realm match for matchin the routing realm<br>
+	[ Sampsa Ranta ]
+<li> New ctnetlink patch for manipulation of conntrack from userspace<br>
+	[ Jay Schulist ]
+<li> New REJECT Target for IPv6<br>
+	[ Harald Welte ]
+<li> New length match for IPv6<br>
+	[ Imran Patel ]
+<li> New multiport (mport) match for IPv6<br>
+	[ Andreas Ferber]
+  </ul>
+
+</ul>
+
+</body></html>

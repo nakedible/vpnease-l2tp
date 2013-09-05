@@ -1,0 +1,4 @@
+Title: iptables connlimit match
+Author: Gerd Knorr <kraxel@bytesex.org>
+Status: ItWorksForMe[tm]
+Repository: external

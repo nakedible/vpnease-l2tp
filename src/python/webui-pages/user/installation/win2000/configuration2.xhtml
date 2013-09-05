@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <!-- NB: this text is mostly shared with Windows XP -->
+        <h2 class="step-heading">Step 3: Create VPN connection</h2>
+
+        <ul>
+        <li>
+        Open <strong class="cb-guilabel">Start</strong> &rarr;
+        <strong class="cb-guilabel">Settings</strong> &rarr;
+        <strong class="cb-guilabel">Control panel</strong> &rarr;
+        <strong class="cb-guilabel">Network and Dial-up Connections</strong> and double click
+        <strong class="cb-guilabel">Make new connection</strong> to open Network Connection Wizard.
+        </li>
+
+        <li>
+          You may be prompted for dialing information if you haven't configured it before.
+          If you are not using a dialup connection, you can enter any information
+          accepted by Windows. These settings have no effect on the VPN connection.
+          You can enter the following information, for instance:
+          <ul>
+          <li>What country/region are you in now? &rarr; <strong class="cb-userinput">United States of America</strong></li>
+          <li>What area code (or city code) are you in now? &rarr; <strong class="cb-userinput">123</strong></li>
+          <!-- Note: XP has a "carrier code" setting; Win2k does not -->
+          <li>If you dial a number to access an outside line, what is it? &rarr; <strong class="cb-userinput">123</strong></li>
+          <li>The phone system at this location uses: &rarr; <strong class="cb-userinput">Tone dialing</strong></li>
+          </ul>
+        </li>
+
+        <li> 
+          Start the connection creation wizard by clicking <strong class="cb-guilabel">Next</strong>.
+        </li>
+        <li>
+          Select <strong class="cb-guilabel">Connect to a private network through the Internet</strong> and click
+          <strong class="cb-guilabel">Next</strong>.
+        </li>
+        <li>
+          You may be asked about initial connection dialing.  If so, select
+          <strong class="cb-guilabel">Do not dial the initial connection</strong> and
+          click <strong class="cb-guilabel">Next</strong>.  (If you are using GPRS or other dialup as a transport for your remote
+          access connection, make the appropriate choice here).
+        </li>
+        <li>
+          Enter the <n:invisible n:macro="productname" /> server IP address into the <strong class="cb-guilabel">Host name or IP address...</strong> field
+          (e.g. 123.123.123.123). Note that you cannot use a DNS name as the server address in Windows 2000 due to Windows limitations.
+          Click <strong class="cb-guilabel">Next</strong>.    
+        </li>
+        <li>
+          You may make the VPN connection available to only yourself or to all users.  Select the appropriate
+          choice and click <strong class="cb-guilabel">Next</strong>.
+        </li>
+        <li>
+          Enter a name for the new VPN connection (e.g. My Company VPN), check
+          <strong class="cb-guilabel">Add a shortcut to this connection to my desktop</strong>, and click
+          <strong class="cb-guilabel">Finish</strong> to close connection creation wizard.
+        </li>
+        <li>Windows opens the connection dialog automatically.</li>
+        </ul>
+
+        <!-- NB: this text is mostly shared with Windows XP -->
+        <h2 class="step-heading">Step 4: Modify connection properties</h2>
+          <ul>
+          <li>
+            Click <strong class="cb-guilabel">Properties</strong> from connection dialog to open connection properties dialog.
+          </li>
+          <!-- winxp psk entry is here, but win2k requires different use case -->
+          <li>
+            Select <strong class="cb-guilabel">Networking</strong> tab and change <strong class="cb-guilabel">Type of VPN</strong> to 
+            <strong class="cb-guilabel">Layer-2 Tunneling Protocol (L2TP)</strong>.
+          </li>
+          <li>
+            Select <strong class="cb-guilabel">Internet Protocol (TCP/IP)</strong> from the connection components list
+            and click <strong class="cb-guilabel">Properties</strong> to open Internet Protocol (TCP/IP) Properties dialog.  
+          </li>
+          <li>  
+            Click <strong class="cb-guilabel">Advanced...</strong> to open Advanced TCP/IP Settings dialog and ensure that 
+            <strong class="cb-guilabel">Use default gateway on remote network</strong> is selected.  
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">OK</strong> to close the Advanced TCP/IP Settings dialog, 
+            then click <strong class="cb-guilabel">OK</strong> to close the Internet Protocol (TCP/IP) Properties dialog.
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">OK</strong> to close the connection properties dialog, 
+            then click <strong class="cb-guilabel">Cancel</strong> to close the connection window.
+          </li>
+          </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>
+

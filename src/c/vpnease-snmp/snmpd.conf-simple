@@ -1,0 +1,19 @@
+# Minimal configuration example for VPNease snmpd
+
+# XXX: 'public' is the community string
+com2sec readonly  default public
+group rogroup v1 readonly
+group rogroup v2c readonly
+group rogroup usm readonly
+
+#           incl/excl subtree                          mask
+view all    included  .1                               80
+
+#                context sec.model sec.level match  read   write  notif
+access rogroup   ""      any       noauth    exact  all    none   none
+
+# XXX: set these?
+syslocation VPNease server
+syscontact None
+
+dlmod vpneaseMIB /usr/lib/l2tpgw/vpneaseMIB.so

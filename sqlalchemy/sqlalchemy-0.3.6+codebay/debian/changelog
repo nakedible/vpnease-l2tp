@@ -1,0 +1,5 @@
+sqlalchemy (0.3.6) dapper; urgency=low
+
+  * Backported for Ubuntu Dapper.
+
+ -- VPNease support <support@vpnease.com>  Thu, 26 Apr 2007 17:22:52 +0300

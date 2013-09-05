@@ -1,0 +1,12 @@
+diff -urN twisted-2.4.0.orig/twisted/python/syslog.py twisted-2.4.0.new/twisted/python/syslog.py
+--- twisted-2.4.0.orig/twisted/python/syslog.py	2005-11-10 04:11:09.000000000 +0200
++++ twisted-2.4.0.new/twisted/python/syslog.py	2006-09-26 11:34:31.000000000 +0300
+@@ -8,7 +8,7 @@
+ 
+ class SyslogObserver:
+     def __init__(self, prefix):
+-        syslog.openlog(prefix)
++        syslog.openlog(prefix, 0, syslog.LOG_DAEMON)
+ 
+     def emit(self, eventDict):
+         edm = eventDict['message']

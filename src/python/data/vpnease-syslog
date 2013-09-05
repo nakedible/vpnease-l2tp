@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+#  L2TP Server syslog startup.
+#
+
+PATH=/sbin/:/bin/:/usr/sbin/:/usr/bin
+
+. /lib/lsb/init-functions
+
+# Note: this must agree with pidfile location in constants
+pidfile='/var/run/vpnease-syslog.pid'
+
+case "$1" in
+    start)
+        log_begin_msg "VPNease syslog starting..."
+	if [ -s $pidfile ] && kill -0 $(cat $pidfile) >/dev/null 2>&1; then
+	    log_progress_msg "apparently already running"
+	    log_end_msg 0
+	    exit 0
+	fi
+
+	rm -f $pidfile
+
+	if start-stop-daemon --start --background --make-pidfile --pidfile $pidfile --exec /usr/lib/l2tpgw/l2tpgw-syslogdaemon; then
+	    log_end_msg 0
+	else
+	    log_end_msg 1
+	    rm -f $pidfile
+	fi
+        ;;
+    stop)
+        log_begin_msg "VPNease syslog stopping..."
+	start-stop-daemon --stop --pidfile $pidfile
+	log_end_msg $?
+	rm -f $pidfile
+        ;;
+    restart)
+	$0 stop
+	$0 start
+        ;;
+    *)
+        log_success_msg "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -1,0 +1,4 @@
+
+Buttons are made SVG by saving 'Drawing' in 900dpi, adding white background and
+flattening in Gimp, colorizing with parameters: 209, 94, 38, and finally scaling
+(bicubic) to height 40 (medium) and height 30 (small).

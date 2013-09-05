@@ -1,0 +1,13 @@
+diff -ru net-snmp-5.2.1.2.orig/debian/rules net-snmp-5.2.1.2/debian/rules
+--- net-snmp-5.2.1.2.orig/debian/rules	2007-08-21 15:55:44.000000000 +0300
++++ net-snmp-5.2.1.2/debian/rules	2007-08-23 14:07:36.000000000 +0300
+@@ -55,7 +55,7 @@
+ 	  --enable-ucd-snmp-compatibility \
+ 	  --enable-shared --with-cflags="$(CFLAGS)" \
+ 	  --with-perl-modules="INSTALLDIRS=vendor" \
+-	  --enable-ipv6 --with-logfile=none \
++	  --disable-ipv6 --with-logfile=none \
+ 	  --without-rpm --with-libwrap --with-openssl \
+ 	  --without-dmalloc --without-efence --without-rsaref \
+ 	  --with-sys-contact="root" --with-sys-location="Unknown" \
+Only in net-snmp-5.2.1.2/debian: rules~

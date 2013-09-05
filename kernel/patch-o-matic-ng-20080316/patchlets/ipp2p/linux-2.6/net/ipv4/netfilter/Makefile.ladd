@@ -1,0 +1,2 @@
+obj-$(CONFIG_IP_NF_MATCH_RECENT) += ipt_recent.o
+obj-$(CONFIG_IP_NF_MATCH_IPP2P) += ipt_ipp2p.o

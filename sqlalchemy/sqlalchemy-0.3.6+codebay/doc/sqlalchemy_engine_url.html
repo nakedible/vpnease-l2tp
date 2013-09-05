@@ -1,0 +1,255 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.engine.url</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_engine.html">module sqlalchemy.engine</a>
+
+               |   
+            Next: <a href="sqlalchemy_orm.html">module sqlalchemy.orm</a>
+    </div>
+
+        <h2>module sqlalchemy.engine.url</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_engine_url.html#docstrings_sqlalchemy.engine.url_modfunc">Module Functions</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_engine_url.html#docstrings_sqlalchemy.engine.url_modfunc_make_url">make_url()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_engine_url.html#docstrings_sqlalchemy.engine.url_URL">class URL(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.engine.url"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.engine.url</h3>
+    
+    
+    
+
+        
+    
+    <A name="docstrings_sqlalchemy.engine.url_modfunc"></a>
+    
+    <div class="subsection">
+
+    <h3>Module Functions</h3>
+    
+    
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.engine.url_modfunc_make_url"></a>
+    <b>def make_url(<i>name_or_url</i>)</b>
+    <div class="docstring">
+    <p>Given a string or unicode instance, produce a new URL instance.</p>
+<p>The given string is parsed according to the rfc1738 spec.  If an
+existing URL object is passed, just returns the object.</p>
+
+    </div>
+    </div>
+
+        
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.engine.url_URL"></a>
+    
+    <div class="subsection">
+
+    <h3>class URL(object)</h3>
+    
+    
+    <div class="darkcell"><p>Represent the components of a URL used to connect to a database.</p>
+<p>This object is suitable to be passed directly to a <tt class="docutils literal"><span class="pre">create_engine()</span></tt>
+call.  The fields of the URL are parsed from a string by the
+<tt class="docutils literal"><span class="pre">module-level</span> <span class="pre">make_url()</span></tt> function.  the string format of the URL is
+an RFC-1738-style string.</p>
+<p>Attributes on URL include:</p>
+<dl class="docutils">
+<dt>drivername</dt>
+<dd>The name of the database backend.  this name will correspond to a module in sqlalchemy/databases</dd>
+<dt>username</dt>
+<dd>The user name for the connection.</dd>
+<dt>password</dt>
+<dd>database password.</dd>
+<dt>host</dt>
+<dd>The name of the host.</dd>
+<dt>port</dt>
+<dd>The port number.</dd>
+<dt>database</dt>
+<dd>The database.</dd>
+<dt>query</dt>
+<dd>A dictionary containing key/value pairs representing the URL's query string.</dd>
+</dl>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>drivername</i>, <i>username=None</i>, <i>password=None</i>, <i>host=None</i>, <i>port=None</i>, <i>database=None</i>, <i>query=None</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_module(<i>self</i>)</b>
+    <div class="docstring">
+    <p>Return the SQLAlchemy database module corresponding to this URL's driver name.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def translate_connect_args(<i>self</i>, <i>names</i>)</b>
+    <div class="docstring">
+    <p>Translate this URL's attributes into a dictionary of connection arguments.</p>
+<p>Given a list of argument names corresponding to the URL
+attributes (<cite>host</cite>, <cite>database</cite>, <cite>username</cite>, <cite>password</cite>,
+<cite>port</cite>), will assemble the attribute values of this URL into
+the dictionary using the given names.</p>
+
+    </div>
+    </div>
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_engine.html">module sqlalchemy.engine</a>
+
+               |   
+            Next: <a href="sqlalchemy_orm.html">module sqlalchemy.orm</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

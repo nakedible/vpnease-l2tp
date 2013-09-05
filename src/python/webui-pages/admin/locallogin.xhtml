@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:n="http://nevow.com/ns/nevow/0.1">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>VPNease - <n:invisible n:render="page_title" /></title>
+<meta name="description" content="" />
+<link rel="stylesheet" href="/static/site.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/layout.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/login.css" type="text/css" media="screen" />  
+<!--[if IE]>
+<link rel="stylesheet" href="/static/iehacks.css" type="text/css" media="screen" />
+<![endif]-->
+<link rel="stylesheet" href="/static/hacks.css" type="text/css" media="screen" />  
+
+<link rel="shortcut icon" href="/static/favicon.ico" />
+<link rel="icon" href="/static/favicon.gif" type="image/gif" />
+
+<!-- <script type="text/javascript" n:render="dynamic_javascript" /> -->
+
+</head>
+
+
+<body>
+
+
+
+<div id="login-w">
+<div id="login">
+		    
+    <h1>Administrator Login</h1> 
+
+    <div class="unit span-6 last">    
+
+
+      <n:invisible n:render="normal_page">
+        <p>
+          Local administration does not require authentication.
+          Click <strong class="cb-guilabel">Login</strong> to enter the <n:invisible n:macro="productname" />
+          administration interface.
+        </p>
+        <br />
+      </n:invisible>
+
+      <n:invisible n:render="welcome_page">
+        <h3>Welcome to <n:invisible n:macro="productname" />!</h3>
+
+        <p>
+          Login to the <n:invisible n:macro="productname" /> administration interface to
+          configure your <n:invisible n:macro="productname" /> server.  For more information
+          see the product web site <a href="http://www.vpnease.com/" class="cb-external" target="_blank">www.vpnease.com</a>.
+        </p>
+        <p>
+          Local administration does not require authentication.
+          Click <strong class="cb-guilabel">Login</strong> to enter the <n:invisible n:macro="productname" />
+          administration interface.
+        </p>
+        <br />
+        <n:invisible n:render="welcome_rendered" />
+
+      </n:invisible>
+
+      <div class="login-error"><n:invisible n:render="login_error" /></div>
+
+		<form action="#" method="post" id="login-form">
+                  <n:attr name="action" n:render="login_action" />
+	
+	        <input class="button" name="commit" type="submit" value="Login" />		        		
+		    
+		</form>
+		
+
+
+        <br />
+
+
+      <script src="/static/commonutils.js" type="text/javascript" />
+
+                    
+    <!-- /span-6 -->
+    </div>
+ 
+    <div class="unit span-3 last">    
+		
+		<img id="login-logo" src="/static/vpnease-logo.gif" width="150" height="55" alt="VPNease" />
+    <!-- /span-3  -->
+    </div>
+    
+    <!-- old skool clearing float -->
+	<div class="cut">&nbsp;</div>
+
+                                                                      
+<!-- /login -->
+</div>  
+</div>  
+
+
+  </body>
+</html>

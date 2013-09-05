@@ -1,0 +1,228 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.mods.threadlocal</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_ext_sessioncontext.html">module sqlalchemy.ext.sessioncontext</a>
+
+               |   
+            Next: <a href="sqlalchemy_ext_selectresults.html">module sqlalchemy.ext.selectresults</a>
+    </div>
+
+        <h2>module sqlalchemy.mods.threadlocal</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_mods_threadlocal.html#docstrings_sqlalchemy.mods.threadlocal_modfunc">Module Functions</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_mods_threadlocal.html#docstrings_sqlalchemy.mods.threadlocal_modfunc_assign_mapper">assign_mapper()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_mods_threadlocal.html#docstrings_sqlalchemy.mods.threadlocal_Objectstore">class Objectstore(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.mods.threadlocal"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.mods.threadlocal</h3>
+    
+    
+    <div class="darkcell"><p>This plugin installs thread-local behavior at the <tt class="docutils literal"><span class="pre">Engine</span></tt> and <tt class="docutils literal"><span class="pre">Session</span></tt> level.</p>
+<p>The default <tt class="docutils literal"><span class="pre">Engine</span></tt> strategy will be <em>threadlocal</em>, producing
+<tt class="docutils literal"><span class="pre">TLocalEngine</span></tt> instances for create_engine by default.</p>
+<p>With this engine, <tt class="docutils literal"><span class="pre">connect()</span></tt> method will return the same connection
+on the same thread, if it is already checked out from the pool.  This
+greatly helps functions that call multiple statements to be able to
+easily use just one connection without explicit <tt class="docutils literal"><span class="pre">close</span></tt> statements
+on result handles.</p>
+<p>On the <tt class="docutils literal"><span class="pre">Session</span></tt> side, module-level methods will be installed within
+the objectstore module, such as <tt class="docutils literal"><span class="pre">flush()</span></tt>, <tt class="docutils literal"><span class="pre">delete()</span></tt>, etc.  which
+call this method on the thread-local session.</p>
+<p>Note: this mod creates a global, thread-local session context named
+<tt class="docutils literal"><span class="pre">sqlalchemy.objectstore</span></tt>. All mappers created while this mod is
+installed will reference this global context when creating new mapped
+object instances.</p>
+</div>
+    
+
+        
+    
+    <A name="docstrings_sqlalchemy.mods.threadlocal_modfunc"></a>
+    
+    <div class="subsection">
+
+    <h3>Module Functions</h3>
+    
+    
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.mods.threadlocal_modfunc_assign_mapper"></a>
+    <b>def assign_mapper(<i>class_</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+        
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.mods.threadlocal_Objectstore"></a>
+    
+    <div class="subsection">
+
+    <h3>class Objectstore(object)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>session = property()</b>
+         <div class="docstring">
+         
+         </div> 
+         </div>
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_ext_sessioncontext.html">module sqlalchemy.ext.sessioncontext</a>
+
+               |   
+            Next: <a href="sqlalchemy_ext_selectresults.html">module sqlalchemy.ext.selectresults</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

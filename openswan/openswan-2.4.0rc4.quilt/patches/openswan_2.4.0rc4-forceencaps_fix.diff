@@ -1,0 +1,45 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/nat_traversal.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/nat_traversal.c	2006-12-03 19:49:47.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/nat_traversal.c	2006-12-03 19:50:41.000000000 +0200
+@@ -297,7 +297,13 @@
+ 
+ 	if(st->st_connection->forceencaps) {
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_PEER);
++#if 1 /* l2tp-workaround: do not break our nat-t hash: this is needed for
++	 interoperating with clients that do not wish to talk to servers
++	 behind NATs (eq. WinXP-sp2 without registry modification).
++	 Note: now we use 'forceencaps' option always. */
++#else
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_ME);
++#endif
+ 	}
+ }
+ 
+@@ -348,18 +354,25 @@
+ 	/**
+ 	 * Second one with my IP & port
+ 	 */
++#if 0 /* do not break our nat-t hash: all clients do not like servers
++       * behind NAT by default (esp. win xp sp2 without registry change).
++       */
+ 	if(st->st_connection->forceencaps) {
+ 	    _natd_hash(st->st_oakley.hasher, hash
+ 		       , st->st_icookie
+ 		       , is_zero_cookie(st->st_rcookie) ? md->hdr.isa_rcookie : st->st_rcookie
+ 		       , &(md->iface->ip_addr),0);
+ 	} else {
++#endif
+ 	    _natd_hash(st->st_oakley.hasher, hash
+ 		       , st->st_icookie
+ 		       , is_zero_cookie(st->st_rcookie) ? md->hdr.isa_rcookie : st->st_rcookie
+ 		       , &(md->iface->ip_addr)
+-		       , ntohs(st->st_remoteport));
++		       , ntohs(md->iface->port));
++#if 0 /* l2tp-workaround: see above. */
+ 	}
++#endif
++
+ 	return (out_generic_raw(np, &isakmp_nat_d, outs,
+ 		hash, st->st_oakley.hasher->hash_digest_len, "NAT-D"));
+ }

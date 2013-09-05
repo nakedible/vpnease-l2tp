@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 22:34:50 +0300
+Source: twisted-news
+Binary: python2.4-twisted-news python-twisted-news
+Architecture: source all
+Version: 0.2.0-1
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted-news - An NNTP protocol implementation with client and server
+ python2.4-twisted-news - An NNTP protocol implementation with client and server
+Changes: 
+ twisted-news (0.2.0-1) dapper; urgency=low
+ .
+   * New upstream release
+Files: 
+ 11044a7078863c6874fa96251b7d73fe 360 python optional twisted-news_0.2.0-1.dsc
+ f94f45525ca4bbcb2040e9c9f3777e65 24491 python optional twisted-news_0.2.0-1.tar.gz
+ c615cdb7094e876641d5559a3c848775 6982 python optional python-twisted-news_0.2.0-1_all.deb
+ 24cb1758258a7c2d09ba54997796115e 25556 python optional python2.4-twisted-news_0.2.0-1_all.deb

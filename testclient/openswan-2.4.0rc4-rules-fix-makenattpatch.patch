@@ -1,0 +1,14 @@
+diff -ru openswan-2.4.0rc4.orig/debian/rules openswan-2.4.0rc4/debian/rules
+--- openswan-2.4.0rc4.orig/debian/rules	2005-01-19 19:09:16.000000000 +0200
++++ openswan-2.4.0rc4/debian/rules	2006-08-17 22:26:28.000000000 +0300
+@@ -196,7 +196,8 @@
+ 
+ 	# This creates the NAT-T patch that can be used on the kernel tree 
+ 	# even with openswan-modules-source.
+-	make nattpatch > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
++	echo "Not created." > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
++	#make nattpatch > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
+         
+ 	tar -C $(BUILDDIR) -c modules/ | gzip -9 > \
+         	"$(PKGDIR)/usr/src/openswan-modules.tar.gz"
+Only in openswan-2.4.0rc4/debian: rules.orig

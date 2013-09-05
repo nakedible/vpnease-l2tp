@@ -1,0 +1,532 @@
+Plugins  {@name=plugins}
+======================
+
+SQLAlchemy has a variety of extensions and "mods" available which provide extra functionality to SA, either via explicit usage or by augmenting the core behavior.  Several of these extensions are designed to work together.
+
+### SessionContext
+
+**Author:**  Daniel Miller
+
+This plugin is used to instantiate and manage Session objects.  It is the preferred way to provide thread-local session functionality to an application.  It provides several services:
+
+* serves as a factory to create sessions of a particular configuration.  This factory may either call `create_session()` with a particular set of arguments, or instantiate a different implementation of `Session` if one is available.
+* for the `Session` objects it creates, provides the ability to maintain a single `Session` per distinct application thread.  The `Session` returned by a `SessionContext` is called the *contextual session.*   Providing at least a thread-local context to sessions is important because the `Session` object is not threadsafe, and is intended to be used with localized sets of data, as opposed to a single session being used application wide.
+* besides maintaining a single `Session` per thread, the contextual algorithm can be changed to support any kind of contextual scheme.
+* provides a `MapperExtension` that can enhance a `Mapper`, such that it can automatically `save()` newly instantiated objects to the current contextual session.  It also allows `Query` objects to be created without an explicit `Session`.  While this is very convenient functionality, having it switched on without understanding it can be very confusing.  Note that this feature is optional when using `SessionContext`.
+
+Using the SessionContext in its most basic form involves just instantiating a `SessionContext`:
+
+    {python}
+    import sqlalchemy
+    from sqlalchemy.ext.sessioncontext import SessionContext
+    
+    ctx = SessionContext(sqlalchemy.create_session)
+    
+    class User(object):
+        pass
+    
+    mapper(User, users_table)
+    u = User()
+
+    # the contextual session is referenced by the "current" property on SessionContext
+    ctx.current.save(u)
+    ctx.current.flush()
+
+From this example, one might see that the `SessionContext`'s typical *scope* is at the module or application level.  Since the `Session` itself is better suited to be used in per-user-request or even per-function scope, the `SessionContext` provides an easy way to manage the scope of those `Session` objects.
+
+The construction of each `Session` instance can be customized by providing a "creation function" which returns a new `Session`.  A common customization is a `Session` which needs to explicitly bind to a particular `Engine`:
+
+    {python}
+    import sqlalchemy
+    from sqlalchemy.ext.sessioncontext import SessionContext
+    
+    # create an engine
+    someengine = sqlalchemy.create_engine('sqlite:///')
+    
+    # a function to return a Session bound to our engine
+    def make_session():
+        return sqlalchemy.create_session(bind_to=someengine)
+    
+    # SessionContext
+    ctx = SessionContext(make_session)
+    
+    # get the session bound to engine "someengine":
+    session = ctx.current
+
+The above pattern is more succinctly expressed using Python lambdas:
+
+    {python}
+    ctx = SessionContext(lambda:sqlalchemy.create_session(bind_to=someengine))
+
+The default creation function is simply:
+
+    {python}
+    ctx = SessionContext(sqlalchemy.create_session)
+
+The "scope" to which the session is associated, which by default is a thread-local scope, can be customized by providing a "scope callable" which returns a hashable key that represents the current scope:
+
+    {python}
+    import sqlalchemy
+    from sqlalchemy.ext.sessioncontext import SessionContext
+    
+    # global declaration of "scope"
+    scope = "scope1"
+    
+    # a function to return the current "session scope"
+    def global_scope_func():
+        return scope
+
+    # create SessionContext with a custom "scopefunc"
+    ctx = SessionContext(sqlalchemy.create_session, scopefunc=global_scope_func)
+    
+    # get the session corresponding to "scope1":
+    session = ctx.current
+    
+    # switch the "scope"
+    scope = "scope2"
+    
+    # get the session corresponding to "scope2":
+    session = ctx.current
+
+Examples of customized scope can include user-specific sessions or requests, or even sub-elements of an application, such as a graphical application which maintains a single `Session` per application window (this was the original motivation to create SessionContext).
+
+#### Using SessionContextExt {@name=sessioncontextext}
+
+This is a `MapperExtension` which allows a `Mapper` to be automatically associated with a `SessionContext`.  Newly constructed objects get `save()`d to the session automatically, and `Query` objects can be constructed without a session. The instance of `SessionContextExt` is provided by the `SessionContext` itself:
+
+    {python}
+    import sqlalchemy
+    from sqlalchemy.ext.sessioncontext import SessionContext
+    
+    ctx = SessionContext(sqlalchemy.create_session)
+    
+    class User(object):
+        pass
+    
+    mapper(User, users_table, extension=ctx.mapper_extension)
+
+    # 'u' is automatically added to the current session of 'ctx'
+    u = User()
+    
+    assert u in ctx.current
+    
+    # get the current session and flush
+    ctx.current.flush()
+    
+The `MapperExtension` can be configured either per-mapper as above, or on an application-wide basis using:
+
+    {python}
+    import sqlalchemy
+    from sqlalchemy.orm.mapper import global_extensions
+    from sqlalchemy.ext.sessioncontext import SessionContext
+    
+    ctx = SessionContext(sqlalchemy.create_session)
+
+    global_extensions.append(ctx.mapper_extension)
+
+SessionContextExt allows `Query` objects to be created against the mapped class without specifying a `Session`.  Each `Query` will automatically make usage of the current contextual session:
+
+    {python}
+    # create a Query from a class
+    query = Query(User)
+
+    # specify entity name
+    query = Query(User, entity_name='foo')
+
+    # create a Query from a mapper
+    query = Query(mapper)
+
+    # then use it
+    result = query.select()
+    
+When installed globally, all `Mapper` objects will contain a built-in association to the `SessionContext`.  This means that once a mapped instance is created, creating a new `Session` and calling `save()` with the instance as an argument will raise an error stating that the instance is already associated with a different session.  While you can always remove the object from its original session, `SessionContextExt` is probably convenient only for an application that does not need much explicit manipulation of sessions.
+
+The user still has some control over which session gets used at instance construction time.  An instance can be redirected at construction time to a different `Session` by specifying the keyword parameter `_sa_session` to its constructor, which is decorated by the mapper:
+
+    {python}
+    session = create_session()  # create a new session distinct from the contextual session
+    myuser = User(_sa_session=session)  # make a new User that is saved to this session
+
+Similarly, the `entity_name` parameter, which specifies an alternate `Mapper` to be used when attaching this instance to the `Session`, can be specified via `_sa_entity_name`:
+
+    {python}
+    myuser = User(_sa_session=session, _sa_entity_name='altentity')
+
+The decoration of mapped instances' `__init__()` method is similar to this example:    
+
+    {python}
+    oldinit = class_.__init__   # the previous init method
+    def __init__(self, *args, **kwargs):
+        session = kwargs.pop('_sa_session', None)
+        entity_name = kwargs.pop('_sa_entity_name', None)
+        if session is None:
+            session = ext.get_session() # get Session from this Mapper's MapperExtension
+            if session is EXT_PASS:
+                session = None
+        if session is not None:
+            session.save(self, entity_name=entity_name)  # attach to the current session
+        oldinit(self, *args, **kwagrs)   # call previous init method
+
+### SelectResults
+
+**Author:** Jonas Borgström
+
+*NOTE:* As of verison 0.3.6 of SQLAlchemy, most behavior of `SelectResults` has been rolled into the base `Query` object.  Explicit usage of `SelectResults` is therefore no longer needed.
+
+`SelectResults` gives transformative behavior to the results returned from the `select` and `select_by` methods of `Query`. 
+
+    {python}
+    from sqlalchemy.ext.selectresults import SelectResults
+
+    query = session.query(MyClass)
+    res = SelectResults(query)
+    
+    res = res.filter(table.c.column == "something") # adds a WHERE clause (or appends to the existing via "and")
+    res = res.order_by([table.c.column]) # adds an ORDER BY clause
+
+    for x in res[:10]:  # Fetch and print the top ten instances - adds OFFSET 0 LIMIT 10 or equivalent
+      print x.column2
+
+    # evaluate as a list, which executes the query
+    x = list(res)
+
+    # Count how many instances that have column2 > 42
+    # and column == "something"
+    print res.filter(table.c.column2 > 42).count()
+
+    # select() is a synonym for filter()
+    session.query(MyClass).select(mytable.c.column=="something").order_by([mytable.c.column])[2:7]
+
+An important facet of SelectResults is that the actual SQL execution does not occur until the object is used in a list or iterator context.  This means you can call any number of transformative methods (including `filter`, `order_by`, list range expressions, etc) before any SQL is actually issued.
+
+Configuration of SelectResults may be per-Query, per Mapper, or per application:
+
+    {python}
+    from sqlalchemy.ext.selectresults import SelectResults, SelectResultsExt
+    
+    # construct a SelectResults for an individual Query
+    sel = SelectResults(session.query(MyClass))
+    
+    # construct a Mapper where the Query.select()/select_by() methods will return a SelectResults:
+    mapper(MyClass, mytable, extension=SelectResultsExt())
+    
+    # globally configure all Mappers to return SelectResults, using the "selectresults" mod
+    import sqlalchemy.mods.selectresults
+
+SelectResults greatly enhances querying and is highly recommended.  For example, heres an example of constructing a query using a combination of joins and outerjoins:
+
+    {python}
+    mapper(User, users_table, properties={
+        'orders':relation(mapper(Order, orders_table, properties={
+            'items':relation(mapper(Item, items_table))
+        }))
+    })
+    session = create_session()
+    query = SelectResults(session.query(User))
+
+    result = query.outerjoin_to('orders').outerjoin_to('items').select(or_(Order.c.order_id==None,Item.c.item_id==2))
+
+For a full listing of methods, see the [generated documentation](rel:docstrings_sqlalchemy.ext.selectresults).
+    
+### assignmapper
+
+**Author:** Mike Bayer
+
+This extension is used to decorate a mapped class with direct knowledge about its own `Mapper`, a contextual `Session`, as well as functions provided by the `Query` and `Session` objects.  The methods will automatically make usage of a contextual session with which all newly constructed objects are associated.  `assign_mapper` operates as a `MapperExtension`, and requires the usage of a `SessionContext` as well as `SessionContextExt`, described in [plugins_sessioncontext](rel:plugins_sessioncontext).  It replaces the usage of the normal `mapper` function with its own version that adds a `SessionContext` specified as the first argument:
+
+    {python}
+    import sqlalchemy
+    from sqlalchemy.ext.sessioncontext import SessionContext
+    from sqlalchemy.ext.assignmapper import assign_mapper
+    
+    # session context
+    ctx = SessionContext(sqlalchemy.create_session)
+    
+    # assign mapper to class MyClass using table 'sometable', getting
+    # Sessions from 'ctx'.
+    assign_mapper(ctx, MyClass, sometable, properties={...}, ...)
+
+Above, all new instances of `MyClass` will be associated with the contextual session, `ctx.current`.  Additionally, `MyClass` and instances of `MyClass` now contain a large set of methods including `get`, `select`, `flush`, `delete`.  The full list is as follows:
+
+    {python}
+    # Query methods:
+    ['get', 'select', 'select_by', 'selectone', 'get_by', 'join_to', 'join_via', 'count', 'count_by']
+
+    # Session methods:
+    ['flush', 'delete', 'expire', 'refresh', 'expunge', 'merge', 'save', 'update', 'save_or_update']
+
+To continue the `MyClass` example:
+
+    {python}
+    # create a MyClass.  it will be automatically assigned to the contextual Session.
+    mc = MyClass()
+    
+    # save MyClass - this will call flush() on the session, specifying 'mc' as the only
+    # object to be affected
+    mc.flush()
+    
+    # load an object, using Query methods attached to MyClass
+    result = MyClass.get_by(id=5)
+    
+    # delete it
+    result.delete()
+    
+    # commit the change
+    result.flush()
+
+It should be noted that the `flush()` method on the instance need not be called.  You're probably better off calling `flush()` on the actual session, so that all changes are properly written to the database simultaneously:
+
+    {python}
+    # create a MyClass.
+    mc = MyClass()
+
+    # load some MyClass objects
+    result = MyClass.select(MyClass.c.name=='bar')
+
+    # delete one of them
+    result[1].delete()
+
+    # commit all changes
+    ctx.current.flush()
+
+### associationproxy
+
+**Author:** Mike Bayer<br/>
+**Version:** 0.3.1 or greater
+
+`associationproxy` is used to create a transparent proxy to the associated object in an association relationship, thereby decreasing the verbosity of the pattern in cases where explicit access to the association object is not required.  The association relationship pattern is a richer form of a many-to-many relationship, which is described in [datamapping_association](rel:datamapping_association).  It is strongly recommended to fully understand the association object pattern in its explicit form before using this extension; see the examples in the SQLAlchemy distribution under the directory `examples/association/`.
+
+When dealing with association relationships, the **association object** refers to the object that maps to a row in the association table (i.e. the many-to-many table), while the **associated object** refers to the "endpoint" of the association, i.e. the ultimate object referenced by the parent.  The proxy can return collections of objects attached to association objects, and can also create new association objects given only the associated object.  An example using the Keyword mapping described in the data mapping documentation is as follows:
+
+    {python}
+    from sqlalchemy.ext.associationproxy import AssociationProxy
+    
+    class User(object):
+        pass
+
+    class Keyword(object):
+        def __init__(self, name):
+            self.keyword_name = name
+
+    class Article(object):
+        # create "keywords" proxied association.
+        # the collection is called 'keyword_associations', the endpoint
+        # attribute of each association object is called 'keyword'.  the 
+        # class itself of the association object will be figured out automatically  .
+        keywords = AssociationProxy('keyword_associations', 'keyword')
+
+    class KeywordAssociation(object):
+        pass
+
+    # create mappers normally
+    # note that we set up 'keyword_associations' on Article,
+    # and 'keyword' on KeywordAssociation.
+    mapper(Article, articles_table, properties={
+        'keyword_associations':relation(KeywordAssociation, lazy=False, cascade="all, delete-orphan")
+        }
+    )
+    mapper(KeywordAssociation, itemkeywords_table,
+        primary_key=[itemkeywords_table.c.article_id, itemkeywords_table.c.keyword_id],
+        properties={
+            'keyword' : relation(Keyword, lazy=False), 
+            'user' : relation(User, lazy=False) 
+        }
+    )
+    mapper(User, users_table)
+    mapper(Keyword, keywords_table)
+
+    # now, Keywords can be attached to an Article directly;
+    # KeywordAssociation will be created by the AssociationProxy, and have the 
+    # 'keyword' attribute set to the new Keyword.
+    # note that these KeywordAssociation objects will not have a User attached to them.
+    article = Article()
+    article.keywords.append(Keyword('blue'))
+    article.keywords.append(Keyword('red'))
+    session.save(article)
+    session.flush()
+    
+    # the "keywords" collection also returns the underlying Keyword objects
+    article = session.query(Article).get_by(id=12)
+    for k in article.keywords:
+        print "Keyword:", k.keyword_name
+
+    # the original 'keyword_associations' relation exists normally with no awareness of the proxy
+    article.keyword_associations.append(KeywordAssociation())
+    print [ka for ka in article.keyword_associations]
+    
+Note that the above operations on the `keywords` collection are proxying operations to and from the `keyword_associations` collection, which exists normally and can be accessed directly.  `AssociationProxy` will also detect if the collection is list or scalar based and will configure the proxied property to act the same way.
+
+For the common case where the association object's creation needs to be specified by the application, `AssociationProxy` takes an optional callable `creator()` which takes a single associated object as an argument, and returns a new association object.
+
+    {python}
+    def create_keyword_association(keyword):
+        ka = KeywordAssociation()
+        ka.keyword = keyword
+        return ka
+        
+    class Article(object):
+        # create "keywords" proxied association
+        keywords = AssociationProxy('keyword_associations', 'keyword', creator=create_keyword_association)
+    
+
+### threadlocal
+
+**Author:**  Mike Bayer and Daniel Miller
+
+`threadlocal` is an extension that was created primarily to provide backwards compatibility with the older SQLAlchemy 0.1 series.  It uses three features which SQLAlchemy 0.2 and above provide as distinct features:  `SessionContext`, `assign_mapper`, and the `TLEngine`, which is the `Engine` used with the threadlocal `create_engine()` strategy.  It is **strongly** recommended that these three features are understood individually before using threadlocal.
+
+In SQLAlchemy 0.1, users never dealt with explcit connections and didn't have a very explicit `Session` interface, instead relying upon a more magical global object called `objectstore`.  The `objectstore` idea was wildly popular with about half of SA's users, and completely unpopular with the other half.  The threadlocal mod basically brings back `objectstore`, which is in fact just a `SessionContext` where you can call `Session` methods directly off of it, instead of saying `context.current`.  For `threadlocal` to faithfully produce 0.1 behavior, it is invoked as a *mod* which globally installs the objectstore's mapper extension, such that all `Mapper`s will automatically assign all new instances of mapped classes to the objectstore's contextual `Session`.  Additionally, it also changes the default engine strategy used by `create_engine` to be the "threadlocal" strategy, which in normal practice does not affect much. 
+
+When you import threadlocal, what you get is:
+
+* the "objectstore" session context object is now added to the `sqlalchemy` namespace.
+* a global `MapperExtension` is set up for all mappers which assigns "objectstore"'s session as the default session context, used by new instances as well as `Query` objects (see the section [plugins_sessioncontext_sessioncontextext](rel:plugins_sessioncontext_sessioncontextext)).
+* a new function "assign_mapper" is added to the `sqlalchemy` namespace, which calls the `assignmapper` mapper function using the new "objectstore" context.
+* the `create_engine` function is modified so that "threadlocal", and not "plain", is the default engine strategy.
+
+So an important point to understand is, **don't use the threadlocal mod unless you explcitly are looking for that behavior**.  Unfortunately, the easy import of the "threadlocal" mod has found its way into several tutorials on external websites, which produces application-wide behavior that is in conflict with the SQLAlchemy tutorial and data mapping documentation.
+
+While "threadlocal" is only about 10 lines of code, it is strongly advised that users instead make usage of `SessionContext` and `assign_mapper` explictly to eliminate confusion.  Additionally, the "threadlocal" strategy on `create_engine()` also exists primarily to provide patterns used in 0.1 and is probably not worth using either, unless you specifically need those patterns.
+
+Basic usage of threadlocal involves importing the mod, *before* any usage of the `sqlalchemy` namespace, since threadlocal is going to add the "objectstore" and "assign_mapper" keywords to "sqlalchemy".
+
+To use `objectstore`:
+
+    {python}
+    import sqlalchemy.mods.threadlocal
+    from sqlalchemy import *
+
+    metadata = BoundMetaData('sqlite:///')
+    user_table = Table('users', metadata,
+        Column('user_id', Integer, primary_key=True),
+        Column('user_name', String(50), nullable=False)
+    )
+
+    class User(object):
+        pass
+    mapper(User, user_table)
+
+    # "user" object is added to the session automatically
+    user = User()
+
+    # flush the contextual session
+    objectstore.flush()
+
+The actual `Session` is available as:
+
+    {python}
+    objectstore.get_session()
+    
+To use `assign_mapper`:
+
+    {python}
+    import sqlalchemy.mods.threadlocal
+    from sqlalchemy import *
+
+    metadata = BoundMetaData('sqlite:///')
+    user_table = Table('users', metadata,
+        Column('user_id', Integer, primary_key=True),
+        Column('user_name', String(50), nullable=False)
+    )
+
+    class User(object):
+        pass
+        
+    # note that no "context" object is needed
+    assign_mapper(User, user_table)
+
+    # call up a user
+    user = User.selectfirst(user_table.c.user_id==7)
+
+    # call 'delete' on the user
+    user.delete()
+    
+    # flush
+    objectstore.flush()
+
+
+### ActiveMapper
+
+**Author:** Jonathan LaCour
+
+ActiveMapper is a so-called "declarative layer" which allows the construction of a class, a `Table`, and a `Mapper` all in one step:
+
+    {python}
+    class Person(ActiveMapper):
+        class mapping:
+            id          = column(Integer, primary_key=True)
+            full_name   = column(String)
+            first_name  = column(String)
+            middle_name = column(String)
+            last_name   = column(String)
+            birth_date  = column(DateTime)
+            ssn         = column(String)
+            gender      = column(String)
+            home_phone  = column(String)
+            cell_phone  = column(String)
+            work_phone  = column(String)
+            prefs_id    = column(Integer, foreign_key=ForeignKey('preferences.id'))
+            addresses   = one_to_many('Address', colname='person_id', backref='person')
+            preferences = one_to_one('Preferences', colname='pref_id', backref='person')
+    
+        def __str__(self):
+            s =  '%s\n' % self.full_name
+            s += '  * birthdate: %s\n' % (self.birth_date or 'not provided')
+            s += '  * fave color: %s\n' % (self.preferences.favorite_color or 'Unknown')
+            s += '  * personality: %s\n' % (self.preferences.personality_type or 'Unknown')
+        
+            for address in self.addresses:
+                s += '  * address: %s\n' % address.address_1
+                s += '             %s, %s %s\n' % (address.city, address.state, address.postal_code)
+        
+            return s
+
+
+    class Preferences(ActiveMapper):
+        class mapping:
+            __table__        = 'preferences'
+            id               = column(Integer, primary_key=True)
+            favorite_color   = column(String)
+            personality_type = column(String)
+
+
+    class Address(ActiveMapper):
+        class mapping:
+            id          = column(Integer, primary_key=True)
+            type        = column(String)
+            address_1   = column(String)
+            city        = column(String)
+            state       = column(String)
+            postal_code = column(String)
+            person_id   = column(Integer, foreign_key=ForeignKey('person.id'))
+            
+More discussion on ActiveMapper can be found at [Jonathan LaCour's Blog](http://cleverdevil.org/computing/35/declarative-mapping-with-sqlalchemy) as well as the [SQLAlchemy Wiki](http://www.sqlalchemy.org/trac/wiki/ActiveMapper).
+
+### SqlSoup
+
+**Author:** Jonathan Ellis
+
+SqlSoup creates mapped classes on the fly from tables, which are automatically reflected from the database based on name.  It is essentially a nicer version of the "row data gateway" pattern.
+
+    {python}
+    >>> from sqlalchemy.ext.sqlsoup import SqlSoup
+    >>> soup = SqlSoup('sqlite:///')
+
+    >>> db.users.select(order_by=[db.users.c.name])
+    [MappedUsers(name='Bhargan Basepair',email='basepair@example.edu',password='basepair',classname=None,admin=1),
+     MappedUsers(name='Joe Student',email='student@example.edu',password='student',classname=None,admin=0)]
+
+Full SqlSoup documentation is on the [SQLAlchemy Wiki](http://www.sqlalchemy.org/trac/wiki/SqlSoup).
+
+### ProxyEngine
+
+**Author:** Jason Pellerin
+
+The `ProxyEngine` is used to "wrap" an `Engine`, and via subclassing `ProxyEngine` one can instrument the functionality of an arbitrary `Engine` instance through the decorator pattern.  It also provides a `connect()` method which will send all `Engine` requests to different underlying engines.  Its functionality in that regard is largely superceded now by `DynamicMetaData` which is a better solution.
+
+    {python}
+    from sqlalchemy.ext.proxy import ProxyEngine
+    proxy = ProxyEngine()
+    
+    proxy.connect('postgres://user:pw@host/db')
+

@@ -1,0 +1,13 @@
+diff -urN old/kernel_profectio/include/linux/netfilter_ipv4/ip_conntrack_icmp.h new/kernel_profectio/include/linux/netfilter_ipv4/ip_conntrack_icmp.h
+--- old/kernel_profectio/include/linux/netfilter_ipv4/ip_conntrack_icmp.h	2004-02-28 10:00:29.000000000 +0000
++++ new/kernel_profectio/include/linux/netfilter_ipv4/ip_conntrack_icmp.h	2004-02-28 10:01:54.000000000 +0000
+@@ -1,7 +1,8 @@
+ #ifndef _IP_CONNTRACK_ICMP_H
+ #define _IP_CONNTRACK_ICMP_H
+ /* ICMP tracking. */
+-#include <asm/atomic.h>
++
++typedef struct { volatile long counter; } atomic_t;
+ 
+ struct ip_ct_icmp
+ {

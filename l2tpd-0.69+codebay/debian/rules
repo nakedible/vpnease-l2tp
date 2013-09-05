@@ -1,0 +1,91 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# This file is public domain software, originally written by Joey Hess. 
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+export install_root=`pwd`/debian/tmp/
+
+patch: patch-stamp
+patch-stamp:
+	dh_testdir
+	dpatch apply-all
+
+unpatch:
+	dpatch deapply-all
+	rm -rf patch-stamp debian/patched
+
+build: build-stamp
+build-stamp: patch
+	dh_testdir
+
+	$(MAKE) DFLAGS="-O2 -g -DDEBUG_PPPD -DDEBUG_CONTROL -DDEBUG_ENTROPY"
+
+	touch build-stamp
+
+clean: unpatch
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	-$(MAKE) clean
+
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	install -d $(install_root)/usr/sbin
+	install -m755 l2tpd $(install_root)/usr/sbin
+
+	install -d $(install_root)/usr/share/man/{man5,man8}
+	install -m644 doc/l2tpd.conf.5 $(install_root)/usr/share/man/man5/
+	install -m644 doc/l2tp-secrets.5 $(install_root)/usr/share/man/man5/
+	install -m644 doc/l2tpd.8 $(install_root)/usr/share/man/man8
+
+	install -d $(install_root)/etc/l2tpd/
+
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs CHANGELOG upstream
+	dh_installdocs BUGS CREDITS LICENSE README TODO doc/rfc2661.txt doc/origREADME
+	dh_installexamples
+#	dh_install
+#	dh_installmenu
+#	dh_installdebconf	
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installcatalogs
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+#	dh_undocumented
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+#	dh_perl
+#	dh_python
+#	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

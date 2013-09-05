@@ -1,0 +1,14 @@
+01-l2tpd-pty-noecho.dpatch
+02-l2tpd-close.dpatch
+03-l2tpd-cfgpath.dpatch
+04-l2tpd-warnings.dpatch
+05-l2tpd-listenaddr.dpatch
+06-l2tpd-MSL2TP-hostname.dpatch
+07-l2tpd-MSL2TP-StopCCN.dpatch
+08-l2tpd-bufoverflow.dpatch
+09-l2tpd-pidstr.dpatch
+10-l2tpd-pty2.dpatch
+14-l2tpd-keepalive.dpatch
+15-l2tpd-gcc40.dpatch
+16-l2tpd-libgc.dpatch
+17-l2tpd-bugs.dpatch

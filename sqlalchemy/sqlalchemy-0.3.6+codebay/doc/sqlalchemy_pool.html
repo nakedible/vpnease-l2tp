@@ -1,0 +1,817 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.pool</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_orm_session.html">module sqlalchemy.orm.session</a>
+
+               |   
+            Next: <a href="sqlalchemy_ext_sessioncontext.html">module sqlalchemy.ext.sessioncontext</a>
+    </div>
+
+        <h2>module sqlalchemy.pool</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_modfunc">Module Functions</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_modfunc_clear_managers">clear_managers()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_modfunc_manage">manage()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_AssertionPool">class AssertionPool(Pool)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_NullPool">class NullPool(Pool)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_Pool">class Pool(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_QueuePool">class QueuePool(Pool)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_SingletonThreadPool">class SingletonThreadPool(Pool)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.pool"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.pool</h3>
+    
+    
+    <div class="darkcell"><p>Provide a connection pool implementation, which optionally manages
+connections on a thread local basis.</p>
+<p>Also provides a DBAPI2 transparency layer so that pools can be managed
+automatically, based on module type and connect arguments, simply by
+calling regular DBAPI connect() methods.</p>
+</div>
+    
+
+        
+    
+    <A name="docstrings_sqlalchemy.pool_modfunc"></a>
+    
+    <div class="subsection">
+
+    <h3>Module Functions</h3>
+    
+    
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.pool_modfunc_clear_managers"></a>
+    <b>def clear_managers()</b>
+    <div class="docstring">
+    <p>Remove all current DBAPI2 managers.</p>
+<p>All pools and connections are disposed.</p>
+
+    </div>
+    </div>
+
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.pool_modfunc_manage"></a>
+    <b>def manage(<i>module</i>, <i>**params</i>)</b>
+    <div class="docstring">
+    <p>Return a proxy for module that automatically pools connections.</p>
+<p>Given a DBAPI2 module and pool management parameters, returns a
+proxy for the module that will automatically pool connections,
+creating new connection pools for each distinct set of connection
+arguments sent to the decorated module's connect() function.</p>
+<p>Arguments:</p>
+<dl class="docutils">
+<dt>module</dt>
+<dd>A DBAPI2 database module.</dd>
+<dt>poolclass</dt>
+<dd>The class used by the pool module to provide pooling.
+Defaults to <tt class="docutils literal"><span class="pre">QueuePool</span></tt>.</dd>
+</dl>
+<p>See the <tt class="docutils literal"><span class="pre">Pool</span></tt> class for options.</p>
+
+    </div>
+    </div>
+
+        
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.pool_AssertionPool"></a>
+    
+    <div class="subsection">
+
+    <h3>class AssertionPool(<a href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_Pool">Pool</a>)</h3>
+    
+    
+    <div class="darkcell"><p>A Pool implementation that allows at most one checked out
+connection at a time.</p>
+<p>This will raise an exception if more than one connection is
+checked out at a time.  Useful for debugging code that is using
+more connections than desired.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>creator</i>, <i>**params</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_connection(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_get(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_return_conn(<i>self</i>, <i>conn</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_return_invalid(<i>self</i>, <i>conn</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def status(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.pool_NullPool"></a>
+    
+    <div class="subsection">
+
+    <h3>class NullPool(<a href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_Pool">Pool</a>)</h3>
+    
+    
+    <div class="darkcell"><p>A Pool implementation which does not pool connections.</p>
+<p>Instead it literally opens and closes the underlying DBAPI
+connection per each connection open/close.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_get(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_return_conn(<i>self</i>, <i>conn</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_return_invalid(<i>self</i>, <i>conn</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def status(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.pool_Pool"></a>
+    
+    <div class="subsection">
+
+    <h3>class Pool(object)</h3>
+    
+    
+    <div class="darkcell"><p>Base Pool class.</p>
+<p>This is an abstract class, which is implemented by various
+subclasses including:</p>
+<dl class="docutils">
+<dt>QueuePool</dt>
+<dd>Pools multiple connections using <tt class="docutils literal"><span class="pre">Queue.Queue</span></tt>.</dd>
+<dt>SingletonThreadPool</dt>
+<dd>Stores a single connection per execution thread.</dd>
+<dt>NullPool</dt>
+<dd>Doesn't do any pooling; opens and closes connections.</dd>
+<dt>AssertionPool</dt>
+<dd>Stores only one connection, and asserts that only one connection
+is checked out at a time.</dd>
+</dl>
+<p>The main argument, <cite>creator</cite>, is a callable function that returns
+a newly connected DBAPI connection object.</p>
+<p>Options that are understood by Pool are:</p>
+<dl class="docutils">
+<dt>echo</dt>
+<dd>If set to True, connections being pulled and retrieved from/to
+the pool will be logged to the standard output, as well as pool
+sizing information.  Echoing can also be achieved by enabling
+logging for the &quot;sqlalchemy.pool&quot; namespace. Defaults to False.</dd>
+<dt>use_threadlocal</dt>
+<dd>If set to True, repeated calls to <tt class="docutils literal"><span class="pre">connect()</span></tt> within the same
+application thread will be guaranteed to return the same
+connection object, if one has already been retrieved from the
+pool and has not been returned yet. This allows code to retrieve
+a connection from the pool, and then while still holding on to
+that connection, to call other functions which also ask the pool
+for a connection of the same arguments; those functions will act
+upon the same connection that the calling method is using.
+Defaults to True.</dd>
+<dt>recycle</dt>
+<dd>If set to non -1, a number of seconds between connection
+recycling, which means upon checkout, if this timeout is
+surpassed the connection will be closed and replaced with a
+newly opened connection. Defaults to -1.</dd>
+<dt>auto_close_cursors</dt>
+<dd>Cursors, returned by <tt class="docutils literal"><span class="pre">connection.cursor()</span></tt>, are tracked and
+are automatically closed when the connection is returned to the
+pool.  Some DBAPIs like MySQLDB become unstable if cursors
+remain open. Defaults to True.</dd>
+<dt>disallow_open_cursors</dt>
+<dd>If <cite>auto_close_cursors</cite> is False, and <cite>disallow_open_cursors</cite> is
+True, will raise an exception if an open cursor is detected upon
+connection checkin. Defaults to False.</dd>
+</dl>
+<p>If <cite>auto_close_cursors</cite> and <cite>disallow_open_cursors</cite> are both
+False, then no cursor processing occurs upon checkin.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>creator</i>, <i>recycle=-1</i>, <i>echo=None</i>, <i>use_threadlocal=False</i>, <i>auto_close_cursors=True</i>, <i>disallow_open_cursors=False</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def connect(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_connection(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dispose(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_get(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_return_conn(<i>self</i>, <i>conn</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def log(<i>self</i>, <i>msg</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def return_conn(<i>self</i>, <i>agent</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def status(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def unique_connection(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.pool_QueuePool"></a>
+    
+    <div class="subsection">
+
+    <h3>class QueuePool(<a href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_Pool">Pool</a>)</h3>
+    
+    
+    <div class="darkcell"><p>Use <tt class="docutils literal"><span class="pre">Queue.Queue</span></tt> to maintain a fixed-size list of connections.</p>
+<p>Arguments include all those used by the base Pool class, as well
+as:</p>
+<dl class="docutils">
+<dt>pool_size</dt>
+<dd>The size of the pool to be maintained. This is the largest
+number of connections that will be kept persistently in the
+pool. Note that the pool begins with no connections; once this
+number of connections is requested, that number of connections
+will remain. Defaults to 5.</dd>
+<dt>max_overflow</dt>
+<dd>The maximum overflow size of the pool. When the number of
+checked-out connections reaches the size set in pool_size,
+additional connections will be returned up to this limit. When
+those additional connections are returned to the pool, they are
+disconnected and discarded. It follows then that the total
+number of simultaneous connections the pool will allow is
+pool_size + <cite>max_overflow</cite>, and the total number of &quot;sleeping&quot;
+connections the pool will allow is pool_size. <cite>max_overflow</cite> can
+be set to -1 to indicate no overflow limit; no limit will be
+placed on the total number of concurrent connections. Defaults
+to 10.</dd>
+<dt>timeout</dt>
+<dd>The number of seconds to wait before giving up on returning a
+connection. Defaults to 30.</dd>
+</dl>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>creator</i>, <i>pool_size=5</i>, <i>max_overflow=10</i>, <i>timeout=30</i>, <i>**params</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def checkedin(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def checkedout(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dispose(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_get(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_return_conn(<i>self</i>, <i>conn</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def overflow(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def size(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def status(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.pool_SingletonThreadPool"></a>
+    
+    <div class="subsection">
+
+    <h3>class SingletonThreadPool(<a href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool_Pool">Pool</a>)</h3>
+    
+    
+    <div class="darkcell"><p>Maintain one connection per each thread, never moving a
+connection to a thread other than the one which it was created in.</p>
+<p>This is used for SQLite, which both does not handle multithreading
+by default, and also requires a singleton connection if a :memory:
+database is being used.</p>
+<p>Options are the same as those of Pool, as well as:</p>
+<dl class="docutils">
+<dt>pool_size <span class="classifier-delimiter">:</span> <span class="classifier">5</span></dt>
+<dd>The number of threads in which to maintain connections at once.</dd>
+</dl>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>creator</i>, <i>pool_size=5</i>, <i>**params</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def cleanup(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dispose(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dispose_local(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_get(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_return_conn(<i>self</i>, <i>conn</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def status(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_orm_session.html">module sqlalchemy.orm.session</a>
+
+               |   
+            Next: <a href="sqlalchemy_ext_sessioncontext.html">module sqlalchemy.ext.sessioncontext</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

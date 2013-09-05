@@ -1,0 +1,2 @@
+# connection tracking helpers
+obj-$(CONFIG_IP_NF_QUAKE3) += ip_conntrack_quake3.o

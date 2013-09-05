@@ -1,0 +1,102 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/connections.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/connections.c	2006-12-03 19:35:59.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/connections.c	2006-12-03 19:36:14.000000000 +0200
+@@ -3585,9 +3585,11 @@
+  * less important than the disadvantages, so after FreeS/WAN 1.9, we
+  * don't do this.
+  */
++#if 1 /* l2tp-workaround: not needed anymore. */
++#else
+ struct connection *
+ refine_host_connection(const struct state *st, const struct id *peer_id
+-, bool initiator, bool aggrmode)
++		       , bool initiator, bool aggrmode, bool ignore_psk_change)
+ {
+     struct connection *c = st->st_connection;
+     u_int16_t auth = st->st_oakley.auth;
+@@ -3729,7 +3731,7 @@
+ 		    if (dpsk == NULL)
+ 			continue;	/* no secret */
+ 
+-		    if (psk != dpsk)
++		    if (psk != dpsk && !ignore_psk_change)
+ 			if (psk->len != dpsk->len
+ 			|| memcmp(psk->ptr, dpsk->ptr, psk->len) != 0)
+ 			    continue;	/* different secret */
+@@ -3796,6 +3798,7 @@
+ 				       , c->spd.that.host_port);
+     }
+ }
++#endif
+ 
+ #ifdef VIRTUAL_IP
+ /**
+Index: openswan-2.4.0rc4.quilt/programs/pluto/connections.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/connections.h	2006-12-03 19:36:00.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/connections.h	2006-12-03 19:36:14.000000000 +0200
+@@ -297,7 +297,7 @@
+ 		       , const ip_address *me, u_int16_t my_port
+ 	, const ip_address *him, u_int16_t his_port),
+     *refine_host_connection(const struct state *st, const struct id *id
+-	, bool initiator, bool aggrmode),
++			    , bool initiator, bool aggrmode, bool ignore_psk_change),
+     *find_client_connection(struct connection *c
+ 			    , const ip_subnet *our_net
+ 			    , const ip_subnet *peer_net
+Index: openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/ipsec_doi.c	2006-12-03 19:36:00.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.c	2006-12-03 19:36:14.000000000 +0200
+@@ -1779,7 +1779,7 @@
+  * may change the peer's RSA key or ID.
+  */
+ static bool
+-decode_peer_id(struct msg_digest *md, bool initiator, bool aggrmode)
++decode_peer_id(struct msg_digest *md, bool initiator, bool aggrmode, bool ignore_psk_change)
+ {
+     struct state *const st = md->st;
+     struct payload_digest *const id_pld = md->chain[ISAKMP_NEXT_ID];
+@@ -1918,7 +1918,7 @@
+ 	/* check for certificate requests */
+ 	decode_cr(md, &c->requested_ca);
+ 
+-	r = refine_host_connection(st, &peer, initiator, aggrmode);
++	r = refine_host_connection(st, &peer, initiator, aggrmode, ignore_psk_change);
+ 
+ 	/* delete the collected certificate requests */
+ 	free_generalNames(c->requested_ca, TRUE);
+@@ -2980,7 +2980,7 @@
+     /* ID Payload in.
+      * Note: this may switch the connection being used!
+      */
+-    if (!decode_peer_id(md, initiator, aggrmode))
++    if (!decode_peer_id(md, initiator, aggrmode, FALSE))
+ 	return STF_FAIL + INVALID_ID_INFORMATION;
+ 
+     /* Hash the ID Payload.
+@@ -3524,7 +3524,11 @@
+ 
+     st->st_oakley.auth = authtype;  
+ 
++#if 1 /* l2tp-workaround */
++    if (!decode_peer_id(md, FALSE, TRUE, TRUE))
++#else
+     if (!decode_peer_id(md, FALSE, TRUE))
++#endif
+     {
+ 	char buf[IDTOA_BUF];
+ 
+@@ -3799,7 +3803,11 @@
+ 
+     st->st_policy |= POLICY_AGGRESSIVE;
+ 
++#if 1 /* l2tp-workaround */
++    if (!decode_peer_id(md, FALSE, TRUE, FALSE))
++#else
+     if (!decode_peer_id(md, FALSE, TRUE))
++#endif
+     {
+ 	char buf[200];
+ 

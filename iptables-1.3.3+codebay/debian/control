@@ -1,0 +1,33 @@
+Source: iptables
+Section: net
+Priority: important
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Build-Depends: debhelper (>>4.0), linuxdoc-tools, html2text, bzip2, linux-kernel-headers (>= 2.6.11.2-0ubuntu10)
+Standards-Version: 3.5.6.0
+
+Package: iptables
+Architecture: any
+Priority: important
+Suggests: iproute
+Section: net
+Depends: ${shlibs:Depends}
+Description: Linux kernel 2.4+ iptables administration tools
+ netfilter and iptables provide a Linux kernel framework for
+ stateful and stateless packet filtering, network and port addresss
+ translation, and other IP packet manipulation. The framework is the
+ successor to ipchains.
+ .
+ netfilter and iptables are used in applications such as Internet
+ connection sharing, firewalls, IP accounting, transparent proxying,
+ advanced routing and traffic control.
+ .
+ iptables web site: http://www.iptables.org/
+
+Package: iptables-dev
+Architecture: any
+Priority: optional
+Depends: 
+Section: devel
+Description: development files for iptable's libipq and libiptc
+ Header files, static libs and documentation for libipq (iptables 
+ user-space packet queuing library) and libiptc.

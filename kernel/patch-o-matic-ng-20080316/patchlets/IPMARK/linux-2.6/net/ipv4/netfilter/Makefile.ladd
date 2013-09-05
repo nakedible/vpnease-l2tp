@@ -1,0 +1,2 @@
+obj-$(CONFIG_IP_NF_TARGET_TTL) += ipt_TTL.o
+obj-$(CONFIG_IP_NF_TARGET_IPMARK) += ipt_IPMARK.o

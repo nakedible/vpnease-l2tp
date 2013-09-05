@@ -1,0 +1,21 @@
+config IP_NF_TARGET_ACCOUNT
+	tristate "ACCOUNT target support"
+	depends on IP_NF_IPTABLES
+	---help---
+	  The ACCOUNT target is a high performance accounting system for local networks.
+	  It takes two parameters: --addr network/netmask and --tname NAME.
+
+	  --addr is the subnet which is accounted for
+	  --tname is the table name where the information is stored
+	
+	  The data can be queried later using the libipt_ACCOUNT userspace library
+	  or by the "iptaccount" tool which is part of the libipt_ACCOUNT package.
+	    
+	  A special subnet is "0.0.0.0/0": All data is stored in the src_bytes
+	  and src_packets structure of slot "0". This is useful if you want
+	  to account the overall traffic to/from your internet provider.
+
+	  For more information go to:
+	  http://www.intra2net.com/de/produkte/opensource/ipt_account/
+		  
+	  To compile it as a module, choose M here.  If unsure, say N.

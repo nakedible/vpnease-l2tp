@@ -1,0 +1,2 @@
+obj-$(CONFIG_IP_NF_MATCH_POLICY) += ipt_policy.o
+obj-$(CONFIG_IP_NF_MATCH_PKNOCK) += ipt_pknock.o

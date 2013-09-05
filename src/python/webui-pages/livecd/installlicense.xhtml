@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+
+  <body>
+    <n:invisible n:pattern="content">
+      <n:invisible n:render="check_earlier_install_run">
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <div class="cb-error">
+            <p>
+              Installation has already been completed.  Installation cannot be started
+              again without rebooting the computer.
+            </p>
+          </div>
+          <n:invisible n:render="form reboot_computer" />
+        </div>
+      </n:invisible>
+
+      <n:invisible n:render="check_no_earlier_install_run">
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <p>
+            You can install the product to a dedicated server or use an existing server
+            with a virtualization product (such as VMware or Virtual PC).
+            Before installation, please check the system requirements and recommendations
+            and review the
+            <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/end-user-license-agreement" n:render="link_maybe">License Agreement</a>
+            and
+            <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/privacy-policy" n:render="link_maybe">Privacy Policy</a>
+            of the product.
+            You can find these, and other product information, on the product web site,
+            <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/product-pages" n:render="link_maybe">www.vpnease.com</a>.
+          </p>
+
+          <p>
+            Minimum hardware requirements are: 1 GHz processor, 256 MiB memory, 2 GB hard disk.
+            The computer's BIOS must be capable of booting from hard disks larger than 512 MB,
+            which is the case for all but very old hardware.
+          </p>
+
+          <p>
+            To proceed with installation, please confirm that you have read and accept the product
+            License Agreement and Privacy Policy by checking the appropriate check box below, and then
+            click <strong class="cb-guilabel">Next</strong> to continue.
+            The installed product contains a 30-day demo license which does not require any registration.
+          </p>
+
+          <div class="cb-warning">
+            <p>
+              You may not install or use the product without accepting the terms of the product
+              License Agreement and Privacy Policy.
+            </p>
+          </div>
+          <n:invisible n:render="form start_install" />
+          <n:invisible n:render="reset_state" />
+        </div>
+      </n:invisible>
+
+    </n:invisible>
+  </body>
+</html>

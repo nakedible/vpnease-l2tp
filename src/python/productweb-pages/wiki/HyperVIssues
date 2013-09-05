@@ -1,0 +1,13 @@
+= Microsoft Hyper-V Issues =
+
+[[PageOutline]]
+
+----
+
+== What is Microsoft Hyper-V? ==
+
+Microsoft Hyper-V is a hardware virtualization platform, available since Windows Server 2008,
+which can be used to install VPNease on an existing server.
+
+----
+

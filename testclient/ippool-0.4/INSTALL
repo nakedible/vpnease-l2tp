@@ -1,0 +1,54 @@
+Installation Instructions
+=========================
+
+1. Edit configurable settings in Makefile if needed, or simply
+   override the defaults when invoking make.
+
+2. Build and install the software.
+
+   make
+   make install
+
+   This installs the following files:
+   /usr/bin/ippoolconfig
+   /usr/sbin/ippoold
+   /usr/share/man/man1/ippoolconfig.1.gz
+   /usr/share/man/man4/ippool_rpc.4.gz
+   /usr/share/man/man8/ippoold.8.gz
+
+   To install under a different root directory, say /tmp, use
+
+   make install DESTDIR=/tmp
+
+   To cross-compile, define CROSS_COMPILE to be the tool prefix, i.e.
+
+   make CROSS_COMPILE=ppc_7xx-
+
+   You might need to also define READLINE_DIR if readline is not installed
+   in the cross compiler tree.
+
+3. Test the installation. 
+
+   1. If pppd is being used, test that it can load the ippool plugin.
+
+      /usr/sbin/pppd debug nodetach plugin ippool.so ippool_name mypool
+
+      should output something like:
+
+      Plugin ippool.so loaded.
+
+   2. Start ippoold and create a pool..
+   
+      /usr/sbin/ippoold
+
+      /usr/bin/ippoolconfig
+      l2tp> version
+      l2tp> pool create pool_name=mypool
+      l2tp> pool list
+
+Reporting problems
+==================
+
+Please report problems to openl2tp-bugs@lists.sourceforge.net.
+
+

@@ -1,0 +1,747 @@
+/*
+ *  VPNease site CSS
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+@import url("form.css");
+
+/* ---------------------------------------------------
+=page
+------------------------------------------------------ */
+
+html, body {
+	margin: 0;
+	padding: 0;
+	direction: ltr;
+}
+
+body { 		
+	color: #000;
+	background: #133b4d;
+	/* IE5 centering fix */
+	text-align: center;	
+}
+
+/* IE5 doesn't inherit font size in TD, so specify it here */
+body, td { 	
+	font: normal 12px/18px Verdana, sans-serif;	
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* ---------------------------------------------------
+=titles
+------------------------------------------------------ */
+
+h1, h2, h3, h4, h5, h6, caption {
+	font: normal 12px/18px Verdana, sans-serif;	
+
+}
+
+
+h1 {	
+	font-size: 18px;
+	padding-bottom: .5em;		
+	margin-bottom: 1.5em;
+	border-bottom: 1px solid #ccc;
+}
+
+h2 {	
+	font-size: 16px;	
+	margin-top: 1.125em;
+	margin-bottom: .5625em;
+	font-weight: bold;
+}
+
+h3, caption {
+	font-size: 14px;
+	margin-top: 1.285em;
+	margin-bottom: .642em;
+	font-weight: bold;
+}
+
+
+h4 {
+	font-weight: bold;
+}
+
+/* ---------------------------------------------------
+=misc
+------------------------------------------------------ */
+
+a img {
+	border: none;
+}
+
+hr {
+	visibility: hidden;
+	margin: 0;
+	margin-top: 1.5em;
+	padding: 0;
+	border: none;
+}
+
+p, ul, ol, dl {
+	margin-bottom: .75em;
+}
+
+.print-only {
+	display: none;
+}
+
+.screen-only {
+}
+
+/* ---------------------------------------------------
+=main
+------------------------------------------------------ */
+
+#header, #main-w, #footer {
+	margin: 0 auto;
+	width: 960px;  
+	/* centering reset */
+	text-align: left;
+}
+
+
+#main-w {
+	margin-bottom: 1.5em;	
+	background: #fff url(bg-main-2.gif) top left repeat-y;
+}
+
+#main {	
+	background: transparent url(bg-main.gif) bottom left no-repeat;
+	padding-bottom: 20px; /* = bg height */
+}
+
+#no-nav  #main-w {
+	background: #fff;
+}
+
+
+#no-nav  #main {
+	background: transparent url(bg-main-no-nav.gif) bottom left no-repeat;
+}
+
+/* ---------------------------------------------------
+=header 
+------------------------------------------------------ */
+
+#header  {
+	margin-top: 3em;
+	background: #b1d9ad url(bg-header.jpg) top left no-repeat;
+	height: 80px;
+}
+
+#logo {	
+	margin-left: 1.5em;
+}
+
+/* ---------------------------------------------------
+=nav
+------------------------------------------------------ */
+
+#context {
+	background: #269abf;
+	border-left: 2px solid #fff;
+	border-top: 2px solid #fff;
+	color: #D0EBF5;
+	padding-left: 9px;
+	padding-top: 4px;
+	padding-bottom: 5px;
+}
+
+#context-customer-logo {
+        background: #ffffff url(/static/customer-logo.png) no-repeat scroll top left;
+	border-left: 2px solid #fff;
+	border-top: 2px solid #fff;
+        height: 64px;
+}
+
+#nav {
+	border-left: 2px solid #fff;
+	border-top: 2px solid #fff;
+	padding-bottom: 20px;
+}
+
+#nav h3 {	
+	/* reset */
+	font-size: 100%;
+	margin: 0;
+	margin-top: 9px;
+	margin-bottom: 5px; /* + LI 4px = 9px */
+	padding-left: 9px;
+	color: #286073;	
+	color: #000;
+}
+#nav h3#h-status {
+}
+#nav ul, #nav ol {	
+	list-style: none;
+	padding-bottom: 9px;
+	background: transparent url(bg-nav-a.gif) bottom left repeat-x;
+}
+
+#nav li {
+}
+
+#nav li.last {
+	border: none;
+}
+
+#nav li.current {
+}
+
+#nav a:link, 
+#nav a:visited {
+	display: block;	
+	text-decoration: none;
+	border: none;
+	padding-left: 9px;
+	padding-top: 4px;
+	padding-bottom: 5px;
+	/*
+	background: transparent url(bg-nav-a.gif) bottom left repeat-x;
+	*/
+	color: #286073;		
+	font-size: 11px;	
+	/* IE5 value */
+	width: 160px; 
+  	voice-family: "\"}\""; 
+	voice-family:inherit;
+	/* IE6 fix */
+	width: 151px; /* 162px-9px-2px */
+}
+
+#nav li a:hover { 
+	color: #222;	
+	background-color: #e1f3fa;	
+}
+
+#nav li.current a:link, 
+#nav li.current a:visited {
+	color: #222;	
+	background: #fff;
+	/*
+	font-weight: bold;	
+	*/
+	/*
+	text-decoration: none;
+	*/
+}
+
+#nav h3.disabled { 
+	color: #6d99a8;	
+}
+
+#nav .disabled {
+	color: #6d99a8;	
+}
+
+/* ---------------------------------------------------
+=table
+------------------------------------------------------ */
+
+table {
+	border-collapse: collapse;
+	background: transparent;	
+	width: 100%;	
+        /*display: block;*/
+	/*margin-bottom: 1.5em;*/
+}
+
+
+table thead {
+}
+
+table th {
+	text-align: left;
+	color: #598c54;
+}
+
+/*
+col.alt, tr.alt {	
+}
+*/
+
+table td, table th  {
+	vertical-align: top;
+	text-align: left;	
+	padding-right: .75em;
+	padding-top: .375em;
+	padding-bottom: .375em;	
+}
+
+table td {
+	border-top: 1px solid #e5e5e5;
+}
+
+/* ---------------------------------------------------
+=footer
+------------------------------------------------------ */
+
+#footer {	
+	color: #406b80;
+	text-align: center;
+}
+
+#copyr {
+}
+#footer a:link,
+#footer a:visited {	
+	color: #406b80;	
+}
+
+/* ---------------------------------------------------
+=hyperlinks
+----------------------------------------------------- */
+
+a:link, a:visited, a:hover, a:active {
+	text-decoration: underline;
+	color: #269abf;	
+}
+
+a:visited {
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+/* ---------------------------------------------------
+=utilities
+----------------------------------------------------- */
+
+.cut {clear: both; height: 1px; overflow: hidden; }
+
+.hidden { display: none;}
+.inline { display: inline; }
+.clear-float {	
+	/* auto-clear floated children */
+	overflow: hidden;	
+}
+
+.clear-float-ie {	
+	/* auto-clear floated children */
+	overflow: hidden;
+	/* IE6+IE5 fix see:
+	http://www.positioniseverything.net/easyclearing.html			
+	Really needed only when the clearing element hasn't a 
+	dimension applied to it.
+	*/		
+	/* this doesn't work n IE5, it 
+	cuts the el. height:
+	_height: 1%;			
+	*/
+	_width: 100%;			
+}
+
+/* ---------------------------------------------------
+=misc
+------------------------------------------------------ */
+
+_ {
+}
+
+.note {
+	color: #666;
+	font-style: italic;
+}
+
+.notice {
+	font-style: italic;
+}
+
+.report {
+	margin-bottom: 1.5em;
+}
+
+.report dt {
+	float: left;
+	width: 50%;
+	color: #598c54;	
+	font-weight: bold;
+}
+
+.report dt, .report dd {
+	padding-top: .375em;
+	padding-bottom: .375em;	
+	border-bottom: 1px solid #e5e5e5;
+}
+
+table.key-value {
+}
+
+table.key-value th {
+	color: #628060;
+	border-bottom: 1px solid #c6e5c3;
+	font-weight: normal;
+	font-size: 11px;
+}
+
+table.key-value td {
+	border: none;
+	border-bottom: 1px solid #c6e5c3;
+	font-size: 11px;
+}
+
+table.key-value td .warning {
+ 	color: #cc1100;
+} 
+    
+table.key-value td,
+table.key-value th {
+	padding-top: .250em;
+	padding-bottom: .250em;	
+}
+
+table.key-value caption {	
+	margin-top: 0;	
+	margin-bottom: .375em;
+}
+
+.progress-bar,
+.activity-bar {
+	background: #eee;
+	border: 1px solid #668c62;
+	width: 300px;
+	margin: 0 auto;
+	margin-bottom: .75em;
+	position: relative;
+}
+
+.progress-bar img,
+.activity-bar img {
+	display: block;
+}
+
+.progress-bar span,
+.activity-bar span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-size: 11px;
+	width: 300px;
+	text-align: center;
+	display: block;
+}
+
+/* ---------------------------------------------------
+=status
+------------------------------------------------------ */
+
+#status {
+	padding-top: 1.5em;
+}
+
+#status a:link, #status a:visited {
+	color: #395936;
+}
+
+#status h3 {
+	margin: 0;
+	/* reset size */
+	font-size: 1.0em;
+}
+
+#status span {
+/*	color: #395936;*/
+}
+
+#status b {
+	color: #000;
+	/* 14px */
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#status ul {
+	list-style: none;
+}
+
+#status li {
+	float: left;
+	padding-right: .75em;
+	margin-right: .75em;
+	/*
+	border-right: 1px solid #9cbf99;
+	*/
+	background: transparent url(sep.gif) top right repeat-y;
+	width: 10em;
+}
+
+#status li.message {
+	width: 20em;
+} 
+
+#status li.message span.error,
+#status li.message span.warning
+{	
+	font-weight: bold;
+	padding: 0 2px;
+	text-transform: uppercase;
+	font-size: 11px;
+} 
+
+#status li.message span.error
+{
+	color: #fff;
+	background: #FF1900;	
+} 
+
+#status li.message span.warning {	
+	background: #fff459;
+} 
+
+#status li.last {
+	border-right: none;
+	background:  none;
+	padding-right: 0;
+	margin-right: 0;
+	text-align: right;
+	float: right;
+} 
+
+#status li.last {
+	width: 12.5em;
+	overflow: hidden;
+}
+
+#status li.last-user {
+	width: 32em;
+	overflow: hidden;
+}
+
+#current-time {	
+	position: absolute;
+	background: #D0EBF5;
+	top: 3px;
+	right: 3px;
+	padding: .375em;
+	border: 1px solid #57B8D9;
+}
+
+/* ---------------------------------------------------
+=changelog
+------------------------------------------------------ */
+
+.changelog h3 {
+	font-size: 13px;
+}
+
+.changelog ul {
+	font-size: 11px;
+	margin-left: 2em;
+}
+
+.changelog li {
+	font-size: 11px;
+}
+
+.changelog .changelog-date {
+	float: right;
+	color: #888888;
+	font-size: 9px;
+}
+
+.changelog .new-version {
+	background: #E1F3FA;
+	margin-bottom: 1.5em;
+	border-left: .75em solid  #269ABF;
+	padding: .75em;
+}
+
+.changelog .new-version h3 {
+	margin-top: 0;
+}
+
+.changelog .current-version {
+	background: #dcffd9;
+	margin-bottom: 1.5em;
+	border-left: .75em solid  #B2D9AD;
+	padding: .75em;
+}
+
+.changelog .current-version h3 {
+	margin-top: 0;
+}
+
+.changelog .old-version {
+	background: #dddddd;
+	margin-bottom: 1.5em;
+	border-left: .75em solid  #aaaaaa;
+	padding: .75em;
+}
+
+.changelog .old-version h3 {
+	margin-top: 0;
+}
+
+#updatebutton {
+	text-align: right;
+	margin-top: .75em;
+}
+
+/* ---------------------------------------------------
+=live cd
+------------------------------------------------------ */
+
+#nav .wizard  {
+	list-style: none;
+}
+
+#nav .wizard li {
+	padding-left: 9px;
+	padding-top: 4px;
+	padding-bottom: 5px;
+	color: #286073;	
+	font-size: 11px;
+	/* IE5 value */
+	width: 160px; 
+  	voice-family: "\"}\""; 
+	voice-family:inherit;
+	/* IE6 fix */
+	width: 151px; /* 162px-9px-2px */
+}
+
+#nav .wizard a:link, 
+#nav .wizard a:visited {
+	/* reset values */
+	display: inline;	
+	padding: 0;
+}
+
+#nav .wizard a:hover { 
+	color: #222;	
+	background-color: #e1f3fa;	
+}
+
+#nav .wizard .current {
+	color: #222;	
+	background: #fff;	
+}
+
+#nav .wizard .disabled {
+	color: #6d99a8;	
+}
+
+/* ---------------------------------------------------
+=user 
+------------------------------------------------------ */
+
+.paginator {
+	border-top: 1px solid #ccc;
+	padding-top: .75em;
+	margin-top: 1.5em;
+}
+.paginator .next input {
+	margin-right: 0;
+}
+
+.paginator .next {
+	width: 20%;
+	text-align: right;
+	float: right;
+	font-weight: bold;
+}
+
+.paginator .prev {
+	width: 20%;
+	float: left;
+}
+
+.paginator .cancel {
+	/* Avoid rounding errors on IE */
+	width: 59%;
+	text-align: center;
+	float: left;
+}
+
+
+h1.wizard-page-title span {
+	float: left;
+}
+
+h1.wizard-page-title .next {
+	float: right;
+	width: 10em;
+	font-size: 12px;
+	text-align: right;
+	font-weight: bold;	
+}
+
+h1.wizard-page-title .next input {
+	margin-right: 0;
+}
+
+
+/* ---------------------------------------------------
+=external links (borrowed from cb.css for other use)
+------------------------------------------------------ */
+
+a.cb-external:link,  
+a.cb-external:visited  
+{  
+	background: url(external.gif) center right no-repeat;
+  	padding-right: 12px;  
+}
+
+a.cb-external:hover {
+}
+
+a.cb-external:link,  
+a.cb-external:visited  
+{  
+	background: url(external.gif) center right no-repeat;
+  	padding-right: 12px;  
+}
+
+a.cb-external:hover {
+}
+
+/* ---------------------------------------------------
+=user popups
+------------------------------------------------------ */
+
+#popup {
+	background: #ffffff;
+	padding: 0;
+	border: 0;
+	margin: 0;
+	margin-bottom: auto;
+	height: 100%;
+}
+
+#popup-w {
+	background: #ffffff url(vpnease-logo-small.gif) top right no-repeat;
+	padding: 1.25em;
+	border: 0;
+	text-align: left;
+}
+
+#popup-header {
+}
+
+#popup-body {
+	margin-top: 2em;
+	margin-bottom: 1em;
+}
+
+#popup-body h1 {
+	font-size: 125%;
+}
+
+#popup-footer {
+	border-top: 1px solid #aaaaaa;
+	margin-top: 1em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	color: #888888;
+	font-size: 80%;
+	line-height: 1.5;
+}

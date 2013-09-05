@@ -1,0 +1,5 @@
+Title: rsh conntrack and nat helper
+Author: Ian (Larry) Latter <Ian.Latter@mq.edu.au>
+Status: pending kernel inclusion after 2.6.11 port
+Repository: extra
+Requires: linux < 2.6.0

@@ -1,0 +1,12 @@
+diff -ru freeradius-1.1.6.orig/share/dictionary.microsoft freeradius-1.1.6/share/dictionary.microsoft
+--- freeradius-1.1.6.orig/share/dictionary.microsoft	2005-12-01 00:17:27.000000000 +0200
++++ freeradius-1.1.6/share/dictionary.microsoft	2007-07-16 13:45:02.000000000 +0300
+@@ -46,6 +46,8 @@
+ ATTRIBUTE	MS-Primary-NBNS-Server			30	ipaddr
+ ATTRIBUTE	MS-Secondary-NBNS-Server		31	ipaddr
+ 
++ATTRIBUTE       Windows-Groups                          32      octets
++
+ #ATTRIBUTE	MS-ARAP-Challenge	33	octets
+ 
+ #

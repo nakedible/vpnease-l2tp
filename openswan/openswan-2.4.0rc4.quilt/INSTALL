@@ -1,0 +1,10 @@
+
+Please read the documentation in doc/
+
+Building userland: 
+
+	make programs install
+
+Buildings KLIPS kernel module: 
+
+	make KERNELSRC=/lib/modules/`uname -r`/build module minstall

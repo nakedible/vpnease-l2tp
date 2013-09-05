@@ -1,0 +1,641 @@
+#!/usr/bin/python
+
+import os, sys, time, traceback, subprocess
+
+# Note: cannot use constants here
+
+# Fixed paths
+update_ongoing_marker = '/var/lib/l2tpgw-permanent/l2tpgw-update-ongoing'
+update_done_marker = '/var/lib/l2tpgw-permanent/l2tpgw-update-done'
+hd_filler_file = '/var/lib/l2tpgw-permanent/l2tpgw-disk-filler.bin'
+backup_zip = '/var/lib/l2tpgw-permanent/update-files.zip'
+codebay_zipname = 'codebay.zip'
+postupdate_script = '/usr/lib/l2tpgw/l2tpgw-postupdate'
+
+# Lock files
+apt_lists_lock_file = '/var/lib/apt/lists/lock'
+aptitude_lock_file = '/var/lib/aptitude/lock'
+dpkg_lock_file = '/var/lib/dpkg/lock'
+update_lock_files = [ apt_lists_lock_file,
+                      aptitude_lock_file,
+                      dpkg_lock_file]
+
+# Marker file for update "switching"
+update_next_time_from_system = '/var/lib/l2tpgw-permanent/from-system-update-marker'
+
+# NB: this *must* be the same as defined in constants.py
+update_command = 'l2tpgw-update'
+
+# Size of the disk filler file in bytes.
+hd_filler_file_size = 1024L*1024L*128L
+
+# Note: update backup.zip extract takes around 30M, update download may well be over 100M
+hd_free_required_by_update = 1024L*1024L*256L
+hd_free_required_by_startup = 1024L*1024L*16L
+
+# --------------------------------------------------------------------------
+
+def _is_livecd():
+    if _safe_runcmd('/bin/cat /proc/mounts | grep unionfs 1>/dev/null 2> /dev/null') == 0:
+        return True
+    return False
+
+def _safe_runcmd_timeout(cmd, timeout):
+    try:
+        process = subprocess.Popen(cmd, shell=True)
+        for i in xrange(timeout):
+            time.sleep(1)
+            rv = process.poll()
+            if rv is not None:
+                if rv < 0:
+                    return -rv
+                return rv
+        return 126
+
+    except OSError:
+        return 127
+
+def _safe_runcmd(cmd):
+    try:
+        rv = subprocess.call(cmd, shell=True)
+        if rv < 0:
+            return -rv
+        return rv
+    except OSError:
+        return 127
+
+# XXX: not working in all cases: arguments containing double quotes must be escaped
+# at least exception dumps contain problematic characters..
+def _usplash_write(arg):
+    try:
+        _safe_runcmd('/sbin/usplash_write "%s" 1> /dev/null 2> /dev/null' % str(arg))
+    except:
+        pass
+
+def _set_usplash_timeout(timeout):
+    _usplash_write('TIMEOUT %s' % str(timeout))
+
+# XXX: usplash status is limited to some tight pixel size: eg. "mmmm"
+# is too long a status (will leave some of the text in the buffer
+# which is not overwritten before later shorter text). following seem
+# to work: "ok", "fail", "done", "skip".
+
+def _set_usplash_fail():
+    _usplash_write('FAILURE fail')
+
+def _set_usplash_ok():
+    _usplash_write('SUCCESS ok')
+
+def _set_usplash_done():
+    _usplash_write('SUCCESS done')
+
+def _set_usplash_skip():
+    _usplash_write('SUCCESS skip')
+
+def _set_usplash_success(msg):
+    _usplash_write('SUCCESS %s' % msg)
+
+def _write_usplash_line(msg):
+    _usplash_write('TEXT %s' % str(msg))
+
+def _write_to_console_and_splash(msg, logfunc=None, statusfunc=None):
+    if statusfunc is not None:
+        statusfunc()
+
+    for i in msg.split('\n'):
+        _write_usplash_line('  o %s' % i)
+    print '  * %s' % msg
+    if logfunc is not None:
+        logfunc(msg)
+
+def _do_reboot(wait, message):
+    _write_to_console_and_splash('Rebooting...')
+
+    _set_usplash_timeout(60*15)
+
+    r = range(int(wait))
+    r.reverse()
+    for count in r:
+        _set_usplash_success(str(count))
+        print '.',
+        time.sleep(1)
+    print
+
+    # Note: some error scenarios (at least missing syslog) leave
+    # system in a state where clean shutdown is not possible at all
+    # and we need to use the force.
+    _safe_runcmd('/sbin/shutdown -r now %s' % message)
+    time.sleep(10*60)
+
+    # XXX: maybe add usplash text (and/or console text in case usplash
+    # timeouts) telling user to reset the machine if it hangs in
+    # reboot
+    _safe_runcmd('sync; sync; sync; sleep 30; /sbin/reboot -f')
+
+class InitLogger:
+    def __init__(self, name):
+        self.name = name
+        self.logger = None
+        self.logfile = None
+
+        try:
+            if not os.path.exists('/dev/log'):
+                raise Exception('no /dev/log')
+            if _safe_runcmd('/usr/sbin/lsof | grep /dev/log 1> /dev/null 2> /dev/null') != 0:
+                raise Exception('no listener for /dev/log')
+            from codebay.common import logger
+            self.logger = logger.get(self.name)
+        except:
+            print '%s: cannot get real logger, logging to file /tmp/%s.log' % (self.name, self.name)
+
+            try:
+                self.logfile = open('/tmp/%s.log' % self.name, 'w')
+            except:
+                print '%s: cannot open logfile, logging only to stdout' % self.name
+
+
+    def _log(self, l, s, do_print=True):
+        try:
+            line = '%s: %s: %s' % (self.name, l, s)
+            if do_print:
+                print '%s\n' % line
+            if self.logfile is not None:
+                self.logfile.write(line + '\n')
+        except:
+            pass
+
+    def debug(self, s, do_print=False):
+        if self.logger is not None: self.logger.debug(s)
+        # self._log('DEBUG', s, do_print=False) # XXX: no way to flag debug, not using for now.
+
+    def info(self, s, do_print=False):
+        if self.logger is not None: self.logger.info(s)
+        self._log('INFO', s, do_print=do_print)
+
+    def warning(self, s, do_print=True):
+        if self.logger is not None: self.logger.warning(s)
+        self._log('WARNING', s, do_print=do_print)
+
+    def error(self, s, do_print=True):
+        if self.logger is not None: self.logger.error(s)
+        self._log('ERROR', s, do_print=do_print)
+
+    def exception(self, s, do_print=True):
+        if self.logger is not None: self.logger.exception(s)
+        exc = traceback.format_exc()
+        self._log('EXCEPTION', '%s\n\n%s' % (s, exc), do_print=do_print)
+
+def _remove_file(filename):
+    return _safe_runcmd('/bin/rm -rf ' + filename)
+
+def _write_file(filename, content):
+    f = open(filename, 'w')
+    f.write(content)
+    f.close()
+
+def _cleanup_disk(_log):
+    """Try to free hd space."""
+
+    # XXX: force log rotation and/or delete logfiles:
+    # - ensure logrotate config is sensible
+    # - force logrotation by calling logrotate with force flags directly
+    # - check that logrotate does not try to be smart and stop/restart
+    #   syslog!
+    """
+    /var/log/installer/
+    /var/log/ntpstats/
+    /var/log/gdm/
+    /var/log/news/
+    /var/log/ntpstats/
+    /var/log/unattended-upgrades/
+    /var/log (aptitude, dpkg, acpid, auth, daemon, debug, dpkg, kern, messages, scrollkeeper, syslog, user)
+    """
+
+    # XXX: other possible cleanup targets?
+    """
+    /var/tmp/
+    /var/lib/slocate/
+    /var/lib/texmf/
+    /var/lib/gconf/defaults -> languages?
+    /var/cache/debconf
+    /var/cache/apt
+    /var/cache/man
+    /var/cache/cups
+    /var/cache/locate
+    /var/cache/fonts
+    /var/backups/ (aptitude.pkgstates, dpkg.status)
+    /var/spool
+    """
+
+    if _safe_runcmd('/usr/bin/aptitude clean') != 0:
+        _log.warning('Cleaning up apt cache failed.')
+
+def _hd_free(_log):
+    """Returns megabytes free in root filesystem.
+
+    Note: checks blocks available for non-super-user because
+    not all daemons run with super-user privileges.
+    """
+
+    import statvfs
+    st = os.statvfs('/')
+    available = st[statvfs.F_BSIZE]*st[statvfs.F_BAVAIL]
+    return available
+
+def _remove_filler(_log):
+    if os.path.exists(hd_filler_file):
+        os.unlink(hd_filler_file)
+
+def _check_filler(_log):
+    """Check hd filler file.
+
+    Returns true if filler file exists and its size matches predefined
+    constant, false otherwise. Filler file with non-matching size is
+    removed."""
+
+    import stat
+    if not os.path.exists(hd_filler_file):
+        return False
+    st = os.stat(hd_filler_file)
+    if st[stat.ST_SIZE] != hd_filler_file_size:
+        _remove_filler(_log)
+        return False
+    return True
+
+def _free_hd(_log, free_required):
+    """Check that hd has at least free_megs free space."""
+
+    if _hd_free(_log) > free_required:
+        return
+    _remove_filler(_log)
+    if _hd_free(_log) > free_required:
+        return
+    _cleanup_disk(_log)
+    if _hd_free(_log) > free_required:
+        return
+    raise Exception('failed to free hd space')
+
+def _fill_hd(_log, free_megs):
+    """Creates a file to fill up hd space.
+
+    This space is required e.g. to ensure that system update can run in reboot.
+    """
+
+    if _check_filler(_log):
+        return
+    if _hd_free(_log) > free_megs + hd_filler_file_size:
+        _safe_runcmd('/bin/dd if=/dev/zero of=%s bs=1M count=%s 1> /dev/null 2> /dev/null' % (hd_filler_file, str(int(hd_filler_file_size / 1024L / 1024L))))
+    else:
+        _log.warning('not enough disk space to create filler file, next update may not succeed.')
+
+def _hd_check_before_update(_log):
+    _free_hd(_log, hd_free_required_by_update)
+
+def _hd_check_after_update(_log):
+    _free_hd(_log, hd_free_required_by_startup)
+    _fill_hd(_log, hd_free_required_by_startup)
+
+# --------------------------------------------------------------------------
+
+class UpdateSuccess(Exception):
+    """Product update success."""
+
+class UpdateSuccessReboot(Exception):
+    """Product update success, reboot required."""
+
+class UpdateFailureReboot(Exception):
+    """Product update failed, reboot required."""
+
+class UpdateFailure(Exception):
+    """Product update failed."""
+
+def _run_update_command(command, do_timesync, do_update, do_force):
+    cmd = command
+
+    if do_timesync:
+        cmd += ' --timesync'
+    if do_update:
+        cmd += ' --update'
+    if do_force:
+        cmd += ' --force-update'
+
+    rc = _safe_runcmd('%s 1> /dev/null 2> /dev/null' % cmd)
+    if rc == 0:
+        raise UpdateSuccess()
+    elif rc == 1:
+        # XXX: generic failure return value
+        raise UpdateFailure()
+    elif rc == 2:
+        raise UpdateSuccessReboot()
+    elif rc == 3:
+        raise UpdateFailureReboot()
+    elif rc == 4:
+        raise UpdateFailure()
+    elif rc == 5:
+        # XXX: for maximum safety, this could be UpdateFailureReboot()
+        raise UpdateFailure()
+    elif rc == 6:
+        # XXX: update not done is the same as error
+        raise UpdateFailure()
+    else:
+        raise UpdateFailure()
+
+def _update_from_backup(_log, do_timesync, do_update, do_force):
+    backup_name = os.path.basename(backup_zip)
+    tmp_dir = '/tmp/update-files'
+    scripts_dir = os.path.join(tmp_dir, 'scripts')
+
+    if _safe_runcmd('/usr/bin/test -f %s' % backup_zip) != 0:
+        raise Exception('backup zipfile missing')
+
+    if _safe_runcmd('%s %s %s 1> /dev/null 2> /dev/null' % ('/usr/bin/zip', '-T', backup_zip)) != 0:
+        raise Exception('backup zipfile broken')
+    
+    rc = 0
+    rc += _safe_runcmd('/bin/rm -rf %s' % tmp_dir)
+    rc += _safe_runcmd('/bin/mkdir -p %s' % tmp_dir)
+    rc += _safe_runcmd('/bin/cp %s %s' % (backup_zip, tmp_dir))
+    rc += _safe_runcmd('/usr/bin/unzip %s -d %s 1> /dev/null 2> /dev/null' % (backup_zip, tmp_dir))
+    if rc != 0:
+        _safe_runcmd('/bin/rm -rf %s' % tmp_dir)
+        raise Exception('failed to prepare backup zipfile for running update: %s' % str(rc))
+
+    cmd = '/usr/bin/python %s --import-path="%s %s" --scripts-path=%s' % (os.path.join(scripts_dir, update_command), tmp_dir, os.path.join(tmp_dir, codebay_zipname), scripts_dir)
+
+    try:
+        _run_update_command(cmd, do_timesync, do_update, do_force)
+    except:
+        _safe_runcmd('/bin/rm -rf %s' % tmp_dir)
+        raise
+
+def _update_from_system(_log, do_timesync, do_update, do_force):
+    from codebay.l2tpserver import constants
+
+    cmd = '/usr/bin/python %s' % constants.CMD_L2TPGW_UPDATE
+
+    _run_update_command(cmd, do_timesync, do_update, do_force)
+
+def _update_product(_log):
+    """Try to update product."""
+
+    def _reboot(msg):
+        # NB: the fsck markers are mostly handled in later init steps, but
+        # here we have to explicitly skip fsck because fastboot marker is
+        # already removed and later init steps are not run before reboot.
+        try:
+            from codebay.l2tpserver import constants
+            _safe_runcmd('/usr/bin/touch %s' % constants.FASTBOOT_MARKER_FILE)
+            _safe_runcmd('/bin/rm -f %s' % constants.FORCE_FSCK_MARKER_FILE)
+        except:
+            # No harm (except longer boot time)
+            pass
+        _do_reboot(10, 'Rebooting after update check: %s' % str(msg))
+
+    # determine what to do based on marker files, etc.
+    _rdf_missing = False
+    _update_force = False
+    _update_skip = False
+    _update_ongoing = False
+    _update_done = False
+
+    try:
+        from codebay.l2tpserver import constants
+        if not os.path.exists(constants.EXPORTED_RDF_DATABASE_FILE):
+            _rdf_missing = True
+    except:
+        _log.exception('failed when checking existence of exported rdf database file, ignoring')
+        
+    try:
+        from codebay.l2tpserver import constants
+        if os.path.exists(constants.UPDATE_FORCE_MARKER_FILE):
+            _update_force = True
+        else:
+            if os.path.exists(constants.UPDATE_SKIP_MARKER_FILE):
+                _update_skip = True
+    except:
+        _log.exception('problem parsing update marker files, using default values.')
+
+    try:
+        _safe_runcmd('rm -f %s' % constants.UPDATE_FORCE_MARKER_FILE)
+        _safe_runcmd('rm -f %s' % constants.UPDATE_SKIP_MARKER_FILE)
+    except:
+        pass
+
+    try:
+        if os.path.exists(update_ongoing_marker):
+            _update_ongoing = True
+        else:
+            if os.path.exists(update_done_marker):
+                _update_done = True
+    except:
+        pass
+
+    try:
+        _safe_runcmd('rm -f %s' % update_ongoing_marker)
+        _safe_runcmd('rm -f %s' % update_done_marker)
+    except:
+        pass
+
+    def _try_package_config():
+        # Try to force package configuration in case update was interrupted
+        os.environ['DEBIAN_FRONTEND'] = 'noninteractive'
+        _write_to_console_and_splash('Package config sanity check...', logfunc=_log.info)
+        _safe_runcmd_timeout('/usr/bin/dpkg --force-depends --force-confmiss --force-confdef --force-confold --configure -a', 120)
+        #_safe_runcmd_timeout('/usr/bin/apt-get -f -y install', 120)
+        _set_usplash_done()
+
+    def _try_package_config_preupdate():
+        # Currently nothing to do here
+        pass
+
+    def _run_postupdate_script(resultstring):
+        try:
+            if os.path.exists(postupdate_script):
+                _log.info('running postupdate script')
+                _safe_runcmd('%s %s' % (postupdate_script, resultstring))
+                _log.info('postupdate script returned')
+            else:
+                _log.info('no postupdate script found, not running')
+        except:
+            _log.exception('running postupdate script failed')
+        
+    # skip time sync / update if no rdf configuration: it will fail anyway
+    if _rdf_missing:
+        _write_to_console_and_splash('No configuration, update checks skipped.', logfunc=_log.info)
+        _try_package_config()
+        return
+
+    def _do_timesync(update_func):
+        _write_to_console_and_splash('Attempting timesync...', logfunc=_log.info)
+        try:
+            update_func(_log, True, False, False)
+        except UpdateSuccess:
+            pass
+        except:
+            _write_to_console_and_splash('Warning: timesync not completed.', logfunc=_log.info, statusfunc=_set_usplash_fail)
+            return
+        _set_usplash_done()
+
+    if _update_ongoing:
+        _write_to_console_and_splash('Update skipped (detected interrupted update)', logfunc=_log.warning)
+        _do_timesync(_update_from_system)
+        _try_package_config()
+        return
+
+    if _update_done:
+        _write_to_console_and_splash('Update skipped (done in previous boot)',  logfunc=_log.info)
+        _do_timesync(_update_from_system)
+        _try_package_config()
+        return
+
+    if _update_skip:
+        # XXX: check when the skip is done...
+        _write_to_console_and_splash('Update skipped (forced)',  logfunc=_log.info)
+        _do_timesync(_update_from_system)
+        _try_package_config()
+        return
+
+    _safe_runcmd('touch %s' % update_ongoing_marker)
+
+    # Try to recover from previous failures if they are sure to lead to an update
+    # problem, see #734.  (Currently no action, update script handles.)
+    try:
+        _try_package_config_preupdate()
+    except:
+        _write_to_console_and_splash('Pre-update package cleanup failed', logfunc=_log.info)
+
+    if _update_force:
+        _write_to_console_and_splash('Forced update check...',  logfunc=_log.info)
+
+    try:
+        if os.path.exists(update_next_time_from_system):
+            _safe_runcmd('/bin/rm -f %s' % update_next_time_from_system)
+
+            _write_to_console_and_splash('Normal update mode...',  logfunc=_log.info)
+            _do_timesync(_update_from_system)
+            _write_to_console_and_splash('Attempting update...',  logfunc=_log.info)
+            _update_from_system(_log, True, True, _update_force)
+        else:
+            _safe_runcmd('/usr/bin/touch %s' % update_next_time_from_system)
+
+            _write_to_console_and_splash('Fail-safe update mode...',  logfunc=_log.info)
+            _do_timesync(_update_from_backup)
+            _write_to_console_and_splash('Attempting update...',  logfunc=_log.info)
+            _update_from_backup(_log, True, True, _update_force)
+    except:
+        _safe_runcmd('rm -f %s' % update_ongoing_marker)
+
+        try:
+            raise
+        except UpdateSuccess:
+            # Update check was successful, but no update occurred.
+
+            _write_to_console_and_splash('Update check success.', logfunc=_log.info)
+
+            if _update_force:
+                # Try again update on next boot
+                _write_to_console_and_splash('Reboot required...', logfunc=_log.info)
+                _reboot('Rebooting after forced update.')
+                return
+
+            # Note: update_done marker only written if update actually did something.
+            return
+        except UpdateSuccessReboot:
+            # Update check was successful, update occurred and was successful.
+
+            _write_to_console_and_splash('Update check success.',  logfunc=_log.info)
+
+            _run_postupdate_script('success')
+
+            _write_to_console_and_splash('Reboot required...',  logfunc=_log.info)
+
+            # XXX: if forced, should we try other update option also in here? -> no
+            _safe_runcmd('touch %s' % update_done_marker)
+
+            _reboot('Rebooting after update.')
+            return
+        except UpdateFailure:
+            _write_to_console_and_splash('Update check failed.', logfunc=_log.warning, statusfunc=_set_usplash_fail())
+
+            _run_postupdate_script('failure')
+
+            if _update_force:
+                # Try again update on next boot
+                _write_to_console_and_splash('Reboot required...',  logfunc=_log.info)
+                _reboot('Rebooting after failed forced update.')
+                return
+            return
+        except UpdateFailureReboot:
+            _write_to_console_and_splash('Update check failed.',  logfunc=_log.warning, statusfunc=_set_usplash_fail())
+            _write_to_console_and_splash('Reboot required...',  logfunc=_log.info)
+
+            _run_postupdate_script('failure')
+
+            if _update_force:
+                # XXX: also in this case the update marker is in order
+                # because it may prevent reboot loop if both update
+                # alternatives keep on failing badly. In case of
+                # forced updates, the new try in next reboot do not
+                # harm because forced flag will then be cleared and
+                # loop terminated in next try.
+                _safe_runcmd('touch %s' % update_done_marker)
+
+        except:
+            _run_postupdate_script('failure')
+
+            _write_to_console_and_splash('Update check failed (unknown error).', logfunc=_log.error, statusfunc=_set_usplash_fail())
+            _write_to_console_and_splash('Reboot required...', logfunc=_log.info)
+
+    else:
+        _safe_runcmd('rm -f %s' % update_ongoing_marker)
+
+        _write_to_console_and_splash('Update check failed (no exception)', logfunc=_log.error, statusfunc=_set_usplash_fail())
+        _write_to_console_and_splash('Reboot required...', logfunc=_log.info)
+
+    if _update_force:
+        # Try again update on next boot
+        _reboot('Reboot after failed forced update.')
+        return
+
+    _safe_runcmd('touch %s' % update_done_marker)
+    _reboot('Reboot after failed update.')
+
+# --------------------------------------------------------------------------
+
+if __name__ == '__main__':
+    usage = 'Usage %s <update>' % sys.argv[0]
+
+    if len(sys.argv) < 2:
+        raise Exception(usage)
+
+    _log = InitLogger('vpnease-init')
+
+    if sys.argv[1] == 'update':
+        _set_usplash_timeout(5*60)
+
+        is_livecd = _is_livecd()
+
+        try:
+            if not is_livecd:
+                _hd_check_before_update(_log)
+        except:
+            _log.exception('pre-update system resource check failed, trying to start anyways')
+
+        # XXX: mail to admin if update failed? (or at least write a status file)
+        if not is_livecd:
+            try:
+                _set_usplash_timeout(35*60)
+                _update_product(_log)
+            except:
+                _log.exception('update product failed: ignoring')
+                pass
+
+        try:
+            if not is_livecd:
+                _hd_check_after_update(_log)
+        except:
+            _log.exception('post-update system resource check failed, trying to start anyways')
+
+        _set_usplash_timeout(5*60)
+    else:
+        raise Exception(usage)

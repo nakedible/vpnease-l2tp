@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="unit span-6">    
+        <div class="box">
+          <table class="key-value" id="table-status-service">
+	    <caption>Service Status</caption>
+            <tr>
+              <th>Status</th>
+              <td id="status-overview-state"><n:invisible n:render="state" /></td>
+            </tr>
+            <tr>
+              <th>User connections</th>
+              <td id="status-overview-user-count"><n:invisible n:render="normal_user_count" /></td>
+            </tr>
+            <tr>
+              <th>Site-to-site conns</th>
+              <td id="status-overview-sitetosite-overview"><n:invisible n:render="site_to_site_overview" /></td>
+            </tr>
+            <tr>
+              <th>Service uptime</th>
+              <td id="status-overview-service-uptime"><n:invisible n:render="service_uptime" /></td>
+            </tr>
+            <tr>
+              <th>Last maint. reboot</th>
+              <td id="status-overview-last-automatic-reboot-time"><n:invisible n:render="last_automatic_reboot_time" /></td>
+            </tr>
+            <tr>
+              <th>Next maint. reboot</th>
+              <td id="status-overview-next-automatic-reboot-time"><n:invisible n:render="next_automatic_reboot_time" /></td>
+            </tr>
+            <tr>
+              <th>Last update</th>
+              <td id="status-overview-last-successful-product-update-time"><n:invisible n:render="last_successful_product_update_time" /></td>
+            </tr>
+            <tr>
+              <th>Software version</th>
+              <td><span id="status-overview-current-software-version"><n:invisible n:render="software_version" /></span>
+                  <span id="status-overview-update-available"><n:invisible n:render="update_available" /></span></td>
+            </tr>
+          </table>
+        <!-- /box -->                   
+        </div>
+      <!-- /unit -->
+      </div>
+
+      <div class="unit span-6 last">
+        <div class="box">
+          <table class="key-value" id="table-status-network">
+	    <caption>Network Status</caption>
+            <tr>
+              <th>Internet</th>
+              <td><span id="status-overview-public-address"><n:invisible n:render="public_address" /></span> <span id="status-overview-public-interface-string"><n:invisible n:render="public_interface_string" /></span><br />
+                  <span id="status-overview-public-mac"><n:invisible n:render="public_mac" /></span><br />
+                  <span id="status-overview-public-rxtx-summary"><n:invisible n:render="public_rxtx_rate_summary" /></span><br />
+                  <span id="status-overview-public-limit"><n:invisible n:render="public_limit" /></span><br />
+                  <span id="status-overview-public-dyndns"><n:invisible n:render="public_dyndns_line" /></span>&#x00a0;  <!-- needed -->
+              </td>
+            </tr>
+            <tr>
+              <th>Private network</th>
+              <td><n:invisible n:render="private_interface_unconfigured" /><span id="status-overview-private-address"><n:invisible n:render="private_address" /></span> <span id="status-overview-private-interface-string"><n:invisible n:render="private_interface_string" /></span><br />
+                  <span id="status-overview-private-mac"><n:invisible n:render="private_mac" /></span><br />
+                  <span id="status-overview-private-rxtx-summary"><n:invisible n:render="private_rxtx_rate_summary" /></span>&#x00a0;  <!-- needed -->
+              </td>
+            </tr>
+            <tr>
+              <th>DNS/WINS/RADIUS</th>
+              <td id="status-overview-dns-wins-overview"><n:invisible n:render="dns_wins_overview" /></td>
+            </tr>
+            <tr>
+              <th>Routers</th>
+              <td id="status-overview-router-overview"><n:invisible n:render="router_overview" /></td>
+            </tr>
+          </table>
+        <!-- /box -->                   
+        </div>
+      <!-- /unit -->
+      </div>
+
+      <!-- old skool clearing float -->
+      <div class="cut">&#x00a0;</div>          
+
+      <div class="unit span-6">    
+        <div class="box">
+          <table class="key-value" id="table-status-hardware">
+	    <caption>Hardware Status</caption>
+            <tr>
+              <th>CPU usage</th>
+              <td id="status-overview-cpu-usage"><n:invisible n:render="cpu_usage" /></td>
+            </tr>
+            <tr>
+              <th>Mem usage</th>
+              <td id="status-overview-memory-usage"><n:invisible n:render="memory_usage" /></td>
+            </tr>
+            <tr>
+              <th>Virt. mem usage</th>
+              <td id="status-overview-swap-usage"><n:invisible n:render="swap_usage" /></td>
+            </tr>
+            <tr>
+              <th>Uptime</th>
+              <td id="status-overview-server-uptime"><n:invisible n:render="server_uptime" /></td>
+            </tr>
+          </table>
+        <!-- /box -->                   
+        </div>
+      <!-- /unit -->
+      </div>
+
+      <div class="unit span-6 last">
+        <div class="box">
+          <table class="key-value" id="table-status-license">
+	    <caption>License Status</caption>
+            <tr>
+              <th>License&#x00a0;key</th>
+              <td id="status-overview-license-key"><n:invisible n:render="license_key_or_demo" /></td>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <td id="status-overview-license-name"><n:invisible n:render="license_name_or_demo" /></td>
+            </tr>
+            <tr>
+              <th>Users</th>
+              <td id="status-overview-license-user-limit"><n:invisible n:render="license_user_limit" /></td>
+            </tr>
+            <tr>
+              <th>Site-to-site</th>
+              <td id="status-overview-license-sitetosite-limit"><n:invisible n:render="license_site_to_site_limit" /></td>
+            </tr>
+            <tr>
+              <th>License server</th>
+              <td id="status-overview-management-connection-status"><n:invisible n:render="management_connection_status" /></td>
+            </tr>
+          </table>
+        <!-- /box -->                   
+        </div>
+      <!-- /unit -->
+      </div>
+
+      <br />
+
+      <p>
+        Download <a class="cb-external" target="_blank" href="/static/VPNEASE-MIB.txt">VPNEASE-MIB.txt</a>
+      </p>
+
+      <!-- old skool clearing float -->
+      <div class="cut">&#x00a0;</div>
+    </n:invisible>
+    
+    <n:invisible n:pattern="contexthelp">
+    <div class="context-help-items">
+        <div id="ctx-page">
+            <div class="ctx-title">
+            </div>
+            <div class="ctx-content">
+            </div>
+        </div>
+    </div>
+    </n:invisible>
+  </body>
+</html>

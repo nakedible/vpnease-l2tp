@@ -1,0 +1,2 @@
+# connection tracking helpers
+obj-$(CONFIG_IP_NF_TALK) += ip_conntrack_talk.o

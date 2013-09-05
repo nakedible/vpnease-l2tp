@@ -1,0 +1,31 @@
+diff -ruaN logilab-astng-0.17.0-old/nodes.py logilab-astng-0.17.0/nodes.py
+--- logilab-astng-0.17.0-old/nodes.py	2007-02-22 13:40:30.000000000 +0200
++++ logilab-astng-0.17.0/nodes.py	2007-05-26 00:19:03.000000000 +0300
+@@ -371,7 +371,10 @@
+     """return an ast.AssTuple node as string"""
+     string = ', '.join([n.as_string() for n in node.nodes])
+     # fix for del statement
+-    return string.replace(', del ', ', ')
++    opt_comma = ''
++    if len(node.nodes) <= 1:
++        opt_comma = ','
++    return '(%s%s)' % (string.replace(', del ', ', '), opt_comma)
+ AssTuple.as_string = asstuple_as_string
+ 
+ def assert_as_string(node):
+@@ -422,9 +425,13 @@
+     expr_str = node.node.as_string()
+     args = ', '.join([arg.as_string() for arg in node.args])
+     if node.star_args:
+-        args += ', *%s' % node.star_args.as_string()
++        if args != '':
++            args += ', '
++        args += '*%s' % node.star_args.as_string()
+     if node.dstar_args:
+-        args += ', **%s' % node.dstar_args.as_string()
++        if args != '':
++            args += ', '
++        args += '**%s' % node.dstar_args.as_string()
+     return '%s(%s)' % (expr_str, args)
+ CallFunc.as_string = callfunc_as_string
+ 

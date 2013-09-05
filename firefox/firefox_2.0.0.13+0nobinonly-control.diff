@@ -1,0 +1,109 @@
+diff -ru firefox-2.0.0.13+0nobinonly.old/debian/control firefox-2.0.0.13+0nobinonly/debian/control
+--- firefox-2.0.0.13+0nobinonly.old/debian/control	2008-03-30 22:02:31.000000000 +0300
++++ firefox-2.0.0.13+0nobinonly/debian/control	2008-03-30 22:43:18.000000000 +0300
+@@ -20,16 +20,16 @@
+  .
+  This browser was previously known as Firebird and Phoenix.
+ 
+-Package: firefox-dom-inspector
+-Architecture: all
+-Depends: firefox (>= ${source:Version}), firefox (<< ${source:Version}.1~)
+-Provides: mozilla-firefox-dom-inspector
+-Replaces: mozilla-firefox-dom-inspector 
+-Conflicts: mozilla-firefox-dom-inspector
+-Description: tool for inspecting the DOM of pages in Mozilla Firefox
+- This is a tool that allows you to inspect the DOM for web pages in
+- Firefox.  This is of great use to people who are doing Mozilla chrome
+- development or web page development.
++# Package: firefox-dom-inspector
++# Architecture: all
++# Depends: firefox (>= ${source:Version}), firefox (<< ${source:Version}.1~)
++# Provides: mozilla-firefox-dom-inspector
++# Replaces: mozilla-firefox-dom-inspector 
++# Conflicts: mozilla-firefox-dom-inspector
++# Description: tool for inspecting the DOM of pages in Mozilla Firefox
++#  This is a tool that allows you to inspect the DOM for web pages in
++#  Firefox.  This is of great use to people who are doing Mozilla chrome
++#  development or web page development.
+ 
+ Package: firefox-gnome-support
+ Architecture: any
+@@ -53,36 +53,36 @@
+  .
+  This package contains the debugging symbols for firefox.
+ 
+-Package: mozilla-firefox
+-Architecture: all
+-Depends: firefox (>= ${source:Version}), firefox (<< ${source:Version}.1~)
+-Description: Transition package for firefox rename
+- Package to ease upgrading from older mozilla-firefox packages to the
+- new firefox package.
+- .
+- This package can be purged at anytime once the firefox package has
+- been installed.
+-
+-Package: mozilla-firefox-dom-inspector
+-Architecture: all
+-Depends: firefox-dom-inspector (= ${Source-Version})
+-Description: Transition package for firefox rename
+- Package to ease upgrading from older mozilla-firefox-dom-inspector
+- packages to the new firefox-dom-inspector package.
+- .
+- This package can be purged at anytime once the firefox-dom-inspector
+- package has been installed.
+-
+-Package: mozilla-firefox-gnome-support
+-Architecture: all
+-Section: gnome
+-Depends: firefox (>= ${source:Version}), firefox (<< ${source:Version}.1~)
+-Description: Transition package for firefox rename
+- Package to ease upgrading from older mozilla-firefox-gnome-support
+- packages to the new firefox-gnome-support package.
+- .
+- This package can be purged at anytime once the firefox-gnome-support
+- package has been installed.
++# Package: mozilla-firefox
++# Architecture: all
++# Depends: firefox (>= ${source:Version}), firefox (<< ${source:Version}.1~)
++# Description: Transition package for firefox rename
++#  Package to ease upgrading from older mozilla-firefox packages to the
++#  new firefox package.
++#  .
++#  This package can be purged at anytime once the firefox package has
++#  been installed.
++
++# Package: mozilla-firefox-dom-inspector
++# Architecture: all
++# Depends: firefox-dom-inspector (= ${Source-Version})
++# Description: Transition package for firefox rename
++#  Package to ease upgrading from older mozilla-firefox-dom-inspector
++#  packages to the new firefox-dom-inspector package.
++#  .
++#  This package can be purged at anytime once the firefox-dom-inspector
++#  package has been installed.
++
++# Package: mozilla-firefox-gnome-support
++# Architecture: all
++# Section: gnome
++# Depends: firefox (>= ${source:Version}), firefox (<< ${source:Version}.1~)
++# Description: Transition package for firefox rename
++#  Package to ease upgrading from older mozilla-firefox-gnome-support
++#  packages to the new firefox-gnome-support package.
++#  .
++#  This package can be purged at anytime once the firefox-gnome-support
++#  package has been installed.
+   
+ 
+ # Additional arrangements for Ubuntu:
+diff -ru firefox-2.0.0.13+0nobinonly.old/debian/rules firefox-2.0.0.13+0nobinonly/debian/rules
+--- firefox-2.0.0.13+0nobinonly.old/debian/rules	2008-03-30 22:02:31.000000000 +0300
++++ firefox-2.0.0.13+0nobinonly/debian/rules	2008-03-30 22:43:18.000000000 +0300
+@@ -204,7 +204,7 @@
+ 
+ # Exclude gnome components from firefox
+ 	dh_install -pfirefox -Xgnome -Ximgicon
+-	dh_install -pfirefox-dom-inspector
++#	dh_install -pfirefox-dom-inspector
+ 	dh_install -pfirefox-gnome-support
+ 
+ 	# Sort out libnss/libnspr packages

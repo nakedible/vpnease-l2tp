@@ -1,0 +1,47 @@
+Usplash is a userspace bootsplash application built on top of the BOGL
+framebuffer library.
+
+BUILDING
+
+make
+
+INSTALLING
+
+make install
+mkdir /var/lib/usplash
+mkfifo /var/lib/usplash/usplash_fifo
+
+USING
+
+usplash will launch the bootsplash program.
+
+usplash_write will write commands to the usplash fifo. It uses
+non-blocking IO, so will exit with an exit code of 0 if usplash is not
+running. The format of a usplash command is COMMAND argument - this
+must be passed as a single argument to usplash_write.
+
+Current commands are:
+
+TEXT - prints a line of text
+STATUS - prints text in the right hand side of the usplash screen
+SUCCESS - prints green text in the right hand side of the usplash screen
+FAILURE - prints red text in the right hand side of the usplash screen
+PROGRESS - prints a progress bar of argument percent
+CLEAR - clears the text area
+TIMEOUT - sets the timeout to something other than 15 seconds
+QUIT - quits the usplash daemon
+
+EXAMPLES
+
+usplash_write "TEXT hello usplash!" - will write "hello usplash!" to
+the text area 
+
+usplash_write "TEXT test" - will scroll "hello usplash!" upwards and
+print "test" in its original location
+
+usplash_write "STATUS yes" - will print "yes" to the right of "test"
+
+usplash_write "PROGRESS 20" - will print a progress bar that covers
+20% of the progress bar area
+
+usplash_write "QUIT" - will quit the daemon

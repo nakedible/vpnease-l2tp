@@ -1,0 +1,3027 @@
+diff -ruN openswan-2.4.0rc4.orig/debian/control openswan-2.4.0rc4/debian/control
+--- openswan-2.4.0rc4.orig/debian/control	2005-03-12 17:53:55.000000000 +0200
++++ openswan-2.4.0rc4/debian/control	2006-10-03 13:50:07.000000000 +0300
+@@ -38,33 +38,33 @@
+  native ones, you will need to install either openswan-modules-source or
+  kernel-patch-openswan and build the respective modules for your kernel.
+  
+-Package: openswan-modules-source
+-Architecture: all
+-Depends: coreutils | fileutils, debhelper
+-Recommends: kernel-package (>= 7.04), kernel-source
+-Suggests: openswan
+-Description: IPSEC kernel modules source for Openswan
+- This package contains the source for the Openswan modules to get the necessary
+- kernel support to use Openswan.
+- .
+- It includes the NAT Traversal patches, which will need to be applied to the
+- kernel tree if NAT Traversal is needed.
+- .
+- It currently works only for 2.4 series kernels!
++# Package: openswan-modules-source
++# Architecture: all
++# Depends: coreutils | fileutils, debhelper
++# Recommends: kernel-package (>= 7.04), kernel-source
++# Suggests: openswan
++# Description: IPSEC kernel modules source for Openswan
++#  This package contains the source for the Openswan modules to get the necessary
++#  kernel support to use Openswan.
++#  .
++#  It includes the NAT Traversal patches, which will need to be applied to the
++#  kernel tree if NAT Traversal is needed.
++#  .
++#  It currently works only for 2.4 series kernels!
+ 
+-Package: kernel-patch-openswan
+-Architecture: all
+-Depends: coreutils | fileutils
+-Recommends: kernel-package (>= 7.04)
+-Suggests: openswan
+-Description: IPSEC kernel support for Openswan
+- This package contains the patches for the Linux kernel to get the necessary
+- kernel support to use Openswan. If you want to build a kernel module for
+- IPSec, it is much easier to use the openswan-modules-source package instead.
+- This kernel-patch package should probably only be used when building a
+- non-modular kernel or when compiling IPSec non-modular.
+- .
+- It includes the NAT Traversal patches and applies them automatically to the
+- kernel after inserting KLIPS.
+- .
+- It will only work for 2.4 series kernels!
++# Package: kernel-patch-openswan
++# Architecture: all
++# Depends: coreutils | fileutils
++# Recommends: kernel-package (>= 7.04)
++# Suggests: openswan
++# Description: IPSEC kernel support for Openswan
++#  This package contains the patches for the Linux kernel to get the necessary
++#  kernel support to use Openswan. If you want to build a kernel module for
++#  IPSec, it is much easier to use the openswan-modules-source package instead.
++#  This kernel-patch package should probably only be used when building a
++#  non-modular kernel or when compiling IPSec non-modular.
++#  .
++#  It includes the NAT Traversal patches and applies them automatically to the
++#  kernel after inserting KLIPS.
++#  .
++#  It will only work for 2.4 series kernels!
+diff -ruN openswan-2.4.0rc4.orig/debian/rules openswan-2.4.0rc4/debian/rules
+--- openswan-2.4.0rc4.orig/debian/rules	2005-01-19 19:09:16.000000000 +0200
++++ openswan-2.4.0rc4/debian/rules	2006-10-03 13:50:07.000000000 +0300
+@@ -73,8 +73,8 @@
+ 	rm -f $(CURDIR)/debian/ipsec.secrets
+ 
+ 	# here we re-generate the upstream HTML documentation
+-	$(MAKE) -C doc/ index.html
+-	
++	# $(MAKE) -C doc/ index.html
++
+ 	# also generate the fswcert tool
+ 	$(MAKE) -C debian/fswcert/
+ 
+@@ -92,8 +92,6 @@
+ 	-find $(CURDIR)/lib/libcrypto -name "*.a" | xargs --no-run-if-empty rm
+ 
+ 	-$(MAKE) -f debian/rules unpatch
+-	
+-	rm -rf debian/openswan-modules-source-build/
+ 
+ 	# just in case something went wrong
+ 	rm -f $(CURDIR)/debian/ipsec.secrets
+@@ -173,109 +171,6 @@
+ 	find $(CURDIR)/debian/openswan -name ".cvsignore" | xargs --no-run-if-empty rm -f
+ 	find $(CURDIR)/debian/openswan -name "/.svn/" | xargs --no-run-if-empty rm -rf
+ 
+-install-openswan-modules-source: DH_OPTIONS=-i
+-install-openswan-modules-source: PKGDIR=$(CURDIR)/debian/openswan-modules-source
+-install-openswan-modules-source: BUILDDIR=$(CURDIR)/debian/openswan-modules-source-build
+-install-openswan-modules-source: patch-stamp
+-	dh_testdir
+-	dh_testroot
+-	dh_installdirs
+-	mkdir -p "$(BUILDDIR)/modules/openswan"
+-	mkdir -p "$(BUILDDIR)/modules/openswan/lib"
+-	mkdir -p "$(BUILDDIR)/modules/openswan/debian"
+-	cp -r Makefile.inc Makefile.ver linux/ \
+-		"$(BUILDDIR)/modules/openswan"
+-	# if we don't have the crypto-ext patches, this can fail
+-	-cp -r lib/libcrypto \
+-		"$(BUILDDIR)/modules/openswan/lib/"
+-	-find "$(BUILDDIR)/modules/openswan/lib/" -name "*.o" | xargs --no-run-if-empty rm
+-	install --mode=644 debian/openswan-modules-source.kernel-config "$(BUILDDIR)/modules/openswan/config-all.h"
+-	install --mode=755 debian/openswan-modules-source.rules "$(BUILDDIR)/modules/openswan/debian/rules"
+-	install --mode=644 debian/openswan-modules-source.control.in "$(BUILDDIR)/modules/openswan/debian/control.in"
+-	install --mode=644 debian/changelog "$(BUILDDIR)/modules/openswan/debian/"
+-
+-	# This creates the NAT-T patch that can be used on the kernel tree 
+-	# even with openswan-modules-source.
+-	make nattpatch > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
+-        
+-	tar -C $(BUILDDIR) -c modules/ | gzip -9 > \
+-        	"$(PKGDIR)/usr/src/openswan-modules.tar.gz"
+-		
+-	dh_installdocs -popenswan-modules-source -n
+-
+-	# more lintian cleanups
+-	find $(CURDIR)/debian/openswan-modules-source -name ".cvsignore" | xargs --no-run-if-empty rm -f
+-	find $(PKGDIR) -name "/.svn/" | xargs --no-run-if-empty rm -rf
+-
+-install-kernel-patch-openswan: DH_OPTIONS=-i
+-install-kernel-patch-openswan: PKGDIR=$(CURDIR)/debian/kernel-patch-openswan
+-install-kernel-patch-openswan: patch-stamp
+-	dh_testdir
+-	dh_testroot
+-	dh_installdirs
+-	# some of this has been taken from Tommi Virtanen's package
+-	install --mode=0755 debian/kernel-patch-openswan.apply \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/apply/openswan"
+-	install --mode=0755 debian/kernel-patch-openswan.unpatch \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/unpatch/openswan"
+-	install --mode=0755 packaging/utils/patcher \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	cp -r Makefile Makefile.inc Makefile.ver lib/ linux/ packaging/ nat-t/ \
+-		"$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	# also don't generate the out.kpatch file under /usr/src/....
+-	sed 's/>>out.kpatch//' \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile" \
+-			> "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp"
+-	mv "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp" \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile"
+-	sed 's/>out.kpatch//' \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile" \
+-			> "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp"
+-	mv "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp" \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile"
+-	sed 's/rm -f out.kpatch//' \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile" \
+-			> "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp"
+-	mv "$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile.tmp" \
+-        	"$(PKGDIR)/usr/src/kernel-patches/all/openswan/Makefile"
+-	chmod u=rwX,go=rX "$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	# remove extra junk not needed on linux / that lintian would complain about
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan" \
+-		-name '*.o' -print0 | xargs --no-run-if-empty -0 rm -f
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan" \
+-		-name '*.a' -print0 | xargs --no-run-if-empty -0 rm -f
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libopenswan/"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libdes/"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/liblwres/"
+-	rm -f "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/COPYING.LIB"
+-	rm -f "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/README"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/linus"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/ipkg"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/makefiles"
+-	rm -rf "$(PKGDIR)/usr/src/kernel-patches/all/openswan/packaging/redhat"
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/linux/crypto/ciphers/des/asm/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 \
+-		perl -pi -e 's{^#!/usr/local/bin/perl}{#!/usr/bin/perl}g'
+-	# if we don't have the crypto-ext patches, this can fail
+-	-find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libcrypto/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 \
+-		perl -pi -e 's{^#!/usr/local/bin/perl}{#!/usr/bin/perl}g'
+-	find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/linux/crypto/ciphers/des/asm/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 chmod a+x
+-	# if we don't have the crypto-ext patches, this can fail
+-	-find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/lib/libcrypto/" \
+-		-name '*.pl' -print0 | xargs --no-run-if-empty -0 chmod a+x
+-	# if we don't have the crypto-ext patches, this can fail
+-	-find "$(PKGDIR)/usr/src/kernel-patches/all/openswan/linux/net/ipsec/alg/scripts/" \
+-		-name '*.sh' -print0 | xargs --no-run-if-empty -0 chmod a+x
+-	chmod -R u=rwX,go=rX "$(PKGDIR)/usr/src/kernel-patches/all/openswan"
+-	
+-	dh_installdocs -pkernel-patch-openswan -n
+-
+-	# more lintian cleanups
+-	find $(PKGDIR) -name ".cvsignore" | xargs --no-run-if-empty rm -f
+-	find $(PKGDIR) -name "/.svn/" | xargs --no-run-if-empty rm -rf
+-
+ binary-common:
+ 	#dh_testversion 2
+ 	dh_testdir
+@@ -295,10 +190,6 @@
+ 	dh_md5sums
+ 	dh_builddeb
+ 
+-# Build architecture-independent files here.
+-binary-indep: install-openswan-modules-source install-kernel-patch-openswan
+-	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+-
+ # Build architecture-dependent files here.
+ binary-arch: install-openswan
+ 	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+@@ -306,6 +197,6 @@
+ # Any other binary targets build just one binary package at a time.
+ #binary-%: build install
+ #	make -f debian/rules binary-common DH_OPTIONS=-p$*
+-             
+-binary: binary-indep binary-arch
+-.PHONY: clean binary-indep binary-arch
++
++binary: binary-arch
++.PHONY: clean binary-arch
+diff -ruN openswan-2.4.0rc4.orig/include/ietf_constants.h openswan-2.4.0rc4/include/ietf_constants.h
+--- openswan-2.4.0rc4.orig/include/ietf_constants.h	2005-06-23 04:45:55.000000000 +0300
++++ openswan-2.4.0rc4/include/ietf_constants.h	2006-10-03 13:50:07.000000000 +0300
+@@ -270,6 +270,8 @@
+ #define ISAKMP_NEXT_D          12	/* Delete */
+ #define ISAKMP_NEXT_VID        13	/* Vendor ID */
+ #define ISAKMP_NEXT_ATTR       14       /* Mode config Attribute */
++#define ISAKMP_NEXT_NATD_OSX   15       /* NAT-Traversal: NAT-D (osx) */
++#define ISAKMP_NEXT_NATOA_OSX  16       /* NAT-Traversal: NAT-OA (osx) */
+ #define ISAKMP_NEXT_NATD_RFC   20       /* NAT-Traversal: NAT-D (rfc) */
+ #define ISAKMP_NEXT_NATOA_RFC  21       /* NAT-Traversal: NAT-OA (rfc) */
+ #define ISAKMP_NEXT_ROOF       22	/* roof on payload types */
+diff -ruN openswan-2.4.0rc4.orig/include/pluto_constants.h openswan-2.4.0rc4/include/pluto_constants.h
+--- openswan-2.4.0rc4.orig/include/pluto_constants.h	2005-08-19 20:53:03.000000000 +0300
++++ openswan-2.4.0rc4/include/pluto_constants.h	2006-10-03 13:50:07.000000000 +0300
+@@ -284,7 +284,13 @@
+ #define IS_PHASE1(s) (STATE_MAIN_R0 <= (s) && (s) <= STATE_AGGR_R2)
+ #define IS_PHASE15(s) (STATE_XAUTH_R0 <= (s) && (s) <= STATE_XAUTH_I1)
+ #define IS_QUICK(s) (STATE_QUICK_R0 <= (s) && (s) <= STATE_QUICK_R2)
+-#define IS_ISAKMP_ENCRYPTED(s)     (STATE_MAIN_R2 <= (s) && STATE_AGGR_R0!=(s) && STATE_AGGR_I1 != (s))
++/* l2tp-workaround: backported openswan-2.4.x fix for
++   "NISCC Vulnerability Advisory 273756/NISCC/ISAKMP" http://www.openswan.org/niscc2/
++   openswan CVS commit reference:
++   "Diff for /openswan-2/include/pluto_constants.h between version 1.33.2.2 and 1.33.2.3"
++   msg: "oulu c09 isakmp test case info-sa-notification-message-type-and-data  Ee-notify-msg-type, ee-string  306  4313  4618"
++*/
++#define IS_ISAKMP_ENCRYPTED(s)     (STATE_MAIN_R2 <= (s) && STATE_AGGR_R0!=(s) && STATE_AGGR_I1 != (s) && STATE_INFO != (s))
+ #define IS_ISAKMP_AUTHENTICATED(s) (STATE_MAIN_R3 <= (s))
+ #define IS_ISAKMP_SA_ESTABLISHED(s) ((s) == STATE_MAIN_R3 || (s) == STATE_MAIN_I4 \
+ 				  || (s) == STATE_AGGR_I2 || (s) == STATE_AGGR_R2 \
+@@ -293,7 +299,10 @@
+ 				  || (s) == STATE_MODE_CFG_R2 \
+                                   || (s) == STATE_XAUTH_I0 || (s) == STATE_XAUTH_I1)
+ #define IS_IPSEC_SA_ESTABLISHED(s) ((s) == STATE_QUICK_I2 || (s) == STATE_QUICK_R2)
+-#define IS_ONLY_INBOUND_IPSEC_SA_ESTABLISHED(s) ((s) == STATE_QUICK_R1)
++/* this is an ugly hack, disable it */
++/* #define IS_ONLY_INBOUND_IPSEC_SA_ESTABLISHED(s) ((s) == STATE_QUICK_R1) */
++#define IS_ONLY_INBOUND_IPSEC_SA_ESTABLISHED(s) (0)
++
+ #ifdef MODECFG
+ #define IS_MODE_CFG_ESTABLISHED(s) ((s) == STATE_MODE_CFG_R2)
+ #endif
+diff -ruN openswan-2.4.0rc4.orig/lib/libopenswan/constants.c openswan-2.4.0rc4/lib/libopenswan/constants.c
+--- openswan-2.4.0rc4.orig/lib/libopenswan/constants.c	2005-06-23 04:45:55.000000000 +0300
++++ openswan-2.4.0rc4/lib/libopenswan/constants.c	2006-10-03 13:50:07.000000000 +0300
+@@ -123,8 +123,8 @@
+ 	"ISAKMP_NEXT_D",
+ 	"ISAKMP_NEXT_VID",
+ 	"ISAKMP_NEXT_MODECFG",  /* 14 */
+-	"ISAKMP_NEXT_15",
+-	"ISAKMP_NEXT_16",
++	"ISAKMP_NEXT_NAT-D-OSX",
++	"ISAKMP_NEXT_NAT-OA-OSX",
+ 	"ISAKMP_NEXT_17",
+ 	"ISAKMP_NEXT_18",
+ 	"ISAKMP_NEXT_19",
+@@ -917,7 +917,11 @@
+   "draft-ietf-ipsec-nat-t-ike-00/01",    /* 0 */
+   "draft-ietf-ipsec-nat-t-ike-02/03",
+   "RFC 3947 (NAT-Traversal)",
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++  "draft-ietf-ipsec-nat-t-ike",          /* 3 */
++#else
+   "3",                                   /* 3 */
++#endif
+   "4",   "5",   "6",   "7", 
+   "8",   "9",   "10",  "11",
+   "12",  "13",  "14",  "15",
+diff -ruN openswan-2.4.0rc4.orig/lib/libopenswan/packet.c openswan-2.4.0rc4/lib/libopenswan/packet.c
+--- openswan-2.4.0rc4.orig/lib/libopenswan/packet.c	2005-01-23 20:53:56.000000000 +0200
++++ openswan-2.4.0rc4/lib/libopenswan/packet.c	2006-10-03 13:50:07.000000000 +0300
+@@ -631,8 +631,13 @@
+     &isakmp_delete_desc,		/* 12 ISAKMP_NEXT_D (Delete) */
+     &isakmp_vendor_id_desc,		/* 13 ISAKMP_NEXT_VID (Vendor ID) */
+     &isakmp_attr_desc,                  /* 14 ISAKMP_NEXT_ATTR (ModeCfg)  */
++#if 1 /* l2tp-workaround: include the OSX nat-d */
++    &isakmp_nat_d,                      /* 15 */
++    &isakmp_nat_oa,                     /* 16 */
++#else
+     NULL,                               /* 15 */
+     NULL,                               /* 16 */
++#endif
+     NULL,                               /* 17 */
+     NULL,                               /* 18 */
+     NULL,                               /* 19 */
+diff -ruN openswan-2.4.0rc4.orig/Makefile openswan-2.4.0rc4/Makefile
+--- openswan-2.4.0rc4.orig/Makefile	2005-08-18 17:13:01.000000000 +0300
++++ openswan-2.4.0rc4/Makefile	2006-10-03 13:50:07.000000000 +0300
+@@ -569,7 +569,7 @@
+ # set up for build
+ buildready:
+ 	rm -f dtrmakefile cvs.datemark
+-	cd doc ; $(MAKE) -s
++#	cd doc ; $(MAKE) -s
+ 
+ rpm:
+ 	@echo please cd packaging/redhat and
+diff -ruN openswan-2.4.0rc4.orig/Makefile.top openswan-2.4.0rc4/Makefile.top
+--- openswan-2.4.0rc4.orig/Makefile.top	2005-07-18 06:46:13.000000000 +0300
++++ openswan-2.4.0rc4/Makefile.top	2006-10-03 13:50:07.000000000 +0300
+@@ -29,7 +29,7 @@
+ KVUTIL=${MAKEUTILS}/kernelversion
+ KVSHORTUTIL=${MAKEUTILS}/kernelversion-short
+ 
+-SUBDIRS=doc lib programs testing
++SUBDIRS=lib programs
+ 
+ clean::
+ 	-(cd ${OPENSWANSRCDIR} && make modclean && make mod26clean)
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/connections.c openswan-2.4.0rc4/programs/pluto/connections.c
+--- openswan-2.4.0rc4.orig/programs/pluto/connections.c	2005-08-25 04:13:48.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/connections.c	2006-10-03 13:50:07.000000000 +0300
+@@ -44,12 +44,12 @@
+ #ifdef XAUTH_USEPAM
+ #include <security/pam_appl.h>
+ #endif
++#include "state.h"
+ #include "connections.h"	/* needs id.h */
+ #include "pending.h"
+ #include "foodgroups.h"
+ #include "packet.h"
+ #include "demux.h"	/* needs packet.h */
+-#include "state.h"
+ #include "timer.h"
+ #include "ipsec_doi.h"	/* needs demux.h and state.h */
+ #include "server.h"
+@@ -143,6 +143,13 @@
+ {
+     struct host_pair *p, *prev;
+     char b1[ADDRTOT_BUF],b2[ADDRTOT_BUF];
++#if 1 /* l2tp-workaround */
++    u_int16_t orighisport = hisport;
++    /* only match port when not wildcard */
++    bool remoteportmatch = TRUE;
++    if (hisaddr == NULL)
++	remoteportmatch = FALSE;
++#endif
+ 
+     /* default hisaddr to an appropriate any */
+     if (hisaddr == NULL)
+@@ -158,9 +165,91 @@
+      * but other ports are not.
+      * So if any port==4500, then set it to 500.
+      */
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: find_host_pair (before): %s:%d %s:%d\n",
++		 (addrtot(myaddr, 0, b1, sizeof(b1)), b1),
++		 myport,
++		 (addrtot(hisaddr, 0, b2, sizeof(b2)), b2),
++		 hisport);
++#endif
++
++    /* l2tp-workaround: Note: orighisport preserves port for later use */
+     if(myport == 4500) myport=500;
+     if(hisport== 4500) hisport=500;
+ 
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: find_host_pair (after): %s:%d %s:%d\n",
++		 (addrtot(myaddr, 0, b1, sizeof(b1)), b1),
++		 myport,
++		 (addrtot(hisaddr, 0, b2, sizeof(b2)), b2),
++		 hisport);
++#endif
++
++#if 1 /* l2tp-workaround: first try to match a remote peer with an
++       * exact port match (without considering 500 and 4500 equivalent),
++       * IF the connection found is a responder connection, and we
++       * have 'remoteportmatch'.  This is to find connections before
++       * they are confused in the original loop (e.g. two clients
++       * with ports 500 and 4500).
++       */
++    if (remoteportmatch) {
++	for (prev = NULL, p = host_pairs; p != NULL; prev = p, p = p->next) {
++	    DBG(DBG_CONTROLMORE
++		, DBG_log("find_host_pair: comparing to %s:%d %s:%d\n"
++			  , (addrtot(&p->me.addr, 0, b1, sizeof(b1)), b1)
++			  , p->me.host_port
++			  , (addrtot(&p->him.addr, 0, b2, sizeof(b2)), b2)
++			  , p->him.host_port));
++
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: find_host_pair: comparing to %s:%d %s:%d\n"
++			 , (addrtot(&p->me.addr, 0, b1, sizeof(b1)), b1)
++			 , p->me.host_port
++			 , (addrtot(&p->him.addr, 0, b2, sizeof(b2)), b2)
++			 , p->him.host_port);
++#endif
++
++	    if (sameaddr(&p->me.addr, myaddr)
++		&& (!p->me.host_port_specific || p->me.host_port == myport)
++		&& sameaddr(&p->him.addr, hisaddr)
++		&& (!p->him.host_port_specific || p->him.host_port == hisport)
++		) {
++		/* when portmatch is required, there must exist a suitable
++		   connection */
++		struct connection *c;
++		for (c = p->connections; c != NULL; c = c->hp_next) {
++		    /* initiator will never match here */
++		    if (c->spd.that.host_port == orighisport && IS_RESPONDER(c))
++			break;
++		}
++		if (c == NULL) {
++		    continue;
++		}
++
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: found match (in first loop)");
++#endif
++		if (prev != NULL) {
++		    prev->next = p->next;	/* remove p from list */
++		    p->next = host_pairs;	/* and stick it on front */
++		    host_pairs = p;
++		}
++		break;
++	    }
++	}
++
++	if (p) {
++	    return p;
++	}
++    }
++#endif
++
++#if 1 /* l2tp-workaround: original match, in case we cannot find a more
++       * "accurate" match in responder mode with exact remote port match.
++       * (we'll come here in initiator mode always).
++       */
++#endif
+     for (prev = NULL, p = host_pairs; p != NULL; prev = p, p = p->next)
+     {
+ 	DBG(DBG_CONTROLMORE
+@@ -169,13 +258,24 @@
+ 		      , p->me.host_port
+ 		      , (addrtot(&p->him.addr, 0, b2, sizeof(b2)), b2)
+ 		      , p->him.host_port));
+-		   
++
++#if L2TP_DEBUG
++	openswan_log("l2tp-debug: find_host_pair: comparing to %s:%d %s:%d\n"
++		     , (addrtot(&p->me.addr, 0, b1, sizeof(b1)), b1)
++		     , p->me.host_port
++		     , (addrtot(&p->him.addr, 0, b2, sizeof(b2)), b2)
++		     , p->him.host_port);
++#endif
++
+ 	if (sameaddr(&p->me.addr, myaddr)
+ 	    && (!p->me.host_port_specific || p->me.host_port == myport)
+ 	    && sameaddr(&p->him.addr, hisaddr)
+ 	    && (!p->him.host_port_specific || p->him.host_port == hisport)
+ 	    )
+ 	{
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: found match (in second loop)");
++#endif
+ 	    if (prev != NULL)
+ 	    {
+ 		prev->next = p->next;	/* remove p from list */
+@@ -185,6 +285,8 @@
+ 	    break;
+ 	}
+     }
++
++
+     return p;
+ }
+ 
+@@ -228,7 +330,15 @@
+ 		      , (addrtot(&c->spd.that.host_addr, 0, b2,sizeof(b2)), b2)
+ 		      , c->spd.that.host_port
+ 		      , (hp && hp->connections) ? hp->connections->name : "none"));
+-		   
++
++#if L2TP_DEBUG
++	openswan_log("l2tp-debug: connect_to_host_pair: %s:%d %s:%d -> hp:%s\n"
++		     , (addrtot(&c->spd.this.host_addr, 0, b1,sizeof(b1)), b1)
++		     , c->spd.this.host_port
++		     , (addrtot(&c->spd.that.host_addr, 0, b2,sizeof(b2)), b2)
++		     , c->spd.that.host_port
++		     , (hp && hp->connections) ? hp->connections->name : "none");
++#endif
+ 	if (hp == NULL)
+ 	{
+ 	    /* no suitable host_pair -- build one */
+@@ -238,6 +348,9 @@
+ #ifdef NAT_TRAVERSAL
+ 	    hp->me.host_port = nat_traversal_enabled ? pluto_port : c->spd.this.host_port;
+ 	    hp->him.host_port = nat_traversal_enabled ? pluto_port : c->spd.that.host_port;
++
++	    /* Note: host-port-specific not set here for a good reason.. */
++
+ #else
+ 	    hp->me.host_port = c->spd.this.host_port;
+  	    hp->him.host_port = c->spd.that.host_port;
+@@ -1312,6 +1425,8 @@
+ 	    c->spd.that = t;
+ 	}
+ 
++	/* Note: host-port-specific is not the solution. */
++
+ 	c->spd.next = NULL;
+ 	c->spd.reqid = gen_reqid();
+ 
+@@ -1499,6 +1614,11 @@
+  *
+  * Note that instantiate can only deal with a single SPD/eroute.
+  */
++
++/* l2tp-workaround: note that port numbers must be used in instantiation
++ * because there is no other way to get two Road Warrior connections to
++ * work from behind the same NAT. This is taken care in connect_to_host_pair.
++ */
+ static struct connection *
+ instantiate(struct connection *c, const ip_address *him
+ 	    , const struct id *his_id)
+@@ -1541,6 +1661,7 @@
+      * (whack will not allow nexthop to be elided in RW case.)
+      */
+     default_end(&d->spd.this, &d->spd.that.host_addr);
++
+     d->spd.next = NULL;
+     d->spd.reqid = gen_reqid();
+ 
+@@ -3319,6 +3440,66 @@
+  */
+ bool uniqueIDs = FALSE;	/* --uniqueids? */
+ 
++#if 1 /* l2tp-workaround: release conflicting connections.*/
++void
++release_old_connections(struct state *st)
++{
++    struct connection *d;
++    struct connection *c = st ? st->st_connection : NULL;
++    char b1[ADDRTOT_BUF],b2[ADDRTOT_BUF];
++
++    if (c == NULL) return;
++
++    openswan_log("l2tp-workaround: release conflicting connections when ISAKMP SA is established for new connection: %s", c->name);
++
++    for (d = connections; d != NULL; ) {
++	struct connection *next = d->ac_next;
++
++	if (c == d) {
++	    d = next;
++	    continue;
++	}
++	if (d->kind != CK_INSTANCE) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore connection with kind: %d",
++			 d->kind);
++#endif
++	    d = next;
++	    continue;
++	}
++
++	if (!sameaddr(&c->spd.that.host_addr, &d->spd.that.host_addr)) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore by remote address");
++#endif
++	    d = next;
++	    continue;
++	}
++
++	if (c->spd.that.host_port != d->spd.that.host_port) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore by remote port");
++#endif
++	    d = next;
++	    continue;
++	}
++
++	openswan_log("l2tp-workaround: releasing connection: %s [%s:%d]",
++		     d->name, ip_str(&(d->spd.that.host_addr)),
++		     d->spd.that.host_port);
++
++	/* Note: unroute_connection cannot unroute used
++	   connection, could maybe use sag_eroute instead
++	   but seems like it is not needed. */
++	/*unroute_connection(d);*/
++	/*(void) sag_eroute(st, d->spd, ERO_DELETE, "delete");*/
++	release_connection(d, FALSE);
++	d = next;
++    }
++}
++#endif
++
++
+ void
+ ISAKMP_SA_established(struct connection *c, so_serial_t serial)
+ {
+@@ -3391,6 +3572,11 @@
+ 	    {
+ 		if (!samesubnet(&src->that.client, &srd->that.client))
+ 		    continue;
++#if 1 /* l2tp-workaround: include client ports in owner check */
++		if (portof(&src->that.client.addr) !=
++		    portof(&srd->that.client.addr))
++		    continue;
++#endif
+ 		if (src->that.protocol != srd->that.protocol)
+ 		    continue;
+ 		if (src->that.port != srd->that.port)
+@@ -3405,6 +3591,11 @@
+ 
+ 		if (!samesubnet(&src->this.client, &srd->this.client))
+ 		    continue;
++#if 1 /* l2tp-workaround: include client ports in owner check */
++		if (portof(&src->this.client.addr) !=
++		    portof(&srd->this.client.addr))
++		    continue;
++#endif
+ 		if (src->this.protocol != srd->this.protocol)
+ 		    continue;
+ 		if (src->this.port != srd->this.port)
+@@ -3585,9 +3776,11 @@
+  * less important than the disadvantages, so after FreeS/WAN 1.9, we
+  * don't do this.
+  */
++#if 1 /* l2tp-workaround: not needed anymore. */
++#else
+ struct connection *
+ refine_host_connection(const struct state *st, const struct id *peer_id
+-, bool initiator, bool aggrmode)
++		       , bool initiator, bool aggrmode, bool ignore_psk_change)
+ {
+     struct connection *c = st->st_connection;
+     u_int16_t auth = st->st_oakley.auth;
+@@ -3729,7 +3922,7 @@
+ 		    if (dpsk == NULL)
+ 			continue;	/* no secret */
+ 
+-		    if (psk != dpsk)
++		    if (psk != dpsk && !ignore_psk_change)
+ 			if (psk->len != dpsk->len
+ 			|| memcmp(psk->ptr, dpsk->ptr, psk->len) != 0)
+ 			    continue;	/* different secret */
+@@ -3796,6 +3989,7 @@
+ 				       , c->spd.that.host_port);
+     }
+ }
++#endif
+ 
+ #ifdef VIRTUAL_IP
+ /**
+@@ -4113,8 +4307,8 @@
+ 	subnettot(our_net,  0, s1, sizeof(s1));
+ 	subnettot(peer_net, 0, d1, sizeof(d1));
+ 
+-	DBG_log("find_client_connection starting with %s"
+-	    , (c ? c->name : "(none)"));
++	DBG_log("find_client_connection starting with %s: #%d"
++	    , (c ? c->name : "(none)"), (c ? c->instance_serial : 0));
+ 	DBG_log("  looking for %s:%d/%d -> %s:%d/%d"
+ 	    , s1, our_protocol, our_port
+ 	    , d1, peer_protocol, peer_port);
+@@ -4164,9 +4358,11 @@
+ 	    , our_protocol, our_port, peer_protocol, peer_port);
+ 
+ 	DBG(DBG_CONTROLMORE,
+-	    DBG_log("  fc_try %s gives %s"
++	    DBG_log("  fc_try %s:#%d gives %s:#%d"
+ 		    , c->name
+-		    , (d ? d->name : "none"))
++		    , (c ? c->instance_serial : 0)
++		    , (d ? d->name : "none")
++		    , (d ? d->instance_serial : 0))
+ 	)
+ 
+ 	if (d == NULL)
+@@ -4221,8 +4417,8 @@
+     }
+ 
+     DBG(DBG_CONTROLMORE,
+-	DBG_log("  concluding with d = %s"
+-		, (d ? d->name : "none"))
++	DBG_log("  concluding with d = %s: #%d"
++		, (d ? d->name : "none"), (d ? d->instance_serial : 0))
+     )
+     return d;
+ }
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/connections.h openswan-2.4.0rc4/programs/pluto/connections.h
+--- openswan-2.4.0rc4.orig/programs/pluto/connections.h	2005-06-15 01:38:06.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/connections.h	2006-10-03 17:05:11.000000000 +0300
+@@ -115,6 +115,11 @@
+ #define POLICY_PRIO_BUF	(3+1+3+1)
+ extern void fmt_policy_prio(policy_prio_t pp, char buf[POLICY_PRIO_BUF]);
+ 
++#if 1 /* l2tp-workaround: check connection type. */
++#define IS_RESPONDER(c) (((c) != NULL) && (((c)->kind == CK_TEMPLATE) || ((c)->kind == CK_INSTANCE)))
++#define IS_INITIATOR(c) (((c) != NULL) && ((c)->kind == CK_PERMANENT))
++#endif
++
+ /* Note that we include this even if not X509, because we do not want the
+  * structures to change lots.
+  */
+@@ -283,6 +288,7 @@
+ extern bool uniqueIDs;	/* --uniqueids? */
+ extern void ISAKMP_SA_established(struct connection *c, so_serial_t serial);
+ 
++
+ #define his_id_was_instantiated(c) ((c)->kind == CK_INSTANCE \
+     && (id_is_ipaddr(&(c)->spd.that.id)? \
+     sameaddr(&(c)->spd.that.id.ip_addr, &(c)->spd.that.host_addr) : TRUE))
+@@ -297,7 +303,7 @@
+ 		       , const ip_address *me, u_int16_t my_port
+ 	, const ip_address *him, u_int16_t his_port),
+     *refine_host_connection(const struct state *st, const struct id *id
+-	, bool initiator, bool aggrmode),
++			    , bool initiator, bool aggrmode, bool ignore_psk_change),
+     *find_client_connection(struct connection *c
+ 			    , const ip_subnet *our_net
+ 			    , const ip_subnet *peer_net
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/crypt_dh.c openswan-2.4.0rc4/programs/pluto/crypt_dh.c
+--- openswan-2.4.0rc4.orig/programs/pluto/crypt_dh.c	2005-07-06 00:58:14.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/crypt_dh.c	2006-10-03 13:50:07.000000000 +0300
+@@ -416,7 +416,6 @@
+     return;
+ }
+ 
+-
+ stf_status perform_dh_secretiv(struct state *st
+ 			     , enum phase1_role init       /* TRUE=g_init,FALSE=g_r */
+ 			     , u_int16_t oakley_group)
+@@ -424,7 +423,14 @@
+     struct pluto_crypto_req r;
+     struct pcr_skeyid_q *dhq = &r.pcr_d.dhq;
+     struct pcr_skeyid_r *dhr = &r.pcr_d.dhr;
++#if 1 /* l2tp-workaround: use store pss here. */
++    const chunk_t *pss = get_cached_preshared_secret(st);
++#if L2TP_DEBUG
++    dump_chunk(pss, "l2tp-debug: perform_dh_secretiv using secret");
++#endif
++#else
+     const chunk_t *pss = get_preshared_secret(st->st_connection);
++#endif
+ 
+     passert(st->st_sec_in_use);
+ 
+@@ -480,6 +486,7 @@
+     return STF_OK;
+ }
+ 
++
+ stf_status perform_dh_secret(struct state *st
+ 			     , enum phase1_role init      
+ 			     , u_int16_t oakley_group)
+@@ -487,7 +494,14 @@
+     struct pluto_crypto_req r;
+     struct pcr_skeyid_q *dhq = &r.pcr_d.dhq;
+     struct pcr_skeyid_r *dhr = &r.pcr_d.dhr;
++#if 1 /* l2tp-workaround: use store pss here. */
++    const chunk_t *pss = get_cached_preshared_secret(st);
++#if L2TP_DEBUG
++    dump_chunk(pss, "l2tp-debug: perform_dh_secret using secret");
++#endif
++#else
+     const chunk_t *pss = get_preshared_secret(st->st_connection);
++#endif
+ 
+     passert(st->st_sec_in_use);
+ 
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/demux.c openswan-2.4.0rc4/programs/pluto/demux.c
+--- openswan-2.4.0rc4.orig/programs/pluto/demux.c	2005-08-19 20:52:42.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/demux.c	2006-10-03 13:50:07.000000000 +0300
+@@ -161,6 +161,11 @@
+ #include "dpd.h"
+ #include "udpfromto.h"
+ 
++#if 1 /* l2tp-workaround: get pss. */
++#include "oswalloc.h"
++#include "secrets.h"
++#endif
++
+ /* This file does basic header checking and demux of
+  * incoming packets.
+  */
+@@ -295,7 +300,7 @@
+     { STATE_MAIN_R1, STATE_MAIN_R2
+     , SMF_PSK_AUTH | SMF_DS_AUTH | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC), PT(KE)
++    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC) | P(NATD_OSX), PT(KE)
+ #else
+     , P(KE) | P(NONCE), P(VID) | P(CR), PT(KE)
+ #endif
+@@ -324,7 +329,7 @@
+     { STATE_MAIN_I2, STATE_MAIN_I3
+     , SMF_PSK_AUTH | SMF_DS_AUTH | SMF_INITIATOR | SMF_OUTPUT_ENCRYPTED | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC), PT(ID)
++    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC) | P(NATD_OSX), PT(ID)
+ #else
+     , P(KE) | P(NONCE), P(VID) | P(CR), PT(ID)
+ #endif
+@@ -430,12 +435,12 @@
+      */
+     { STATE_AGGR_I1, STATE_AGGR_I2,
+       SMF_PSK_AUTH | SMF_INITIATOR | SMF_OUTPUT_ENCRYPTED | SMF_REPLY | SMF_RELEASE_PENDING_P2,
+-      P(SA) | P(KE) | P(NONCE) | P(ID) | P(HASH), P(VID) | P(NATD_RFC) , PT(NONE),
++      P(SA) | P(KE) | P(NONCE) | P(ID) | P(HASH), P(VID) | P(NATD_RFC) | P(NATD_OSX), PT(NONE),
+       EVENT_SA_REPLACE, aggr_inR1_outI2 },
+ 
+     { STATE_AGGR_I1, STATE_AGGR_I2,
+       SMF_DS_AUTH | SMF_INITIATOR | SMF_OUTPUT_ENCRYPTED | SMF_REPLY | SMF_RELEASE_PENDING_P2,
+-      P(SA) | P(KE) | P(NONCE) | P(ID) | P(SIG), P(VID) | P(NATD_RFC) , PT(NONE),
++      P(SA) | P(KE) | P(NONCE) | P(ID) | P(SIG), P(VID) | P(NATD_RFC) | P(NATD_OSX), PT(NONE),
+       EVENT_SA_REPLACE, aggr_inR1_outI2 },
+ 
+     /* STATE_AGGR_R1:
+@@ -496,7 +501,7 @@
+     { STATE_QUICK_R0, STATE_QUICK_R1
+     , SMF_ALL_AUTH | SMF_ENCRYPTED | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC), PT(NONE)
++    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC) | P(NATOA_OSX), PT(NONE)
+ #else
+     , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID), PT(NONE)
+ #endif
+@@ -511,7 +516,7 @@
+     { STATE_QUICK_I1, STATE_QUICK_I2
+     , SMF_ALL_AUTH | SMF_INITIATOR | SMF_ENCRYPTED | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC), PT(HASH)
++    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC) | P(NATOA_OSX), PT(HASH)
+ #else
+     , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID), PT(HASH)
+ #endif
+@@ -2041,8 +2046,103 @@
+ 		}
+ 	    } 
+ 
++
++#if 1 /* l2tp-workaround: try to find the correct preshared
++       * secret by using a brute-force attack over all
++       * matching configured preshared secrets. */
++
++	    /* The 5th message in main-mode is received: MAIN_R2 */
++	    if (from_state == STATE_MAIN_R2) {
++		int index = 0;
++		int success = 0;
++
++		char *msg_cur = md->message_pbs.cur;
++		int msg_len = pbs_left(&md->message_pbs);
++		char msg_buf[4096];
++
++		if (msg_len > 4096) {
++		    openswan_log("l2tp-workaround: received packet too big (%d): dropping it.", msg_len);
++		    return;
++		}
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: ");
++#endif
++		memcpy (msg_buf, msg_cur, msg_len);
++
++		while (!success) {
++		    const chunk_t *pss = get_preshared_secret_with_index(st->st_connection, index);
++		    if (pss == NULL) {
++			openswan_log("l2tp-workaround: run out of preshared secret candidates, giving up: mismatch of preshared secrets?");
++			SEND_NOTIFICATION(PAYLOAD_MALFORMED);
++			return;	
++		    }
++		    openswan_log("l2tp-workaround: trying to decrypt packet in state MAIN_R2 with preshared secret index: %d", index);
++
++		    /* Store pss for this packet as well as for future use. */
++		    cache_preshared_secret(st, pss);
++#if L2TP_DEBUG
++		    dump_cached_secret(st, "l2tp-debug: demux secret cached");
++#endif
++
++		    /* Force update of iv from new pss. */
++		    (void)perform_dh_secretiv(st, RESPONDER, st->st_oakley.group->group);
++		    update_iv(st);
++
++		    /* Try encrypting it. */
++		    crypto_cbc_encrypt(e, FALSE, md->message_pbs.cur,
++				       pbs_left(&md->message_pbs) , st);
++
++#if L2TP_DEBUG
++		    openswan_log("l2tp-debug: decrypt done.");
++#endif
++		    {
++			/*
++			  struct payload_digest *pd = md->digest;
++			  u_int8_t *s = pd->pbs.start;
++			*/
++
++			u_int8_t *s = md->message_pbs.cur;
++
++			u_int8_t np = s[0];                     /* Next payload type. */
++			u_int8_t res = s[1];                    /* Reserved field. */
++			u_int16_t len = 256*s[2] + s[3];        /* Length of the payload in network byteorder. */
++
++#if L2TP_DEBUG
++			openswan_log("l2tp-debug: sanitycheck decrypt result...");
++#endif
++
++			if ((np == 8) &&                        /* ISAKMP_NEXT_HASH */
++			    (res == 0) &&                       /* Unused. */
++			    (len >= 8) &&                       /* Minimum allowed for a ISAKMP payload. */
++			    (len <= 256)) {                     /* A sensible maximum payload length. */
++			    /* Assume pss was ok. */
++			    openswan_log("l2tp-workaround: first payload passed sanity check: assume used preshared secret was good.");
++
++			    /* Store match index to state. */
++			    st->st_pss_index = index;
++			    break;
++			}
++			openswan_log("l2tp-workaround: first payload failed sanity check [%x:%x:%x:%x]: assume used preshared secret was wrong and try next possible secret.", s[0], s[1], s[2], s[3]);
++
++
++			/* Restore original encrypted packet from saved state.
++			 * The the following calls restore both the packet_pbs and message_pbs
++			 * from original data. The message headers is parsed again as a side-effect. */
++#if L2TP_DEBUG
++			openswan_log("l2tp-debug: Restore encrypted packet for next try.");
++#endif
++			memcpy (msg_cur, msg_buf, msg_len);
++		    }
++		    index++;
++		}
++	    } else {
++		crypto_cbc_encrypt(e, FALSE, md->message_pbs.cur, 
++				   pbs_left(&md->message_pbs) , st);
++	    }
++#else
+ 	    crypto_cbc_encrypt(e, FALSE, md->message_pbs.cur, 
+ 			    pbs_left(&md->message_pbs) , st);
++#endif
+ 	}
+ 
+ 	DBG_cond_dump(DBG_CRYPT, "decrypted:\n", md->message_pbs.cur
+@@ -2094,7 +2194,9 @@
+ 	    {
+ 		case ISAKMP_NEXT_NATD_RFC:
+ 		case ISAKMP_NEXT_NATOA_RFC:
+-		    if ((!st) || (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES))) {
++		case ISAKMP_NEXT_NATD_OSX:
++	    case ISAKMP_NEXT_NATOA_OSX:
++		    if ((!st) || (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) && !(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES))) {
+ 			/*
+ 			 * don't accept NAT-D/NAT-OA reloc directly in message,
+ 			 * unless we're using NAT-T RFC
+@@ -2305,8 +2407,12 @@
+ 
+ 	for (p = md->chain[ISAKMP_NEXT_D]; p != NULL; p = p->next)
+ 	{
++#if 1 /* l2tp-workaround: ignore Delete SA notifications */
++	    openswan_log("l2tp-workaround: ignoring Delete SA notification.");
++#else
+ 	    accept_delete(st, md, p);
+ 	    DBG_cond_dump(DBG_PARSING, "del:", p->pbs.cur, pbs_left(&p->pbs));
++#endif
+ 	}
+ 
+ 	for (p = md->chain[ISAKMP_NEXT_VID]; p != NULL; p = p->next)
+@@ -2553,6 +2659,46 @@
+ 		     * Note: for ISAKMP SA, we let the negotiated
+ 		     * time stand (implemented by earlier logic).
+ 		     */
++
++#if 1 /* l2tp-workaround: let SA expire always. */
++		    if (smc->flags & SMF_INITIATOR) {
++			/* kind = EVENT_SA_REPLACE from above */
++			unsigned long marg = c->sa_rekey_margin;
++
++			/* consistency check */
++			if (IS_RESPONDER(c)) {
++			    openswan_log("l2tp-workaround: inconsistency (smf=init, conn=resp)");
++			}
++
++			marg += marg
++			    * c->sa_rekey_fuzz / 100.E0
++			    * (rand() / (RAND_MAX + 1.E0));
++
++			if ((unsigned long)delay > marg)
++			{
++			    delay -= marg;
++			    st->st_margin = marg;
++			}
++			else
++			{
++			    /* this is not pretty, but we don't want to expire */
++			    if (delay < 60)
++				delay = 60;
++			    marg = delay / 2;
++			    delay -= marg;
++			    st->st_margin = marg;
++			}
++			openswan_log("l2tp-workaround: scheduled rekey, delay %d (initiator)", (int) delay);
++		    } else {
++			/* consistency check */
++			if (IS_INITIATOR(c)) {
++			    openswan_log("l2tp-workaround: inconsistency (smf=resp, conn=init)");
++			}
++
++			openswan_log("l2tp-workaround: no rekey, let SA expire always (responder)");
++			kind = EVENT_SA_EXPIRE;
++		    }
++#else
+ 		    if (agreed_time
+ 		    && (c->policy & POLICY_DONT_REKEY))
+ 		    {
+@@ -2581,10 +2727,14 @@
+ 			    kind = EVENT_SA_EXPIRE;
+ 			}
+ 		    }
++#endif
+ 		    break;
+ 
+ 		case EVENT_NULL:	/* non-event */
+ 		case EVENT_REINIT_SECRET:	/* Refresh cookie secret */
++#if 1 /* l2tp-workaround: do not panic on every EVENT_REINIT_SECRET. */
++		    break;
++#endif
+ 		default:
+ 		    bad_case(kind);
+ 		}
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/ikev1_quick.c openswan-2.4.0rc4/programs/pluto/ikev1_quick.c
+--- openswan-2.4.0rc4.orig/programs/pluto/ikev1_quick.c	2005-05-18 22:29:29.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/ikev1_quick.c	2006-10-03 13:50:07.000000000 +0300
+@@ -878,6 +878,16 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1 /* l2tp-workaround: initiator, may safely include nat-oa.
++       * Does not work with racoon: we do not care. */
++    if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)
++	&& (!(st->st_policy & POLICY_TUNNEL))) {
++	if (!nat_traversal_add_natoa(ISAKMP_NEXT_NONE, &rbody, st)) {
++	    reset_cur_state();
++	    return STF_INTERNAL_ERROR;
++	}
++    }
++#else
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)
+ 	&& (!(st->st_policy & POLICY_TUNNEL))
+ 	&& (st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME))) {
+@@ -888,6 +898,7 @@
+ 	}
+     }
+ #endif
++#endif
+ 
+     /* finish computing  HASH(1), inserting it in output */
+     (void) quick_mode_hash12(r_hashval, r_hash_start, rbody.cur
+@@ -1107,6 +1118,52 @@
+ 	b.his.proto = b.my.proto = 0;
+ 	b.his.port = b.my.port = 0;
+     }
++
++#if 1 /* l2tp-workaround: force addresses and ports always in connections. */
++    openswan_log ("l2tp-workaround: forcing addresses and ports in connection regardless of ID payloads.");
++
++    b.his.proto = 17;
++
++    /* Note: cannot use c->spd.that.host_port because it is not updated yet. */
++
++    /* Update remote port to apparent IKE remote port if UDP encaps
++     * (= NAT-T detected, because we force UDP encaps always).
++     * Without UDP encaps, don't touch remote port because our kernel
++     * patch doesn't tweak the port in this case (though changing the
++     * port doesn't break anything, as kernel ignores port matching
++     * for plain ESP).
++     */
++#ifdef NAT_TRAVERSAL
++    if (p1st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) {
++	openswan_log ("l2tp-workaround: tweaking peer port selector because NAT detected");
++	b.his.port = md->sender_port;
++    } else {
++	openswan_log ("l2tp-workaround: *NOT* tweaking peer port selector because NAT *NOT* detected");
++    }
++#else
++    /* no tweaking necessary anyway */
++#endif
++
++    happy(addrtosubnet(&c->spd.that.host_addr, &b.his.net));
++    b.his.net.addr.u.v4.sin_port = htons(b.his.port);
++
++    b.my.proto = 17;
++    b.my.port = 1701;
++
++    happy(addrtosubnet(&c->spd.this.host_addr, &b.my.net));
++    b.my.net.addr.u.v4.sin_port = htons(b.my.port);
++
++    {
++	char my[SUBNETTOT_BUF],his[SUBNETTOT_BUF];
++	subnettot(&b.his.net, 0, his, sizeof(his));
++	subnettot(&b.my.net,  0, my, sizeof(my));
++	openswan_log ("l2tp-workaround: peer: net: %s, proto: %d, port: %d",
++		      his, b.his.proto, b.his.port);
++	openswan_log ("l2tp-workaround: host: net: %s, proto: %d, port: %d",
++		      my, b.my.proto, b.my.port);
++    }
++#endif
++
+     b.step = vos_start;
+     b.md = md;
+     b.new_iv_len = p1st->st_new_iv_len;
+@@ -1564,6 +1621,10 @@
+ 	}
+ 	else if (p != c)
+ 	{
++#if L2TP_DEBUG /* l2tp-workaround: debug. */
++	    openswan_log ("l2tp-debug: better connection found, be careful here!");
++#endif
++
+ 	    /* We've got a better connection: it can support the
+ 	     * specified clients.  But it may need instantiation.
+ 	     */
+@@ -1625,13 +1686,30 @@
+ 			, NULL, &our_client, &his_client);
+ 		}
+ 		else
+-		{
++		    {
+ 		    /* Plain Road Warrior:
+ 		     * instantiate, carrying over authenticated peer ID
+ 		     */
++#if L2TP_DEBUG /* l2tp-workaround: debug. */
++		    {
++			char that_id[512];
++			char his_subnet[32];
++
++			idtoa(&c->spd.that.id, that_id, 512);
++			subnettot(his_net, 0, his_subnet, 32);
++
++			openswan_log ("l2tp-debug: instantiating new rw connection in quick_inI1_outR1: p: 0x%p, that.host_addr: %s, his_net: %s, that.id: %s",
++				      p, ip_str(&c->spd.that.host_addr),
++				      his_subnet, that_id);
++		    }
++#endif
+ 		    p = rw_instantiate(p, &c->spd.that.host_addr,
+ 				       his_net, 
+ 				       &c->spd.that.id);
++		    
++#if L2TP_DEBUG
++		    openswan_log("l2tp-debug: instantiated connection: 0x%p", p);
++#endif
+ 		}
+ 	    }
+ #ifdef DEBUG
+@@ -1739,11 +1817,17 @@
+ 	else {
+ 	    st->hidden_variables.st_nat_traversal = 0;
+ 	}
++
++
++#if 1  /* l2tp-workaround: nat-oa update not done => no nat-oa address
++	* in kernel SA, which is fine for us.. */
++#else
+ 	if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	    (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)) {
+ 	    nat_traversal_natoa_lookup(md);
+ 	}
+ #endif
++#endif
+ 
+ 	passert(st->st_connection != NULL);
+ 	passert(st->st_connection == c);
+@@ -1908,8 +1992,17 @@
+ 	    return STF_INTERNAL_ERROR;
+ 	p->isaiid_np = ISAKMP_NEXT_NONE;
+     }
+-
++    
+ #ifdef NAT_TRAVERSAL
++#if 1 /* l2tp-workaround: add_natoa() now handles NAT check other than
++       * if the natoa is at all desirable. */
++    if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA) &&
++	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT)) {
++	if (!nat_traversal_add_natoa(ISAKMP_NEXT_NONE, &md->rbody, md->st)) {
++	    return STF_INTERNAL_ERROR;
++	}
++    }
++#else
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA) &&
+ 	(st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME)) &&
+ 	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT)) {
+@@ -1918,6 +2011,7 @@
+ 	    return STF_INTERNAL_ERROR;
+ 	}
+     }
++#endif
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT) &&
+ 	(c->spd.that.has_client)) {
+@@ -1934,13 +2028,16 @@
+     /* Derive new keying material */
+     compute_keymats(st);
+ 
++#if 1 /* l2tp-workaround: this is wrong: install SAs after the last message. */
+     /* Tell the kernel to establish the new inbound SA
+      * (unless the commit bit is set -- which we don't support).
+      * We do this before any state updating so that
+      * failure won't look like success.
+      */
++#else
+     if (!install_inbound_ipsec_sa(st))
+ 	return STF_INTERNAL_ERROR;	/* ??? we may be partly committed */
++#endif
+     
+     /* encrypt message, except for fixed part of header */
+     
+@@ -2031,11 +2128,14 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1  /* l2tp-workaround: nat-oa lookup not needed. */
++#else
+ 	if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	    (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)) {
+ 	    nat_traversal_natoa_lookup(md);
+ 	}
+ #endif
++#endif
+ 
+     /* ??? We used to copy the accepted proposal into the state, but it was
+      * never used.  From sa_pd->pbs.start, length pbs_room(&sa_pd->pbs).
+@@ -2063,6 +2163,7 @@
+      * We do this before any state updating so that
+      * failure won't look like success.
+      */
++
+     if (!install_ipsec_sa(st, TRUE))
+ 	return STF_INTERNAL_ERROR;
+ 
+@@ -2117,8 +2218,13 @@
+      * We do this before any state updating so that
+      * failure won't look like success.
+      */
++#if 1 /* l2tp-workaround: install both SAs here. */
++    if (!install_ipsec_sa(st, TRUE))
++	return STF_INTERNAL_ERROR;
++#else
+     if (!install_ipsec_sa(st, FALSE))
+ 	return STF_INTERNAL_ERROR;
++#endif
+ 
+     {
+       DBG(DBG_CONTROLMORE, DBG_log("inI2: instance %s[%ld], setting newest_ipsec_sa to #%ld (was #%ld) (spd.eroute=#%ld)"
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/ipsec_doi.c openswan-2.4.0rc4/programs/pluto/ipsec_doi.c
+--- openswan-2.4.0rc4.orig/programs/pluto/ipsec_doi.c	2005-08-12 20:05:59.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/ipsec_doi.c	2006-10-03 13:50:07.000000000 +0300
+@@ -511,6 +511,11 @@
+ 	*r_hash_start;	/* start of what is to be hashed */
+     bool isakmp_sa = FALSE;
+ 
++#if 1 /* l2tp-workaround: do not ever send Delete SA messages */
++    openswan_log("l2tp-workaround: not sending Delete SA messages.");
++    return;
++#endif
++
+     /* If there are IPsec SA's related to this state struct... */
+     if (IS_IPSEC_SA_ESTABLISHED(st->st_state))
+     {
+@@ -1774,7 +1779,7 @@
+  * may change the peer's RSA key or ID.
+  */
+ static bool
+-decode_peer_id(struct msg_digest *md, bool initiator, bool aggrmode)
++decode_peer_id(struct msg_digest *md, bool initiator, bool aggrmode, bool ignore_psk_change)
+ {
+     struct state *const st = md->st;
+     struct payload_digest *const id_pld = md->chain[ISAKMP_NEXT_ID];
+@@ -1881,6 +1886,11 @@
+ 		     , enum_show(&ident_names, id->isaid_idtype), buf);
+     }
+ 
++#if 1 /* l2tp-workaround: never switch connections, certificates not used. */
++    openswan_log("l2tp-workaround: do not switch connections based on id payload.");
++    return TRUE;
++#else
++
+      /* check for certificates */
+      decode_cert(md);
+ 
+@@ -1913,7 +1923,7 @@
+ 	/* check for certificate requests */
+ 	decode_cr(md, &c->requested_ca);
+ 
+-	r = refine_host_connection(st, &peer, initiator, aggrmode);
++	r = refine_host_connection(st, &peer, initiator, aggrmode, ignore_psk_change);
+ 
+ 	/* delete the collected certificate requests */
+ 	free_generalNames(c->requested_ca, TRUE);
+@@ -1965,6 +1975,7 @@
+     }
+ 
+     return TRUE;
++#endif
+ }
+ 
+ /* State Transition Functions.
+@@ -2038,6 +2049,25 @@
+ 			     , &md->sender
+ 			     , md->sender_port);
+ 
++#if L2TP_DEBUG
++    {
++	if (c != NULL) {
++	    openswan_log("l2tp-debug: MI1: find connection returned: 0x%p !, not instantiating from template.", c);
++	}
++    }
++#endif
++
++    /* l2tp-workaround: We try to find a connection with right remote port or
++     * if not found discard the connection. */
++    if (c != NULL) {
++	struct connection *d;
++	for (d = c; d != NULL; d = d->hp_next) {
++	    if (d->spd.that.host_port == md->sender_port)
++		break;
++	}
++	c = d;
++    }
++
+     if (c == NULL)
+     {
+ 	/* See if a wildcarded connection can be found.
+@@ -2054,7 +2084,14 @@
+ 	    struct connection *d;
+ 	    d = find_host_connection(&md->iface->ip_addr, pluto_port
+ 				     , (ip_address*)NULL
++#if 1 /* l2tp-workaround: no port in wildcard connections anyways.
++       * Fix the port so that we can find the template connection
++       * despite natted source port.
++       */
++				     , 500);
++#else
+ 				     , md->sender_port);
++#endif
+ 
+ 	    for (; d != NULL; d = d->hp_next)
+ 	    {
+@@ -2100,8 +2137,28 @@
+ 	    /* Create a temporary connection that is a copy of this one.
+ 	     * His ID isn't declared yet.
+ 	     */
++#if L2TP_DEBUG
++	    {
++		openswan_log("l2tp-debug: instantiating: c: 0x%p, sender: %s, this_port_specific: %d, that_port_specific: %d",
++			     c,
++			     ip_str(&md->sender),
++			     c->spd.this.host_port_specific,
++			     c->spd.that.host_port_specific);
++	    }
++#endif
+ 	    c = rw_instantiate(c, &md->sender
+ 			       , NULL, NULL);
++#if 1
++	    /* l2tp-workaround: update remote port here.
++	     */
++	    openswan_log("l2tp-workaround: updating host_port with sender_port after instantiation: c: 0x%p, this_port_specific: %d, that_port_specific: %d, %d -> %d\n",
++			 c,
++			 c->spd.this.host_port_specific,
++			 c->spd.that.host_port_specific,
++			 c->spd.that.host_port,
++			 md->sender_port);
++	    c->spd.that.host_port = md->sender_port;
++#endif
+ 	}
+     }
+ 
+@@ -2972,11 +3029,15 @@
+     size_t hash_len;
+     stf_status r = STF_OK;
+ 
++#if 1 /* l2tp-workaround: ignore peer ID in main mode. */
++    openswan_log("l2tp-workaround: ignoring peer ID in main mode (MR3 and MI3).");
++#else
+     /* ID Payload in.
+      * Note: this may switch the connection being used!
+      */
+-    if (!decode_peer_id(md, initiator, aggrmode))
++    if (!decode_peer_id(md, initiator, aggrmode, FALSE))
+ 	return STF_FAIL + INVALID_ID_INFORMATION;
++#endif
+ 
+     /* Hash the ID Payload.
+      * main_mode_hash requires idpl->cur to be at end of payload
+@@ -3519,7 +3580,11 @@
+ 
+     st->st_oakley.auth = authtype;  
+ 
++#if 1 /* l2tp-workaround */
++    if (!decode_peer_id(md, FALSE, TRUE, TRUE))
++#else
+     if (!decode_peer_id(md, FALSE, TRUE))
++#endif
+     {
+ 	char buf[IDTOA_BUF];
+ 
+@@ -3755,7 +3820,7 @@
+ 
+ #ifdef NAT_TRAVERSAL
+     if (st->hidden_variables.st_nat_traversal) {
+-      if (!out_vendorid(auth_payload
++      if (!out_vendorid(ISAKMP_NEXT_NONE
+ 			, &md->rbody
+ 			, md->quirks.nat_traversal_vid)) {
+ 	return STF_INTERNAL_ERROR;
+@@ -3763,7 +3828,7 @@
+     }
+ 
+     if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATD) {
+-      if (!nat_traversal_add_natd(auth_payload, &md->rbody, md))
++      if (!nat_traversal_add_natd(ISAKMP_NEXT_NONE, &md->rbody, md))
+ 	return STF_INTERNAL_ERROR;
+     }
+ #endif
+@@ -3794,7 +3859,11 @@
+ 
+     st->st_policy |= POLICY_AGGRESSIVE;
+ 
++#if 1 /* l2tp-workaround */
++    if (!decode_peer_id(md, FALSE, TRUE, FALSE))
++#else
+     if (!decode_peer_id(md, FALSE, TRUE))
++#endif
+     {
+ 	char buf[200];
+ 
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/kernel.c openswan-2.4.0rc4/programs/pluto/kernel.c
+--- openswan-2.4.0rc4.orig/programs/pluto/kernel.c	2005-07-13 04:54:14.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/kernel.c	2006-10-03 13:50:07.000000000 +0300
+@@ -72,6 +72,10 @@
+ #include "nat_traversal.h"
+ #endif
+ 
++#if 1 /* l2tp-workaround: use this from connections.c */
++extern void release_old_connections(struct state *st);
++#endif
++
+ bool can_do_IPcomp = TRUE;  /* can system actually perform IPCOMP? */
+ 
+ /* test if the routes required for two different connections agree
+@@ -170,6 +174,75 @@
+         }
+ };
+ 
++#if 1 /* l2tp-workaround. */
++static char *sainfo_filename_stem = "/var/run/l2tpgw/sainfo/sainfo";
++
++static u_int32_t get_esp_spi(struct state *st) {
++    u_int32_t spi = st->st_esp.our_spi;
++    return ntohl(spi);
++}
++
++static void replace_sainfo_file(struct state *st) {
++    FILE *fp;
++    int len, rv;
++    static char buf[4096];
++    static char filename[128];
++
++    u_int32_t spi = get_esp_spi(st);
++
++    len = snprintf(buf, 4096, "preshared secret index: %d\n", st->st_pss_index);
++    if (len <= 0) {
++	openswan_log("l2tp-workaround: cannot write buffer, not replacing sainfo.", filename);
++	return;
++    }
++
++    if (len >= 4096) {
++	openswan_log("l2tp-workaround: warning: sainfo for spi %08x was truncated.", spi);
++    }
++
++    snprintf(filename, 128, "%s_%08x", sainfo_filename_stem, spi);
++
++    fp = fopen(filename, "w");
++    if (fp == NULL) {
++	openswan_log("l2tp-workaround: cannot open file: %s, not replacing sainfo.", filename);
++	return;
++    }
++
++    /* NB: dont care of errors too much. */
++    rv = fwrite(buf, len, 1, fp);
++    fclose(fp);
++
++    if (rv != 1) {
++	openswan_log("l2tp-workaround: cannot write file: %s, not replacing sainfo.", filename);
++	return;
++    }
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: sainfo file write success. filename: %s, contents: %s", filename, buf);
++#endif
++}
++
++static void remove_sainfo_file(struct state *st) {
++    FILE *fp;
++    int rv;
++    static char filename[128];
++
++    u_int32_t spi = get_esp_spi(st);
++
++    snprintf(filename, 128, "%s_%08x", sainfo_filename_stem, spi);
++
++    rv = unlink(filename);
++    if (rv < 0) {
++	openswan_log("l2tp-workaround: cannot remove file: %s, not removing sainfo.", filename);
++	return;
++    }
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: sainfo file remove success. filename: %s", filename);
++#endif
++}
++#endif /* l2tp-workaround. */
++
+ void
+ record_and_initiate_opportunistic(const ip_subnet *ours
+                                   , const ip_subnet *his
+@@ -1532,6 +1605,10 @@
+     unsigned int proto = 0, satype = 0;
+     bool replace;
+ 
++#if 1 /* l2tp-workaround */
++    int rc;
++#endif
++
+     /* SPIs, saved for spigrouping or undoing, if necessary */
+     struct kernel_sa
+         said[EM_MAXRELSPIS],
+@@ -1915,8 +1992,12 @@
+         encapsulation = ENCAPSULATION_MODE_TUNNEL;
+     }
+ 
++#if 1 /* l2tp-workaround: may safely eroute inbound always: ignore possible errors. */
++    if (kernel_ops->inbound_eroute || (encapsulation == ENCAPSULATION_MODE_TUNNEL))
++#else
+     if (kernel_ops->inbound_eroute ? c->spd.eroute_owner == SOS_NOBODY
+         : encapsulation == ENCAPSULATION_MODE_TUNNEL)
++#endif
+     {
+         /* If inbound, and policy does not specifie DISABLEARRIVALCHECK,
+          * tell KLIPS to enforce the IP addresses appropriate for this tunnel.
+@@ -1927,7 +2008,11 @@
+         {
+             struct pfkey_proto_info proto_info[4];
+             int i = 0;
+-            
++
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: try to insert inbound policy.");
++#endif
++
+             if (st->st_ipcomp.present)
+             {
+                 proto_info[i].proto = IPPROTO_COMP;
+@@ -1963,15 +2048,41 @@
+                     proto_info[i].encapsulation = ENCAPSULATION_MODE_TRANSPORT;
+                 }
+             }
+-            
+-            /* MCR - should be passed a spd_eroute structure here */
+-            (void) raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
+-                              , &c->spd.this.host_addr, &c->spd.this.client
++
++#if 1 /* l2tp-workaround: use replace instead of add when the policy already exists. */
++	    if (c->spd.eroute_owner == SOS_NOBODY) {
++		rc = raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
++				, &c->spd.this.host_addr, &c->spd.this.client
++				, inner_spi, proto
++				, c->spd.this.protocol
++				, satype
++				, proto_info, 0
++				, ERO_ADD_INBOUND, "add inbound");
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: raw_eroute: add inbound: %d", rc);
++#endif
++	    } else {
++		rc = raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
++				, &c->spd.this.host_addr, &c->spd.this.client
++				, inner_spi, proto
++				, c->spd.this.protocol
++				, satype
++				, proto_info, 0
++				, ERO_REPLACE_INBOUND, "replace inbound");
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: raw_eroute: replace inbound: %d", rc);
++#endif
++	    }
++#else
++	    /* MCR - should be passed a spd_eroute structure here */
++	    (void) raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
++			      , &c->spd.this.host_addr, &c->spd.this.client
+                               , inner_spi, proto
+                               , c->spd.this.protocol
+                               , satype
+                               , proto_info, 0
+                               , ERO_ADD_INBOUND, "add inbound");
++#endif /* 1 */
+         }
+     }
+ 
+@@ -2206,10 +2317,13 @@
+     }
+ }
+ 
++
+ /* Note: install_inbound_ipsec_sa is only used by the Responder.
+  * The Responder will subsequently use install_ipsec_sa for the outbound.
+  * The Initiator uses install_ipsec_sa to install both at once.
+  */
++#if 1 /* l2tp-workaround: not used anymore. */
++#else
+ bool
+ install_inbound_ipsec_sa(struct state *st)
+ {
+@@ -2246,6 +2360,10 @@
+         }
+     }
+ 
++#if 1 /* l2tp-workaround: release conflicting old connections before SA setup. */
++    release_old_connections(st);
++#endif
++
+     DBG(DBG_CONTROL, DBG_log("install_inbound_ipsec_sa() checking if we can route"));
+     /* check that we will be able to route and eroute */
+     switch (could_route(c))
+@@ -2266,6 +2384,7 @@
+     return TRUE;
+ #endif /* !KLIPS */
+ }
++#endif
+ 
+ /* Install a route and then a prospective shunt eroute or an SA group eroute.
+  * Assumption: could_route gave a go-ahead.
+@@ -2566,6 +2685,10 @@
+                              , inbound_also?
+                              "inbound and outbound" : "outbound only"));
+ 
++#if 1 /* l2tp-workaround: release conflicting old connections before SA setup. */
++    release_old_connections(st);
++#endif
++
+     switch (could_route(st->st_connection))
+     {
+     case route_easy:
+@@ -2581,6 +2704,13 @@
+     || !setup_half_ipsec_sa(st, FALSE))
+         return FALSE;
+ 
++#if 1 /* l2tp-workaround: Store SA state to a file, indexed by our spi. */
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: add/replace sainfo file.");
++#endif
++    replace_sainfo_file(st);
++#endif
++
+     for (sr = &st->st_connection->spd; sr != NULL; sr = sr->next)
+     {
+         DBG(DBG_CONTROL, DBG_log("sr for #%ld: %s"
+@@ -2627,6 +2757,7 @@
+     return TRUE;
+ }
+ 
++
+ /* delete an IPSEC SA.
+  * we may not succeed, but we bull ahead anyway because
+  * we cannot do anything better by recognizing failure
+@@ -2682,6 +2813,14 @@
+         (void) teardown_half_ipsec_sa(st, FALSE);
+     }
+     (void) teardown_half_ipsec_sa(st, TRUE);
++
++#if 1 /* l2tp-workaround: Remove SA info file based on our spi. */
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: removing sainfo file.");
++#endif
++    remove_sainfo_file(st);
++#endif
++
+ #else /* !KLIPS */
+     DBG(DBG_CONTROL, DBG_log("if I knew how, I'd eroute() and teardown_ipsec_sa()"));
+ #endif /* !KLIPS */
+@@ -2704,6 +2843,11 @@
+                 natt_sport = inbound? c->spd.that.host_port : c->spd.this.host_port,
+                 natt_dport = inbound? c->spd.this.host_port : c->spd.that.host_port;
+ 
++#if 1 /* l2tp-workaround. */
++	openswan_log("l2tp-workaround: nat-t binding changed: not updating ipsec_esp_sa in kernel [spi: 0x%08x, natt_sport: %d, natt_dport: %d, inbound: %d", esp_spi, natt_sport, natt_dport, inbound);
++	return TRUE;
++#endif
++
+         set_text_said(text_said, &dst, esp_spi, SA_ESP);
+ 
+         memset(&sa, 0, sizeof(sa));
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/kernel.h openswan-2.4.0rc4/programs/pluto/kernel.h
+--- openswan-2.4.0rc4.orig/programs/pluto/kernel.h	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/kernel.h	2006-10-03 13:50:07.000000000 +0300
+@@ -33,6 +33,8 @@
+ #define ERO_REPLACE	(SADB_X_ADDFLOW | (SADB_X_SAFLAGS_REPLACEFLOW << ERO_FLAG_SHIFT))
+ #define ERO_ADD_INBOUND	(SADB_X_ADDFLOW | (SADB_X_SAFLAGS_INFLOW << ERO_FLAG_SHIFT))
+ #define ERO_DEL_INBOUND	(SADB_X_DELFLOW | (SADB_X_SAFLAGS_INFLOW << ERO_FLAG_SHIFT))
++/* l2tp-workaround: inbound replace needed for safety. */
++#define ERO_REPLACE_INBOUND (SADB_X_ADDFLOW | (SADB_X_SAFLAGS_REPLACEFLOW << ERO_FLAG_SHIFT) | (SADB_X_SAFLAGS_INFLOW << ERO_FLAG_SHIFT))
+ 
+ struct pfkey_proto_info {
+ 	int proto;
+@@ -186,7 +188,10 @@
+ 				 , bool tunnel_mode);
+ extern ipsec_spi_t get_my_cpi(struct spd_route *sr, bool tunnel_mode);
+ 
++#if 1 /* l2tp-workaround: not used. */
++#else
+ extern bool install_inbound_ipsec_sa(struct state *st);
++#endif
+ extern bool install_ipsec_sa(struct state *st, bool inbound_also);
+ extern void delete_ipsec_sa(struct state *st, bool inbound_only);
+ extern bool route_and_eroute(struct connection *c
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/kernel_netlink.c openswan-2.4.0rc4/programs/pluto/kernel_netlink.c
+--- openswan-2.4.0rc4.orig/programs/pluto/kernel_netlink.c	2005-07-08 22:14:43.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/kernel_netlink.c	2006-10-03 13:50:07.000000000 +0300
+@@ -793,6 +793,11 @@
+     unsigned transport_proto;
+     err_t ugh = NULL;
+ 
++#if 1 /* l2tp-workaround: never trigger. */
++    openswan_log("l2tp-workaround: netlink_acquire: skip.");
++    return;
++#endif
++
+     if (n->nlmsg_len < NLMSG_LENGTH(sizeof(*acquire)))
+     {
+ 	openswan_log("netlink_acquire got message with length %lu < %lu bytes; ignore message"
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/kernel_pfkey.c openswan-2.4.0rc4/programs/pluto/kernel_pfkey.c
+--- openswan-2.4.0rc4.orig/programs/pluto/kernel_pfkey.c	2005-07-08 20:55:28.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/kernel_pfkey.c	2006-10-03 13:50:07.000000000 +0300
+@@ -393,6 +393,11 @@
+      * keep going as long as things are OK.
+      */
+ 
++#if 1 /* l2tp-workaround: never trigger. */
++    openswan_log("l2tp-workaround: process_pfkey_acquire: skip.");
++    return;
++#endif
++
+     if (buf->msg.sadb_msg_pid == 0	/* we only wish to hear from kernel */
+ 	&& !(ugh = src_proto == dst_proto? NULL : "src and dst protocols differ")
+ 	&& !(ugh = addrtypeof(src) == addrtypeof(dst)? NULL : "conflicting address types")
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/keys.c openswan-2.4.0rc4/programs/pluto/keys.c
+--- openswan-2.4.0rc4.orig/programs/pluto/keys.c	2005-08-19 20:52:42.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/keys.c	2006-10-03 17:08:23.000000000 +0300
+@@ -575,10 +575,292 @@
+     return best;
+ }
+ 
+-/* find the appropriate preshared key (see get_secret).
+- * Failure is indicated by a NULL pointer.
+- * Note: the result is not to be freed by the caller.
+- */
++#if 1 /* l2tp-workaround: handle multiple preshared secrets with
++       * equal (or equally good) selectors. */
++
++/* Helpers to manipulate the list of best preshared secret
++ * matches. */
++
++struct sec {
++    struct secret *s;
++    struct sec *next;
++};
++
++#if L2TP_DEBUG
++void dump_chunk(const chunk_t *c, char *pre) {
++    char buf[512];
++    char *out = "%s: %s";
++
++    if (c == NULL) {
++	openswan_log(out, pre, "<null chunk>");
++	return;
++    }
++
++    if (c->len + 1 > 512) {
++	snprintf(buf, 512, "%s", c->ptr);
++	out = "%s: %s (truncated, > 511)";
++    } else {
++	snprintf(buf, c->len + 1, "%s", c->ptr);
++    }
++    openswan_log(out, pre, buf);
++}
++
++void dump_cached_secret(const struct state *st, char *pre) {
++    dump_chunk(&(st->st_stored_pss), pre);
++}
++
++void _dump_secret(struct secret *s, int index) {
++    char *pre = "l2tp-debug: dump secret";
++
++    if (s == NULL) {
++	openswan_log("%s: <null secret>", pre);
++	return;
++    }
++
++    if (s->kind != PPK_PSK) {
++	openswan_log("%s: <not psk>", pre);
++	return;
++    }
++    dump_chunk(&(s->u.preshared_secret), pre);
++}
++
++void _dump_secrets(struct sec *l) {
++    struct sec *p = l;
++    int i = 0;
++
++    openswan_log("l2tp-debug: dump secrets list:");
++    while (p != NULL) {
++	_dump_secret(p->s, i++);
++	p = p->next;
++    }
++}
++#endif /* L2TP_DEBUG */
++
++static struct sec *_prepend(struct sec *l, struct secret *s) {
++    struct sec *n = alloc_thing(struct sec, "secret");
++
++    n->s = s;
++    n->next = l;
++    return n;
++}
++
++static void _destroy(struct sec *l) {
++    struct sec *p;
++
++    while (l != NULL) {
++	p = l->next;
++	pfree(l);
++	l = p;
++    }
++}
++
++static struct secret *_get_nth(struct sec *l, int index) {
++    int i;
++    struct sec *p = l;
++
++    for (i = 0; i < index; i++) {
++	if (p == NULL) break;
++	p = p->next;
++    }
++    return p == NULL ? NULL : p->s;
++}
++
++static int _count(struct sec *l) {
++    int i = 0;
++    struct sec *p = l;
++
++    while (p != NULL) {
++	p = p->next;
++	i++;
++    }
++    return i;
++}
++
++static int _compare_secrets(struct secret *a, struct secret *b) {
++    if (a->u.preshared_secret.len !=
++	b->u.preshared_secret.len) return 1;
++    if (memcmp(a->u.preshared_secret.ptr,
++	       b->u.preshared_secret.ptr,
++	       a->u.preshared_secret.len) != 0) return 1;
++
++    return 0;
++}
++
++static struct secret *_find(struct sec *l, struct secret *s) {
++    struct sec *p = l;
++
++    while (p != NULL) {
++	if (_compare_secrets(s, p->s) == 0) return p;
++	p = p->next;
++    }
++    return NULL;
++}
++
++/* Cache argument pss to state st or clear cache with NULL pss. */
++void
++cache_preshared_secret(struct state *st, const chunk_t *pss)
++{
++    if (pss == NULL) {
++	st->st_stored_pss_in_use = 0;
++    } else {
++	clonetochunk(st->st_stored_pss, pss->ptr, pss->len, "cloned pss");
++	st->st_stored_pss_in_use = 1;
++    }
++}
++
++/* Get cached or fetch and cache the first matching preshared secret.
++ * If no secret found, return NULL. */
++chunk_t *
++get_cached_preshared_secret(struct state *st)
++{
++    if (st->st_stored_pss_in_use) {
++	return &(st->st_stored_pss);
++    } else {
++	const chunk_t *pss = get_preshared_secret_with_index(st->st_connection, 0);
++	cache_preshared_secret(st, pss);
++	st->st_pss_index = 0; /* Ensure that the index is in sync. */
++	return pss;
++    }
++}
++
++
++/* Get nth of the shared secrets whose match is best and equally good.
++ * NB: index starts from 0. */
++chunk_t *
++get_preshared_secret_with_index(const struct connection *c, int index)
++{
++    enum {	/* bits */
++	match_none = 00,
++	match_default = 01,
++	match_him = 02
++    };
++
++    unsigned int best_match = match_none;
++    struct secret *best = NULL;
++    struct secret *s;
++    const struct id *my_id = &c->spd.this.id;
++    const struct id *his_id = &c->spd.that.id;
++    unsigned char idstr1[IDTOA_BUF], idme[IDTOA_BUF], idhim[IDTOA_BUF], idhim2[IDTOA_BUF];
++
++    struct sec *best_list = NULL;
++    int secnum;
++
++    idtoa(my_id,  idme,  IDTOA_BUF);
++    idtoa(his_id, idhim, IDTOA_BUF);
++    strcpy(idhim2, idhim);
++
++    DBG(DBG_CONTROL, DBG_log("started looking for preshared secret for %s->%s with index: %d", idme, idhim, index));
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: looking for preshared secret (%s->%s) with index: %d", idme, idhim, index);
++#endif
++
++    DBG(DBG_CONTROL, DBG_log("actually looking for preshared secret for %s->%s", idme, idhim2));
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: all loaded secrets:");
++    {
++	int i = 0;
++	for (s = secrets; s != NULL; s = s->next) {
++	    _dump_secret(s, i++);
++	}
++    }
++#endif
++
++    for (s = secrets, secnum = 0; s != NULL; s = s->next, secnum++) {
++	unsigned int match = match_none;
++
++	DBG(DBG_CONTROL, DBG_log("examine secret number (%d) on line (%d)", secnum, s->secretlineno));
++
++	if (s->ids == NULL) {
++	    match = match_default; /* default with no ids. */
++	} else if (s->ids->next != NULL) {
++	    match = match_none;    /* not supported. */
++	    openswan_log("l2tp-workaruond: warning: PSK entry with two IDs unsupported: secret number (%d) on line (%d)", secnum, s->secretlineno);
++	} else {
++	    if (IS_INITIATOR(c)) {
++		if (same_id(his_id, &(s->ids->id))) {
++		    match = match_him;
++		} else {
++		    match = match_none;
++		}
++	    } else {
++		/* Only our initiated connections may have IP matching PSK entries, others use default match. */
++		match = match_none;
++	    }
++	}
++
++	DBG(DBG_CONTROL, DBG_log("match (%d) with best match (%d)", match, best_match));
++
++	switch (match) {
++	case match_default:	/* default all */
++	case match_him:	        /* match peer */
++	    if (match == best_match) {
++		if (_find(best_list, s) != NULL) {
++		    openswan_log("l2tp-workaround: warning: duplicate preshared secret number (%d) found on line (%d)", secnum, s->secretlineno);
++		}
++		best_list = _prepend(best_list, s); /* NB: list is reversed, so prepend is the right action here. */
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: multiple preshared secrets (%d) match endpoints, continue scan.", _count(best_list));
++#endif
++	    } else if (match > best_match) {
++		best_match = match;
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: old best list:");
++		_dump_secrets(best_list);
++#endif
++		_destroy(best_list);
++		best_list = NULL;
++		best_list = _prepend(best_list, s);
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: best list started from scratch:");
++		_dump_secrets(best_list);
++#endif
++	    } else {
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: match (%d) was not best (%d), continue", match, best_match);
++#endif
++		;
++	    }
++	    break;
++	case match_none:
++	    break;
++	default:
++	    openswan_log("l2tp-workaround: error: broken switch-case.. bailing out.");
++	    return NULL;
++	}
++    }
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: best secrets:");
++    _dump_secrets(best_list);
++#endif
++
++    best = _get_nth(best_list, index);
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: selected secret:");
++    _dump_secret(best, index);
++#endif
++
++    DBG(DBG_CONTROL, DBG_log("concluding with best_match=%d best=%p (lineno=%d), index=%d", best_match, best, best? best->secretlineno : -1, index));
++
++    return best == NULL ? NULL : &best->u.preshared_secret;
++}
++
++
++/* Wrapper for old calls. */
++const chunk_t *
++get_preshared_secret(const struct connection *c) {
++    chunk_t *pss = get_preshared_secret_with_index(c, 0);
++#if L2TP_DEBUG
++    dump_chunk(pss, "l2tp-debug: get_preshared_secret wrapper got secret");
++#endif
++    return pss;
++}
++
++#else
++
+ const chunk_t *
+ get_preshared_secret(const struct connection *c)
+ {
+@@ -595,6 +877,9 @@
+     return s == NULL? NULL : &s->u.preshared_secret;
+ }
+ 
++#endif /* l2tp-workaround */
++
++
+ /* check the existence of an RSA private key matching an RSA public
+  * key contained in an X.509 or OpenPGP certificate
+  */
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/log.h openswan-2.4.0rc4/programs/pluto/log.h
+--- openswan-2.4.0rc4.orig/programs/pluto/log.h	2004-10-21 22:13:37.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/log.h	2006-10-03 13:50:07.000000000 +0300
+@@ -15,6 +15,9 @@
+  * RCSID $Id: log.h,v 1.54 2004/10/21 19:13:37 mcr Exp $
+  */
+ 
++/*#define L2TP_DEBUG 1 */
++#define L2TP_DEBUG 0
++
+ #include <openswan.h>
+ 
+ #include "oswlog.h"
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/Makefile openswan-2.4.0rc4/programs/pluto/Makefile
+--- openswan-2.4.0rc4.orig/programs/pluto/Makefile	2005-08-12 04:12:38.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/Makefile	2006-10-03 13:50:07.000000000 +0300
+@@ -201,7 +201,9 @@
+ endif
+ 
+ ifeq ($(USE_NAT_TRAVERSAL),true)
+-NAT_DEFS=-DNAT_TRAVERSAL -DVIRTUAL_IP 
++# l2tp-workaround: disable virtual IP support
++#NAT_DEFS=-DNAT_TRAVERSAL -DVIRTUAL_IP 
++NAT_DEFS=-DNAT_TRAVERSAL
+ endif
+ 
+ ifeq ($(USE_NAT_TRAVERSAL_TRANSPORT_MODE),true)
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.c openswan-2.4.0rc4/programs/pluto/nat_traversal.c
+--- openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.c	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/nat_traversal.c	2006-10-03 13:50:07.000000000 +0300
+@@ -174,6 +174,7 @@
+  *
+  * Used when we're Initiator
+  */
++/* l2tp-workaround: no fix needed */
+ bool nat_traversal_add_vid(u_int8_t np, pb_stream *outs)
+ {
+ 	bool r = TRUE;
+@@ -186,6 +187,8 @@
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_RFC);
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_IETF_03);
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_IETF_02);
++#if 1 /* l2tp-workaround: no need to include OSX natt vid here.. */
++#endif
+ 	}
+ 	if (nat_traversal_support_non_ike) {
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_IETF_00);
+@@ -207,6 +210,11 @@
+ 		case VID_NATT_RFC:
+ 			return LELEM(NAT_TRAVERSAL_RFC);
+ 			break;
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++	        case VID_NATT_DRAFT_IETF_IPSEC_NAT_T_IKE:
++		        return LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE);
++			break;
++#endif
+ 	}
+ 	return 0;
+ }
+@@ -216,7 +224,7 @@
+ 	char hash[MAX_DIGEST_LEN];
+ 	struct payload_digest *p;
+ 	struct state *st = md->st;
+-	int i;
++	int i, found;
+ 
+ 	if (!st || !md->iface || !st->st_oakley.hasher) {
+ 		loglog(RC_LOG_SERIOUS, "NAT-Traversal: assert failed %s:%d",
+@@ -225,7 +233,7 @@
+ 	}
+ 
+ 	/** Count NAT-D **/
+-	for (p = md->chain[ISAKMP_NEXT_NATD_RFC], i=0;
++	for (p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC], i=0;
+ 	     p != NULL;
+ 	     p = p->next, i++);
+ 
+@@ -242,29 +250,47 @@
+ 	/**
+ 	 * First one with my IP & port
+ 	 */
+-	p = md->chain[ISAKMP_NEXT_NATD_RFC];
++	p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
+ 	_natd_hash(st->st_oakley.hasher, hash
+ 		   , st->st_icookie, st->st_rcookie
+ 		   , &(md->iface->ip_addr)
+ 		   , ntohs(st->st_localport));
+ 
+-	if (!( (pbs_left(&p->pbs) == st->st_oakley.hasher->hash_digest_len)
+-	       && (memcmp(p->pbs.cur, hash, st->st_oakley.hasher->hash_digest_len)==0)))
+-	{
+-#ifdef NAT_D_DEBUG
++#if 1 /* l2tp-workaround: check all NAT-D payloads. This helps with clients
++	 that send the NAT-D payloads in wrong order (eq. OSX Panther).
++	 Note that the other payload is not a problem: it will never match
++	 anyways because we use 'forceencaps' and deliberately break the
++	 peer NAT-D hash.
++      */
++	found=0;
++	for (i=0 ; p != NULL; p = p->next,i++) {
++		if ( (pbs_left(&p->pbs) == st->st_oakley.hasher->hash_digest_len) &&
++		     (memcmp(p->pbs.cur, hash, st->st_oakley.hasher->hash_digest_len)==0)
++		     ) {
++			found=i+1;
++		}
++	}
++
++	if (!found) {
+ 	    DBG(DBG_NATT,
+ 		DBG_log("NAT_TRAVERSAL_NAT_BHND_ME");
+ 		DBG_dump("expected NAT-D:", hash,
+ 			 st->st_oakley.hasher->hash_digest_len);
+-		DBG_dump("received NAT-D:", p->pbs.cur, pbs_left(&p->pbs));
++		p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
++		for (i=0 ; p != NULL; p = p->next) {
++		    DBG_dump("received NAT-D:", p->pbs.cur, pbs_left(&p->pbs));
++		}
+ 		);
+-#endif
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_ME);
++	} else {
++	    openswan_log ("l2tp-workaround: my NAT-D hash matched with hash number: %d", found);
+ 	}
++#endif
+ 
+ 	/**
+ 	 * The others with sender IP & port
+ 	 */
++	p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
+ 	_natd_hash(st->st_oakley.hasher, hash
+ 		   , st->st_icookie, st->st_rcookie
+ 		   , &(md->sender), ntohs(md->sender_port));
+@@ -278,18 +304,17 @@
+ 	    }
+ 	}
+ 
++	/* l2tp-workaround: note: here !i means "found" */
+ 	if (!i) {
+-#ifdef NAT_D_DEBUG
+ 	    DBG(DBG_NATT,
+ 		DBG_log("NAT_TRAVERSAL_NAT_BHND_PEER");
+ 		DBG_dump("expected NAT-D:", hash,
+ 			 st->st_oakley.hasher->hash_digest_len);
+-		p = md->chain[ISAKMP_NEXT_NATD_RFC];
++		p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
+ 		for (p = p->next, i=0 ; p != NULL; p = p->next) {
+ 		    DBG_dump("received NAT-D:", p->pbs.cur, pbs_left(&p->pbs));
+ 		}
+ 		);
+-#endif
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_PEER);
+ 	}
+ 	
+@@ -297,7 +322,13 @@
+ 
+ 	if(st->st_connection->forceencaps) {
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_PEER);
++#if 1 /* l2tp-workaround: do not break our nat-t hash: this is needed for
++	 interoperating with clients that do not wish to talk to servers
++	 behind NATs (eq. WinXP-sp2 without registry modification).
++	 Note: now we use 'forceencaps' option always. */
++#else
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_ME);
++#endif
+ 	}
+ }
+ 
+@@ -316,8 +347,9 @@
+ 
+ 	DBG(DBG_EMITTING, DBG_log("sending NATD payloads"));
+ 
+-	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES
+-	      ? ISAKMP_NEXT_NATD_RFC : ISAKMP_NEXT_NATD_DRAFTS);
++	/* l2tp-workaround: osx values. */
++	nat_np = ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES)
++		  ? ISAKMP_NEXT_NATD_RFC : ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_DRAFTS));
+ 	if (!out_modify_previous_np(nat_np, outs)) {
+ 		return FALSE;
+ 	}
+@@ -348,27 +380,38 @@
+ 	/**
+ 	 * Second one with my IP & port
+ 	 */
++#if 0 /* do not break our nat-t hash: all clients do not like servers 
++       * behind NAT by default (esp. win xp sp2 without registry change).
++       */
+ 	if(st->st_connection->forceencaps) {
+ 	    _natd_hash(st->st_oakley.hasher, hash
+ 		       , st->st_icookie
+ 		       , is_zero_cookie(st->st_rcookie) ? md->hdr.isa_rcookie : st->st_rcookie
+ 		       , &(md->iface->ip_addr),0);
+ 	} else {
++#endif
+ 	    _natd_hash(st->st_oakley.hasher, hash
+ 		       , st->st_icookie
+ 		       , is_zero_cookie(st->st_rcookie) ? md->hdr.isa_rcookie : st->st_rcookie
+ 		       , &(md->iface->ip_addr)
+-		       , ntohs(st->st_remoteport));
++		       , ntohs(md->iface->port));
++#if 0 /* l2tp-workaround: see above. */
+ 	}
++#endif
++
+ 	return (out_generic_raw(np, &isakmp_nat_d, outs,
+ 		hash, st->st_oakley.hasher->hash_digest_len, "NAT-D"));
+ }
+ 
++
+ /**
+  * nat_traversal_natoa_lookup()
+  * 
+  * Look for NAT-OA in message
+  */
++/* l2tp-workaround:
++ * FIXME: store the number of nat-oa payloads actually received.
++ */
+ void nat_traversal_natoa_lookup(struct msg_digest *md)
+ {
+ 	struct payload_digest *p;
+@@ -463,10 +506,119 @@
+ 		       , "NAT-Traversal: received %%any NAT-OA...");
+ 	}
+ 	else {
++#if 1 /* l2tp-workaround: no need for this in kernel SA. */
++		openswan_log("l2tp-workaround: ignore NAT-OA address.");
++#else
+ 		st->hidden_variables.st_nat_oa = ip;
++#endif
+ 	}
+ }
+ 
++#if 1 /* l2tp-workaround: add two nat-oa payloads instead of one when using
++       * rfc nat-t and peer did actually use two payloads.
++       * FIXME: use nat-oa payload count from peer message.
++       * FIXME: only works as responder, initiator needs different handling */
++bool nat_traversal_add_natoa(u_int8_t np, pb_stream *outs,
++	struct state *st)
++{
++	struct isakmp_nat_oa natoa;
++	pb_stream pbs;
++	unsigned char ip_val[sizeof(struct in6_addr)];
++	size_t ip_len = 0;
++	ip_address *ip;
++	unsigned int nat_np;
++
++	if ((!st) || (!st->st_connection)) {
++		loglog(RC_LOG_SERIOUS, "NAT-Traversal: assert failed %s:%d",
++		       __FILE__, __LINE__);
++		return FALSE;
++	}
++
++	/* Note: with other than rfc NAT-T values, we check if we are not
++	 * behind nat, then prevent sending NAT-OA. */
++	if (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) && !(st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME))) {
++		return TRUE;
++	}
++
++	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES
++		  ? ISAKMP_NEXT_NATOA_RFC : (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES ? ISAKMP_NEXT_NATOA_OSX : ISAKMP_NEXT_NATOA_DRAFTS));
++
++	if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) {
++		struct isakmp_nat_oa natoa;
++		pb_stream pbs;
++		unsigned char ip_val[sizeof(struct in6_addr)];
++		size_t ip_len = 0;
++		ip_address *ip;
++
++		ip = &(st->st_remoteaddr);
++
++		if (!out_modify_previous_np(nat_np, outs)) {
++			return FALSE;
++		}
++
++		memset(&natoa, 0, sizeof(natoa));
++		natoa.isanoa_np = np;
++
++		switch (addrtypeof(ip)) {
++		case AF_INET:
++			ip_len = sizeof(ip->u.v4.sin_addr.s_addr);
++			memcpy(ip_val, &ip->u.v4.sin_addr.s_addr, ip_len);
++			natoa.isanoa_idtype = ID_IPV4_ADDR;
++			break;
++		default:
++			loglog(RC_LOG_SERIOUS, "NAT-Traversal: "
++			       "invalid addrtypeof()=%d", addrtypeof(ip));
++			return FALSE;
++		}
++
++		if (!out_struct(&natoa, &isakmp_nat_oa, outs, &pbs))
++			return FALSE;
++
++		if (!out_raw(ip_val, ip_len, &pbs, "NAT-OA"))
++			return FALSE;
++ 
++		DBG(DBG_NATT,
++		        DBG_dump("Remote NAT-OA (S):", ip_val, ip_len);
++		);
++		close_output_pbs(&pbs);
++	}
++
++	ip = &(st->st_localaddr);
++
++	if (!out_modify_previous_np(nat_np, outs)) {
++		return FALSE;
++	}
++
++	memset(&natoa, 0, sizeof(natoa));
++	natoa.isanoa_np = np;
++
++	switch (addrtypeof(ip)) {
++		case AF_INET:
++			ip_len = sizeof(ip->u.v4.sin_addr.s_addr);
++			memcpy(ip_val, &ip->u.v4.sin_addr.s_addr, ip_len);
++			natoa.isanoa_idtype = ID_IPV4_ADDR;
++			break;
++		default:
++			loglog(RC_LOG_SERIOUS, "NAT-Traversal: "
++				"invalid addrtypeof()=%d", addrtypeof(ip));
++			return FALSE;
++	}
++
++	if (!out_struct(&natoa, &isakmp_nat_oa, outs, &pbs))
++		return FALSE;
++
++	if (!out_raw(ip_val, ip_len, &pbs, "NAT-OA"))
++		return FALSE;
++
++	DBG(DBG_NATT,
++		DBG_dump("Local NAT-OA (S):", ip_val, ip_len);
++	);
++
++	close_output_pbs(&pbs);
++	return TRUE;
++}
++
++#else
+ bool nat_traversal_add_natoa(u_int8_t np, pb_stream *outs,
+ 	struct state *st)
+ {
+@@ -485,7 +637,7 @@
+ 	ip = &(st->st_localaddr);
+ 
+ 	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES
+-		  ? ISAKMP_NEXT_NATOA_RFC : ISAKMP_NEXT_NATOA_DRAFTS);
++		  ? ISAKMP_NEXT_NATOA_RFC : (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES ? ISAKMP_NEXT_NATOA_OSX : ISAKMP_NEXT_NATOA_DRAFTS));
+ 	if (!out_modify_previous_np(nat_np, outs)) {
+ 		return FALSE;
+ 	}
+@@ -523,6 +675,7 @@
+ 	close_output_pbs(&pbs);
+ 	return TRUE;
+ }
++#endif /* 1 */
+ 
+ void nat_traversal_show_result (u_int32_t nt, u_int16_t sport)
+ {
+@@ -537,6 +690,11 @@
+ 	case LELEM(NAT_TRAVERSAL_RFC):
+ 	    mth = natt_type_bitnames[2];
+ 	    break;
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++	case LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE):
++	    mth = natt_type_bitnames[3];
++	    break;
++#endif
+ 	}
+ 	switch (nt & NAT_T_DETECTED) {
+ 		case 0:
+@@ -746,6 +904,41 @@
+ 	}
+ 
+ 	if (md) {
++
++#if 1 /* l2tp-workaround: update remote port of client subnet, too.
++       * Note: the usage of connection structure to hold the st_remoteport
++       * and such has changed from 2.3.0 -> 2.4.0.
++       *
++       * sva: disabled this part; quick mode responder will do this anyway,
++       * and this breaks site-to-site client.
++       */
++		if (st->st_connection != NULL){
++		  openswan_log("l2tp-workaround: nat_traversal; is_responder=%d, is_initiator=%d", (int) IS_RESPONDER(st->st_connection), (int) IS_INITIATOR(st->st_connection));
++			if (IS_RESPONDER(st->st_connection)) {
++				openswan_log("l2tp-workaround: update remote port in connection in NAT port lookup: %d -> %d (responder)", st->st_connection->spd.that.host_port, md->sender_port);
++				st->st_connection->spd.that.host_port = md->sender_port;
++				{
++					char client_subnet[52];
++					subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 52);
++					openswan_log("l2tp-workaround: client subnet before: %s", client_subnet);
++
++					if (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) {
++						/* must use the port from md, not state (st) */
++						setportof(htons(md->sender_port), &(st->st_connection->spd.that.client.addr));
++						subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 52);
++						openswan_log("l2tp-workaround: client subnet after: %s", client_subnet);
++					} else {
++						openswan_log("l2tp-workaround: no nat-t detected, not updating client subnet port.");
++					}
++				}
++			} else {
++				openswan_log("l2tp-workaround: new NAT mapping, but no action (initiator)");
++			}
++		} else {
++			openswan_log("l2tp-workaround: new NAT mapping, but no connection!");
++		}
++#endif
++
+ 		/**
+ 		 * If source port has changed, update (including other
+ 		 * states and established kernel SA)
+@@ -761,6 +954,9 @@
+ 		 */
+ 		if (md->iface->port != st->st_localport)
+ 		{
++#if L2TP_DEBUG
++		    openswan_log("l2tp-debug: NAT-T: update local port: %d -> %d", st->st_localport, md->iface->port);
++#endif
+ 		    st->st_localport = md->iface->port;
+ 		    DBG(DBG_NATT,
+ 			DBG_log("NAT-T: updating local port to %d"
+@@ -783,6 +979,8 @@
+ 	    
+ 	    st->st_localport  = NAT_T_IKE_FLOAT_PORT;
+ 	    st->st_remoteport = NAT_T_IKE_FLOAT_PORT;
++
++	    /* l2tp-workaround: don't touch ports here. */
+ 	    
+ 	    /*
+ 	     * Also update pending connections or they will be deleted if
+@@ -801,6 +999,10 @@
+ 	{
+ 	    char b1[ADDRTOT_BUF], b2[ADDRTOT_BUF];
+ 
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: NAT-T: wrong interface definition: %d vs.. %d", st->st_localport, st->st_interface->port);
++#endif
++
+ 	    DBG(DBG_NATT,
+ 		DBG_log("NAT-T connection has wrong interface definition %s:%u vs %s:%u"
+ 			, (addrtot(&st->st_localaddr, 0, b1, sizeof(b1)),b1)
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.h openswan-2.4.0rc4/programs/pluto/nat_traversal.h
+--- openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.h	2005-01-23 21:17:25.000000000 +0200
++++ openswan-2.4.0rc4/programs/pluto/nat_traversal.h	2006-10-03 13:50:07.000000000 +0300
+@@ -22,6 +22,9 @@
+ #define NAT_TRAVERSAL_IETF_00_01     1
+ #define NAT_TRAVERSAL_IETF_02_03     2
+ #define NAT_TRAVERSAL_RFC            3
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE 4
++#endif
+ 
+ #define NAT_TRAVERSAL_NAT_BHND_ME    30
+ #define NAT_TRAVERSAL_NAT_BHND_PEER  31
+@@ -31,30 +34,56 @@
+ /**
+  * NAT-Traversal methods which need NAT-D
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_NATD \
++	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
++	  LELEM(NAT_TRAVERSAL_RFC) | LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE) )
++#else
+ #define NAT_T_WITH_NATD \
+ 	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
+ 	LELEM(NAT_TRAVERSAL_RFC) )
++#endif
++
+ /**
+  * NAT-Traversal methods which need NAT-OA
+  */
++/* l2tp-workaround: draft-ietf-ipsec-nat-t-ike not included in NATOA
++   because NATOA not supported by OSX (which is the only one to use
++   draft-ietf-ipsec-nat-t-ike. */
+ #define NAT_T_WITH_NATOA \
+ 	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
+ 	LELEM(NAT_TRAVERSAL_RFC) )
++
+ /**
+  * NAT-Traversal methods which use NAT-KeepAlive
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_KA \
++	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
++	LELEM(NAT_TRAVERSAL_RFC) | LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE))
++#else
+ #define NAT_T_WITH_KA \
+ 	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
+ 	LELEM(NAT_TRAVERSAL_RFC) )
++#endif
+ /**
+  * NAT-Traversal methods which use floating port
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_PORT_FLOATING \
++        ( LELEM(NAT_TRAVERSAL_IETF_02_03) | LELEM(NAT_TRAVERSAL_RFC) | LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE) )
++#else
+ #define NAT_T_WITH_PORT_FLOATING \
+ 	( LELEM(NAT_TRAVERSAL_IETF_02_03) | LELEM(NAT_TRAVERSAL_RFC) )
++#endif
+ 
+ /**
+  * NAT-Traversal methods which use officials values (RFC)
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_OSX_VALUES \
++        ( LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE) )
++#endif
+ #define NAT_T_WITH_RFC_VALUES \
+ 	( LELEM(NAT_TRAVERSAL_RFC) )
+ 
+@@ -137,11 +166,11 @@
+ #define NAT_T_ENCAPSULATION_MODE(st,nat_t_policy) ( \
+ 	((st)->hidden_variables.st_nat_traversal & NAT_T_DETECTED) \
+ 		? ( ((nat_t_policy) & POLICY_TUNNEL) \
+-			? ( ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) \
++		        ? ( (( (st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES)) \
+ 				? (ENCAPSULATION_MODE_UDP_TUNNEL_RFC) \
+-				: (ENCAPSULATION_MODE_UDP_TUNNEL_DRAFTS) \
++		                : (ENCAPSULATION_MODE_UDP_TUNNEL_DRAFTS)	      \
+ 			  ) \
+-			: ( ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) \
++		        : ( (( (st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES)) \
+ 				? (ENCAPSULATION_MODE_UDP_TRANSPORT_RFC) \
+ 				: (ENCAPSULATION_MODE_UDP_TRANSPORT_DRAFTS) \
+ 			  ) \
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/pending.c openswan-2.4.0rc4/programs/pluto/pending.c
+--- openswan-2.4.0rc4.orig/programs/pluto/pending.c	2005-03-27 23:18:13.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/pending.c	2006-10-03 13:50:07.000000000 +0300
+@@ -51,6 +51,7 @@
+ #include "demux.h"
+ #include "ikev1_quick.h"
+ #include "timer.h"
++#include "nat_traversal.h"
+ 
+ /* struct pending, the structure representing Quick Mode
+  * negotiations delayed until a Keying Channel has been negotiated.
+@@ -238,6 +239,47 @@
+ 	 p = p->next) {
+ 	if (p->isakmp_sa == os)
+ 	    p->isakmp_sa = ns;
++
++	/**
++	 * l2tp-workaround:
++	 * Note: this is how things were done in openswan 2.3.0.
++	 * This should not break anything and if the code was just
++	 * forgotten, then this could be beneficial.
++	 * The patch was just upgraded and the if-block below taken back
++	 * from the openswan version 2.3.0.
++	 */
++#ifdef NAT_TRAVERSAL
++	if (p->connection->spd.this.host_port != ns->st_connection->spd.this.host_port) {
++	    p->connection->spd.this.host_port = ns->st_connection->spd.this.host_port;
++	    p->connection->spd.that.host_port = ns->st_connection->spd.that.host_port;
++#if 1 /* l2tp-workaround: update remote port of client subnet, too. */
++	    if (IS_RESPONDER(p->connection)) {
++#if L2TP_DEBUG
++		char client_subnet[52];
++		subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 52);
++		openswan_log("l2tp-workaround: update pending SA: client subnet before update: %s (%d) (responder)", client_subnet, htons(p->connection->spd.that.host_port));
++#endif
++		if (os->hidden_variables.st_nat_traversal & NAT_T_DETECTED) {
++		    char client_subnet[52];
++		    setportof(htons(p->connection->spd.that.host_port), &(p->connection->spd.that.client.addr));
++		    subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 52);
++		    openswan_log("l2tp-workaround: update_pending: client subnet updated: %s (%d) (responder)", client_subnet, htons(p->connection->spd.that.host_port));
++		} else {
++#if L2TP_DEBUG
++		    openswan_log("l2tp-workaround: update_pending: no nat-t detected, not updating client subnet port.");
++#endif
++		    ;
++		}
++	    } else {
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: update_pending: not updating client subnet port (initiator)");
++#endif
++		;
++	    }
++#endif /* 1 */
++	}
++#endif
++
+     }	    
+ }
+ 
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/pluto_constants.c openswan-2.4.0rc4/programs/pluto/pluto_constants.c
+--- openswan-2.4.0rc4.orig/programs/pluto/pluto_constants.c	2005-08-19 20:58:09.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/pluto_constants.c	2006-10-03 13:50:07.000000000 +0300
+@@ -155,7 +155,8 @@
+ 
+ 	"expecting QI1",	/* STATE_QUICK_R0 */
+ 	"sent QI1, expecting QR1",	/* STATE_QUICK_I1 */
+-	"sent QR1, inbound IPsec SA installed, expecting QI2",	/* STATE_QUICK_R1 */
++	/* half-setup IPsec SAs are the most evil things, get rid of them! */
++	"sent QR1, expecting QI2",	/* STATE_QUICK_R1 */
+ 	"sent QI2, IPsec SA established",	/* STATE_QUICK_I2 */
+ 	"IPsec SA established",	/* STATE_QUICK_R2 */
+ 
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/secrets.h openswan-2.4.0rc4/programs/pluto/secrets.h
+--- openswan-2.4.0rc4.orig/programs/pluto/secrets.h	2005-02-15 03:52:10.000000000 +0200
++++ openswan-2.4.0rc4/programs/pluto/secrets.h	2006-10-03 13:50:07.000000000 +0300
+@@ -23,6 +23,19 @@
+ 
+ extern const chunk_t *get_preshared_secret(const struct connection *c);
+ 
++#if 1 /* l2tp-workaround */
++extern void dump_chunk(const chunk_t *c, char *pre);
++
++extern void dump_cached_secret(const struct state *st, char *pre);
++
++extern void cache_preshared_secret(struct state *st, const chunk_t *pss);
++
++extern chunk_t * get_cached_preshared_secret(struct state *st);
++
++extern chunk_t * get_preshared_secret_with_index(const struct connection *c, int index);
++
++extern stf_status perform_dh_secretiv(struct state *st, enum phase1_role init, u_int16_t oakley_group);
++#endif
+ 
+ #endif /* _SECRETS_H_ */
+ 
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/spdb_struct.c openswan-2.4.0rc4/programs/pluto/spdb_struct.c
+--- openswan-2.4.0rc4.orig/programs/pluto/spdb_struct.c	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/spdb_struct.c	2006-10-03 13:50:07.000000000 +0300
+@@ -333,12 +333,27 @@
+ 		{
+ 		    if (spi_generated != NULL && !*spi_generated)
+ 		    {
++
+ 			*spi_ptr = get_ipsec_spi(0
+ 			    , proto
+ 			    , &st->st_connection->spd
+ 			    , tunnel_mode);
+ 			if (*spi_ptr == 0)
+ 			    return FALSE;
++
++#if 0 /* l2tp-workaround: this will not work because kernel
++       * rejects SAs with unknown SPIs (at least for SA update). */
++
++			/* Mark initiator SA:s with type and index.
++			 * Initiator => type is 1, index always zero.
++			 * 0x1YFFFFFF, where Y is index. */
++			{
++			    u_int32_t spi = *spi_ptr;
++			    spi = (spi & 0xFFFFFF0F) | 0x10;
++			    spi = (spi & 0xFFFFFFF0) | 0;
++			    *spi_ptr = spi;
++			}
++#endif
+ 			*spi_generated = TRUE;
+ 		    }
+ 		    if (!out_raw((u_char *)spi_ptr, IPSEC_DOI_SPI_SIZE
+@@ -853,6 +868,10 @@
+ 			}
+ 			else
+ 			{
++
++#if 1 /* l2tp-workaround: does this check do anything useful for us?
++       * Should not be harmful, though.. */
++#endif
+ 			    /* check that we can find a preshared secret */
+ 			    struct connection *c = st->st_connection;
+ 
+@@ -1007,14 +1026,44 @@
+ 			ugh = "NULL encrypter with seen OAKLEY_ENCRYPTION_ALGORITHM";
+ 		        break;
+ 		    }
++
++#if 1 /* l2tp-workaround: Windows Vista beta 2 sends AES key length
++       * in wrong byte order: 0x0080 => 0x8000.
++       * Here is a generic fix for insanely large keylengths assuming that
++       * they are caused by peer byte-order problems.
++       * This works for keylengths of >=16 and <=4096 bits regardless of
++       * byte order and for all other keylengths the check produces garbage.
++       */
++		    {
++			u_int16_t v = (u_int16_t)val;
++			if (v > 4096 || v < 16) {
++			    val = htons(v);
++			} else {
++			    val = v;
++			}
++		    }
++#endif
++
+ 		    /*
+ 		     * check if this keylen is compatible with 
+ 		     * specified alg_info_ike
+ 		     */
+-		    if (!ike_alg_enc_ok(ta.encrypt, val, c->alg_info_ike, &ugh)) {
+-			ugh = "peer proposed key_len not valid for encrypt algo setup specified";
++		    /* l2tp-workaround: backported a patch to prevent DoS attack.
++		       From: Diff for /openswan-2/programs/pluto/spdb_struct.c between version 1.19 and 1.20.
++		       Msg: Michael's short term fix for bug #486.
++		       NISCC Vulnerability Advisory 273756/NISCC/ISAKMP
++		       http://www.openswan.org/niscc2/
++		    */
++		    if(ta.encrypt == OAKLEY_3DES_CBC) {
++			ta.enckeylen = 24;
++		    } else if(ta.encrypt == OAKLEY_DES_CBC) {
++			ta.enckeylen = 8;
++		    } else {
++			if (!ike_alg_enc_ok(ta.encrypt, val, c->alg_info_ike, &ugh)) {
++			    ugh = "peer proposed key_len not valid for encrypt algo setup specified";
++			}
++			ta.enckeylen=val;
+ 		    }
+-		    ta.enckeylen=val;
+ 		    break;
+ #else
+ 		case OAKLEY_KEY_LENGTH | ISAKMP_ATTR_AF_TV:
+@@ -1475,7 +1524,7 @@
+ #endif
+ 
+ 			case ENCAPSULATION_MODE_UDP_TUNNEL_DRAFTS:
+-				if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) {
++				if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES)) {
+ 					loglog(RC_LOG_SERIOUS,
+ 						"%s must only be used with old IETF drafts",
+ 						enum_name(&enc_mode_names, val));
+@@ -1504,7 +1553,7 @@
+ 
+ 			case ENCAPSULATION_MODE_UDP_TUNNEL_RFC:
+ 				if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+-					(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES)) {
++				    ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES))) {
+ 					attrs->encapsulation = val - ENCAPSULATION_MODE_UDP_TUNNEL_RFC + ENCAPSULATION_MODE_TUNNEL;
+ 				}
+ 				else if (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) {
+@@ -1535,7 +1584,24 @@
+ 		attrs->auth = val;
+ 		break;
+ 	    case KEY_LENGTH | ISAKMP_ATTR_AF_TV:
++#if 1 /* l2tp-workaround: Windows Vista beta 2 sends AES key length
++       * in wrong byte order: 0x0080 => 0x8000.
++       * Here is a generic fix for insanely large keylengths assuming that
++       * they are caused by peer byte-order problems.
++       * This works for keylengths of >=16 and <=4096 bits regardless of
++       * byte order and for all other keylengths the check produces garbage.
++       */
++		{
++		    u_int16_t v = (u_int16_t)val;
++		    if (v > 4096 || v < 16) {
++			attrs->key_len = htons(v);
++		    } else {
++			attrs->key_len = v;
++		    }
++		}
++#else
+ 		attrs->key_len = val;
++#endif
+ 		break;
+ 	    case KEY_ROUNDS | ISAKMP_ATTR_AF_TV:
+ 		attrs->key_rounds = val;
+@@ -1624,7 +1690,12 @@
+     struct_desc *trans_desc,		/* descriptor for this transformation */
+     pb_stream *trans_pbs,		/* PBS for incoming transform */
+     struct spd_route *sr,		/* host details for the association */
++#if 0 /* l2tp-workaround. */
++    bool tunnel_mode,			/* true for inner most tunnel SA */
++    struct state *st)
++#else
+     bool tunnel_mode)			/* true for inner most tunnel SA */
++#endif
+ {
+     pb_stream r_proposal_pbs;
+     pb_stream r_trans_pbs;
+@@ -1656,6 +1727,27 @@
+ 		IPPROTO_AH : IPPROTO_ESP
+ 	    , sr
+ 	    , tunnel_mode);
++#if 0 /* l2tp-workaround: this will not work because kernel
++       * rejects SAs with unknown SPIs (at least for SA update). */
++
++	/* Mangle responder SPI.
++	 *
++	 * This is always wildcard connection:
++	 * => SPI is 0xXXXXXX0Y, where Y is preshared secret index.
++	 * 
++	 * NB: ipsec_spi_t is u_int32_t
++	 * NB: if preshared secret index is >= 16, it is truncated. */
++	{
++	    u_int32_t index = st->st_pss_index;
++	    u_int32_t spi = pi->our_spi;
++
++	    if (index > 0xF) index = 0xF;
++
++	    spi = (spi & 0xFFFFFFF0) | index;
++	    spi = (spi & 0xFFFFFF0F) | 0;
++
++	    pi->our_spi = spi;
++#endif
+ 	/* XXX should check for errors */
+ 	out_raw((u_char *) &pi->our_spi, IPSEC_DOI_SPI_SIZE
+ 	    , &r_proposal_pbs, "SPI");
+@@ -2252,7 +2344,12 @@
+ 		    , &isakmp_ah_transform_desc
+ 		    , &ah_trans_pbs
+ 		    , &st->st_connection->spd
++#if 0 /* l2tp-workaround. */
++		    , tunnel_mode && inner_proto == IPPROTO_AH
++		    , st);
++#else
+ 		    , tunnel_mode && inner_proto == IPPROTO_AH);
++#endif
+ 
+ 	    /* ESP proposal */
+ 	    if (esp_seen)
+@@ -2264,7 +2361,12 @@
+ 		    , &isakmp_esp_transform_desc
+ 		    , &esp_trans_pbs
+ 		    , &st->st_connection->spd
++#if 0 /* l2tp-workaround. */
++		    , tunnel_mode && inner_proto == IPPROTO_ESP
++		    , st);
++#else
+ 		    , tunnel_mode && inner_proto == IPPROTO_ESP);
++#endif
+ 
+ 	    /* IPCOMP proposal */
+ 	    if (ipcomp_seen)
+@@ -2276,7 +2378,12 @@
+ 		    , &isakmp_ipcomp_transform_desc
+ 		    , &ipcomp_trans_pbs
+ 		    , &st->st_connection->spd
++#if 0 /* l2tp-workaround. */
++		    , tunnel_mode && inner_proto == IPPROTO_COMP
++		    , st);
++#else
+ 		    , tunnel_mode && inner_proto == IPPROTO_COMP);
++#endif
+ 
+ 	    close_output_pbs(r_sa_pbs);
+ 	}
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/state.c openswan-2.4.0rc4/programs/pluto/state.c
+--- openswan-2.4.0rc4.orig/programs/pluto/state.c	2005-08-12 20:04:08.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/state.c	2006-10-03 13:50:07.000000000 +0300
+@@ -599,6 +599,12 @@
+     clone_chunk(st_skeyid_e, "st_skeyid_e in duplicate_state");
+     clone_chunk(st_enc_key, "st_enc_key in duplicate_state");
+ 
++#if 1 /* l2tp-workaround: clone also stored pss and it's index. */
++    clone_chunk(st_stored_pss, "st_stored_pss in duplicate_state");
++    nst->st_stored_pss_in_use = st->st_stored_pss_in_use;
++    nst->st_pss_index = st->st_pss_index;
++#endif
++
+ #   undef clone_chunk
+ 
+     nst->st_oakley = st->st_oakley;
+@@ -621,6 +627,18 @@
+ }
+ #endif
+ 
++#if 1
++static void print_hex(u_char *dst, const u_char *src, int len)
++{
++    char t[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
++    int i = 0;
++    for (i = 0; i < len; i++){
++	dst[2*i] = t[src[i] / 16];
++	dst[2*i + 1] = t[src[i] % 16];
++    }
++}
++#endif
++
+ /*
+  * Find a state object.
+  */
+@@ -632,6 +650,18 @@
+ {
+     struct state *st = *state_hash(icookie, rcookie, peer);
+ 
++#if L2TP_DEBUG
++    char b1[ADDRTOT_BUF],b2[ADDRTOT_BUF];
++    u_char i[2*COOKIE_SIZE+1] = {0};
++    u_char r[2*COOKIE_SIZE+1] = {0};
++
++    print_hex (i, icookie, COOKIE_SIZE);
++    print_hex (r, rcookie, COOKIE_SIZE);
++    openswan_log("l2tp-debug: find hash: %s:%s, %s, 0x%08x", i, r,
++		 (addrtot(peer, 0, b1, sizeof(b1)), b1), msgid);
++    openswan_log("l2tp-debug: state: %p", st);
++#endif
++
+     while (st != (struct state *) NULL)
+     {
+ 	if (sameaddr(peer, &st->st_connection->spd.that.host_addr)
+@@ -645,6 +675,16 @@
+ 	    if(msgid == st->st_msgid)
+ 		break;
+ 	}
++
++#if L2TP_DEBUG
++	print_hex (i, st->st_icookie, COOKIE_SIZE);
++	print_hex (r, st->st_rcookie, COOKIE_SIZE);
++	openswan_log("l2tp-debug: no match: %s:%s, %s, 0x%08x", i, r,
++		     (addrtot(&(st->st_connection->spd.that.host_addr),
++			      0, b1, sizeof(b1)), b1),
++		     st->st_msgid);
++#endif
++
+ 	st = st->st_hashchain_next;
+     }
+ 
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/state.h openswan-2.4.0rc4/programs/pluto/state.h
+--- openswan-2.4.0rc4.orig/programs/pluto/state.h	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/state.h	2006-10-03 13:50:07.000000000 +0300
+@@ -197,6 +197,13 @@
+ 						* operations
+ 						*/
+ 
++#if 1 /* l2tp-workaround: store brute-forced preshared secret. */
++    chunk_t            st_stored_pss;          /* Found and stored preshared
++						* secret for later use. */
++    int                st_stored_pss_in_use;   /* Does the stored pss exist. */
++    u_int32_t          st_pss_index;           /* Preshared secret matched index. */
++#endif
++
+     /* In a Phase 1 state, preserve peer's public key after authentication */
+     struct pubkey     *st_peer_pubkey;
+ 
+diff -ruN openswan-2.4.0rc4.orig/programs/pluto/timer.c openswan-2.4.0rc4/programs/pluto/timer.c
+--- openswan-2.4.0rc4.orig/programs/pluto/timer.c	2005-08-12 20:03:02.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/timer.c	2006-10-03 13:50:07.000000000 +0300
+@@ -370,8 +370,20 @@
+ 		struct connection *c;
+ 		so_serial_t newest;
+ 
++#if 1 /* l2tp-workaround */
++		openswan_log("l2tp-workaround: timer, EVENT_SA_REPLACE / EVENT_SA_REPLACE_IF_USED");
++#endif
++
+ 		passert(st != NULL);
+ 		c = st->st_connection;
++
++#if 1 /* l2tp-workaround */
++		/* consistency check */
++		if (IS_RESPONDER(c)) {
++		    openswan_log("l2tp-workaround: EVENT_SA_REPLACE* but we are responder");
++		}
++#endif
++
+ 		newest = IS_PHASE1(st->st_state)
+ 		    ? c->newest_isakmp_sa : c->newest_ipsec_sa;
+ 
+@@ -387,6 +399,10 @@
+ 		else if (type == EVENT_SA_REPLACE_IF_USED
+ 		&& st->st_outbound_time <= tm - c->sa_rekey_margin)
+ 		{
++#if 1 /* l2tp-workaround */
++		    openswan_log("l2tp-workaround: EVENT_SA_REPLACE_IF_USED, we do not want this");
++#endif
++
+ 		    /* we observed no recent use: no need to replace
+ 		     *
+ 		     * The sampling effects mean that st_outbound_time

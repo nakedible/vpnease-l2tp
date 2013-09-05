@@ -1,0 +1,22 @@
+Source: vpnease-productservers
+Section: net
+Priority: optional
+Maintainer: VPNease support <support@vpnease.com>
+Build-Depends: cdbs, debhelper (>= 5.0.6), python-dev
+Standards-Version: 3.6.2
+
+Package: vpnease-management
+Architecture: i386
+Depends: ssh, tcpdump, gawk, python-zopeinterface, python-tz, python-twisted, python-apsw, python-sqlalchemy, mailx
+Description: VPNease management server
+
+Package: vpnease-monitoring
+Architecture: i386
+Depends: ssh, tcpdump, gawk, python-zopeinterface, python-tz, python-twisted, python-apsw, python-sqlalchemy, mailx
+Description: VPNease monitoring server
+
+Package: vpnease-webserver
+Architecture: i386
+Depends: ssh, tcpdump, gawk, python-zopeinterface, python-tz, python-twisted, python-soappy, mailx
+Description: VPNease web server
+

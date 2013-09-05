@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 05-l2tpd-pty.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/l2tpd.c
++++ l2tpd-0.69/l2tpd.c
+@@ -325,6 +325,8 @@
+ 
+         snprintf (tty, sizeof (tty), "/dev/tty%c%c", a, b);
+         fd2 = open (tty, O_RDWR);
++	stropt[pos++] = strdup(tty);
++	stropt[pos] = NULL;
+ 
+ #ifdef USE_KERNEL
+     }

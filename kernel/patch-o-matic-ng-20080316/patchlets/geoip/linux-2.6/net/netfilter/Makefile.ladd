@@ -1,0 +1,2 @@
+obj-$(CONFIG_NETFILTER_XT_MATCH_ESP) += xt_esp.o
+obj-$(CONFIG_NETFILTER_XT_MATCH_GEOIP) += xt_geoip.o

@@ -1,0 +1,13 @@
+Source: ippool
+Section: net
+Priority: optional
+Maintainer: VPNease support <support@vpnease.com>
+Build-Depends: cdbs, debhelper (>= 5.0.6)
+Standards-Version: 3.6.2
+
+Package: ippool
+Architecture: i386
+Depends: vpnease-openl2tp
+Provides: vpnease-ippool
+Description: IpPool daemon.
+

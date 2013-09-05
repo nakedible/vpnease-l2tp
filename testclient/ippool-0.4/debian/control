@@ -1,0 +1,12 @@
+Source: ippool
+Section: net
+Priority: optional
+Maintainer: Mikko Varso <mikko.varso@codebay.fi>
+Build-Depends: cdbs, debhelper (>= 5.0.6)
+Standards-Version: 3.6.2
+
+Package: ippool
+Architecture: i386
+Depends: openl2tp
+Description: IpPool daemon.
+

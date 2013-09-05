@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Using the VPN connection</h2>
+
+        <p>
+          You can open VPN connection from top right hand corner VPN menu:
+        </p>
+        <ul>
+          <li>Select <strong class="cb-guilabel">Connect</strong> from the VPN menu.</li>
+          <li>If you have not save your <n:invisible n:macro="productname" /> password, a password dialog opens.</li>
+          <li>Enter your <n:invisible n:macro="productname" /> password and accept by clicking <strong class="cb-guilabel">OK</strong>.</li>
+          <li>
+            Ensure that connectivity to your company network resources works correctly by e.g. using your
+            e-mail client or opening a web page from an intranet server.
+          </li>
+        </ul>
+        <p>
+          You can disconnect the VPN connection by selecting <strong class="cb-guilabel">Disconnect</strong> 
+          from the top right hand corner VPN menu.  
+        </p>
+        
+        <h2 class="step-heading">Known limitations</h2>
+        <ul>
+          <li>
+            When switching from one user to another, the VPN connection is automatically
+            dropped by the operating system for security reasons.
+          </li>
+          <li>
+            When suspending and resuming (by closing laptop lid, for instance), the VPN connection
+            will drop due to protocol timeouts.  However, OS X will not notice this immediately when
+            resuming.  Disconnect and reconnect the VPN connection when resuming from suspend mode.
+          </li>
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+    </n:invisible>
+  </body>
+</html>

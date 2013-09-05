@@ -1,0 +1,317 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - Connection Pooling</title>
+	
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+<A name=""></a>
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+
+            
+            Previous: <a href="types.html">The Types System</a>
+
+               |   
+            Next: <a href="plugins.html">Plugins</a>
+    </div>
+
+        <h2>Connection Pooling</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="pooling.html#pooling_establishing">Establishing a Transparent Connection Pool</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="pooling.html#pooling_configuration">Connection Pool Configuration</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="pooling.html#pooling_custom">Custom Pool Construction</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+    
+    <A name="pooling"></a>
+    
+    <div class="section">
+
+    
+    
+
+<p>This section describes the connection pool module of SQLAlchemy.  The <code>Pool</code> object it provides is normally embedded within an <code>Engine</code> instance.  For most cases, explicit access to the pool module is not required.  However, the <code>Pool</code> object can be used on its own, without the rest of SA, to manage DBAPI connections; this section describes that usage.  Also, this section will describe in more detail how to customize the pooling strategy used by an <code>Engine</code>.
+</p>
+<p>At the base of any database helper library is a system of efficiently acquiring connections to the database.  Since the establishment of a database connection is typically a somewhat expensive operation, an application needs a way to get at database connections repeatedly without incurring the full overhead each time.  Particularly for server-side web applications, a connection pool is the standard way to maintain a "pool" of database connections which are used over and over again among many requests.  Connection pools typically are configured to maintain a certain "size", which represents how many connections can be used simultaneously without resorting to creating more newly-established connections.
+</p>
+
+
+    
+    <A name="pooling_establishing"></a>
+    
+    <div class="subsection">
+
+    <h3>Establishing a Transparent Connection Pool</h3>
+    
+    
+
+<p>Any DBAPI module can be "proxied" through the connection pool using the following technique (note that the usage of 'psycopg2' is <strong>just an example</strong>; substitute whatever DBAPI module you'd like):
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_keyword">import </span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">pool as pool</span><span class="python_operator">
+</span><span class="python_keyword">import </span><span class="python_name">psycopg2 as psycopg</span><span class="python_operator">
+</span><span class="python_name">psycopg </span><span class="python_operator">= </span><span class="python_name">pool</span><span class="python_operator">.</span><span class="python_name">manage</span><span class="python_enclosure">(</span><span class="python_name">psycopg</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># then connect normally
+</span><span class="python_name">connection </span><span class="python_operator">= </span><span class="python_name">psycopg</span><span class="python_operator">.</span><span class="python_name">connect</span><span class="python_enclosure">(</span><span class="python_name">database</span><span class="python_operator">=</span><span class="python_literal">'test'</span><span class="python_operator">, </span><span class="python_name">username</span><span class="python_operator">=</span><span class="python_literal">'scott'</span><span class="python_operator">, </span><span class="python_name">password</span><span class="python_operator">=</span><span class="python_literal">'tiger'</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>This produces a <code>sqlalchemy.pool.DBProxy</code> object which supports the same <code>connect()</code> function as the original DBAPI module.  Upon connection, a connection proxy object is returned, which delegates its calls to a real DBAPI connection object.  This connection object is stored persistently within a connection pool (an instance of <code>sqlalchemy.pool.Pool</code>) that corresponds to the exact connection arguments sent to the <code>connect()</code> function.  <br></br>
+</p>
+<p>The connection proxy supports all of the methods on the original connection object, most of which are proxied via <code>__getattr__()</code>.  The <code>close()</code> method will return the connection to the pool, and the <code>cursor()</code> method will return a proxied cursor object.  Both the connection proxy and the cursor proxy will also return the underlying connection to the pool after they have both been garbage collected, which is detected via the <code>__del__()</code> method.
+</p>
+<p>Additionally, when connections are returned to the pool, a <code>rollback()</code> is issued on the connection unconditionally.  This is to release any locks still held by the connection that may have resulted from normal activity.
+</p>
+<p>By default, the <code>connect()</code> method will return the same connection that is already checked out in the current thread.  This allows a particular connection to be used in a given thread without needing to pass it around between functions.  To disable this behavior, specify <code>use_threadlocal=False</code> to the <code>manage()</code> function.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="pooling_configuration"></a>
+    
+    <div class="subsection">
+
+    <h3>Connection Pool Configuration</h3>
+    
+    
+
+<p>For all types of Pool construction, which includes the "transparent proxy" described in the previous section, using an <code>Engine</code> via <code>create_engine()</code>, or constructing a pool through direct class instantiation, the options are generally the same.  Additional options may be available based on the specific subclass of <code>Pool</code> being used.
+</p>
+<p>For a description of all pool classes, see the <a href="sqlalchemy_pool.html#docstrings_sqlalchemy.pool">generated documentation</a>.
+</p>
+<p>Common options include:
+</p>
+<ul>
+ <li>
+     echo=False : if set to True, connections being pulled and retrieved from/to the pool will
+        be logged to the standard output, as well as pool sizing information.  Echoing can also
+        be achieved by enabling logging for the "sqlalchemy.pool" namespace.  When using create_engine(), 
+        this option is specified as <code>echo_pool</code>.
+ </li>
+
+ <li>
+     use_threadlocal=False : if set to True, repeated calls to connect() within the same
+        application thread will be guaranteed to return the same connection object, if one has
+        already been retrieved from the pool and has not been returned yet. This allows code to
+        retrieve a connection from the pool, and then while still holding on to that connection,
+        to call other functions which also ask the pool for a connection of the same arguments;
+        those functions will act upon the same connection that the calling method is using.
+        This option is overridden during <code>create_engine()</code>, corresponding to the "plain" or 
+   "threadlocal" connection strategy.
+ </li>
+
+ <li>
+     recycle=-1 : if set to non -1, a number of seconds between connection recycling, which
+        means upon checkout, if this timeout is surpassed the connection will be closed and replaced
+        with a newly opened connection.
+ </li>
+
+ <li>
+     auto_close_cursors = True : cursors, returned by connection.cursor(), are tracked and are 
+        automatically closed when the connection is returned to the pool.  some DBAPIs like MySQLDB
+        become unstable if cursors remain open.
+ </li>
+
+ <li>
+     disallow_open_cursors = False : if auto_close_cursors is False, and disallow_open_cursors is True,
+        will raise an exception if an open cursor is detected upon connection checkin.  If auto_close_cursors and disallow_open_cursors are both False, then no cursor processing occurs upon checkin.
+ </li>
+</ul>
+<p>QueuePool options include:
+</p>
+<ul>
+ <li>
+     pool_size=5 : the size of the pool to be maintained. This is the
+      largest number of connections that will be kept persistently in the pool. Note that the
+      pool begins with no connections; once this number of connections is requested, that
+      number of connections will remain.
+ </li>
+
+ <li>
+     max_overflow=10 : the maximum overflow size of the pool. When the number of checked-out
+      connections reaches the size set in pool_size, additional connections will be returned up
+      to this limit. When those additional connections are returned to the pool, they are
+      disconnected and discarded. It follows then that the total number of simultaneous
+      connections the pool will allow is pool_size + max_overflow, and the total number of
+      "sleeping" connections the pool will allow is pool_size. max_overflow can be set to -1 to
+      indicate no overflow limit; no limit will be placed on the total number of concurrent
+      connections.
+ </li>
+
+ <li>
+     timeout=30 : the number of seconds to wait before giving up on returning a connection
+ </li>
+</ul>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="pooling_custom"></a>
+    
+    <div class="subsection">
+
+    <h3>Custom Pool Construction</h3>
+    
+    
+
+<p>Besides using the transparent proxy, instances of <code>sqlalchemy.pool.Pool</code> can be created directly.  Constructing your own pool involves passing a callable used to create a connection.  Through this method, custom connection schemes can be made, such as a connection that automatically executes some initialization commands to start.  <br></br>
+</p>
+
+    
+
+    <div class="sliding_code">
+            <div class="codetitle">Constructing a QueuePool</div>
+        <pre><span class="python_keyword">import </span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">pool as pool</span><span class="python_operator">
+</span><span class="python_keyword">import </span><span class="python_name">psycopg2</span><span class="python_operator">
+</span>
+<span class="python_keyword">def </span><span class="python_name">getconn</span><span class="python_enclosure">()</span><span class="python_operator">:
+    </span><span class="python_name">c </span><span class="python_operator">= </span><span class="python_name">psycopg2</span><span class="python_operator">.</span><span class="python_name">connect</span><span class="python_enclosure">(</span><span class="python_name">username</span><span class="python_operator">=</span><span class="python_literal">'ed'</span><span class="python_operator">, </span><span class="python_name">host</span><span class="python_operator">=</span><span class="python_literal">'127.0.0.1'</span><span class="python_operator">, </span><span class="python_name">dbname</span><span class="python_operator">=</span><span class="python_literal">'test'</span><span class="python_enclosure">)</span><span class="python_operator">
+    </span><span class="python_comment"># execute an initialization function on the connection before returning
+    </span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">cursor</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">(</span><span class="python_literal">"setup_encodings()"</span><span class="python_enclosure">)</span><span class="python_operator">
+    </span><span class="python_keyword">return </span><span class="python_name">c</span><span class="python_operator">
+</span>
+<span class="python_operator"></span><span class="python_name">p </span><span class="python_operator">= </span><span class="python_name">pool</span><span class="python_operator">.</span><span class="python_name">QueuePool</span><span class="python_enclosure">(</span><span class="python_name">getconn</span><span class="python_operator">, </span><span class="python_name">max_overflow</span><span class="python_operator">=</span><span class="python_number">10</span><span class="python_operator">, </span><span class="python_name">pool_size</span><span class="python_operator">=</span><span class="python_number">5</span><span class="python_operator">, </span><span class="python_name">use_threadlocal</span><span class="python_operator">=</span><span class="python_name">True</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Or with SingletonThreadPool:
+</p>
+
+    
+
+    <div class="sliding_code">
+            <div class="codetitle">Constructing a SingletonThreadPool</div>
+        <pre><span class="python_keyword">import </span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">pool as pool</span><span class="python_operator">
+</span><span class="python_keyword">import </span><span class="python_name">sqlite</span><span class="python_operator">
+</span>
+<span class="python_keyword">def </span><span class="python_name">getconn</span><span class="python_enclosure">()</span><span class="python_operator">:
+    </span><span class="python_keyword">return </span><span class="python_name">sqlite</span><span class="python_operator">.</span><span class="python_name">connect</span><span class="python_enclosure">(</span><span class="python_name">filename</span><span class="python_operator">=</span><span class="python_literal">'myfile.db'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># SQLite connections require the SingletonThreadPool    
+</span><span class="python_operator"></span><span class="python_name">p </span><span class="python_operator">= </span><span class="python_name">pool</span><span class="python_operator">.</span><span class="python_name">SingletonThreadPool</span><span class="python_enclosure">(</span><span class="python_name">getconn</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+</html>
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+
+            
+            Previous: <a href="types.html">The Types System</a>
+
+               |   
+            Next: <a href="plugins.html">Plugins</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

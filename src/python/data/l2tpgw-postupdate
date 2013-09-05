@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Note: we do not want to fail here, but it would be better to avoid half-configured package
+
+UPDATE=/usr/sbin/update-rc.d
+
+# Ensure sysklogd is not enabled again after update
+$UPDATE -f sysklogd remove
+
+# Ensure gdm is in proper place again after update
+$UPDATE -f gdm remove
+$UPDATE gdm stop 01 0 1 6 . start 26 2 3 4 5 .
+
+/usr/bin/python /usr/lib/l2tpgw/l2tpgw-postupdate-script $1
+
+exit 0

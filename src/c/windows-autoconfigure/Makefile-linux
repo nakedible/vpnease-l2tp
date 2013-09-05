@@ -1,0 +1,15 @@
+
+all: testmain testmain-patched main
+
+clean:
+	rm testmain testmain-patched main
+
+main:	main.cpp parameters.cpp rashelper_stub.cpp
+	g++ -o main parameters.cpp main.cpp rashelper_stub.cpp
+
+testmain: testmain.cpp parameters.cpp
+	g++ -o testmain parameters.cpp testmain.cpp
+
+testmain-patched:
+	python patchparams.py
+	chmod ugo+x testmain-patched

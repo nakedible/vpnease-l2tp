@@ -1,0 +1,81 @@
+diff -ru openswan-2.4.0rc4_orig/programs/pluto/connections.c openswan-2.4.0rc4/programs/pluto/connections.c
+--- openswan-2.4.0rc4_orig/programs/pluto/connections.c	2005-08-25 04:13:48.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/connections.c	2005-10-13 11:06:50.901774896 +0300
+@@ -3587,7 +3587,7 @@
+  */
+ struct connection *
+ refine_host_connection(const struct state *st, const struct id *peer_id
+-, bool initiator, bool aggrmode)
++		       , bool initiator, bool aggrmode, bool ignore_psk_change)
+ {
+     struct connection *c = st->st_connection;
+     u_int16_t auth = st->st_oakley.auth;
+@@ -3729,7 +3729,7 @@
+ 		    if (dpsk == NULL)
+ 			continue;	/* no secret */
+ 
+-		    if (psk != dpsk)
++		    if (psk != dpsk && !ignore_psk_change)
+ 			if (psk->len != dpsk->len
+ 			|| memcmp(psk->ptr, dpsk->ptr, psk->len) != 0)
+ 			    continue;	/* different secret */
+diff -ru openswan-2.4.0rc4_orig/programs/pluto/connections.h openswan-2.4.0rc4/programs/pluto/connections.h
+--- openswan-2.4.0rc4_orig/programs/pluto/connections.h	2005-06-15 01:38:06.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/connections.h	2005-10-13 11:06:50.903774592 +0300
+@@ -297,7 +297,7 @@
+ 		       , const ip_address *me, u_int16_t my_port
+ 	, const ip_address *him, u_int16_t his_port),
+     *refine_host_connection(const struct state *st, const struct id *id
+-	, bool initiator, bool aggrmode),
++			    , bool initiator, bool aggrmode, bool ignore_psk_change),
+     *find_client_connection(struct connection *c
+ 			    , const ip_subnet *our_net
+ 			    , const ip_subnet *peer_net
+diff -ru openswan-2.4.0rc4_orig/programs/pluto/ipsec_doi.c openswan-2.4.0rc4/programs/pluto/ipsec_doi.c
+--- openswan-2.4.0rc4_orig/programs/pluto/ipsec_doi.c	2005-10-13 11:06:10.539910832 +0300
++++ openswan-2.4.0rc4/programs/pluto/ipsec_doi.c	2005-10-13 11:06:50.910773528 +0300
+@@ -1774,7 +1774,7 @@
+  * may change the peer's RSA key or ID.
+  */
+ static bool
+-decode_peer_id(struct msg_digest *md, bool initiator, bool aggrmode)
++decode_peer_id(struct msg_digest *md, bool initiator, bool aggrmode, bool ignore_psk_change)
+ {
+     struct state *const st = md->st;
+     struct payload_digest *const id_pld = md->chain[ISAKMP_NEXT_ID];
+@@ -1913,7 +1913,7 @@
+ 	/* check for certificate requests */
+ 	decode_cr(md, &c->requested_ca);
+ 
+-	r = refine_host_connection(st, &peer, initiator, aggrmode);
++	r = refine_host_connection(st, &peer, initiator, aggrmode, ignore_psk_change);
+ 
+ 	/* delete the collected certificate requests */
+ 	free_generalNames(c->requested_ca, TRUE);
+@@ -2975,7 +2975,7 @@
+     /* ID Payload in.
+      * Note: this may switch the connection being used!
+      */
+-    if (!decode_peer_id(md, initiator, aggrmode))
++    if (!decode_peer_id(md, initiator, aggrmode, FALSE))
+ 	return STF_FAIL + INVALID_ID_INFORMATION;
+ 
+     /* Hash the ID Payload.
+@@ -3519,7 +3519,7 @@
+ 
+     st->st_oakley.auth = authtype;  
+ 
+-    if (!decode_peer_id(md, FALSE, TRUE))
++    if (!decode_peer_id(md, FALSE, TRUE, TRUE))
+     {
+ 	char buf[IDTOA_BUF];
+ 
+@@ -3794,7 +3794,7 @@
+ 
+     st->st_policy |= POLICY_AGGRESSIVE;
+ 
+-    if (!decode_peer_id(md, FALSE, TRUE))
++    if (!decode_peer_id(md, FALSE, TRUE, FALSE))
+     {
+ 	char buf[200];
+ 

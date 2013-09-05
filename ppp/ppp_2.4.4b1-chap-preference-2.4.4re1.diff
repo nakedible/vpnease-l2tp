@@ -1,0 +1,27 @@
+diff -ruN ppp-2.4.4-old/pppd/chap-new.h ppp-2.4.4-new/pppd/chap-new.h
+--- ppp-2.4.4-old/pppd/chap-new.h	2004-11-04 11:19:24.000000000 +0200
++++ ppp-2.4.4-new/pppd/chap-new.h	2006-09-19 17:53:19.000000000 +0300
+@@ -64,11 +64,23 @@
+ extern int chap_mdtype_all;
+ 
+ /* Return the digest alg. ID for the most preferred digest type. */
++#if 1 /* l2tp-workaround: preference order: MSCHAPv2, CHAP, MSCHAP.
++       * This is required to support MPPC/MPPE compression properly.
++       * Otherwise (e.g.) Windows XP will not negotiate MSCHAPv2 but
++       * CHAP by default.  MPPC requires MSCHAPv1/v2.
++       */
++#define CHAP_DIGEST(mdtype) \
++    ((mdtype) & MDTYPE_MICROSOFT_V2)? CHAP_MICROSOFT_V2: \
++    ((mdtype) & MDTYPE_MD5)? CHAP_MD5: \
++    ((mdtype) & MDTYPE_MICROSOFT)? CHAP_MICROSOFT: \
++    0
++#else
+ #define CHAP_DIGEST(mdtype) \
+     ((mdtype) & MDTYPE_MD5)? CHAP_MD5: \
+     ((mdtype) & MDTYPE_MICROSOFT_V2)? CHAP_MICROSOFT_V2: \
+     ((mdtype) & MDTYPE_MICROSOFT)? CHAP_MICROSOFT: \
+     0
++#endif
+ 
+ /* Return the bit flag (lsb set) for our most preferred digest type. */
+ #define CHAP_MDTYPE(mdtype) ((mdtype) ^ ((mdtype) - 1)) & (mdtype)

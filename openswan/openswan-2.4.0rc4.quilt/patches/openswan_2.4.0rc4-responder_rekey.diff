@@ -1,0 +1,95 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/demux.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/demux.c	2006-12-03 19:53:37.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/demux.c	2006-12-03 19:58:50.000000000 +0200
+@@ -2559,6 +2559,46 @@
+ 		     * Note: for ISAKMP SA, we let the negotiated
+ 		     * time stand (implemented by earlier logic).
+ 		     */
++
++#if 1 /* l2tp-workaround: let SA expire always. */
++		    if (smc->flags & SMF_INITIATOR) {
++			/* kind = EVENT_SA_REPLACE from above */
++			unsigned long marg = c->sa_rekey_margin;
++
++			/* consistency check */
++			if (IS_RESPONDER(c)) {
++			    openswan_log("l2tp-workaround: inconsistency (smf=init, conn=resp)");
++			}
++
++			marg += marg
++			    * c->sa_rekey_fuzz / 100.E0
++			    * (rand() / (RAND_MAX + 1.E0));
++
++			if ((unsigned long)delay > marg)
++			{
++			    delay -= marg;
++			    st->st_margin = marg;
++			}
++			else
++			{
++			    /* this is not pretty, but we don't want to expire */
++			    if (delay < 60)
++				delay = 60;
++			    marg = delay / 2;
++			    delay -= marg;
++			    st->st_margin = marg;
++			}
++			openswan_log("l2tp-workaround: scheduled rekey, delay %d (initiator)", (int) delay);
++		    } else {
++			/* consistency check */
++			if (IS_INITIATOR(c)) {
++			    openswan_log("l2tp-workaround: inconsistency (smf=resp, conn=init)");
++			}
++
++			openswan_log("l2tp-workaround: no rekey, let SA expire always (responder)");
++			kind = EVENT_SA_EXPIRE;
++		    }
++#else
+ 		    if (agreed_time
+ 		    && (c->policy & POLICY_DONT_REKEY))
+ 		    {
+@@ -2587,6 +2627,7 @@
+ 			    kind = EVENT_SA_EXPIRE;
+ 			}
+ 		    }
++#endif
+ 		    break;
+ 
+ 		case EVENT_NULL:	/* non-event */
+Index: openswan-2.4.0rc4.quilt/programs/pluto/timer.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/timer.c	2005-08-12 20:03:02.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/timer.c	2006-12-03 19:58:50.000000000 +0200
+@@ -370,8 +370,20 @@
+ 		struct connection *c;
+ 		so_serial_t newest;
+ 
++#if 1 /* l2tp-workaround */
++		openswan_log("l2tp-workaround: timer, EVENT_SA_REPLACE / EVENT_SA_REPLACE_IF_USED");
++#endif
++
+ 		passert(st != NULL);
+ 		c = st->st_connection;
++
++#if 1 /* l2tp-workaround */
++		/* consistency check */
++		if (IS_RESPONDER(c)) {
++		    openswan_log("l2tp-workaround: EVENT_SA_REPLACE* but we are responder");
++		}
++#endif
++
+ 		newest = IS_PHASE1(st->st_state)
+ 		    ? c->newest_isakmp_sa : c->newest_ipsec_sa;
+ 
+@@ -387,6 +399,10 @@
+ 		else if (type == EVENT_SA_REPLACE_IF_USED
+ 		&& st->st_outbound_time <= tm - c->sa_rekey_margin)
+ 		{
++#if 1 /* l2tp-workaround */
++		    openswan_log("l2tp-workaround: EVENT_SA_REPLACE_IF_USED, we do not want this");
++#endif
++
+ 		    /* we observed no recent use: no need to replace
+ 		     *
+ 		     * The sampling effects mean that st_outbound_time

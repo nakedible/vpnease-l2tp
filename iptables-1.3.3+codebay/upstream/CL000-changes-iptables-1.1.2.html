@@ -1,0 +1,41 @@
+<html>
+<head><title>The Netfilter HomePage: 1.1.2</title></head>
+<body bgcolor="#ffffff" text="#101010" link="#0000ff" alink="#ff0000" vlink="#7f007f">
+<center><h1>The Netfilter HomePage: 1.1.2</h1></center>
+
+This version requires 2.4.0-test9 or above.
+<p>
+<strong>Bugs Fixed from 1.1.1:</strong>
+<ul>
+<li> Adding rules on UltraSparc now works
+<li> string_to_number now handles overflow<br>
+	[ Jan Echternach ]
+<li> Bug when using ridiculous rule numbers fixed
+</ul>
+
+<strong>Changes from 1.1.1:</strong>
+<ul>
+<li> patch-o-matic system added:
+  <ul>
+    <li> TTL alteration and ttl matching support -- Harald Welte
+    <li> AH/ESP matching support -- Yon Uriarte
+    <li> DROPPED table support -- Rusty
+    <li> ftp-multi patch for non-standard ftp servers -- Harald Welte
+    <li> IRC connection tracking &amp NAT -- Harald Welte
+    <li> pool match and POOL target -- Patrick
+    <li> RPC recording patch -- Marcelo Barbosa Lima
+    <li> SNMP NAT support -- James Morris
+    <li> string match for looking in packet's data -- Emmanuel Roger
+    <li> tcp-MSS target for altering MSS -- Marc Boucher
+    <li> ULOG target for advanced logging -- Harald Welte
+    </ul>
+<li> Minor const cleanups<br>
+	[ Jan Echternach ]
+<li> iptables.8 updates<br>
+	[ Harald Welte, Rusty ]
+<li> Better warnings for non-existant matches/missing libraries<br>
+	[ Harald Welte ]
+<li> Improved isapplied script
+</ul>
+
+</body></html>

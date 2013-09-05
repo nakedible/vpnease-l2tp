@@ -1,0 +1,65 @@
+<html>
+<head><title>The Netfilter HomePage: 1.2</title></head>
+<body bgcolor="#ffffff" text="#101010" link="#0000ff" alink="#ff0000" vlink="#7f007f">
+<center><h1>The Netfilter HomePage: 1.2</h1></center>
+
+This version requires 2.4.0-test9 or above.
+<p>
+<strong>Bugs Fixed from 1.1.2:</strong>
+<ul>
+<li> Now default installs into /usr/local/sbin, not /usr/local/bin.
+<li> Only does IPv6 compilation on libc6.
+<li> More header fixes for weird header combos.
+<li> ip6tables now refers to "icmpv6" protocol, not "icmp".<br>
+	[ Harald Welte ] 
+<li> IPPROTO_ESP and AH defined in iptables for primitive headers.
+<li> iptables multiple-DNS resolve fixed<br>
+	[ Harald Welte, Rusty ] 
+<li> Kernel bugfixes in patch-o-matic:
+  <ul>
+  <li> IPv6 netfilter fixes<br>
+	[ Harald Welte ] 
+  <li> Masquerade with fwmark routing fix
+  <li> Dynamic hashsize optimization (NAT) + `hashsize=' module parameter.
+  <li> NAT overlap fix
+  <li> PPC/Sparc mangle table fix.
+  </ul>
+</ul>
+
+<strong>Changes from 1.1.2:</strong>
+<ul>
+<li> New `install-devel' target<br>
+	[ James Morris ] 
+<li> libipq now has man pages!<br>
+	[ James Morris ] 
+<li> iptables-save and iptables-restore added (with man pages!)<br>
+	[ Harald Welte ] 
+<li> iptables now inserts modules if CONFIG_KMOD or --modprobe<br>
+	[ Harald Welte, Rusty ] 
+<li> New `experimental' and `install-experimental' targets.
+<li> `--reject-with=echo-reply' removed in anticipation of the removal
+     of kernel support.
+<li> ttl match enhancements (greater or less than tests)<br>
+	[ Harald Welte ] 
+<li> Reworked patch-o-matic interface, to force reading of help.
+<li> patch-o-matic updated for new 2.4 Makefiles<br>
+	[ Daniel Stone, Harald Welte ] 
+<li> patch-o-matic now supports non-IPv4 netfilter patches<br>
+	[ Harald Welte ] 
+<li> New patch-o-matic patches:
+  <ul>
+  <li> eggdrop bot connection tracking<br>
+	[ Magnus Sandin ]
+  <li> FTOS target for full ToS mangling.<br>
+	[ Matthew G. Marsh ] 
+  <li> BALANCE target for simple load-balancing.
+  <li> iplimit match for limiting number of connections.<br>
+	[ Gerd Knorr ] 
+  <li> IPv6 MARK target<br>
+	[ Harald Welte ] 
+  <li> IPv6 mark match<br>
+	[ Harald Welte ] 
+  </ul>
+</ul>
+
+</body></html>

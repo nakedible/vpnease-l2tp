@@ -1,0 +1,22 @@
+#!/usr/bin/python
+
+import sys
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-i", "--import-path", dest="importpath", default="system")
+
+# XXX: ignored: used by the Runner
+parser.add_option('-r', '--rdf-file', help='RDF file instead of default database', action='store', dest='rdf_file', type='string', metavar='<file>')
+parser.add_option('-m', '--mode', help='Mode for start', action='store', dest='mode', type='string', metavar='<string>')
+parser.add_option('-n', '--no-distro-restart', help='Prevent distro networking restart on runner stop',
+                  action='store_true', dest='no_distro_restart', default=False)
+
+(options, args) = parser.parse_args()
+
+if options.importpath is not None and options.importpath != "system":
+    sys.path = options.importpath.split(' ') + sys.path
+
+from codebay.l2tpserver import runner
+r = runner.Runner()
+r.runner()

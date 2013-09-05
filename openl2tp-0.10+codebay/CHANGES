@@ -1,0 +1,384 @@
+# -*- indented-text -*- # 
+
+This file is a history of changes made in each release.
+
+----------------------------------------------------------------------------
+V0.10, 16-APR-2006
+
+- Add support for 2.6 kernels to 2.6.16. Fix SMP issues in pppol2tp
+  kernel module. Due to several changes in the 2.6 kernel, conditional
+  compilation to handle specific kernel versions is required. Separate
+  kernel patches provided for 2.6.8.1 thru 2.6.16.
+
+- Improve kernel module builds for 2.6 kernels, making it much easier
+  for common-case where the code is compiled and installed on the same
+  Linux host. This will also make it much easier to produce binary
+  packages.
+
+- Handle hostnames longer than 32 chars. If hostnames are longer,
+  openl2tpd would fail to start!
+
+- Add MIPS architecture support (big and little endian).
+
+- Fix rpcgen segfaults at compile time on some platforms. This turned
+  out to be caused by the definition of SESSION_INCALL_IND API in the
+  RPC protocol definition file which is not yet supported anyway,
+  hence it was safe to redefine the API to avoid the rpcgen
+  problem. Remove rpcgen sources from the distribution.
+
+- Patch from Alvin Starr <alvin@iplink.net> for PPP multilink
+  support. Includes new "multilink" parameter in ppp
+  profile. Controlled by new CLI "multilink" parameter for ppp
+  profiles.
+
+- Minor tweaks to makefiles, allowing daemon and application to be built
+  separately. This allows for configs where control app is not running
+  on the same system as the daemon.
+
+----------------------------------------------------------------------------
+V0.9, 10-SEP-2005
+
+Key changes are to fix build problems with newer distros. Also,
+OpenL2TP now uses an official RPC program ID obtained from Sun
+Microsystems. Major bugfixes for problems found during interopability
+testing.
+
+- Avoid use of Linux __u8, __u16, __u32 types, Use standard uintN_t
+  types instead. This change is required because newer glibc header
+  files warn when some newer Linux kernel headers are included by
+  application code.
+
+- Fix compile errors in newer distributions (Suse 9.1, FC2+, RHEL3)
+  caused by including asm/byteorder.h instead or endian.h. For kernel
+  module builds, let the compiler use include files from the standard
+  compiler areas.
+
+- Fix pppol2tp kernel driver module load problems. Change the
+  ip_[gs]setsockopt() calls to use udp_prot.[gs]setsockopt() instead.
+
+- Fix pppol2tp kernel driver "source route failed" errors which
+  occurred at random in LNS configurations where data traffic was
+  forwarded through the LNS rather than being locally terminated.
+
+- Fix 2.6 kernel driver for 2.6.10 and later kernels. Core kernel PPP
+  code has seen significant changes from 2.6.10 thru 2.6.12.
+
+- Use ppp-2.4.3 by default.
+
+- Change default PPP interface names from l2tp<tid>/<sid> to
+  l2tp<tid>-<sid> where tid and sid are the L2TP tunnel id and session
+  id. This change is needed because 2.6 kernels now prevent the '/'
+  character being used in interface names.
+
+- Change RPC interfaces to use the recently registered official RPC 
+  program numbers rather than numbers in Sun's "experimental" range.
+  Be sure to upgrade client (management) apps in sync with openl2tpd
+  and ippoold (if used).
+
+- Add PPC architecture support. Minimal changes needed in kernel
+  module makefile. Support for MIPS is planned before 1.0.
+
+- Add default_route parameter to PPP profile. This tells the system to
+  make a PPP link of an L2TP session the default route. Add ppp
+  profile default_route=yes|no command.
+
+- Fix a bug where primary DNS server configuration in a PPP profile
+  was setting the PPP WINS server address, not DNS server address.
+
+- Patch from Cleber Rodrigues <cleber@sistemasabertos.com.br
+  - Fix default pppd location to use relative path usr/sbin/pppd rather
+    than absolute path.
+  - Fix formatting of pppd spawn log text.
+
+- Patch from Benjamin Sonntag <benjamin@sonntag.fr>:
+  - Fix a bug writing the wrong pid into the pid file.
+  - Add Debian package support.
+
+- Fix several problems found by Hai Wang <hwang@finepoint.com>
+  - Interopability, protocol and performance testing using 
+    Ixia Ax4000 tester.
+  - L2TP M-bit now correctly set in all messages.
+  - BearerType and FramingType AVPs now correctly formatted.
+  - BearerType and FramingType AVP values now follow configured
+    settings
+  - Include PPP address/control header in outgoing L2TP data packets.
+  - Don't trap application failure aignals when compiled for debug
+
+- Add an extra clause to LICENSE clarifying that users using OpenL2TP
+  under its GPL license cannot change the advertised vendor string.
+
+- Include rpcgen sources in a new rpcgen subdirectory to workaround
+  problems with the rpcgen utility included in some newer
+  distributions such as Fedora Linux where rpcgen segfaults when
+  compiling OpenL2TP's protocol definition files.
+
+----------------------------------------------------------------------------
+V0.8, 19-OCT-2004
+
+- Fix several Makefile issues with the previous release, preventing 
+  builds in some environments.
+
+- Fix a bug with AVP hiding that was sometimes causing corrupt data to
+  be sent/received.
+
+- Fix persistent tunnels which were broken in V0.7. Tunnels would
+  refuse to delete in certain circumstances.
+
+- Add a new argument to the pppd plugin, pppol2tp_ifname, allowing the
+  PPP interface to be named. Sessions can have an interface name
+  specified using the interface_name= parameter of the session or
+  session profile. If interface_name is unspecified, the pppN device
+  will be named l2tp<tunnel_id>/<session_id>. Since ifconfig displays
+  only 8 characters of interface names, it is recommended that the "ip
+  link" command be used instead.
+
+- Modify pppd plugin to workaround MTU negotiation problems with some
+  third party PPP implementations. By default, Cisco advertise an MTU
+  of 1500 unless configured otherwise. They were refusing our lower
+  MTU value and we were accepting their MTU instead. Local interface
+  MTU is now set properly.
+
+- Modify pppd plugin to use sync-mode PPP by default. To obtain the
+  same behavior as previous releases, set sync_mode=async in the 
+  default PPP profile.
+
+- Add Path MTU Discovery support (rfc1191). If a tunnel is created
+  with the do_pmtu_discovery=yes option, packets are transmitted with
+  the DontFragment bit set. The tunnel also self-learns changes to
+  Path MTU along the tunnel path. Note, however, that it only reacts to
+  reductions in Path MTU: increases to MTU are not detected. If you see
+  problems when PMTU discovery is enabled, check that traceroute works
+  between the tunnel endpoints. PMTU discovery relies on ICMP messages
+  which are frequently filtered by misconfigured firewalls...
+
+- Modify kernel pppol2tp driver to pass IP level socket options to
+  the kernel's IP code when setsockopt() and getsockopt() are done on
+  PPPoL2TP sockets.
+
+- Modify kernel pppol2tp driver to insert a PPP header between L2TP
+  header and user data of data packets. Although this seems to be
+  optional, Cisco sends the header so we do too now.
+
+- Modify default UDP checksum setting to ON as specified in rfc2661.
+  To retain behavior of previous releases, set use_udp_checksums=off
+  in the default tunnel profile.
+
+- Add L2TP SLI message support. PPP watches LCP negotiation to catch
+  negotiated asyncmap (accm) values. ACCM values are indicated to
+  L2TP peers via the SLI control message. This change adds a new
+  PPP_ACCM_IND RPC message which is used by PPP processes to indicate
+  the ACCM values to L2TP.
+
+- Add new arguments to pppd plugin to tell pppd of the session's L2TP
+  tunnel_id and session_id. These are needed by pppd when sending
+  PPP_ACCM_IND messages to OpenL2TP.
+
+- Improve application RPC service registration to avoid "failure to
+  register RPC" errors, causing openl2tpd to quit at startup.
+
+- Create a pid file /var/run/openl2tpd.pid and prevent application
+  startup if the file already exists, i.e. prevent multiple openl2tpd
+  instances.
+
+----------------------------------------------------------------------------
+V0.7, 15-OCT-2004
+
+NOTE: There are kernel and application API changes in this
+release. Kernel module and applications must be updated together.
+
+- Fix RPC requestor address check bug. This problem was first reported
+  by Anil Gupta several weeks ago and caused l2tpconfig commands to
+  randomly time out or in severe cases, to always time out. It turns
+  out that OpenL2TP was testing a variable that hadn't yet been
+  initialized by the RPC subsystem so it was just luck that anything
+  ever worked!  This fix should mean it is no longer necessary to use
+  -R when starting openl2tpd.
+
+- Add data packet reordering support (kernel module changes). Tested
+  against Cisco IOS using Linux netem. Data packets will only be
+  reordered if the following session parameters are set:-
+  - reorder_timeout (in milliseconds)
+  - use_sequence_numbers (LNS) or sequencing_required (LAC)
+
+- Fix a potential skb leak if a skb is queued to a full socket
+  (congestion).
+
+- Change data packet/byte/error stats to be uint64 rather than uint32
+  since these counters can easily wrap. This change means that RPC
+  client applications (e.g. l2tpconfig) must be rebuilt and
+  reinstalled at the same time as openl2tpd. The kernel interface
+  GL2TPSTATS ioctl also changes so the kernel driver must also be
+  reinstalled.
+
+- Add code in PPPoX kernel core to auto-load PPPoX modules when
+  PPPoE or PPPoL2TP is first used. Add the following lines to
+  modules.conf to enable this feature. CONFIG_KMOD must be defined
+  for this to work and the PPPoL2TP kernel support must be built
+  in the Linux kernel tree, patched with one of the patches from the
+  kernel/patches/ directory.
+
+  alias pppox-proto-0 pppoe
+  alias pppox-proto-1 pppol2tp
+
+- Add data packet out-of-sequence packets/discards counters.
+
+- Improve RPC interface definition files by adding parameter names in
+  interface definitions. This does not alter the interfaces - it just 
+  improves readability of the l2tp*.x interface definition files.
+
+- Set some file descriptors close-on-exec flag to ensure that they are not
+  inherited by child processes. Changes tunnel/session event fds and
+  timer fd. 
+
+- Add UML build option for pppol2tp drivers.
+
+- Fix a bug in the ppp_unix plugin in handling pppd startup
+  problems. Each failure would leave a forked openl2tpd running. Also
+  fix a bug not clearing the L2TP session if pppd fails to start up.
+
+----------------------------------------------------------------------------
+V0.6, 03-OCT-2004
+
+NOTE: There is a kernel API change. Kernel driver and applications
+must be updated together.
+
+- Modify kernel struct sockaddr_pppol2tp to include the pid owner of
+  the tunnel socket. Modify the kernel driver to reference the tunnel
+  socket using the pid (if non-zero), thus allowing one process to
+  open the tunnel socket (openl2tpd) and another to open session
+  sockets (ppp). This change is needed when PPP sessions are handled
+  by a separate process that is not forked by openl2tpd.
+
+- Update openl2tp plugins for kernel interface change.
+
+- Add l2tp_event RPC interface, giving external PPP processes an
+  interface to tell of session up/down events. This interface is not
+  needed if pppd is used (since it is openl2tpd that spawns pppd
+  processes and it detects when such processes terminate). It is for
+  use by other PPP implementations.
+
+- Fix a kernel driver bug in handling an error condition which could
+  have caused a kernel panic.
+
+- Add a ppp_test plugin for testing session socket operations without
+  spawning pppd processes. For testing only.
+
+----------------------------------------------------------------------------
+V0.5, 20-SEP-2004
+
+- Update kernel driver with struct sockaddr_pppox changes. Comments from
+  kernel mailing list suggested changing struct sockaddr_pppox (a union
+  of pppoe/pppol2tp) to separate sockaddr structures because struct size
+  was changed by the addition of pppol2tp, potentially breaking some
+  pppoe binary apps already out there. If you use PPPoE, make sure you
+  take this update.
+
+- Change openl2tpd and its ppp_unix plugin to use the new sockaddr_pppol2tp
+  type.
+
+----------------------------------------------------------------------------
+V0.4, 18-SEP-2004
+
+- Fix a "peer use count goes negative" problem which could occur in
+  one codepath if a tunnel setup failed. Could cause core dump in some
+  circumstances.
+
+- Fix some memory leaks in session contexts.
+
+- Fix a bug not updating system tunnel_setup_failures count.
+
+- Update application version number. Forgot to do so in 0.3.
+
+- Add control packet reordering, implemented in openl2tpd. Packets are
+  held for up to 1 second when trying to reorder. Kernel datapath
+  reordering is still to come.
+
+- Add an indicator in tunnel_show() to show whether a tunnel is
+  secured by IPSEC for user convenience. Will only work with native
+  linux-2.6 kernel IPSEC support.
+
+- Add persistent tunnel support. New 'persist' parameter for
+  tunnel_create() and tunnel_modify() may only be set on locally
+  created tunnels. When such tunnel fails, system will attempt to
+  recreate every 5 minutes (default). Any locally created session in a
+  persistent tunnel will also be restored. Tunnel/session ids of
+  restored tunnels/sessions will be different.
+
+- Use private error codes (outside range of standard Unix codes) in
+  management API to give user more info about errors. Some standard
+  error codes may still occur, e.g. ENOMEM or socket errors, but
+  general EINVAL, EEXIST, ENOENT etc should now not occur. All error
+  codes are in the RPC interface definition file.
+
+- Add new "debug" commands to l2tpconfig, making it easier to 
+  manipulate the trace_flags parameter of system objects.
+
+- Use a better hash algorithm in openl2tpd (from Linux 2.6 kernel).
+
+- Internal changes to kernel driver to use Linux hashed lists rather
+  than the previous home-grown methods. Cleaner code.
+
+----------------------------------------------------------------------------
+V0.3, 13-SEP-2004
+
+- Use hashed lists for tunnels and sessions to improve performance when
+  there are lots of contexts.
+
+- Fix several problems with setting explicit UDP port numbers in
+  tunnel profiles or as parameters to "tunnel create". These problems
+  were reported by Chris Andrews in the openl2tp mailing list.
+
+- Add local IP address pool in pppol2tp pppd plugin, supported thru
+  ippool. ippoold must be running and configured for IP pools to work.
+
+- Use SIGTERM to kill pppd's rather than SIGKILL, giving pppd a chance
+  to do cleanup before exit. The new ippool plugin for IP pool
+  needs to be allowed to free any allocated addresses before pppd
+  terminates, hence this change.
+
+- Fix a bug in the kernel driver causing some packets to be
+  transmitted directly to the tunnel peer (as plain IP packets) rather
+  than through the PPP-over-L2TP session. This could be seen where ppp
+  device receive data counters would not increase, or IPSEC
+  configurations would not work because packets were being incorrectly
+  routed.
+
+- Fix a race condition in the kernel driver which could cause a kernel
+  panic when doing stress testing with lots of sessions going up and
+  down.
+
+----------------------------------------------------------------------------
+V0.2, 07-SEP-2004
+
+- Fix openl2tpd and l2tpconfig -R command arg parsing bugs. Remote RPC
+  was broken in V0.1!!
+
+- Have syslog messages logged as "openl2tpd", not "l2tpd".
+
+- Modify the vendor_name reported to the peer to include the Linux
+  kernel version string and the CPU name. Also allow the vendor string
+  to be overridden at build time for distros/OEMs. By default it's
+  "Katalix Systems Ltd. Linux-<kernel_rev> (<cpu_name>)"
+
+- Change l2tpconfig admin_name= parameters of tunnel and session
+  commands to tunnel_name= and session_name= so that they're
+  consistent with tunnel_id and session_id.
+
+- Some internal cleanups, moving main_loop() into USL (User Space
+  Library).
+
+- Remove peer_addr and peer_port from peer profile list response data
+  (changed interface definition file, l2tp_rpc.x), making the peer
+  profile list consistent with the other profile lists in that they
+  return only profile names.
+
+- Modify l2tpconfig so that its list commands show output in sorted
+  order. Previous version had the lists in order of creation and
+  in some cases also depending on the state of the context (stupid).
+  This change paves the way for hashed internal lists.
+  
+----------------------------------------------------------------------------
+V0.1, 05-SEP-2004
+
+- Initial release. 
+

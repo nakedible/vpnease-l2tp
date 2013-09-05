@@ -1,0 +1,21 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01-l2tpd-close.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+diff -u l2tpd-0.69/l2tpd.c l2tpd-0.69.close.patch/l2tpd.c
+--- l2tpd-0.69/l2tpd.c	Mon Aug 19 10:12:17 2002
++++ l2tpd-0.69.close.patch/l2tpd.c	Sat Aug 24 13:32:31 2002
+@@ -993,9 +993,7 @@
+     else if (pid)
+         exit(0);
+ 
+-    /* close(0); */   /* This is a hack to "fix" problems with the
+-                         daemonization code...more work will be forthcoming 
+-                         to do a proper fix for this */
++    close(0);
+     close(1);
+     close(2);
+ 

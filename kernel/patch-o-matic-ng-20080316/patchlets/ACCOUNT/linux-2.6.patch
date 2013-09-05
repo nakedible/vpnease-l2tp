@@ -1,0 +1,27 @@
+diff -u -r -p --new-file linux-2.6.13/include/linux/netfilter_ipv4/ip_tables.h linux-2.6.13.ipt_ACCOUNT/include/linux/netfilter_ipv4/ip_tables.h
+--- linux-2.6.13/include/linux/netfilter_ipv4/ip_tables.h	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.13.ipt_ACCOUNT/include/linux/netfilter_ipv4/ip_tables.h	2006-05-06 11:51:59.000000000 +0200
+@@ -156,12 +156,23 @@ struct ipt_entry
+ #define IPT_SO_SET_ADD_COUNTERS	(IPT_BASE_CTL + 1)
+ #define IPT_SO_SET_MAX		IPT_SO_SET_ADD_COUNTERS
+ 
++#define IPT_SO_SET_ACCOUNT_HANDLE_FREE (IPT_BASE_CTL + 3)
++#define IPT_SO_SET_ACCOUNT_HANDLE_FREE_ALL (IPT_BASE_CTL + 4)
++#define IPT_SO_SET_ACCOUNT_MAX         IPT_SO_SET_ACCOUNT_HANDLE_FREE_ALL
++
+ #define IPT_SO_GET_INFO			(IPT_BASE_CTL)
+ #define IPT_SO_GET_ENTRIES		(IPT_BASE_CTL + 1)
+ #define IPT_SO_GET_REVISION_MATCH	(IPT_BASE_CTL + 2)
+ #define IPT_SO_GET_REVISION_TARGET	(IPT_BASE_CTL + 3)
+ #define IPT_SO_GET_MAX			IPT_SO_GET_REVISION_TARGET
+ 
++#define IPT_SO_GET_ACCOUNT_PREPARE_READ (IPT_BASE_CTL + 4)
++#define IPT_SO_GET_ACCOUNT_PREPARE_READ_FLUSH (IPT_BASE_CTL + 5)
++#define IPT_SO_GET_ACCOUNT_GET_DATA (IPT_BASE_CTL + 6)
++#define IPT_SO_GET_ACCOUNT_GET_HANDLE_USAGE (IPT_BASE_CTL + 7)
++#define IPT_SO_GET_ACCOUNT_GET_TABLE_NAMES (IPT_BASE_CTL + 8)
++#define IPT_SO_GET_ACCOUNT_MAX      IPT_SO_GET_ACCOUNT_GET_TABLE_NAMES
++
+ /* CONTINUE verdict for targets */
+ #define IPT_CONTINUE 0xFFFFFFFF
+ 

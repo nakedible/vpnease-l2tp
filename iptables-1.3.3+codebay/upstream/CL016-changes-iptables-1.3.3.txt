@@ -1,0 +1,28 @@
+iptables v1.3.3 Changelog
+======================================================================
+This version requires kernel >= 2.4.0
+This version recommends kernel >= 2.4.18
+
+Bugs fixed from 1.3.2:
+
+- Fix use-after-free in merge_options()
+	[ Markus Sundberg ]
+
+- Fix support for SNAT and DNAT to ICMP ID ranges
+	[ Patrick McHardy ]
+
+Changes from 1.3.2:
+
+- Add support for new NFQUEUE targets for IPv4 and IPv6
+	[ Harald Welte ]
+
+- Minor manpage updates
+	[ Harald Welte ]
+
+- Fix numberous gcc-4 warnings throughout the code
+	[ Harald Welte ]
+
+Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
+iptables but rather distributed as a seperate package
+(ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot)
+

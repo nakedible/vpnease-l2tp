@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+      <div class="cb-section">
+        <div class="cb-error">
+          <p>
+            Installation has failed due to an unexpected reason.
+            Installation cannot be retried without rebooting.
+          </p>
+        </div>
+    
+        <n:invisible n:render="form reboot_computer" />
+      </div>
+    </n:invisible>
+  </body>
+</html>

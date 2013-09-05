@@ -1,0 +1,267 @@
+Sat Apr 16 23:34:31 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Remove need for IForm interface. The form is otherwise known as self.original.
+
+Sat Apr 16 23:25:32 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Remove the need for the IFormName by adding a name attribute to the form itself.
+
+Thu Apr  7 15:19:42 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Remove irritating debug statements.
+
+Wed Apr  6 17:00:14 BST 2005  tim@pollenation.net
+  * added label and description fields
+
+Wed Apr  6 16:05:54 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Make MMYYDatePartsInput check for bad year.
+
+Wed Apr  6 15:57:58 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Remove done issues.
+
+Wed Apr  6 14:52:43 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Update demo to include a couple of uses of the Sequence type.
+
+Wed Apr  6 14:48:31 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Add Sequence type and CheckboxMultiChoice widget (from Tim's patch).
+
+Wed Apr  6 14:47:59 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Rename Choice to SelectChoice
+
+Tue Apr  5 15:21:20 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Add cutoff year to MMYY input.
+  The cutoff year is the two-digit year number where we switch from the 21st to
+  20th century, or 2000 to 1900.
+
+Tue Apr  5 14:42:03 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Applied (modified) MMYY date input patch from Tim.
+
+Tue Apr  5 14:33:41 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Give each action a unique ID.
+
+Sat Apr  2 01:13:28 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Use a label for the password confirm input and put i a new line.
+
+Sat Apr  2 01:11:53 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Use latest errors API and correct location of exception classes.
+
+Fri Apr  1 14:29:45 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Make the HTML valid. You can't have a block element inside a p.
+
+Fri Apr  1 14:27:58 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Add a wrapping div to keep the p and ul together.
+
+Fri Apr  1 14:15:28 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Display errors raised against the form.
+
+Fri Apr  1 13:43:28 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Improve error handling and allow error to be raised from form callback
+  The exceptions and handling of raised exceptions was changed quite a bit.
+  There is now a better exception hierarchy that differentiates between form
+  and field errors. Errors can now be raised from the form callback - either
+  against a field (by providing the field name) or against the whole form.
+
+Thu Mar 31 16:28:09 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Fix the previous patch. Oops ;-)
+
+Thu Mar 31 16:22:41 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Generate unique ids for the input fields.
+
+Wed Mar 30 00:28:32 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Move keytocssid to util module.
+
+Thu Mar 31 12:53:23 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Removed issue.
+
+Thu Mar 31 12:10:48 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Bug fix.
+
+Thu Mar 31 11:44:30 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Fix silly typo.
+
+Thu Mar 31 00:37:53 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Added DatePartsInput and IDateTupleConvertible stuff.
+  DatePartsInput is a widget that renders 3 inputs for entering a date. The
+  inputs can be mm/dd/yyyy (the default) or dd/mm/yyyy by changing the
+  dayFirst attribute.
+  DatePartsInput was made the default widget for Date types.
+
+Thu Mar 31 09:59:14 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Remove whitespace, now the types are simpler.
+
+Wed Mar 30 02:50:58 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Small docstring changes.
+
+Wed Mar 30 02:44:31 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Rename adapters to converters.
+
+Wed Mar 30 02:42:35 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Fix after move.
+
+Wed Mar 30 02:31:21 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Missed one ;-)
+
+Wed Mar 30 02:28:59 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Switch over to IConvertible interface everywhere (I think).
+
+Wed Mar 23 00:51:39 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Transferrable start
+
+Wed Mar 30 00:26:15 BST 2005  Matt Goodall <matt@pollenation.net>
+  * Differentiate between field's <div> and widgets inputs.
+
+Tue Mar 22 22:02:41 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Added note an issue.
+
+Fri Mar 18 11:20:03 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add a txt file where i can dump a list of tests that are needed.
+
+Fri Mar 18 11:18:07 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add some more forms to test the leaky behaviour just fixed.
+  
+  Yes, these should be tests but I don't have anything that tests entire form
+  rendering right now :(.
+
+Fri Mar 18 11:14:38 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Fix issue where validation errors from one form leak to other forms.
+  
+  When two forms, foo and bar, contained a field of the same name, wibble,
+  validation errors were leaking between forms.
+  
+  The FormErrors instance is now provided with the failing form's name and
+  the IFormErrors are removed early on in the rendering process when the errors
+  are for a different form.
+
+Fri Mar 18 00:17:38 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * More unicode tests and fix TextArea.
+
+Fri Mar 18 00:01:50 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add initial widget test and decode TextInput value to unicode.
+
+Tue Mar 15 16:18:16 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Added a Choice bug
+
+Mon Mar 14 10:29:43 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Allow empty forms.
+
+Mon Mar 14 10:27:44 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Allow empty forms.
+
+Sat Mar 12 11:05:10 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Stop it catching favicon and rendering twice.
+
+Sat Mar 12 11:04:53 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Remove issue I just fixed.
+
+Sat Mar 12 11:03:34 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Assign IDs to fields.
+  I also simplified the rendering a little by breaking it up into pieces.
+
+Sat Mar 12 10:18:24 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add id to form element.
+
+Sat Mar 12 10:18:45 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add an issue.
+
+Sat Mar 12 10:02:57 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add issues file.
+
+Fri Mar 11 16:08:59 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Allow the Choice blank to be removed completely.
+
+Fri Mar 11 13:04:25 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Allow new actions to be added.
+  The form can be provided with a callback but this does not add an action
+  button.
+  The new addAction button adds a callback against an action name. This adds
+  a button to the 'actions' area of the form.
+
+Fri Mar 11 12:04:35 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Pass the form back to the submit callback.
+  It's etirely possible that the callback needs to inspect the form to do
+  additional validation so let's pass it back.
+
+Fri Mar 11 11:38:11 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Rename add to addField.
+  This is mostly in anticipation of new stuff like addButton etc.
+
+Fri Mar 11 09:51:14 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Oops. Add parseDate and parseTime.
+  Also, remove the Structure class since it's not used yet.
+
+Fri Mar 11 00:39:58 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Rename tests to what they are.
+
+Fri Mar 11 00:37:34 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add tests for types, fix bugs and add missing arg.
+
+Wed Mar  9 16:13:15 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Remove unnecessary code.
+
+Wed Mar  9 16:12:34 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add widgetFactory helper.
+  It's nothing more than a lambda but it makes Tim happy ;-).
+
+Wed Mar  9 13:05:49 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add HTML editor back in.
+  Add an htmleditor module to contain widgets and glue for the various HTML
+  editors that are available. For now, it's just TinyMCE.
+
+Wed Mar  9 13:04:58 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add errors to interface.
+
+Tue Mar  8 00:14:47 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Rely on the modules to list the exportable attributes in __all__
+
+Tue Mar  8 00:06:04 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Don't use <button> elements.
+  Thanks to Microsoft for making IE the most f***ed up browser that exists.
+
+Tue Mar  8 00:02:48 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Done these.
+
+Tue Mar  8 00:02:05 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Example of adapting domain object for us in Choice widget feeding an Integer.
+
+Tue Mar  8 00:01:12 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * If a widget factory needs args then use a lambda or other simple callable.
+
+Mon Mar  7 23:57:33 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add IKey and ILabel interfaces for listy type renderers to use.
+
+Fri Mar  4 16:21:47 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Handle *any* child
+
+Fri Mar  4 16:11:34 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Create the form post's action correctly.
+  
+  To avoid submit after submit after submit building up the URL, look to see
+  if the last segment si the form post's action and if so replace that segment.
+
+Fri Mar  4 15:38:30 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Switch back to old interfaces.
+
+Tue Mar  1 02:09:44 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Assign id on choice widget.
+
+Tue Mar  1 02:06:48 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Move test page to XHTML template
+
+Tue Mar  1 02:06:30 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Cleanup and comment
+
+Tue Mar  1 02:05:46 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add default .css
+
+Fri Feb 25 21:02:29 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add self child resource so that I can test it "for real" at non-root.
+
+Sun Feb 20 01:28:59 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Done these already :)
+
+Sun Feb 20 01:28:39 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Be more explicit about the options type
+
+Sun Feb 20 01:19:52 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Add ideas notes from old implementation.
+
+Sun Feb 20 01:17:18 GMT 2005  Matt Goodall <matt@pollenation.net>
+  * Initial import.
+  Reworking of forms stuff with a nicer API (IMHO) and generally simpler.

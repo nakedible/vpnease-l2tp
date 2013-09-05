@@ -1,0 +1,14 @@
+diff -ru openswan-2.4.0rc4.orig/debian/control openswan-2.4.0rc4/debian/control
+--- openswan-2.4.0rc4.orig/debian/control	2005-03-12 17:53:55.000000000 +0200
++++ openswan-2.4.0rc4/debian/control	2006-10-06 19:17:17.000000000 +0300
+@@ -8,8 +8,7 @@
+ Package: openswan
+ Architecture: any
+ Depends: ${shlibs:Depends}, bsdmainutils, makedev | devfsd, ${debconf-depends}, debianutils (>=1.7), openssl, gawk, host, iproute (>= 2.6.8)
+-Suggests: openswan-modules-source | kernel-patch-openswan, curl
+-Provides: ike-server
++Provides: ike-server, vpnease-openswan
+ Conflicts: ike-server, freeswan
+ Description: IPSEC utilities for Openswan
+  IPSEC is Internet Protocol SECurity. It uses strong cryptography to provide
+Only in openswan-2.4.0rc4/debian: control~

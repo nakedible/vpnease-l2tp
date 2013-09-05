@@ -1,0 +1,694 @@
+@import url("./form.css");
+
+/*
+Design by Andrea Peltrin <http://passiomatic.com/>
+*/
+
+/* ---------------------------------------------------
+=page
+------------------------------------------------------ */
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html {	
+	direction: ltr;
+}
+
+/* IE5 centering fix, see: http://locusmeus.com/html-css/centeringpage.html */
+body {
+	color: #000;		
+	background: #fff;/* url(../i/bg-body.gif) bottom left repeat-x;*/
+	text-align: center;  /* IE5 centering fix */
+}
+
+/* IE5 centering fix, counterfix for other browsers */
+#header, #main, #banner, #footer {
+	text-align: left;
+}
+
+/* IE5 don't inherit font size in TD, so specify it here */
+body, td { 	
+	font: normal 12px/1.5 Verdana, sans-serif;	
+}
+
+
+/* ---------------------------------------------------
+=titles
+------------------------------------------------------ */
+
+
+h1, h2, h3, h4, h5, h6, caption {	
+	font: normal 12px/1.5 Georgia, serif;		
+	text-align: left;
+
+}
+
+
+
+/*
+h1 {	
+	font-size: 21px;	
+	line-height: 36px;
+	margin-bottom: 1.5em;	
+	background: #e5edff;
+	padding-left: .375em;
+}
+*/
+
+h1 {
+	font: bold 21px/36px Verdana, Arial, "sans serif";
+	margin-bottom: 1.0em;
+	color: #5577bb;
+}
+
+h2 {	
+
+	font-size: 16px;
+	line-height: 18px;
+
+	/* =line-height/2 */
+	margin-bottom: .5625em;
+	
+	font-weight: bold;	
+}
+
+h3, caption {
+	font-size: 14px;
+	line-height: 18px;	
+	
+	margin-bottom: 1.285em;
+		
+	font-weight: bold;
+	font: bold 21px/36px Verdana, Arial, "sans serif";
+}
+
+caption {
+	margin: 0.75em 0 1.285em 0;
+}
+
+
+h4 {
+	font-weight: bold;
+
+}
+
+
+
+
+/* ---------------------------------------------------
+=misc
+------------------------------------------------------ */
+
+a img {
+	border: none;
+}
+
+hr {
+	visibility: hidden;	
+	margin-top: 1.5em;	
+	border: none;
+}
+
+p, ul, ol, dl {
+	margin-bottom: .75em;
+}
+
+
+
+
+/* ---------------------------------------------------
+=main
+------------------------------------------------------ */
+
+#header, #main, #banner, #footer {
+	
+	margin: 0 auto;
+	width: 942px;  
+	
+}
+
+
+#main {
+	margin-bottom: 3em;
+	
+}
+
+.content ul,
+.content ol {
+	margin-left: 3em;
+}
+
+
+/* ---------------------------------------------------
+=header 
+------------------------------------------------------ */
+
+
+#header-w {
+        margin-top: 1em;
+	margin-bottom: 3em;
+}
+
+#header  {
+}
+
+#logo {	
+	margin-top: 16px;
+}
+
+/* ---------------------------------------------------
+=menu
+------------------------------------------------------ */
+
+#menu {
+	
+	margin-top: 3em;	
+	
+	float: right;
+
+
+}
+
+
+#menu ul  {	
+	list-style: none;
+		
+	margin: 0;
+	
+
+
+	float: right;
+}
+
+
+#menu li {	
+	float: left;
+	
+}
+
+
+
+
+
+
+
+#menu li.current {
+	background: transparent url(../i/bg-menu-current.gif) center bottom no-repeat;
+}
+
+
+#menu a:link, 
+#menu a:visited {
+	
+
+	display: block;
+	
+	text-decoration: none;
+	
+	border: none;	
+
+	width: 8em;
+
+		
+	font: bold 14px/36px Verdana, sans-serif;
+	
+	color: #269ABF;	
+	
+	text-align: center;
+	
+	background: transparent url(../i/bg-menu-sep.gif) center left no-repeat;
+
+	  	
+}
+
+#menu li.first a:link, 
+#menu li.first a:visited {
+	background: none;
+}
+
+
+#menu li a:hover { 	
+	color: #000;
+}
+
+#menu li a:active { 	
+
+}
+
+
+
+#menu li.current a:link, 
+#menu li.current a:visited {
+	color: #999;
+}
+
+#menu li.current a:hover { 	
+
+}
+
+
+
+
+/* ---------------------------------------------------
+=login-info
+------------------------------------------------------ */
+
+#login-info {
+	
+        margin-left: 2em;
+	margin-top: 3em;	
+	
+	float: right;
+        text-align: right;
+        color: #888888;
+}
+
+#login-info a {
+        color: #888888;
+}
+
+/* ---------------------------------------------------
+=license
+------------------------------------------------------ */
+
+.license {
+  clear: both;
+  border: 1px solid red;
+  padding: 1em;
+}
+
+.license .license-key {
+  font-weight: bold;
+}
+
+.license .license-label {
+  clear: both;
+  float: left;
+  color: #3366ff;
+}
+
+.license .license-name {
+  float: right;
+}
+
+.license .license-user-count {
+  float: right;
+}
+
+.license .license-s2s-count {
+  float: right;
+}
+
+.license .license-state {
+  float: right;
+}
+
+.license .license-price {
+  float: right;
+}
+
+.license .license-buttons {
+}
+
+.license .license-buttons input {
+  margin: 3px;
+}
+
+.license .license-clear {
+  float: none;
+  clear: both;
+}
+
+/* ---------------------------------------------------
+=pricing
+------------------------------------------------------ */
+
+.pricing {
+  clear: both;
+  border: 1px solid green;
+  padding: 1em;
+}
+
+.pricing .pricing-label {
+  color: #3366ff;
+  clear: both;
+  float: left;
+}
+
+.pricing .pricing-price {
+  float: right;
+}
+
+.pricing .pricing-clear {
+  float: none;
+  clear: both;
+}
+
+/* ---------------------------------------------------
+=table
+------------------------------------------------------ */
+
+table {
+	border-collapse: collapse;			
+	width: 100%;	
+	
+
+}
+
+
+
+
+table th {
+	text-align: left;		
+	background: #eee;
+}
+
+
+/*
+col.alt, tr.alt {
+	
+}
+*/
+
+
+table td, table th  {
+	vertical-align: top;
+	text-align: left;
+	
+	padding: .375em .375em;
+}
+
+
+table td {
+
+	border-bottom: 1px solid #ccc;
+	
+}
+
+
+
+
+/* ---------------------------------------------------
+=footer
+------------------------------------------------------ */
+
+#footer {	
+	
+	
+
+
+	border-top: 2px solid #ccc;
+	padding-top: .75em;
+	
+}
+
+#copyr {
+	color: #666;
+	
+}
+
+#footer a:link,
+#footer a:visited {	
+
+	
+}
+
+
+
+
+/* ---------------------------------------------------
+=hyperlinks
+----------------------------------------------------- */
+
+a:link, a:visited, a:hover, a:active {
+
+	text-decoration: underline;
+
+	color: #47598f;	
+
+}
+
+a:visited {		
+
+}
+
+a:hover {	
+	text-decoration: none;
+}
+
+
+/* ---------------------------------------------------
+=utilities
+----------------------------------------------------- */
+
+.cut {clear: both; height: 1px; overflow: hidden; }
+
+.hidden { display: none;}
+.inline { display: inline; }
+
+/* \*/
+* html .hollyfix { height: 1%; }
+/* */
+
+
+
+/* ---------------------------------------------------
+=doc-nav
+------------------------------------------------------ */
+
+#doc-nav  ul {
+	list-style: inside url(../i/bullet-document.png);
+	
+}
+
+#doc-nav  ul.form {
+	list-style: inside url(../i/bullet-form.png);
+}
+
+#doc-nav li {
+	margin-bottom: .75em;
+        font-size: 12px;
+}
+
+#doc-nav li a:link,
+#doc-nav li a:visited {
+	font-weight: normal;
+	text-decoration: none;
+}
+#doc-nav li a:hover {
+	text-decoration: underline;
+}
+
+#doc-nav li.current a:link,
+#doc-nav li.current a:visited {
+	font-weight: bold;
+        color: #000000;
+	text-decoration: none;
+}
+#doc-nav li.current a:hover {
+	text-decoration: underline;
+}
+
+#doc-nav h2 { 
+	font-family: Verdana, Arial, "sans serif";
+	color: #5577bb;
+	font-weight: bold;
+	font-size: 14px;
+	margin-top: 0;
+}
+
+#doc-nav .group-end {
+        display: block;
+        margin-bottom: 1.5em;
+}
+
+/* ---------------------------------------------------
+faq
+------------------------------------------------------ */
+
+.faq-heading {
+ 	color: #000000;
+	font-weight: bold;
+	font-size: 14px;
+	margin-top: 1.5em;
+}
+
+
+.note {
+	color: #666;
+	font-style: italic;
+
+}
+
+.notice {
+	font-style: italic;
+}
+
+table {
+	margin: 2em 0 2em 0;
+}
+
+#vpn-comparison-table th,
+#vpn-comparison-table td,
+#encryption-and-standards-table th,
+#encryption-and-standards-table td {
+	font-size: 11px;
+}
+
+/* ---------------------------------------------------
+=right area
+----------------------------------------------------- */
+#right-box1 {
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: 20px;
+  width: 130px;
+  padding: 1em;
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  font-size: 12px;
+  color: #444444;
+}
+
+#right-box2 {
+  margin-left: auto;
+  margin-right: 0;
+  margin-top: 20px;
+  width: 130px;
+  padding: 1em;
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  font-size: 12px;
+  color: #444444;
+}
+
+#quicktrialbutton {
+  margin-top: 1em;
+}
+
+#quickbuybutton {
+  margin-top: 1em;
+}
+
+/* ---------------------------------------------------
+=text summary
+----------------------------------------------------- */
+.cb-section pre.text-summary,
+pre.text-summary {
+  width: auto;
+  border: 1px solid #cccccc;
+  padding: 8px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background: #ffffff;
+}
+
+/* ---------------------------------------------------
+=formal
+------------------------------------------------------ */
+
+.nevow-form .errors {
+  padding: 2.0em;
+  background-color: #ffdddd;
+}
+
+.nevow-form .message {
+  color: #ff0000;
+}
+
+.nevow-form .formal-subheading-field {
+  display: block;
+  font-weight: bold;
+  margin-top: 2.0em;
+  margin-bottom: 0.5em;
+}
+
+/* ---------------------------------------------------
+=faq
+------------------------------------------------------ */
+
+dl.faq {
+	padding-top: 1em;
+	border-top: 1px solid #000000;
+}
+
+dl.faq dt {
+	font-weight: bold;
+	color: #335588;
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+}
+
+dl.faq dd {
+	font-weight: normal;
+	color: #000000;
+	margin-left: 4em;
+}
+
+/* ---------------------------------------------------
+=misc
+------------------------------------------------------ */
+
+_ {
+	
+}
+
+
+.note {
+	color: #666;
+	font-style: italic;
+
+}
+
+.notice {
+	font-style: italic;
+}
+
+table {
+	margin: 2em 0 2em 0;
+}
+
+#vpn-comparison-table th,
+#vpn-comparison-table td,
+#encryption-and-standards-table th,
+#encryption-and-standards-table td {
+	font-size: 11px;
+}
+
+h2.midlabel {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  display: block;
+  font-size: 100%;
+  color: #000000;
+  font-weight: bold;
+}
+
+#pricing-1 {
+  margin-top: 1.5em;
+  margin-bottom: 1.0em;
+}
+
+#pricing-2 {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+
+#pricing-1 th,
+#pricing-1 td,
+#pricing-2 th,
+#pricing-2 td { 
+  width: 50.00%;
+}
+
+#partner-discount {
+}
+
+#partner-discount th,
+#partner-discount td
+{
+  width: 33.33%;
+}

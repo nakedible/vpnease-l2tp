@@ -1,0 +1,282 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.ext.sessioncontext</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_pool.html">module sqlalchemy.pool</a>
+
+               |   
+            Next: <a href="sqlalchemy_mods_threadlocal.html">module sqlalchemy.mods.threadlocal</a>
+    </div>
+
+        <h2>module sqlalchemy.ext.sessioncontext</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_ext_sessioncontext.html#docstrings_sqlalchemy.ext.sessioncontext_SessionContext">class SessionContext(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_ext_sessioncontext.html#docstrings_sqlalchemy.ext.sessioncontext_SessionContextExt">class SessionContextExt(MapperExtension)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.ext.sessioncontext"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.ext.sessioncontext</h3>
+    
+    
+    
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.ext.sessioncontext_SessionContext"></a>
+    
+    <div class="subsection">
+
+    <h3>class SessionContext(object)</h3>
+    
+    
+    <div class="darkcell"><p>A simple wrapper for <tt class="docutils literal"><span class="pre">ScopedRegistry</span></tt> that provides a
+<cite>current</cite> property which can be used to get, set, or remove the
+session in the current scope.</p>
+<p>By default this object provides thread-local scoping, which is the
+default scope provided by sqlalchemy.util.ScopedRegistry.</p>
+<p>Usage:</p>
+<pre class="literal-block">
+engine = create_engine(...)
+def session_factory():
+    return Session(bind_to=engine)
+context = SessionContext(session_factory)
+
+s = context.current # get thread-local session
+context.current = Session(bind_to=other_engine) # set current session
+del context.current # discard the thread-local session (a new one will
+                    # be created on the next call to context.current)
+</pre>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>session_factory</i>, <i>scopefunc=None</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>current = property()</b>
+         <div class="docstring">
+         <p>Property used to get/set/del the session in the current scope.</p>
+
+         </div> 
+         </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def del_current(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_current(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>mapper_extension = property()</b>
+         <div class="docstring">
+         <p>Get a mapper extension that implements <cite>get_session</cite> using this context.</p>
+
+         </div> 
+         </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def set_current(<i>self</i>, <i>session</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.ext.sessioncontext_SessionContextExt"></a>
+    
+    <div class="subsection">
+
+    <h3>class SessionContextExt(<a href="sqlalchemy_orm_mapper.html#docstrings_sqlalchemy.orm.mapper_MapperExtension">MapperExtension</a>)</h3>
+    
+    
+    <div class="darkcell"><p>A mapper extension that provides sessions to a mapper using <tt class="docutils literal"><span class="pre">SessionContext</span></tt>.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>context</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_session(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_pool.html">module sqlalchemy.pool</a>
+
+               |   
+            Next: <a href="sqlalchemy_mods_threadlocal.html">module sqlalchemy.mods.threadlocal</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,2 @@
+# NAT helpers 
+obj-$(CONFIG_IP_NF_NAT_TALK) += ip_nat_talk.o

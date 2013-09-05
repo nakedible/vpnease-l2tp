@@ -1,0 +1,21 @@
+diff -ru openswan-2.4.0rc4_orig/programs/pluto/ipsec_doi.c openswan-2.4.0rc4/programs/pluto/ipsec_doi.c
+--- openswan-2.4.0rc4_orig/programs/pluto/ipsec_doi.c	2005-08-12 20:05:59.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/ipsec_doi.c	2005-10-13 11:04:18.020016456 +0300
+@@ -3755,7 +3755,7 @@
+ 
+ #ifdef NAT_TRAVERSAL
+     if (st->hidden_variables.st_nat_traversal) {
+-      if (!out_vendorid(auth_payload
++      if (!out_vendorid(ISAKMP_NEXT_NONE
+ 			, &md->rbody
+ 			, md->quirks.nat_traversal_vid)) {
+ 	return STF_INTERNAL_ERROR;
+@@ -3763,7 +3763,7 @@
+     }
+ 
+     if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATD) {
+-      if (!nat_traversal_add_natd(auth_payload, &md->rbody, md))
++      if (!nat_traversal_add_natd(ISAKMP_NEXT_NONE, &md->rbody, md))
+ 	return STF_INTERNAL_ERROR;
+     }
+ #endif

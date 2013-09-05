@@ -1,0 +1,174 @@
+F1Bienvenue sur Ubuntu !Ceci est un live CD-ROM pour Ubuntu
+6.06, construit le 20060806.1.
+
+INDEX DE L'AIDE
+
+CLÉ    SUJET
+
+<F1F1>   Cette page, l'index du fichier d'aide.
+<F2F2>   Pré-requis pour l'éxécution de Ubuntu.
+<F3F3>   Méthodes de démarrage pour les utilisations spécifiques de ce
+CD-ROM.
+<F4F4>   Méthodes de démarrage additionnelles; mode sauvetage.
+<F5F5>   Paramètres spécifiques de démarrage, survol.
+<F6F6>   Paramètres spécifiques de démarrage pour machines spécifiques.
+<F7F7>   Paramètres spécifiques de démarrage pour les contrôleurs du disques
+sélectionné.
+<F8F8>   Paramètres spécifiques de démarrage pour le système d'amorçage.
+<F9F9>   Comment obtenir de l'aide.
+<F10F10>  Copyrights et garanties.
+
+Utilisez les touches F2 à F10 pour les détails, ou Echap pour sortir de
+l'aide.F2PRÉ-REQUIS POUR L'INSTALLATION D'UBUNTUVous devez disposer d'au moins 128 mégaoctets de RAM pour utiliser ce
+système live d'Ubuntu.
+
+Le système live ne requiert aucun espace sur votre disque dur. Cependant,
+les partitions swap existant sur le disque seront utilisées si disponibles.
+
+Voir la FAQ pour plus d'informations; ce document est disponible sur le site
+internet d'Ubuntu, http://www.ubuntu.com/
+
+Merci d'avoir choisi Ubuntu!
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F3MÉTHODES DE DÉMARRAGEMéthodes de démarrage disponibles :
+
+live
+  Démarrer le système live.
+testmémoire
+  Effectuer un test de la mémoire.
+
+Pour utiliser l'une de ces méthodes de démarrage, saisissez-la dans le
+prompt, éventuellement suivie de paramètres de démarrage. Par exemple :
+
+  boot: live acpi=off
+
+Si vous n'êtes pas sûr, vous devriez utiliser la méthode de démarrage par
+défaut, sans paramètre spécifique, en appuyant simplement sur entrée dans le
+dialogue de démarrage.
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F4MODE SAUVETAGEUtilisez l'une de ces méthodes de démarrage pour réparer une installation
+existante
+
+sauvetage
+  Démarrer en mode sauvetage.
+
+Pour utiliser l'une de ces méthodes de démarrage, saisissez-la dans le
+prompt, éventuellement suivie de paramètres de démarrage. Par exemple :
+
+  boot: rescue acpi=off
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F5PARAMÈTRES SPÉCIFIQUES DE DÉMARRAGE - SURVOLSur quelques systèmes, il se peut que vous deviez spécifier un paramètre
+dans le démarrage : prompt afin de démarrer le système. Par exemple, Linux
+peut être incapable de détecter votre matériel, et vous pouvez avoir besoin
+de spécifier explicitement où il se trouve ou de faire en sorte qu'il soit
+reconnu.
+
+Pour plus d'information sur les paramètres de démarrage que vous pouvez
+utiliser, appuyez sur :
+
+<F6F6>   paramètres démarrage pour machines spécifiques
+<F7F7>   paramètres de démarrages pour les divers contrôleurs de disque
+<F8F8>   paramètres de démarrage compris par le système d'amorçage
+
+De nombreux modules du noyau sont chargés dynamiquement par l'installateur,
+et les paramètres pour ces modules ne peuvent pas être passés en ligne de
+commande. Pour que les paramètres soient demandés lorsque les modules sont
+chargés, démarrez en mode expert (voir <F3F3>).
+
+De nombreux module du noyau sont chargés dynamiquement par le système
+d'amorçage, et les paramètres pour ces modules ne peuvent pas être passés en
+ligne de commande.
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F6PARAMÈTRES SPÉCIFIQUES DE DÉMARRAGE - DIVERS MATÉRIELSVous pouvez utiliser les paramètres de démarrage suivants dans le démarrage
+: prompt, en combinaison avec la méthode démarrage (voir <F3F3>>). Si
+vous utilisez les nombres hexa vous devez utiliser le préfixe 0x (ex. 0x300)
+
+MATÉRIEL                               PARAMÈTRE À SPÉCIFIER
+
+IBM PS/1 ou ValuePoint (disque IDE)    hd=cylindres,têtes,secteurs
+Certains ThinkPads d'IBM               floppy=thinkpad
+Pentium Microchannel d'IBM             mca-pentium no-hlt
+Protéger les régions de port I/O       reserve=iobase,extent[,...]
+Travailler autour du coprocesseur arithmétique fautif (vieille machines)
+                                       no387
+Portables avec des problèmes d'affichage
+                                       vga=771
+Si votre système se bloque durant l'installation, et que le dernier message
+que vous voyez est "aec671x-detect..", essayez
+                                       gdth=disable:y
+Si vous rencontrez des blocages ou d'autres problèmes matériels, rendre
+indisponible le routage déféctueux du contrôleur programmable
+d'interruptions                        noapic nolapic
+
+Par exemple :
+
+  boot: live vga=771 noapic nolapic
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F7PARAMÈTRES SPÉCIFIQUES DE DÉMARRAGE - DIVERS LECTEURS DE DISQUEVous pouvez utiliser les paramètres de démarrage suivants dans le démarrage
+: prompt, en combinaison avec la méthode de démarrage (voir <F3F3>).
+
+MATÉRIEL                     PARAMÈTRE À SPÉCIFIER
+
+Adaptec 151x, 152x           aha152x=iobase[,irq[,scsi-id[,reconnect]]]
+Adaptec 1542                 aha1542=iobase[,buson,busoff[,dmaspeed]]
+Adaptec 274x, 284x           aic7xxx=no_reset (activé si non nul)
+BusLogic SCSI Hosts          buslogic=iobase
+Certaines machines DELL      aic7xxx=no_probe
+Future Domain TMC-8xx/950    tmc8xx=mem_base,irq
+Contrôleur SCSI à base de NCR
+                             sym53c8xx=safe:y
+Pro Audio Spectrum           pas16=iobase,irq
+PS/2 ESDI (MCA)              ed=cyl,head,sec
+Seagate ST-0x                st0x=mem_base,irq
+Trantor T128                 t128=mem_base,irq
+
+Par exemple :
+
+  boot: live sym53c8xx=safe
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F8PARAMÈTRES SPÉCIFIQUES DE DÉMARRAGE - SYSTÈME D'INSTALLATIONVous pouvez utiliser les paramètres de démarrage suivants dans le démarrage
+: prompt, en combinaison avec la méthode de démarrage (voir <F3F3>). Ces
+paramètres contrôlent le fonctionnement du systéme d'amorçage.
+
+RÉSULTAT                                PARAMÈTRE
+
+Débogage verbeux                        DEBCONF_DEBUG=5
+Débogage de la séquence de démarrage    BOOT_DEBUG=2|3
+Désactiver le buffer d'image            debian-installer/framebuffer=false
+Ne pas détecter l'USB                   debian-installer/probe/usb=false
+Ne pas démarrer le PCMCIA               hw-detect/start_pcmcia=false
+Forcer la configuration du réseau statique
+                                        netcfg/disable_dhcp=true
+Réglages du clavier                     bootkbd=es
+Désactiver l'ACPI pour les nappes PCI (utile pour certains serveurs HP et
+les machines à base de Via)             pci=noacpi
+
+Par exemple :
+
+  boot: live debian-installer/framebuffer=false
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F9OBTENIR DE L'AIDESi vous ne pouvez pas démarrer Ubuntu, ne désespérez pas ! L'équipe Ubuntu
+est prête à vous aider ! Nous sommes particulièrement intéressés par les
+problèmes de démarrage, car en général ils ne concernent pas une seule
+personne. Soit nous avons déja entendu parler de votre problème particulier
+et pouvons fournir une solution rapide, soit nous aimerions en entendre
+parler et travailler dessus avec vous afin que le prochain utilisateur qui
+rencontrera le même problème bénéficie de votre expérience !
+
+Voir la FAQ pour plus d'informations; ce document est disponible sur le site
+internet d'Ubuntu, http://www.ubuntu.com/
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide.F10COPYRIGHTS ET GARANTIESUbuntu est un Copyright (C) 2004-2006 Canonical Ltd., et incorpore les
+travaux de nombreux autres auteurs originaux et contributeurs.
+
+Le système Ubuntu est redistribuable librement. Après installation, les
+termes exacts de distribution de chaque paquet sont décrits dans le fichier
+correspondant /usr/share/doc/nom du paquet/copyright.
+
+Ubuntu est fourni ABSOLUMENT SANS GARANTIE, dans les limites permises par
+la loi applicable.
+
+Ce système est basé sur Debian. Voir http://www.debian.org/ pour plus de
+détails et d'information sur le projet Debian.
+
+Appuyer sur F1 pour l'index de l'aide, ou Echap pour quitter l'aide. 

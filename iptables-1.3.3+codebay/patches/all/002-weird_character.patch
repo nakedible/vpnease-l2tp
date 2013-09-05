@@ -1,0 +1,22 @@
+diff -urN old/iptables_profectio/ip6tables.c new/iptables_profectio/ip6tables.c
+--- old/iptables_profectio/ip6tables.c	2004-03-11 22:19:17.000000000 -0500
++++ new/iptables_profectio/ip6tables.c	2004-03-11 22:20:50.000000000 -0500
+@@ -843,6 +843,7 @@
+ 		for (i = 0; vianame[i]; i++) {
+ 			if (!isalnum(vianame[i]) 
+ 			    && vianame[i] != '_' 
++			    && vianame[i] != '-' 
+ 			    && vianame[i] != '.') {
+ 				printf("Warning: weird character in interface"
+ 				       " `%s' (No aliases, :, ! or *).\n",
+diff -urN old/iptables_profectio/iptables.c new/iptables_profectio/iptables.c
+--- old/iptables_profectio/iptables.c	2004-03-11 22:19:17.000000000 -0500
++++ new/iptables_profectio/iptables.c	2004-03-11 22:20:29.000000000 -0500
+@@ -781,6 +781,7 @@
+ 		for (i = 0; vianame[i]; i++) {
+ 			if (!isalnum(vianame[i]) 
+ 			    && vianame[i] != '_' 
++			    && vianame[i] != '-' 
+ 			    && vianame[i] != '.') {
+ 				printf("Warning: weird character in interface"
+ 				       " `%s' (No aliases, :, ! or *).\n",

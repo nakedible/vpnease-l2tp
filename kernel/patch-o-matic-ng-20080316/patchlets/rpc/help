@@ -1,0 +1,66 @@
+
+This adds CONFIG_IP_NF_MATCH_RPC, which is the RPC connection
+matcher and tracker.
+
+This option supplies two connection tracking modules;
+ip_conntrack_rpc_udp and ip_conntrack_rpc_tcp, which track
+portmapper requests using UDP and TCP respectively.
+
+This option also adds an RPC match module for iptables, which
+matches both via the old "record match" method and a new
+"procedure match" method. The older method matches all RPC
+procedure packets that relate to previously recorded packets
+seen querying a portmapper. The newer method matches only
+those RPC procedure packets explicitly specified by the user,
+and that can then be related to previously recorded packets
+seen querying a portmapper.
+
+These three modules are required if RPCs are to be filtered
+accurately; as RPCs are allocated pseudo-randomly to UDP and
+TCP ports as they register with the portmapper.
+
+Up to 8 portmapper ports per module, and up to 128 RPC
+procedures per iptables rule, may be specified by the user,
+to enable effective RPC management.
+
+
+Usage:
+
+  The intended usage of these modules would be with a ruleset like;
+
+    # New session from client to server (portmapper get)
+    -A PREROUTING -t nat -i eth0 -p udp -m rpc --rpcs 100002
+           -s ${client} --sport 0:1023 -d ${server} --dport 111
+           -j ACCEPT
+
+    # Continued session from client to server (portmapper answer)
+    -A PREROUTING -t nat -i eth1 -m state -p udp
+           -s ${server} --sport 111 -d ${client} --dport 0:1023
+           --state ESTABLISHED -j ACCEPT
+
+    # New session from client to server (procedure call)
+    -A PREROUTING -t nat -i eth0 -m state -p udp
+          -s ${client} --sport 0:65535
+          -d ${server} --dport 32000:34000
+          --state ESTABLISHED,RELATED -j ACCEPT
+
+    # Continued session from client to server (procedure response)
+    -A PREROUTING -t nat -i eth1 -m state -p udp
+           -s ${server} --sport 32000:34000
+           -d ${client} --dport 0:65535
+           --state ESTABLISHED -j ACCEPT
+
+
+  Which would allow rusers to execute from client to server;
+
+     user@client# rusers $server
+
+The RPC module also supports Legato NetWorker backup.
+Legato NetWorker is based on both Sun RPC and REXEC (see RSH module).
+
+Warning:
+
+  RPCs should not be exposed to the internet - ask the Pentagon;
+    See: Wired News; "Pentagon Kids Kicked Off Grid" - Nov 6, 1998
+    URL: http://www.wired.com/news/politics/0,1283,16098,00.html
+

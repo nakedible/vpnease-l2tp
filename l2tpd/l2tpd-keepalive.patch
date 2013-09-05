@@ -1,0 +1,12 @@
+diff -ru l2tpd-0.69/l2tp.h l2tpd-0.69.keepalive/l2tp.h
+--- l2tpd-0.69/l2tp.h	2002-08-19 20:26:23.000000000 +0300
++++ l2tpd-0.69.keepalive/l2tp.h	2005-05-20 17:08:45.545293264 +0300
+@@ -44,7 +44,7 @@
+ #define DEF_MAX_TUNNELS 32      /* By default only allow this many
+                                    tunnels to exist */
+ 
+-#define HELLO_DELAY 60          /* How often to send a Hello message */
++#define HELLO_DELAY (0xFFFF)    /* How often to send a Hello message */
+ 
+ struct control_hdr
+ {

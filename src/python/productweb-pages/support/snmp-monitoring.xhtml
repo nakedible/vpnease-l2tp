@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">SNMP Monitoring</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          <n:invisible n:macro="productname" /> supports read-only access to status data through
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/SNMP">SNMP</a> (Simple Network Management Protocol)
+          versions 1 and 2c.  <n:invisible n:macro="productname" /> also has its own Management Information Base (MIB) for
+          <n:invisible n:macro="productname" /> specific management information for use with an external monitoring program.
+        </p>
+
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading"><n:invisible n:macro="productname" /> Management Information Base (MIB)</h1>
+
+        <p>
+          Download the MIB file from the <a href="latest-version.html">download</a> page.
+        </p>
+
+      </div> <!-- vpnease mib -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Testing SNMP (Linux)</h1>
+
+        <p>
+          The following instructions are for testing <n:invisible n:macro="productname" /> SNMP access
+          using the <a class="cb-external" target="_blank" href="http://net-snmp.sourceforge.net/">Net-SNMP</a> tools.
+        </p>
+
+        <p>
+          Configure <n:invisible n:macro="productname" /> to allow SNMP access from the network interface(s) you choose
+          and the SNMP community string (for authentication), from the <strong class="cb-guilabel">License &amp; Maintenance</strong> page.
+          To show the <n:invisible n:macro="productname" /> specific SNMP values, issue the following command:
+        </p>
+        <pre>$ snmptreewalk -v 2c -c public &lt;server&gt; 1.3.6.1.4.1.26058</pre>
+
+        <p>
+          To use more readable syntax and to get more readable output, you can download the VPNease MIB and
+          configure Net-SNMP to use it.
+        </p>
+      </div> <!-- testing snmp (linux) -->
+
+    </n:invisible>
+  </body>
+</html>
+

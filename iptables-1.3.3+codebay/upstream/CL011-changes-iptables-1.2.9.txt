@@ -1,0 +1,57 @@
+iptables v1.2.9 Changelog
+======================================================================
+This version requires kernel >= 2.4.4
+This version recommends kernel >= 2.4.18
+
+Bugs Fixed from 1.2.8:
+
+- ip(6)tables-save/restore: fix memory leaks
+	[ Harald Welte, Martin Josefsson ]
+- ip6tables: fix printout of odd length netmasks
+	[ Mikko Markus Torni ]
+- condition match: fix iptables-save
+	[ Stephane Ouellette ]
+- fuzzy match: fix ip(6)tables-save
+	[ Hime Aguiar e Oliveira Jr. ]
+- mac match: fix ip(6)tables-save if used inverted (!)
+	[ David Zambonini, Martin Josefsson ]
+- ip6tables udp match: check for invalid port ranges
+	[ Thomas Poehnitz ]
+- LOG target: fix iptables-save (save loglevel numerically)
+	[ Thomas Woerner ]
+- mport match: fix iptables-save (save numerically)
+	[ Thomas Woerner ]
+- libipq: fix ipq_id_t definition on 'real' 64bit/64bit architectures
+	[ Ryan Veety ]
+- libip6tc: fix ipv6_prefix_length endianness bugs
+	[ Mikko Markus Torni ]
+- MASQUERADE target: don't accept negative port numbers
+	[ Yasuyuki Kozakai ]
+- physdev match: fix new structure layout for kernel > 2.6.0-test8
+	[ Bart De Schuymer ]
+
+Changes from 1.2.8:
+
+- build plugins for connlimit, iprange, realm, CLASSIFY, CONNMARK, NETMAP
+	[ Harald Welte ]
+- libip(6)tc: Speedup due to inceremental chain cache updates
+	[ Harald Welte ]
+- recent match: Update to version 0.3.1 that was submitted to the kernel
+	[ Stephen Frost ]
+- physdev match: add --physdev-is-{in,out,bridge} option
+	[ Bart de Schuymer ]
+- REJECT target: add support for ICMP administratively prohibited 
+	[ Maciej Soltysiak ]
+- conntrack match: add suport for CONFIRMED / unconfirmed state
+	[ Harald Welte ]
+- ROUTE target: new option: continue traversal
+	[ Cedric de Launois ]
+- varios cosmetic cleanups
+	[ Stephane Ouellette ]
+- iptables/libiptc: add support for the new 'raw' table
+	[ Jozsef Kadlecsik ]
+
+Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
+iptables but rather distributed as a seperate package
+(ftp://ftp.netfilter.org/pub/patch-o-matic/)
+

@@ -1,0 +1,5 @@
+Title: MSNP connection tracking and NAT helper
+Author:	Unknown, taken from Gigabyte B49G GPL-1.23 download
+Status: Testing
+Requires: linux < 2.6.0
+Repository: extra

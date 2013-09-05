@@ -1,0 +1,5 @@
+Title:		Detects some P2P packets
+Author: 	Eicke Friedrich <ipp2p@ipp2p.org>
+Status: 	Stable
+Repository: 	external
+Recompile:	netfilter, iptables

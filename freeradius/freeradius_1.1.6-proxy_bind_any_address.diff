@@ -1,0 +1,32 @@
+diff -ru freeradius-1.1.6.orig/src/main/mainconfig.c freeradius-1.1.6/src/main/mainconfig.c
+--- freeradius-1.1.6.orig/src/main/mainconfig.c	2007-04-08 01:06:08.000000000 +0300
++++ freeradius-1.1.6/src/main/mainconfig.c	2007-07-17 10:09:36.000000000 +0300
+@@ -1084,6 +1084,7 @@
+ 		 */
+ 		ipaddr = htonl(INADDR_NONE);
+ 		for (auth = *head; auth != NULL; auth = auth->next) {
++#if 0 /* Removed proxy-bind magic. */
+ 			/*
+ 			 *	Listening on ANY, use that.
+ 			 */
+@@ -1104,7 +1105,10 @@
+ 					ipaddr = htonl(INADDR_ANY);
+ 				}
+ 			}
++#endif
+ 			if (auth->type == RAD_LISTEN_AUTH) {
++			        /* Always use any address for sending proxy packets. */
++			        ipaddr = htonl(INADDR_ANY);
+ 				port = auth->port + 2;
+ 				break;
+ 			}
+@@ -1115,6 +1119,8 @@
+ 		 */
+ 		if (port < 0) for (auth = *head; auth != NULL; auth = auth->next) {
+ 			if (auth->type == RAD_LISTEN_ACCT) {
++			        /* Always use any address for sending proxy packets. */
++			        ipaddr = htonl(INADDR_ANY);
+ 				port = auth->port + 1;
+ 				break;
+ 			}
+Only in freeradius-1.1.6/src/main: mainconfig.c~

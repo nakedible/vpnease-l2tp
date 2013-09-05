@@ -1,0 +1,73 @@
+<html>
+<head><title>The Netfilter HomePage: iptables 1.2.2</title></head>
+<body bgcolor="#ffffff" text="#101010">
+<center><h1>The Netfilter HomePage: iptables 1.2.2</h1></center>
+
+This version requires kernel 2.4.1 or above.
+This version recommends kernel 2.4.4 or above.
+
+<p>
+<strong>Bugs Fixed from 1.2.1a:</strong>
+<ul>
+<li> fixes for SAME Target<br>
+	[ Martin Josefsson ]
+<li> fixes for iplimit match in combination with iptables-save/-restore<br>
+	[ Gerd Knorr ]
+<li> fix for TCP match in combination with iptables-save/-restore<br>
+	[ Ian Lynagh ]
+<li> iptables-restore now deals correclty with spaces in --log-prefix<br>
+	[ Harald Welte ]
+<li> fix in 'isapplied' script. It used to give false negatives<br>
+	[ Harald Welte ]
+<li> fix in BALANCE target, target now uses full ip address range<br>
+	[ Martin Josefsson ]
+<li> fix for NETLINK target, was sending wrong interface name<br>
+	[ Gianni Tedesco ]
+<li> fix for collision of ftp and irc NAT helpers<br>
+	[ Harald Welte ]
+<li> ip6tables brought in sync with iptables<br>
+	[ Kis-Szabo Andras ]
+
+<li> Kernel bugfixes in patch-o-matic:
+  <ul>
+	<li> Fix possible security vulnerability in ip_conntrack_ftp<br>
+		[ Cristiano Lincoln Mattos, James Morris and Rusty ]
+  </ul>
+</ul>
+
+<strong>Changes from 1.2.1a:</strong>
+<ul>
+<li> libiptc should now be usable from C++ applications<br>
+	[ Fabrice MAURIE ]
+<li> seqoffset-,ftp-security, ... patches are combined in 2.4.4.patch<br>
+	[ Rusty Russell ]
+<li> lots of old pre-2.4.1 patches now combined in 2.4.1.patch<br>
+	[ Rusty Russel ]
+<li> IRC conntrack + nat cleanup<br>
+	[ Harald Welte ]
+<li> string match cleanup<br>
+	[ Gianni Tedesco ]
+<li> ULOG cleanup, new version. Fixes 'unable to send nflink' bug<br>
+	[ Harald Welte ]
+
+<li> New patch-o-matic patches:
+  <ul>
+<li> New NETMAP Target for mapping whole networks 1:1 to other addresses<br>
+	[ Svenning Soerensen ]
+<li> New length Target for matching packet length<br>
+	[ James Morris ]
+<li> New ipv4options match for matching IPv4 header options<br>
+	[ Fabrice MARIE ]
+<li> New IPv6 agr match for matching IPv6 global aggregatable unicast adresses<br>
+	[ Andras Kis-Szabo ]
+<li> New pkttype match for matching link-layer multicast / broadcast packets<br>
+	[ Michal Ludvig ]
+<li> New time match for matching the packet's receive time<br>
+	[ Fabrice MARIE ]
+<li> New talk conntack + NAT helper module<br>
+	[ Jozsef Kadlecsik ]
+  </ul>
+
+</ul>
+
+</body></html>

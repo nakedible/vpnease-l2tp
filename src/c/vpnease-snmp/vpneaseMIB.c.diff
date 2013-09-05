@@ -1,0 +1,435 @@
+--- vpneaseMIB.c.orig	2007-07-10 00:31:53.000000000 +0300
++++ vpneaseMIB.c	2007-07-10 01:11:49.000000000 +0300
+@@ -178,13 +178,15 @@
+ 
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
++
++  char *value = "status";
+     
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -208,12 +210,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  char *value = "substatus";
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -237,12 +241,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 123;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_GAUGE,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -266,12 +272,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 234;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_GAUGE,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -295,12 +303,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 12345678;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_TIMETICKS,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -324,12 +334,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  char *value = "fixme1";
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -353,12 +365,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  char *value = "fixme2";
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -381,13 +395,15 @@
+ 
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+-    
++
++  char *value = "fixme3";
++  
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -411,12 +427,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  char *value = "1.2.1234";
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -440,12 +458,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 99;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_GAUGE,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -469,12 +489,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 98;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_GAUGE,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -498,12 +520,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 97;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_GAUGE,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -527,12 +551,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 19191919;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_TIMETICKS,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -555,13 +581,15 @@
+ 
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
++
++  int value = htonl(0x0a000001);
+     
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_IPADDRESS,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -584,13 +612,15 @@
+ 
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
++
++  int value = htonl(0xff000000);
+     
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_IPADDRESS,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -614,12 +644,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  char *value = "11:22:33:44:55:66";
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -642,13 +674,15 @@
+ 
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
++
++  int value = htonl(0x0a000002);
+     
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_IPADDRESS,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -671,13 +705,15 @@
+ 
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
++
++  int value = htonl(0xffff0000);
+     
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_IPADDRESS,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -701,12 +737,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  char *value = "ff:ee:dd:cc:bb:aa";
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -730,12 +768,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  char *value = "AAAAA-BBBBB-CCCCC-DDDDD-EEEEE";
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -758,13 +798,15 @@
+ 
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
++
++  char *value = "Fixme license string";
+     
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) value /* XXX: a pointer to the scalar's data */,
++                                     strlen(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -788,12 +830,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 666;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_GAUGE,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -817,12 +861,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 999;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_GAUGE,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -846,12 +892,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 6;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_COUNTER,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 
+@@ -875,12 +923,14 @@
+     /* a instance handler also only hands us one request at a time, so
+        we don't need to loop over a list of requests; we'll only get one. */
+     
++  int value = 7;
++
+     switch(reqinfo->mode) {
+ 
+         case MODE_GET:
+             snmp_set_var_typed_value(requests->requestvb, ASN_COUNTER,
+-                                     (u_char *) /* XXX: a pointer to the scalar's data */,
+-                                     /* XXX: the length of the data in bytes */);
++                                     (u_char *) &value /* XXX: a pointer to the scalar's data */,
++                                     sizeof(value) /* XXX: the length of the data in bytes */);
+             break;
+ 
+ 

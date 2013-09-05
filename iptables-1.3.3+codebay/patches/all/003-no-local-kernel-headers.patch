@@ -1,0 +1,29 @@
+diff -Naurd old/iptables_profectio/config.h new/iptables_profectio/config.h
+--- old/iptables_profectio/config.h	1970-01-01 01:00:00.000000000 +0100
++++ new/iptables_profectio/config.h	2005-07-12 06:58:52.000000000 +0200
+@@ -0,0 +1 @@
++#define IPT_F_GOTO	0x02    /* Set if jump is a goto */
+diff -Naurd old/iptables_profectio/iptables.c new/iptables_profectio/iptables.c
+--- old/iptables_profectio/iptables.c	2005-07-12 06:56:57.000000000 +0200
++++ new/iptables_profectio/iptables.c	2005-07-12 06:58:22.000000000 +0200
+@@ -40,6 +40,8 @@
+ #include <fcntl.h>
+ #include <sys/wait.h>
+ 
++#include "config.h"
++
+ #ifndef TRUE
+ #define TRUE 1
+ #endif
+diff -Naurd old/iptables_profectio/iptables-save.c new/iptables_profectio/iptables-save.c
+--- old/iptables_profectio/iptables-save.c	2005-07-12 06:56:25.000000000 +0200
++++ new/iptables_profectio/iptables-save.c	2005-07-12 06:58:35.000000000 +0200
+@@ -17,6 +17,8 @@
+ #include "libiptc/libiptc.h"
+ #include "iptables.h"
+ 
++#include "config.h"
++
+ static int binary = 0, counters = 0;
+ 
+ static struct option options[] = {

@@ -1,0 +1,41 @@
+#! /usr/bin/make -f
+
+tmp := $(CURDIR)/debian/gfxboot-theme-ubuntu
+themedir := $(tmp)/usr/share/gfxboot/themes/Ubuntu
+
+build:
+	$(MAKE)
+
+clean:
+	dh_testdir
+	dh_testroot
+	$(MAKE) clean
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	install -m644 Makefile langlist *.config *.fnt *.inc *.jpg \
+		$(themedir)
+	install -m755 keymapchars $(themedir)
+	install -m644 install/bootlogo.tar.gz $(themedir)
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installchangelogs
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary-indep:
+
+binary: binary-arch binary-indep
+
+.PHONY: build clean install binary-arch binary-indep binary

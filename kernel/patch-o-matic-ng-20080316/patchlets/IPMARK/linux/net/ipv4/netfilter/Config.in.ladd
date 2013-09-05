@@ -1,0 +1,2 @@
+    dep_tristate '    MARK target support' CONFIG_IP_NF_TARGET_MARK $CONFIG_IP_NF_MANGLE
+    dep_tristate '    IPMARK target support' CONFIG_IP_NF_TARGET_IPMARK $CONFIG_IP_NF_MANGLE

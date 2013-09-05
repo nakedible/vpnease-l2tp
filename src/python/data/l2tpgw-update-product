@@ -1,0 +1,21 @@
+#!/usr/bin/python
+
+import os, sys, re
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-i", "--import-path", dest="importpath", default="system")
+
+(options, args) = parser.parse_args()
+
+if options.importpath is not None and options.importpath != "system":
+    sys.path = options.importpath.split(' ') + sys.path
+
+rv = 3
+try:
+    from codebay.l2tpserver.update import packageupdate
+    rv = packageupdate.PackageUpdate().run_update()
+except:
+    sys.exit(3)
+
+sys.exit(rv)

@@ -1,0 +1,14 @@
+openl2tp (0.8-2) unstable; urgency=low
+
+  * Adding init.d : openl2tpd does not like kill -TERM, so I used -QUIT...
+  * patching l2tp_main.c so that the pid file is created with the good pid ;) not the first one.
+  * Adding /etc/default/openl2tp to allow you to add -R for remote rpc managment 
+	
+ -- Benjamin Sonntag <benjamin@sonntag.fr>  Tue, 18 Jan 2005 23:44:17 +0100
+
+openl2tp (0.8-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Benjamin Sonntag <benjamin@sonntag.fr>  Tue, 18 Jan 2005 19:28:07 +0100
+

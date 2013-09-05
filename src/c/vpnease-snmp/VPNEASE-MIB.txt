@@ -1,0 +1,215 @@
+-- VPNease MIB definitions (SNMPv2)
+--
+-- For more information, contact VPNease support (see www.vpnease.com).
+--
+-- Validated using: http://snmp.cs.utwente.nl/ietf/mibs/validate/
+
+VPNEASE-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	MODULE-IDENTITY,
+	OBJECT-TYPE,
+	enterprises,
+	Gauge32,
+	Counter32,
+	Integer32,
+	TimeTicks,
+	IpAddress
+	FROM SNMPv2-SMI;
+
+-- Module identity
+vpneaseMIB MODULE-IDENTITY
+	LAST-UPDATED	"200801180000Z"
+	ORGANIZATION	"www.vpnease.com"
+	CONTACT-INFO	"www.vpnease.com"
+	DESCRIPTION	"The MIB module for VPNease server"
+	REVISION	"200801180000Z"
+	DESCRIPTION	"License server status added"
+	REVISION	"200707090000Z"
+	DESCRIPTION	"Initial version"
+
+	::= { enterprises 26058 1 1 }
+
+-- Top level groups, separate object tree
+vpneaseMIBObjects OBJECT IDENTIFIER ::= { vpneaseMIB 1 }
+vpneaseMIBConformance OBJECT IDENTIFIER ::= { vpneaseMIB 2 }
+
+-- Global counters
+vpneaseGlobals OBJECT IDENTIFIER ::= { vpneaseMIBObjects 1 }
+
+vpneaseHealthCheckErrors OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease health errors (nonzero means one or more health check errors)"
+	::= { vpneaseGlobals 102 }
+
+vpneaseUserCount OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease current user connection count"
+	::= { vpneaseGlobals 103 }
+
+vpneaseSiteToSiteCount OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease current site-to-site connection count"
+	::= { vpneaseGlobals 104 }
+
+vpneaseServiceUptime OBJECT-TYPE
+	SYNTAX		TimeTicks
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease service uptime"
+	::= { vpneaseGlobals 105 }
+
+vpneaseLastMaintenanceReboot OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease last maintenance reboot time"
+	::= { vpneaseGlobals 106 }
+
+vpneaseNextMaintenanceReboot OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease next maintenance reboot time"
+	::= { vpneaseGlobals 107 }
+
+vpneaseLastSoftwareUpdate OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease last successful software update time"
+	::= { vpneaseGlobals 108 }
+
+vpneaseSoftwareVersion OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease software version"
+	::= { vpneaseGlobals 109 }
+
+vpneaseCpuUsage OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease CPU usage (percents)"
+	::= { vpneaseGlobals 201 }
+
+vpneaseMemoryUsage OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease memory usage (percents)"
+	::= { vpneaseGlobals 202 }
+
+vpneaseVirtualMemoryUsage OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease virtual memory usage (percents)"
+	::= { vpneaseGlobals 203 }
+
+vpneaseHostUptime OBJECT-TYPE
+	SYNTAX		TimeTicks
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease host uptime"
+	::= { vpneaseGlobals 204 }
+
+vpneasePublicAddress OBJECT-TYPE
+	SYNTAX		IpAddress
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease public interface IP address"
+	::= { vpneaseGlobals 301 }
+
+vpneasePublicSubnet OBJECT-TYPE
+	SYNTAX		IpAddress
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease public interface IP subnet address"
+	::= { vpneaseGlobals 302 }
+
+vpneasePublicMac OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease public interface MAC address"
+	::= { vpneaseGlobals 303 }
+
+vpneasePrivateAddress OBJECT-TYPE
+	SYNTAX		IpAddress
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease private interface IP subnet address"
+	::= { vpneaseGlobals 304 }
+
+vpneasePrivateSubnet OBJECT-TYPE
+	SYNTAX		IpAddress
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease private interface IP subnet address"
+	::= { vpneaseGlobals 305 }
+
+vpneasePrivateMac OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease private interface MAC address"
+	::= { vpneaseGlobals 306 }
+
+vpneaseLicenseKey OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease license key"
+	::= { vpneaseGlobals 401 }
+
+vpneaseLicenseString OBJECT-TYPE
+	SYNTAX		OCTET STRING
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease license string"
+	::= { vpneaseGlobals 402 }
+
+vpneaseLicenseUserLimit OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease license user connection limit"
+	::= { vpneaseGlobals 403 }
+
+vpneaseLicenseSiteToSiteLimit OBJECT-TYPE
+	SYNTAX		Gauge32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease license site-to-site connection limit"
+	::= { vpneaseGlobals 404 }
+
+vpneaseMaintenanceReboots OBJECT-TYPE
+	SYNTAX		Counter32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease maintenance reboots"
+	::= { vpneaseGlobals 405 }
+
+vpneaseWatchdogReboots OBJECT-TYPE
+	SYNTAX		Counter32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease forced watchdog reboots (caused by internal error recovery)"
+	::= { vpneaseGlobals 406 }
+
+vpneaseLicenseServerConnection OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	"VPNease license server connection status (1 = connected)"
+	::= { vpneaseGlobals 407 }
+
+END

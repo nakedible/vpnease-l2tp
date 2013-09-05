@@ -1,0 +1,289 @@
+/*
+ *  VPNease cb CSS
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+.cb-section {
+	/* = 2 * line-height */ 
+ 	margin-bottom: 3em;
+}
+
+.cb-section .cb-section {
+  	/* = line-height */ 
+	margin-bottom: 1.5em;
+}
+
+.cb-section .cb-section .cb-section {
+  	/* = line-height / 2*/ 
+ 	margin-bottom: .75em; 	 	
+}
+
+.cb-page-heading {
+	/* use h1 in site.css */
+}
+
+/* error - plain or unused tag */
+.cb-section h1 {
+}
+
+/* error - plain or unused tag */
+.cb-section h2 {
+}
+
+/* error - plain or unused tag */
+.cb-section h3 {
+}
+
+/* error - plain or unused tag */
+.cb-section h4 {
+}
+
+.cb-section h1.cb-heading {
+	/* matches h2 in site.css */
+	font-size: 16px;
+	margin-top: 1.125em;
+	margin-bottom: .5625em;
+	font-weight: bold;				
+	border: none;
+	padding: 0;
+}
+
+.cb-section .cb-section h1.cb-heading 
+{
+	/* matches h3 in site.css */
+	font-size: 14px;
+	margin-top: 1.285em;
+	margin-bottom: .642em;
+	font-weight: bold;
+	border: none;
+}
+
+.cb-section .cb-section .cb-section h1.cb-heading {
+	font-size: 12px;
+	margin-top: 1.5em;
+	margin-bottom: .75em;
+	font-weight: bold;
+	border: none;
+}
+
+.cb-section hr {
+	display: none;
+}
+
+.cb-section p {
+	/* use p in site.css */
+}
+
+/* lists */
+
+.cb-section ol {
+}
+
+.cb-section ul, 
+.cb-section ol {
+	margin-left: 2.5em;
+}
+
+.cb-section li {
+ 	/* matches p */
+ 	/*margin-bottom: 0.75em;*/
+}
+
+.cb-section li p {
+}
+
+.cb-section ul, 
+.cb-section ol {   
+} 
+ 
+.cb-section ul li, 
+.cb-section ol li {  
+        margin-top: 0.5em; 
+        margin-bottom: 0.5em; 
+} 
+ 
+.cb-section ul li li, 
+.cb-section ol li li {  
+        margin-top: 0.0em; 
+        margin-bottom: 0.0em; 
+}
+
+/* pre and other special divs */
+
+.cb-section pre {
+	display: block;
+	clear: both;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: 1.5em;
+	background-color: #eeeeee;
+}
+
+/* a "no-nevow-form" selector would be nice but not possible */
+div.cb-error {
+	/* ??? */
+	clear: both;
+	background: #ffffff;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border: .75em solid #FF1900;
+}
+
+div.cb-error p {
+}
+
+div.cb-warning {
+	/* ??? */
+	clear: both;
+	background: #fffcd9;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border-left: .375em solid #fff459;
+}
+
+div.cb-warning p {
+}
+
+div.cb-note {
+	/* ??? */
+	clear: both;
+	background: #E1F3FA;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border-left: .375em solid #57b8d9;
+}
+
+div.cb-note p {
+}
+
+div.cb-tip {
+	/* ??? */
+	clear: both;
+	background: #dcffd9;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border-left: .375em solid #b1d9ad;
+}
+
+div.cb-tip p {
+}
+
+div.cb-fixme {
+	clear: both;
+	background: #ff0000;
+	margin: 1em 3em 1em 3em;
+	padding: 1em 1em 1em 1em;
+	border: 2px solid #000000;
+	color: #ffffff;
+	font-weight: bolder;
+}
+
+div.cb-fixme:before {
+	content: "FIXME";
+}
+
+div.cb-fixme p {
+	margin: 1em 0em 1em 0em;
+	color: #ffffff;
+	font-weight: normal;
+}
+
+/* ---------------------------------------------------
+=floated image
+------------------------------------------------------ */
+
+.cb-image-float-right {
+	margin-left: .75em;  
+ 	float: right;  
+}
+
+/* ---------------------------------------------------
+=tables
+------------------------------------------------------ */
+
+/* see site.css */
+
+/* ---------------------------------------------------
+=strong and other special spans
+------------------------------------------------------ */
+
+/* plain strong should not occur inside sections */
+.cb-section strong {
+}
+
+.cb-section strong.cb-bold {
+	font-weight: bold;
+}
+
+.cb-section strong.cb-filename {
+	font-family: monospace;
+	color:#598C54;
+}
+
+.cb-section strong.cb-registry {
+ 	font-family: monospace;
+	color:#286073;		
+}
+
+.cb-section strong.cb-guilabel {
+	color:#598C54;	
+	font-size: 11px;
+}
+/*
+	text-transform: capitalize;
+	font-variant: small-caps;
+*/
+
+.cb-section strong.cb-userinput {
+	font-weight: bold;
+	color: #000000;
+}
+
+.cb-section strong.cb-keycap {
+	border: 1px solid #ccc;	
+	border-right: 1px solid #333;	
+	border-bottom: 1px solid #333;	
+	color: #333;
+	padding: 2px;
+	background: #eee;
+	font-weight: normal;
+	text-transform: uppercase;
+	font-size: 11px;
+}
+
+.cb-section strong.cb-fixme {
+	font-weight: bolder;
+	font-family: monospace;
+	font-size: 150%;
+	color: #FF0000;
+	background-color: #330000;
+}
+
+/* ---------------------------------------------------
+=linked images
+------------------------------------------------------ */
+.cb-section a img {
+  vertical-align: middle;
+}
+
+.cb-section a:hover img {
+}
+
+.cb-section a img:hover {
+}
+
+
+/* ---------------------------------------------------
+=external links
+------------------------------------------------------ */
+
+.cb-section a.cb-external:link,  
+.cb-section a.cb-external:visited  
+{  
+	background: url(external.gif) no-repeat 100% 55%;
+  	padding-right: 12px;
+}
+
+.cb-section a.cb-external:hover {
+}

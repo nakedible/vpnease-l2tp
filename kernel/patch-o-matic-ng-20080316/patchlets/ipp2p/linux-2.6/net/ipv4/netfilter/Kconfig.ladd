@@ -1,0 +1,9 @@
+config IP_NF_MATCH_IPP2P
+	tristate  'IPP2P match support'
+	depends on IP_NF_IPTABLES
+	help
+	  This option makes possible to match some P2P packets
+	  therefore helps controlling such traffic.
+	
+	  If you want to compile it as a module, say M here and read
+	  <file:Documentation/modules.txt>.  If unsure, say `N'.

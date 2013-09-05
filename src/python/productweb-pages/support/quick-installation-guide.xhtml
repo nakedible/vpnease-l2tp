@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Quick Installation Guide</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          Quick installation requires the following:
+        </p>
+        <ul>
+          <li>A dedicated PC with at least 1 GHz CPU, 256 MB RAM, and 2 GB hard disk</li>
+          <li>A client computer with a supported operating system
+              (e.g. Windows XP/Vista, Mac OS X)</li>
+          <li>45 minutes for installation and testing</li>
+        </ul>
+
+        <p>
+          For comprehensive installation instructions, see
+          <a href="server-installation.html">Server Installation</a>.
+        </p>
+      </div>
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 1: Download and Burn Installation CD</h1>
+        <p>
+          <a href="latest-version.html">Download</a> the latest <n:invisible n:macro="productname" /> server ISO image
+          and burn it to a CD or DVD.  Please ensure that you burn the ISO image as is instead of creating a data CD
+          containing the ISO image as a file.
+        </p>
+      </div>
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 2: Check Server Requirements and Install</h1>
+        <p>
+          The <n:invisible n:macro="productname" /> server is installed on a dedicated PC with the following minimum
+          requirements: 1 GHz CPU, 256 MB RAM, and 2 GB hard disk.  For details, see <a href="server-requirements.html">Server Requirements</a>.
+        </p>
+        <p>
+          Boot from the <n:invisible n:macro="productname" /> server installation CD (you may need to change your BIOS boot settings for this),
+          click <strong class="cb-guilabel">Install product</strong>, select a hard disk for installation, and confirm installation.
+          The installation process takes about 15 minutes.
+          Once installation is complete, click <strong class="cb-guilabel">Reboot computer</strong> to reboot, and remove the CD from
+          the drive when it is ejected.
+        </p>
+        <p>
+          If you are familiar with VMware, you can also install <n:invisible n:macro="productname" /> server into a VMware guest.
+          See <a href="virtualization-products.html">Virtualization Products</a> for details, and other supported virtualization platforms.
+        </p>
+      </div>
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 3: Perform Initial Server Configuration</h1>
+        <p>
+          We suggest the following network configuration: the <n:invisible n:macro="productname" /> server is installed into
+          the company intranet, to the same subnet where company servers reside.  The company firewall is then configured
+          to port forward connections from the company Internet connection to the <n:invisible n:macro="productname" /> server
+          to allow VPN access from the Internet (see step 4 below).
+        </p>
+
+        <p>
+          Boot the <n:invisible n:macro="productname" /> server (you may need to change your BIOS boot settings for this).
+          Login to the administrator interface and perform the following minimum configuration steps:
+          <ul>
+            <li>Go to the <strong class="cb-guilabel">Network</strong> page.</li>
+            <li>Check the <strong class="cb-guilabel">Internet Connection</strong> settings: you should either select DHCP or static address configuration.
+                For static configuration you need to enter a static IP address, subnet mask, and default gateway, and enter a
+                DNS server address manually to the DNS Servers group.</li>
+            <li>Select a pre-shared key used for computer authentication and enter it into the
+                <strong class="cb-guilabel">VPN Connection Settings</strong> &rarr; <strong class="cb-guilabel">Primary pre-shared key</strong> field.</li>
+            <li>Click <strong class="cb-guilabel">Save changes</strong>.</li>
+            <li>Go to the <strong class="cb-guilabel">User Accounts</strong> page.</li>
+            <li>Add a VPN user by clicking on the plus sign in the <strong class="cb-guilabel">Users</strong> group.
+                Enter a username and a password for the user.</li>
+            <li>Click <strong class="cb-guilabel">Save changes</strong>.</li>
+          </ul>
+        </p>
+        <p>
+          The <n:invisible n:macro="productname" /> server status page shows all basic server
+          information.
+          The product will automatically request a demo license for 30 days, and the available
+          demo license time is shown.
+          Check the IP address of the Internet connection and write it down for later use.
+        </p>
+      </div>
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 4: Configure Company Firewall</h1>
+
+        <p>
+          Write down the company firewall's Internet IP address, as it is needed for VPN client use.
+          Add port forwarding rules to the firewall, to forward the following protocols
+          and ports from the Internet connection to the
+          <n:invisible n:macro="productname" /> server's IP address: 
+        </p>
+        <ul>
+          <li>UDP port 500 (IPsec)</li>
+          <li>UDP port 4500 (IPsec)</li>
+          <li>TCP port 80 (web UI, optional but recommended)</li>
+          <li>TCP port 443 (web UI, optional but recommended)</li>
+        </ul>
+
+        <p>
+          Not forwarding TCP ports 80 and 443 disables access to the
+          <n:invisible n:macro="productname" /> web user interface from the Internet.
+          You can access the web user interface from the intranet instead.
+          If you use client autoconfiguration from the intranet, edit the VPN connection
+          properties afterwards, changing the
+          <n:invisible n:macro="productname" /> server address from the intranet address
+          to the Internet address.
+        </p>
+      </div>
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 5: Configure and Test Client Computer</h1>
+        <p>
+          Select a laptop or desktop computer for testing the VPN connection.  Connect the laptop
+          to the Internet (not the intranet), open a browser
+          window and enter the IP address of the firewall's Internet connection.
+          Login to the web user interface with the VPN user's username and password (configured in step 3).
+        </p>
+
+        <p>
+          Configuring and testing the VPN connection depends on the client computer operating system:
+          <ul>
+            <li>Windows XP and Vista: click <strong class="cb-guilabel">Autoconfigure</strong>, run the
+                downloaded executable, and reboot the computer.  After reboot, open Network Connections,
+                double click on the <n:invisible n:macro="productname" /> VPN icon, enter username and
+                password, and click <strong class="cb-guilabel">Connect</strong>.</li>
+            <li>Mac OS X: select <strong class="cb-guilabel">Mac OS X</strong> from the menu on the left
+                and follow configuration instructions.</li>
+          </ul>
+        </p>
+        <p>
+          You should now have a VPN connection and access to all your company resources through
+          the VPN connection.
+        </p>
+        <p>
+          Note that if you want to test the VPN connection from the intranet for some reason,
+          you need to use the <n:invisible n:macro="productname" /> server rather than the firewall's
+          address in the web browser and the VPN profile.  Port forwarding does not always work when
+          connections are initiated from the intranet.
+        </p>
+      </div>
+
+    </n:invisible>
+  </body>
+</html>
+
+

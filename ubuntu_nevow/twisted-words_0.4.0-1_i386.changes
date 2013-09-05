@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 22:48:28 +0300
+Source: twisted-words
+Binary: python-twisted-words python2.4-twisted-words
+Architecture: source all
+Version: 0.4.0-1
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted-words - Chat and Instant Messaging
+ python2.4-twisted-words - Chat and Instant Messaging
+Changes: 
+ twisted-words (0.4.0-1) dapper; urgency=low
+ .
+   * New upstream release
+Files: 
+ be27c768c8e56d390e2d75bec1b5dfd7 365 python optional twisted-words_0.4.0-1.dsc
+ 1bf5088aa61856a981cdf201c96b028a 175145 python optional twisted-words_0.4.0-1.tar.gz
+ 3299128543fb4736c0e57941b9e15cbc 18144 python optional python-twisted-words_0.4.0-1_all.deb
+ 5a62e3437bb4e3632437cd5016045c6a 171192 python optional python2.4-twisted-words_0.4.0-1_all.deb

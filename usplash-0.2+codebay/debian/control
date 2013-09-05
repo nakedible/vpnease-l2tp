@@ -1,0 +1,15 @@
+Source: usplash
+Section: universe/misc
+Priority: standard
+Maintainer: Matthew Garrett <mjg59@srcf.ucam.org>
+Build-Depends: debhelper (>= 4.0.0), libgd2-dev, libpng-dev
+Standards-Version: 3.6.1
+
+Package: usplash
+Architecture: i386 amd64 powerpc sparc ia64 hppa
+Depends: ${shlibs:Depends}, initramfs-tools (>= 0.40ubuntu30)
+Description: Userspace bootsplash utility
+ Usplash is a userspace application that uses the Linux framebuffer interface
+ to draw a splash screen at boot. It has a companion utility that is able to
+ send commands to usplash, allowing information about the bootup sequence to
+ be displayed in a more attractive way.

@@ -1,0 +1,60 @@
+#!/usr/bin/python
+#
+#  VPNease syslog daemon.
+#
+
+# XXX: convert to shell script?
+
+import os, time, sys, subprocess, signal
+
+child_pid = None
+to_exit = False
+
+def _sigterm_handler(sig, frame):
+    global to_exit
+    if child_pid is not None:
+        try:
+            os.kill(int(child_pid), int(sig))
+        except:
+            pass
+    to_exit = True
+
+def _sighup_handler(sig, frame):
+    if child_pid is not None:
+        try:
+            os.kill(int(child_pid), int(sig))
+        except:
+            pass
+
+def _cleanup_log():
+    try:
+        from codebay.l2tpserver import constants
+        if os.path.exists(constants.SYSLOG_EXCEPTION_LOG):
+            os.unlink(constants.SYSLOG_EXCEPTION_LOG)
+    except:
+        pass
+
+# XXX: other signals?
+signal.signal(signal.SIGTERM, _sigterm_handler)
+signal.signal(signal.SIGHUP, _sighup_handler)
+signal.signal(signal.SIGALRM, _sigterm_handler) # same action as for term
+
+
+while True:
+    _cleanup_log()
+
+    try:
+        child_pid = subprocess.Popen(['/usr/bin/python', '/usr/lib/l2tpgw/l2tpgw-syslogwrapper'], close_fds=True).pid
+
+        pid, rv = os.waitpid(child_pid, 0)
+        if rv != 0:
+            raise Exception('syslogwrapper (pid: %s) returned nonzero: %s' % (str(pid), str(rv)))
+
+    except:
+        pass
+
+    if to_exit:
+        os._exit(0)
+
+    child_pid = None
+    time.sleep(30) # 30 seconds

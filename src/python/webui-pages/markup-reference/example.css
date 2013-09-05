@@ -1,0 +1,19 @@
+
+/*
+ *  NB: the page also needs "common.css"
+ */
+
+html {
+  font-family: "sans serif";
+  font-size: 14px;
+  color: #ff0000;
+  background-color: #f8f8f8;
+}
+
+body {
+  margin: 5em;
+  border: 1px solid #dddddd;
+  background-color: #ffffff;
+  padding: 3em;
+}
+

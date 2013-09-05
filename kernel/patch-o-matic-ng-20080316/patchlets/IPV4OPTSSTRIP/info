@@ -1,0 +1,4 @@
+Title: IPV4 header option stripping target for mangle table
+Author: Fabrice MARIE <fabrice@netfilter.org>
+Status: Works For Me.
+Repository: base

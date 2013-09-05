@@ -1,0 +1,9 @@
+config IP_NF_MATCH_CONDITION
+	tristate  'condition match support'
+	depends on IP_NF_IPTABLES
+	help
+	  This option allows you to match firewall rules against condition
+	  variables stored in the /proc/net/ipt_condition directory.
+	
+	  If you want to compile it as a module, say M here and read
+	  Documentation/modules.txt.  If unsure, say `N'.

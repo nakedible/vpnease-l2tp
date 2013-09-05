@@ -1,0 +1,39 @@
+diff -ru ppp-2.4.4b1.orig/debian/control ppp-2.4.4b1/debian/control
+--- ppp-2.4.4b1.orig/debian/control	2006-10-06 19:02:58.000000000 +0300
++++ ppp-2.4.4b1/debian/control	2006-10-06 19:01:18.000000000 +0300
+@@ -20,20 +21,20 @@
+  transmit Internet Protocol (IP) datagrams, allowing TCP/IP connections
+  between the peers.
+ 
+-Package: ppp-udeb
+-Section: debian-installer
+-Architecture: any
+-XC-Package-Type: udeb
+-Depends: ${shlibs:Depends}, configured-network
+-Description: Point-to-Point Protocol (PPP) daemon
+- The Point-to-Point Protocol (PPP) provides a standard way to transmit
+- datagrams over a serial link, as well as a standard way for the machines
+- at either end of the link (the "peers") to negotiate various optional
+- characteristics of the link.  Using PPP, a serial link can be used to
+- transmit Internet Protocol (IP) datagrams, allowing TCP/IP connections
+- between the peers.
+- .
+- ppp-udeb is a minimal ppp package used by the debian-installer.
++#Package: ppp-udeb
++#Section: debian-installer
++#Architecture: any
++#XC-Package-Type: udeb
++#Depends: ${shlibs:Depends}, configured-network
++#Description: Point-to-Point Protocol (PPP) daemon
++# The Point-to-Point Protocol (PPP) provides a standard way to transmit
++# datagrams over a serial link, as well as a standard way for the machines
++# at either end of the link (the "peers") to negotiate various optional
++# characteristics of the link.  Using PPP, a serial link can be used to
++# transmit Internet Protocol (IP) datagrams, allowing TCP/IP connections
++# between the peers.
++# .
++# ppp-udeb is a minimal ppp package used by the debian-installer.
+ 
+ Package: ppp-dev
+ Section: devel
+

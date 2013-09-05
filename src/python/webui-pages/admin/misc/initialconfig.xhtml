@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          To complete the installation of <n:invisible n:macro="productname" />:
+        </p>
+
+        <ul>
+          <li>
+            Review settings on the <strong class="cb-guilabel">Network</strong> page.
+            Click <strong class="cb-guilabel">Save changes</strong> to activate
+            <n:invisible n:macro="productname" />.
+          </li>
+          <li>
+            Check status overview page.
+            In particular, check that
+            network connection(s) have an IP address,
+            router(s) are responding, and
+            a demo license has been allocated.
+          </li>
+          <li>
+            Review settings on other configuration pages.  Whenever you make changes,
+            click <strong class="cb-guilabel">Save changes</strong> to activate the
+            changes.
+          </li>
+          <li>
+            Check available <strong class="cb-guilabel">Product Updates</strong>.
+          </li>
+        </ul>
+      </div>
+
+    </n:invisible>
+    
+    <n:invisible n:pattern="contexthelp">
+    <div class="context-help-items">
+    </div>
+    </n:invisible>
+    
+  </body>
+</html>

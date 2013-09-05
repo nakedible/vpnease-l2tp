@@ -1,0 +1,150 @@
+# Arabic translation for gfxboot-theme-ubuntu
+# Copyright (c) (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
+# This file is distributed under the same license as the gfxboot-theme-ubuntu package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2006.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gfxboot-theme-ubuntu\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2006-03-18 12:14:59.394968+00:00\n"
+"PO-Revision-Date: 2006-07-17 06:59+0000\n"
+"Last-Translator: Versatile <alfred.erian@gmail.com>\n"
+"Language-Team: Arabic <ar@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. password dialog title
+#. txt_password_title
+msgid "Password"
+msgstr "كلمة المرور"
+
+#. txt_hd_diskdevice
+msgid "Disk Device (scan all disks if empty)\n"
+msgstr ""
+
+#. txt_directory
+msgid "Directory\n"
+msgstr "دليل\n"
+
+#. label for d-i mode menu
+#. txt_normal_mode
+msgid "Normal mode"
+msgstr "طريقة عادية"
+
+#. label for d-i mode menu
+#. txt_expert_mode
+msgid "Expert mode"
+msgstr "طريقة خبير"
+
+#. title for accessibility menu
+#. txt_access
+msgid "Accessibility"
+msgstr ""
+
+#. label for accessibility menu
+#. txt_access_none
+msgid "None"
+msgstr ""
+
+#. label for accessibility menu
+#. txt_access_v1
+msgid "Lesser Visual Impairment"
+msgstr ""
+
+#. label for accessibility menu
+#. txt_access_v2
+msgid "Moderate Visual Impairment"
+msgstr ""
+
+#. label for accessibility menu
+#. txt_access_v3
+msgid "Blindness"
+msgstr "عمى"
+
+#. label for accessibility menu
+#. txt_access_m1
+msgid "Minor Motor Difficulties"
+msgstr ""
+
+#. label for accessibility menu
+#. txt_access_m2
+msgid "Motor Difficulties - pointing devices"
+msgstr ""
+
+#. label for accessibility menu
+#. txt_access_m3
+msgid "Motor Difficulties - switch devices"
+msgstr ""
+
+#. label for accessibility menu
+#. txt_access_all
+msgid "Everything"
+msgstr "كل شئ"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_ubuntu
+msgid "^Start or install Ubuntu"
+msgstr "^إبداء أو ثبت يوبنتو"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_ubuntu_xforcevesa
+msgid "Start Ubuntu in safe ^graphics mode"
+msgstr ""
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_kubuntu
+msgid "^Start or install Kubuntu"
+msgstr "^إبداء أو ثبت ك يوبينتو"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_kubuntu_xforcevesa
+msgid "Start Kubuntu in safe ^graphics mode"
+msgstr ""
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_edubuntu
+msgid "^Start or install Edubuntu"
+msgstr "^إبداء أو ثبت ى يوبينتو"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_edubuntu_xforcevesa
+msgid "Start Edubuntu in safe ^graphics mode"
+msgstr ""
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_xubuntu
+msgid "^Start or install Xubuntu"
+msgstr "^إبداء أو ثبت اكس يوبينتو"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_xubuntu_xforcevesa
+msgid "Start Xubuntu in safe ^graphics mode"
+msgstr ""
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_install_text
+msgid "^Install in text mode"
+msgstr ""
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_install
+msgid "^Install to the hard disk"
+msgstr "^ثبت على القرص الصلب"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_workstation
+msgid "Install a ^workstation"
+msgstr ""
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_oem
+msgid "Install in ^OEM mode"
+msgstr ""
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_lamp
+msgid "Install a ^LAMP server"
+msgstr ""

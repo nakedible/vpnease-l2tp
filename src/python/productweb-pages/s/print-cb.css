@@ -1,0 +1,262 @@
+
+.cb-section {
+	/* = 2 * line-height */ 
+ 	margin-bottom: 3em;
+}
+
+.cb-section .cb-section {
+  	/* = line-height */ 
+	margin-bottom: 1.5em;
+}
+
+.cb-section .cb-section .cb-section {
+  	/* = line-height / 2*/ 
+ 	margin-bottom: .75em; 	 	
+}
+
+.cb-page-heading {
+	font-size: 250%;
+	margin-top: 1.125em;
+	margin-bottom: .5625em;
+	font-weight: bold;
+	border: none;
+	padding: 0;
+}
+
+/* error - plain or unused tag */
+.cb-section h1 {
+}
+
+/* error - plain or unused tag */
+.cb-section h2 {
+}
+
+/* error - plain or unused tag */
+.cb-section h3 {
+}
+
+/* error - plain or unused tag */
+.cb-section h4 {
+}
+
+.cb-section h1.cb-heading {
+	font-size: 175%;
+	margin-top: 1.125em;
+	margin-bottom: .5625em;
+	font-weight: bold;
+	border: none;
+	padding: 0;
+}
+
+.cb-section .cb-section h1.cb-heading 
+{
+	font-size: 125%;
+	margin-top: 1.285em;
+	margin-bottom: .642em;
+	font-weight: bold;
+	border: none;
+}
+
+.cb-section .cb-section .cb-section h1.cb-heading {
+	font-size: 100%;
+	margin-top: 1.5em;
+	margin-bottom: .75em;
+	font-weight: bold;
+	border: none;
+}
+
+.cb-section hr {
+	display: none;
+}
+
+.cb-section p {
+}
+
+.cb-section ol {
+}
+
+.cb-section ul, 
+.cb-section ol {
+	margin-left: 1.0em;
+}
+
+.cb-section li {
+ 	/* matches p */
+ 	/*margin-bottom: 0.75em;
+ 	*/
+}
+
+.cb-section li p {
+}
+
+
+/* FIXME: different levels and contexts.. */
+.cb-section ul { 
+}
+
+.cb-section ul li {
+}
+
+.cb-section ol { 
+}
+
+.cb-section ol li {
+}
+
+
+
+/* pre and other special divs */
+
+.cb-section pre {
+	display: block;
+	clear: both;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: 1.5em;
+	background-color: #ffffff;
+        border: 0.1em solid #cccccc;
+        border-left: 0.75em solid #cccccc;
+	font-size: 11px;
+}
+
+/* a "no-nevow-form" selector would be nice but not possible */
+div.cb-error {
+	/* ??? */
+	clear: both;
+	background: #ffffff;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border: 0.1em solid #FF1900;
+	border-left: 0.75em solid #FF1900;
+}
+
+div.cb-error p {
+}
+
+div.cb-warning {
+	/* ??? */
+	clear: both;
+	background: #ffffff;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border: 0.1em solid #fff459;
+	border-left: 0.75em solid #fff459;
+}
+
+div.cb-warning p {
+}
+
+div.cb-note {
+	/* ??? */
+	clear: both;
+	background: #ffffff;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border: 0.1em solid #57b8d9;
+	border-left: 0.75em solid #57b8d9;
+}
+
+div.cb-note p {
+}
+
+div.cb-tip {
+	/* ??? */
+	clear: both;
+	background: #ffffff;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	border: 0.1em solid #b1d9ad;
+	border-left: 0.75em solid #b1d9ad;
+}
+
+div.cb-tip p {
+
+}
+
+div.cb-fixme {
+	clear: both;
+	background: #ffffff;
+	margin: 1em 3em 1em 3em;
+	padding: 1em 1em 1em 1em;
+	border: .25em solid #ff0000;
+	color: #ff3333;
+}
+
+div.cb-fixme:before {
+	content: "FIXME";
+}
+
+div.cb-fixme p {
+	margin: 1em 0em 1em 0em;
+	color: #ffffff;
+	font-weight: normal;
+}
+
+.cb-image-float-right {
+	margin-left: .75em;  
+ 	float: right;  
+  
+}
+
+/* plain strong should not occur inside sections */
+.cb-section strong {
+
+}
+
+.cb-section strong.cb-bold {
+	font-weight: normal;
+	color: #3333ff;
+}
+
+.cb-section strong.cb-filename {
+/*	font-family: monospace;*/
+	color:#598C54;
+}
+
+.cb-section strong.cb-registry {
+/* 	font-family: monospace;*/
+	color:#286073;		
+}
+
+.cb-section strong.cb-guilabel {
+	color:#598C54;
+/*	font-size: 11px;*/
+}
+
+.cb-section strong.cb-userinput {
+	color: #000000;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+.cb-section strong.cb-keycap {
+	border: 1px solid #ccc;	
+	border-right: 1px solid #333;	
+	border-bottom: 1px solid #333;	
+	color: #333;
+	padding: 2px;
+	background: #ffffff;
+	font-weight: normal;
+	text-transform: uppercase;
+	font-size: 11px;
+}
+
+.cb-section strong.cb-fixme {
+	color: #ff3333;
+/*	font-family: monospace;*/
+	font-size: 150%;
+	color: #FF0000;
+	background-color: #ffffff;
+}
+
+.cb-section a img {
+	vertical-align: middle;
+}
+
+/*
+.cb-section a.cb-external:link,  
+.cb-section a.cb-external:visited  
+{  
+	background: url(external.gif) center right no-repeat;
+  	padding-right: 12px;  
+}
+*/

@@ -1,0 +1,3 @@
+    dep_tristate '    MARK target support' CONFIG_IP6_NF_TARGET_MARK $CONFIG_IP6_NF_MANGLE
+    dep_tristate '    ROUTE target support' CONFIG_IP6_NF_TARGET_ROUTE $CONFIG_IP6_NF_MANGLE
+

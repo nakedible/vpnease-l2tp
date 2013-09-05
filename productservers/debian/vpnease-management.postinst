@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Import repository keys
+
+# Note: not strictly required now, because no packages are installed
+# from VPNease repository to management server
+
+/usr/bin/apt-key add /usr/lib/vpnease-management/repository-keys.txt
+
+exit 0

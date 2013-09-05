@@ -1,0 +1,349 @@
+.ig \"-*- nroff -*-
+Copyright (c) 2004 Katalix Systems Ltd.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by Katalix Systems Ltd instead of in
+the original English.
+..
+.\"
+.\" MAN PAGE COMMENTS to openl2tp-docs@lists.sourceforge.net
+.\"
+.TH ippoolconfig 1 "12 September 2004" "IpPool" "IpPool Manual"
+.PD
+.SH NAME
+ippoolconfig \- command-line configuration for ippoold
+.PD
+.SH SYNOPSIS
+.hy 0
+.na
+.B ippoolconfig [\-q] [\-R \<ipaddr\>] [command]
+.ad b
+.hy 1
+.PD
+.SH DESCRIPTION
+.BR ippoolconfig
+is a command line application for managing
+.BR ippoold ( 8 ),
+an IP address pool daemon.
+.PP
+.B ippoold
+is controlled using a Remote Procedure Call (RPC) interface documented
+in
+.BR ippool_rpc ( 4 ). 
+.BR ippoolconfig
+is an RPC client application implementing this interface.
+.PP
+.B ippoold
+was originally written for the
+.B OpenL2TP
+project but was repackaged as a separate application so that it could 
+be used by other applications. 
+.PD
+.SH OPTIONS
+.TP 10
+.B \-q
+Quiet mode. Suppresses information messages, such as \fI"Created xyz"\fP.
+.TP
+.B \-R \fIipaddr\fP
+Send commands to 
+.B ippoold
+running at \fIipaddr\fP rather than to the local host. Remote management
+must be enabled for
+.B ippoold
+at the remote host for this option to work. \fIipaddr\fP may be
+specified as an IP address or a hostname.
+.TP
+.B \fIcommand\fP
+the specified command is executed and then
+.B ippoolconfig
+terminates.  When no command is given,
+.B ippoolconfig
+enters interactive mode, presenting the user with a Command Line
+Interface (CLI) providing command line editing, context sensitive help
+and TAB completion.
+.PD
+.SH ENVIRONMENT
+.B ippoold
+must be running before the first 
+.B ippoolconfig
+command is issued.
+.PD
+.B ippoolconfig
+uses 
+.B Sun RPC
+to communicate with
+.B ippoold,
+so the system must be capable of running 
+.B RPC.
+.PD
+.SH INTERACTIVE MODE
+.B ippoolconfig
+provides a context-sensitive Command Line Interface (CLI). Hitting <TAB>
+at the prompt shows a list of keywords applicable. Entering a few letters of
+a keyword and hitting TAB again completes the keyword (if possible). Hitting 
+TAB again shows a list of next valid keywords. When valid object type name 
+and operation are present, <TAB> shows a list of valid parameters for
+the operation. Entering a few letters of a parameter and hitting <TAB>
+completes the parameter name if possible and appends a 
+.I '=' 
+sign after the name if the parameter takes a value.
+.PP
+The 
+.B \<?\>
+key behaves similarly to <TAB> in that it displays possible
+completions but it also gives descriptive help about each option.
+.PD
+.SS KEY BINDINGS
+.B ippoolconfig
+provides intuitive command line editing with history. Key bindings are
+the same as 
+.BR bash ( 1 )
+by default, although they can be changed using
+.B ippoolconfig
+entries in a
+.B .inputrc
+file. See the
+.BR readline ( 3 )
+manual page for more information.
+.PP
+Commonly used default key bindings are:
+.TP 10
+.B <ctrl-a>
+beginning of line
+.TP
+.B <ctrl-e>
+end of line
+.TP 
+.B <ctrl-k>
+kill characters from cursor to end of line
+.TP
+.B <ctrl-y>
+yank characters last killed into line at cursor position
+.TP
+.B <meta-f>
+forward a word
+.TP
+.B <meta-b>
+back a word
+.TP
+.B <meta-t>
+transpose word at cursor position with previous word.
+.PP
+On keyboards without a Meta (Alt) key, the Escape key can be used.
+.SS COMMAND HISTORY
+In interactive mode,
+.B ippoolconfig
+writes command history data to
+.I ~/.ippool_history
+when the application exits. This gives the operator the ability to recall
+commands from a previous session.
+.PP
+If desired, the environment variable 
+.I IPPOOL_HISTFILE
+can be used to point to an alternative history file and
+.I IPPOOL_HISTFILESIZE
+can be used to limit the history file to
+.I nnn
+entries. If
+.I IPPOOL_HISTFILE
+is set to an empty string, the writing of history information to a
+file is disabled.
+.PD
+.SH PERSISTENT CONFIGURATION
+.B ippoold
+does not use configuration files; all configuration is done using 
+an RPC client application such as
+.BR ippoolconfig .
+However, it is useful to save and restore configuration snapshots.
+.B ippoolconfig
+provides
+.HP
+.nf 
+config save file=<filename>
+.fi
+.LP
+and
+.HP
+.nf
+config restore file=<filename>
+.fi
+.LP
+commands for this purpose. Configuration data is written to the file in
+plain text so may be edited by hand if desired. Note that this feature is
+implemented in
+.BR ippoolconfig ,
+not the
+.BR ippoold
+daemon. Future versions may add an RPC interface to allow RPC client
+applications the ability to retrieve and restore configuration in a
+binary format.
+.SH SYNTAX SUMMARY
+The following output is taken from the context sensitive help in 
+.BR ippoolconfig 's.
+interactive mode. Use the
+.I <?>
+key to ask for context sensitive help.
+.SS COMMAND SUMMARY
+.nf
+ippool> ?
+exit    - exit application
+server  - sets application to manage a remote ippoold server
+config  - configuration save/restore
+quit    - exit application
+
+ippool> ippool ?
+create  - create a new IP address pool
+address - address related commands
+list    - list all IP address pools
+show    - show an IP address pool
+modify  - modify an IP address pool
+delete  - delete an IP address pool
+
+ippool> server ?
+modify - switch to manage a remote ippoold server
+show   - show server parameters
+
+ippool> config ?
+save    - save configuration
+restore - restore configurationfrom file
+.fi
+.SS IPPOOL CREATE
+.nf
+ippool> pool create ?
+pool_name  - Name of ip pool
+first_addr - First address in the pool
+num_addrs  - Number of addresses in the pool. Default: derived 
+             from netmask
+trace      - Pool trace control. Default: OFF.
+drain      - Drain pool (disable further allocations). Default: OFF.
+max_addrs  - Maximum number of addresses contained in pool. 
+             Default = 0 (unlimited)
+.fi
+.SS IPPOOL MODIFY
+.nf
+ippool> pool modify ?
+pool_name - Name of ip pool
+trace     - Pool trace control. Default: OFF.
+drain     - Drain pool (disable further allocations). Default: OFF.
+max_addrs - Maximum number of addresses contained in pool. 
+            Default = 0 (unlimited)
+.fi
+.SS IPPOOL ADDRESS ADD
+.nf
+ippool> pool address add 
+pool_name  - Name of ip pool
+netmask    - IP netmask for address block. Default: 255.255.255.0.
+first_addr - First address in the block
+num_addrs  - Number of addresses in the block. Default: derived
+             from netmask.
+.fi
+.IP
+Any number of non-overlapping address blocks may be added to a pool.
+.SS IPPOOL ADDRESS REMOVE
+.nf
+ippool> pool address add 
+pool_name  - Name of ip pool
+netmask    - IP netmask for address block. Default: 255.255.255.0.
+first_addr - First address in the block.
+num_addrs  - Number of addresses in the block. Default: derived
+             from netmask.
+.fi
+.IP
+Partial address blocks cannot be removed. The
+.I first_addr
+and
+.I num_addrs
+parameters must match the values used when the address block was created.
+.SS IPPOOL ADDRESS RESERVE
+.nf
+ippool> pool address add 
+pool_name  - Name of ip pool
+first_addr - First address in the block.
+num_addrs  - Number of addresses in the block. 
+.fi
+.SS IPPOOL ADDRESS UNRESERVE
+.nf
+ippool> pool address add 
+pool_name  - Name of ip pool
+first_addr - First address in the block.
+num_addrs  - Number of addresses in the block. 
+.fi
+.SS IPPOOL SHOW
+.nf
+ippool> pool show 
+pool_name - Name of ip pool
+.fi
+.SS IPPOOL DELETE
+.nf
+ippool> pool show 
+pool_name - Name of ip pool
+.fi
+.SS SERVER MODIFY
+.nf
+ippool> server modify ?
+name - IP address or hostname of L2TP daemon to attach to. Default=localhost.
+.fi
+.SS CONFIG SAVE
+.nf
+ippool> config save ?
+file   - Filename for save/restore operation.
+.fi
+.SS CONFIG RESTORE
+.nf
+ippool> config restore ?
+file   - Filename for save/restore operation.
+.fi
+.SH EXAMPLES
+.hy 0
+.na
+.HP 0
+.TP 0
+.IP "\fBConfigure ippoold with an address pool called \fIone\fB. \
+Some addresses within the pool are reserved (assigned for other uses).\fP"
+.LP
+.nf
+ippool> pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+ippool> pool address add pool_name=one first_addr=10.2.1.1 num_addrs=100
+ippool> pool address reserve pool_name=one first_addr=10.1.1.5 num_addrs=2
+ippool> pool show pool_name=one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+  total addresses: 110, available: 108
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.100
+.fi
+.ad b
+.hy 1
+.PD
+.SH FILES
+.BR ~/.ippool_history
+.PD
+.SH "REPORTING BUGS"
+Please report bugs to <openl2tp-bugs@lists.sourceforge.net>.
+
+.SH "SEE ALSO"
+.br
+.BR ippoolconfig ( 1 ),
+.BR ippoold ( 8 ),
+.BR readline ( 3 ).

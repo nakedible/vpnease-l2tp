@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Buy License</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          Fill in the form below to purchase a <n:invisible n:macro="productname" /> server license. 
+          After confirming the purchase, the <n:invisible n:macro="productname" /> license key and
+          first invoice will be delivered to your email address within a few days.
+          See <a href="pricing.html">Pricing</a> for <n:invisible n:macro="productname" /> license
+          pricing details, and <a href="payment-options.html">Payment Options</a> for invoicing details.
+        </p>
+
+        <n:invisible n:render="form buy" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

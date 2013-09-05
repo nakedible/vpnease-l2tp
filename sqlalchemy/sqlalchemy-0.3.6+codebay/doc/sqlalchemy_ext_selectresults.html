@@ -1,0 +1,442 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.ext.selectresults</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_mods_threadlocal.html">module sqlalchemy.mods.threadlocal</a>
+
+               |   
+            Next: <a href="sqlalchemy_exceptions.html">module sqlalchemy.exceptions</a>
+    </div>
+
+        <h2>module sqlalchemy.ext.selectresults</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_ext_selectresults.html#docstrings_sqlalchemy.ext.selectresults_SelectResults">class SelectResults(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_ext_selectresults.html#docstrings_sqlalchemy.ext.selectresults_SelectResultsExt">class SelectResultsExt(MapperExtension)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.ext.selectresults"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.ext.selectresults</h3>
+    
+    
+    
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.ext.selectresults_SelectResults"></a>
+    
+    <div class="subsection">
+
+    <h3>class SelectResults(object)</h3>
+    
+    
+    <div class="darkcell"><p>Build a query one component at a time via separate method
+calls, each call transforming the previous <tt class="docutils literal"><span class="pre">SelectResults</span></tt>
+instance into a new <tt class="docutils literal"><span class="pre">SelectResults</span></tt> instance with further
+limiting criterion added. When interpreted in an iterator context
+(such as via calling <tt class="docutils literal"><span class="pre">list(selectresults)</span></tt>), executes the query.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>query</i>, <i>clause=None</i>, <i>ops={}</i>, <i>joinpoint=None</i>)</b>
+    <div class="docstring">
+    <p>Construct a new <tt class="docutils literal"><span class="pre">SelectResults</span></tt> using the given <tt class="docutils literal"><span class="pre">Query</span></tt>
+object and optional <tt class="docutils literal"><span class="pre">WHERE</span></tt> clause.  <cite>ops</cite> is an optional
+dictionary of bind parameter values.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def avg(<i>self</i>, <i>col</i>)</b>
+    <div class="docstring">
+    <p>Execute the SQL <tt class="docutils literal"><span class="pre">avg()</span></tt> function against the given column.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def clone(<i>self</i>)</b>
+    <div class="docstring">
+    <p>Create a copy of this <tt class="docutils literal"><span class="pre">SelectResults</span></tt>.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def compile(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def count(<i>self</i>)</b>
+    <div class="docstring">
+    <p>Execute the SQL <tt class="docutils literal"><span class="pre">count()</span></tt> function against the <tt class="docutils literal"><span class="pre">SelectResults</span></tt> criterion.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def distinct(<i>self</i>)</b>
+    <div class="docstring">
+    <p>Apply a <tt class="docutils literal"><span class="pre">DISTINCT</span></tt> to the query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def filter(<i>self</i>, <i>clause</i>)</b>
+    <div class="docstring">
+    <p>Apply an additional <tt class="docutils literal"><span class="pre">WHERE</span></tt> clause against the query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def join_to(<i>self</i>, <i>prop</i>)</b>
+    <div class="docstring">
+    <p>Join the table of this <tt class="docutils literal"><span class="pre">SelectResults</span></tt> to the table located against the given property name.</p>
+<p>Subsequent calls to join_to or outerjoin_to will join against
+the rightmost table located from the previous <cite>join_to</cite> or
+<cite>outerjoin_to</cite> call, searching for the property starting with
+the rightmost mapper last located.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def limit(<i>self</i>, <i>limit</i>)</b>
+    <div class="docstring">
+    <p>Apply a <tt class="docutils literal"><span class="pre">LIMIT</span></tt> to the query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def list(<i>self</i>)</b>
+    <div class="docstring">
+    <p>Return the results represented by this <tt class="docutils literal"><span class="pre">SelectResults</span></tt> as a list.</p>
+<p>This results in an execution of the underlying query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def max(<i>self</i>, <i>col</i>)</b>
+    <div class="docstring">
+    <p>Execute the SQL <tt class="docutils literal"><span class="pre">max()</span></tt> function against the given column.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def min(<i>self</i>, <i>col</i>)</b>
+    <div class="docstring">
+    <p>Execute the SQL <tt class="docutils literal"><span class="pre">min()</span></tt> function against the given column.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def offset(<i>self</i>, <i>offset</i>)</b>
+    <div class="docstring">
+    <p>Apply an <tt class="docutils literal"><span class="pre">OFFSET</span></tt> to the query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def options(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Apply mapper options to the underlying query.</p>
+<p>See also <tt class="docutils literal"><span class="pre">Query.options</span></tt>.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def order_by(<i>self</i>, <i>order_by</i>)</b>
+    <div class="docstring">
+    <p>Apply an <tt class="docutils literal"><span class="pre">ORDER</span> <span class="pre">BY</span></tt> to the query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def outerjoin_to(<i>self</i>, <i>prop</i>)</b>
+    <div class="docstring">
+    <p>Outer join the table of this <tt class="docutils literal"><span class="pre">SelectResults</span></tt> to the
+table located against the given property name.</p>
+<p>Subsequent calls to join_to or outerjoin_to will join against
+the rightmost table located from the previous <tt class="docutils literal"><span class="pre">join_to</span></tt> or
+<tt class="docutils literal"><span class="pre">outerjoin_to</span></tt> call, searching for the property starting with
+the rightmost mapper last located.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def select(<i>self</i>, <i>clause</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def select_by(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def select_from(<i>self</i>, <i>from_obj</i>)</b>
+    <div class="docstring">
+    <p>Set the <cite>from_obj</cite> parameter of the query.</p>
+<p><cite>from_obj</cite> is a list of one or more tables.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def sum(<i>self</i>, <i>col</i>)</b>
+    <div class="docstring">
+    <p>Execute the SQL <tt class="docutils literal"><span class="pre">sum()</span></tt> function against the given column.</p>
+
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.ext.selectresults_SelectResultsExt"></a>
+    
+    <div class="subsection">
+
+    <h3>class SelectResultsExt(<a href="sqlalchemy_orm_mapper.html#docstrings_sqlalchemy.orm.mapper_MapperExtension">MapperExtension</a>)</h3>
+    
+    
+    <div class="darkcell"><p>a MapperExtension that provides SelectResults functionality for the
+results of query.select_by() and query.select()</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def select(<i>self</i>, <i>query</i>, <i>arg=None</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def select_by(<i>self</i>, <i>query</i>, <i>*args</i>, <i>**params</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_mods_threadlocal.html">module sqlalchemy.mods.threadlocal</a>
+
+               |   
+            Next: <a href="sqlalchemy_exceptions.html">module sqlalchemy.exceptions</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

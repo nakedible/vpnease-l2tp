@@ -1,0 +1,33 @@
+.TH IPPOOL 8 "Aug 11, 2000" "" ""
+.SH NAME
+ippool \- ?
+.SH SYNOPSIS
+.BR "The POOL argument is either a number, or a name from /etc/ippool.conf"
+.BR "ippool " "[-n] [-l|-L POOL] [-u] [-v]"
+.sh Lists all (-l), or a single (-L) pool.
+.br With -u, summarized usage counts are listed.
+.br With -v, each pool membership is shown, one per line.
+.BR "ippool "  "[-n] [-f|-F [POOL]]"
+.br flushes POOL (or all pools.)
+.BR "ippool " "[-n] [-x|-X [POOL]]"
+.br removes POOL (or all pools.)
+.BR "ippool " "[-n] -B"
+.br creates all fully specified pools found in the config file.
+.BR "ippool " "[-n] -N POOL [-t type] [FIRST LAST]"
+.br creates POOL of IP addresses FIRST to LAST (inclusive).  If a
+.br pool name from the config file /etc/ippool.conf is used, type and
+.br address information can be defined there.  The -t argument
+.br gives the type (default bitmap).
+.BR "ippool " "[-n] -A POOL ADDR"
+.br adds ADDR to POOL
+.BR "ippool " "[-n] -D POOL ADDR"
+.br removes ADDR from POOL
+.BR "ippool " "[-n] -C POOL ADDR"
+.br tests ADDR against membership in POOL
+.SH DESCRIPTION
+.SH BUGS
+.BR 
+"This is not a real man page."
+.SH AUTHOR
+.BR 
+"man page by Laurence J. Lane <ljlane@debian.org>"

@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 22:27:03 +0300
+Source: twisted-names
+Binary: python-twisted-names python2.4-twisted-names
+Architecture: source all
+Version: 0.3.0-1
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted-names - A DNS protocol implementation with client and server
+ python2.4-twisted-names - A DNS protocol implementation with client and server
+Changes: 
+ twisted-names (0.3.0-1) dapper; urgency=low
+ .
+   * New upstream release
+Files: 
+ 1c3b4a0dab46e7f389b2005414f8a309 353 python optional twisted-names_0.3.0-1.dsc
+ 94b7e72be999702668d0d0ba9f345d48 39731 python optional twisted-names_0.3.0-1.tar.gz
+ 5b60c45ecbb54d38d8a47b374ab0e886 10926 python optional python-twisted-names_0.3.0-1_all.deb
+ 6f68b57a0dd807c9a687cfc386e9effe 37420 python optional python2.4-twisted-names_0.3.0-1_all.deb

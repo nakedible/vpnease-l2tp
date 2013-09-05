@@ -1,0 +1,29 @@
+Source: l2tpd
+Section: net
+Priority: optional
+Maintainer: Mikko Varso <mikko.varso@codebay.fi>
+Standards-Version: 0.69
+Build-Depends: debhelper (> 5.0.6)
+
+Package: l2tpd
+Architecture: any
+Pre-Depends: debconf | debconf-2.0
+Depends: ${shlibs:Depends}, bsdmainutils, debianutils (>=1.7)
+Provides: l2tpd
+Conflicts: freeswan (<< 2.04-12)
+Description: Layer 2 Tunnelling Protocol Daemon (RFC 2661)
+ l2tpd is an implementation of the Layer 2 Tunnelling Protocol (RFC 2661).
+ L2TP allows you to tunnel PPP over UDP. Some ISPs use L2TP to tunnel user
+ sessions from dial-in servers (modem banks, ADSL DSLAMs) to back-end PPP
+ servers. Another important application is Virtual Private Networks where
+ the IPsec protocol is used to secure the L2TP connection (L2TP/IPsec,
+ RFC 3193). The L2TP/IPsec protocol is mainly used by Windows and 
+ MacOS X clients. On Linux, l2tpd can be used in combination with IPsec
+ implementations such as FreeS/WAN, Openswan, Strongswan and KAME.
+ Example configuration files for such a setup are included in this RPM.
+ .
+ l2tpd works by opening a pseudo-tty for communicating with pppd.
+ It runs completely in userspace.
+ .
+ Based on the Mandrake RPM by Lenny Cartier <lenny@mandrakesoft.com>
+ and Per Øyvind Karlsen <peroyvind@delonic.no>

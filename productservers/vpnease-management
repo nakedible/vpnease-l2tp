@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+#  VPNease management server
+#
+
+PATH=/sbin/:/bin/:/usr/sbin/:/usr/bin
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        log_begin_msg "VPNease management server start..."
+	vpneaseadmin ms start &> /dev/null
+        log_end_msg $?
+        ;;
+    stop)
+        log_begin_msg "VPNease management server stop..."
+	vpneaseadmin ms stop &> /dev/null
+        log_end_msg $?
+        ;;
+    restart)
+        log_begin_msg "VPNease management server restart..."
+	vpneaseadmin ms stop &> /dev/null
+	vpneaseadmin ms start &> /dev/null
+        log_end_msg $?
+        ;;
+    *)
+        log_success_msg "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

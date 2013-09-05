@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+#  VPNease start update step.
+#
+
+PATH=/sbin/:/bin/:/usr/sbin/:/usr/bin
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        log_begin_msg "VPNease timesync and update check:"
+	/usr/bin/python /etc/init.d/vpnease-init update
+        ;;
+    stop)
+	# Nothing to do
+        ;;
+    restart)
+	# Nothing to do
+        ;;
+    *)
+        log_success_msg "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

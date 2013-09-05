@@ -1,0 +1,12 @@
+CONFIG_IP6_NF_TARGET_MARK
+ROUTE target support
+CONFIG_IP6_NF_TARGET_ROUTE
+  This option adds a `ROUTE' target, which enables you to setup unusual
+  routes. The ROUTE target is also able to change the incoming interface
+  of a packet.
+
+  The target can be or not a final target. It has to be used inside the 
+  mangle table.
+  
+  Not working as a module.
+

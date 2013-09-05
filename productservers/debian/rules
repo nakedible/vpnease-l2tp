@@ -1,0 +1,198 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_CLEANUP_RCS            := yes
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+
+DEB_PYTHON_SETUP_CMD = setup_productservers.py
+
+# DEB_PYTHON_CLEAN_ARGS = -a
+# DEB_PYTHON_BUILD_ARGS = --build-base="$(CURDIR)/$(DEB_BUILDDIR)/build"
+# DEB_PYTHON_INSTALL_ARGS_ALL = --no-compile -O0
+
+DEB_PYTHON_COMPILE_VERSION	:= 2.4
+DEB_PYTHON_VERSIONS             := 2.4
+
+INSTALL_ARGS = --mode=0755
+
+binary-install/vpnease-monitoring::
+	cp -ar debian/tmp/* debian/vpnease-monitoring
+
+	(old_pwd=`pwd`; cd debian/vpnease-monitoring/usr/lib/python2.4/site-packages/; python $$old_pwd/../src/python/obfuscate.py codebay)
+	(cd debian/vpnease-monitoring/usr/lib/python2.4/site-packages/; zip -r codebay.zip codebay; rm -rf codebay; echo "codebay.zip" > codebay.pth)
+
+	install $(INSTALL_ARGS) -d debian/vpnease-monitoring/etc/cron.daily
+	install $(INSTALL_ARGS) monitoring-cron-daily debian/vpnease-monitoring/etc/cron.daily
+
+	install $(INSTALL_ARGS) -d debian/vpnease-monitoring/etc/cron.hourly
+	install $(INSTALL_ARGS) monitoring-cron-hourly debian/vpnease-monitoring/etc/cron.hourly
+
+	install $(INSTALL_ARGS) -d debian/vpnease-monitoring/usr/bin
+	install $(INSTALL_ARGS) vpneaseadmin debian/vpnease-monitoring/usr/bin
+
+	install $(INSTALL_ARGS) -d debian/vpnease-monitoring/etc/init.d/
+	install $(INSTALL_ARGS) ../src/python/data/codebayrc.py debian/vpnease-monitoring/etc/
+
+binary-install/vpnease-management::
+	cp -ar debian/tmp/* debian/vpnease-management
+
+	(old_pwd=`pwd`; cd debian/vpnease-management/usr/lib/python2.4/site-packages/; python $$old_pwd/../src/python/obfuscate.py codebay)
+	(cd debian/vpnease-management/usr/lib/python2.4/site-packages/; zip -r codebay.zip codebay; rm -rf codebay; echo "codebay.zip" > codebay.pth)
+
+	install $(INSTALL_ARGS) -d debian/vpnease-management/var/lib
+	install $(INSTALL_ARGS) ../vpnease-certificates/management-protocol/vpnease-ca-certificate-1-compromised/vpnease-ca-certificate.pem debian/vpnease-management/var/lib/vpnease-ca-certificate-1.pem
+	install $(INSTALL_ARGS) ../vpnease-certificates/management-protocol/signed-certificates/2007-08-08-management-server-certificate.pem debian/vpnease-management/var/lib/vpnease-management-server-certificate-1.pem
+	install $(INSTALL_ARGS) ../vpnease-certificates/management-protocol/signed-certificates/2007-08-08-management-server-private.pem debian/vpnease-management/var/lib/vpnease-management-server-private-key-1.pem
+	install $(INSTALL_ARGS) ../vpnease-certificates/management-protocol/vpnease-ca-certificate.pem debian/vpnease-management/var/lib/vpnease-ca-certificate-2.pem
+	install $(INSTALL_ARGS) ../vpnease-certificates/management-protocol/signed-certificates/2008-05-21-management-server-certificate.pem debian/vpnease-management/var/lib/vpnease-management-server-certificate-2.pem
+	install $(INSTALL_ARGS) ../vpnease-certificates/management-protocol/signed-certificates/2008-05-21-management-server-private.pem debian/vpnease-management/var/lib/vpnease-management-server-private-key-2.pem
+
+	install $(INSTALL_ARGS) -d debian/vpnease-management/etc/cron.daily
+	install $(INSTALL_ARGS) management-cron debian/vpnease-management/etc/cron.daily
+
+	install $(INSTALL_ARGS) -d debian/vpnease-management/usr/bin
+	install $(INSTALL_ARGS) vpneaseadmin debian/vpnease-management/usr/bin
+
+	install $(INSTALL_ARGS) -d debian/vpnease-management/usr/lib/vpnease-management
+	install $(INSTALL_ARGS) repository-keys.txt debian/vpnease-management/usr/lib/vpnease-management
+
+	install $(INSTALL_ARGS) -d debian/vpnease-management/etc/init.d/
+	install $(INSTALL_ARGS) ../src/python/data/codebayrc.py debian/vpnease-management/etc/
+
+	# FIXME: automatic startup in init..
+	install $(INSTALL_ARGS) -d debian/vpnease-management/etc/init.d/
+	install $(INSTALL_ARGS) vpnease-management debian/vpnease-management/etc/init.d/
+
+binary-install/vpnease-webserver::
+	cp -ar debian/tmp/* debian/vpnease-webserver
+
+	(old_pwd=`pwd`; cd debian/vpnease-webserver/usr/lib/python2.4/site-packages/; python $$old_pwd/../src/python/obfuscate.py codebay)
+	(cd debian/vpnease-webserver/usr/lib/python2.4/site-packages/; zip -r codebay.zip codebay; rm -rf codebay; echo "codebay.zip" > codebay.pth)
+	#(old_pwd=`pwd`; cd debian/vpnease-webserver/usr/lib/python2.5/site-packages/; python $$old_pwd/../src/python/obfuscate.py codebay)
+	#(cd debian/vpnease-webserver/usr/lib/python2.5/site-packages/; zip -r codebay.zip codebay; rm -rf codebay; echo "codebay.zip" > codebay.pth)
+
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/etc/cron.daily
+	install $(INSTALL_ARGS) webserver-cron-daily debian/vpnease-webserver/etc/cron.daily
+
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/usr/bin
+	install $(INSTALL_ARGS) vpneaseadmin debian/vpnease-webserver/usr/bin
+
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/etc/
+	install $(INSTALL_ARGS) ../src/python/data/codebayrc.py debian/vpnease-webserver/etc/
+
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/etc/init.d
+	install $(INSTALL_ARGS) vpnease-webserver debian/vpnease-webserver/etc/init.d/
+
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages/d
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages/s
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages/i
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages/download
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages/partners
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages/product
+	install $(INSTALL_ARGS) -d debian/vpnease-webserver/var/local/vpnease-webpages/support
+	-for i in 	home-template.xhtml \
+			home-content.xhtml \
+			doc-template.xhtml \
+			doc-content.xhtml \
+			partner-template.xhtml \
+			partner-content.xhtml \
+			redirect-template.xhtml \
+			download/download-home.xhtml \
+			download/latest-version.xhtml \
+			download/open-source.xhtml \
+			download/previous-versions.xhtml \
+			partners/installation-partner-activate-license-confirm.xhtml \
+			partners/installation-partner-activate-license-failure.xhtml \
+			partners/installation-partner-activate-license-success.xhtml \
+			partners/installation-partner-activate-license.xhtml \
+			partners/installation-partner-process.xhtml \
+			partners/partner-ask-more-failure.xhtml \
+			partners/partner-ask-more-success.xhtml \
+			partners/partner-ask-more.xhtml \
+			partners/partner-benefits.xhtml \
+			partners/partner-discounts.xhtml \
+			partners/partner-license-agreement.xhtml \
+			partners/partners-home.xhtml \
+			partners/request-partnership-failure.xhtml \
+			partners/request-partnership-success.xhtml \
+			partners/request-partnership.xhtml \
+			partners/sales-materials.xhtml \
+			partners/service-provider-partner-activate-license-confirm.xhtml \
+			partners/service-provider-partner-activate-license-failure.xhtml \
+			partners/service-provider-partner-activate-license-success.xhtml \
+			partners/service-provider-partner-activate-license.xhtml \
+			partners/service-provider-partner-process.xhtml \
+			product/buy-license-confirm.xhtml \
+			product/buy-license-failure.xhtml \
+			product/buy-license-success.xhtml \
+			product/buy-license.xhtml \
+			product/description-of-file.xhtml \
+			product/dual-use-goods-detailed.xhtml \
+			product/dual-use.xhtml \
+			product/features.xhtml \
+			product/legal-notice.xhtml \
+			product/license-agreement.xhtml \
+			product/payment-options.xhtml \
+			product/pricing.xhtml \
+			product/privacy-policy.xhtml \
+			product/product-ask-more-failure.xhtml \
+			product/product-ask-more-success.xhtml \
+			product/product-ask-more.xhtml \
+			product/product-comparison.xhtml \
+			product/product-home.xhtml \
+			product/productpage.xhtml \
+			support/administration-interface.xhtml \
+			support/authentication-options.xhtml \
+			support/client-configuration.xhtml \
+			support/encryption-and-standards.xhtml \
+			support/faq.xhtml \
+			support/quick-installation-guide.xhtml \
+			support/server-bios-setup.xhtml \
+			support/server-clustering.xhtml \
+			support/multi-customer-configuration.xhtml \
+			support/server-installation.xhtml \
+			support/server-requirements.xhtml \
+			support/site-to-site-configuration.xhtml \
+			support/snmp-monitoring.xhtml \
+			support/support-ask-more-failure.xhtml \
+			support/support-ask-more-success.xhtml \
+			support/support-ask-more.xhtml \
+			support/support-home.xhtml \
+			support/support-request-failure.xhtml \
+			support/support-request-success.xhtml \
+			support/support-request.xhtml \
+			support/test-servers.xhtml \
+			support/virtualization-products.xhtml \
+			partnersite/test.xhtml \
+			i/favicon.ico \
+			i/favicon.gif \
+			i/bg-banner.gif \
+			i/bg-menu-current.gif \
+			i/bg-menu-sep.gif \
+			i/bullet-document.png \
+			i/bullet-star.gif \
+			i/bullet-form.png \
+			i/external.gif \
+			i/feed-icon.gif \
+			i/logo.gif \
+			i/status-snapshot.gif \
+			i/freetrial-button-small-blue.png \
+			i/freetrial-button-medium-blue.png \
+			i/buynow-button-small-blue.png \
+			i/buynow-button-medium-blue.png \
+			s/form.css \
+			s/home.css \
+			s/layout.css \
+			s/site.css \
+			s/cb.css \
+			s/print-site.css \
+			s/print-cb.css \
+			s/print-web.css \
+			d/recovery.sh \
+			; do \
+		install $(INSTALL_ARGS) ../src/python/productweb-pages/$${i} debian/vpnease-webserver/var/local/vpnease-webpages/$${i}; \
+		done
+
+		# FIXME: install recovery.sh to correct place through deb, currently needs manual copying

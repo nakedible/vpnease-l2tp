@@ -1,0 +1,17 @@
+# Add the URLs for external patchlets here
+# 
+
+# geoip, maintained by Samuel Jean <jix@bugmachine.ca>
+http://people.netfilter.org/acidfu/patchlets/
+
+# condition, maintained by Massimiliano Hofer <max@nucleus.it>
+http://www.nucleus.it/pom-repo
+
+# ipp2p, time, IPMARK and connlimit maintained by Krzysztof Oledzki <ole@ans.pl>
+http://people.netfilter.org/ole/pom/
+
+# ACCOUNT, maintained by Intra2net AG <opensource@intra2net.com>
+http://www.intra2net.com/de/produkte/opensource/ipt_account/
+
+# Portknocking and SPA (J. Federico Hernandez <frozenspot@gmail.com>)
+http://svn.berlios.de/svnroot/repos/portknocko/trunk/pom/

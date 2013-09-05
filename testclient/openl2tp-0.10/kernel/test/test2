@@ -1,0 +1,15 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+set -e
+
+# echo "Test 2: Load, read /proc and unload module"
+
+./subtest-load
+
+./subtest-proc
+
+./subtest-unload
+
+echo "Done"

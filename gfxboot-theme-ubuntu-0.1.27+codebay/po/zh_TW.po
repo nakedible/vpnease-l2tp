@@ -1,0 +1,377 @@
+# LANGUAGE translations for boot loader
+# Copyright (C) 2004 SUSE LINUX AG
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bootloader\n"
+"PO-Revision-Date: 2006-05-31 12:20+0000\n"
+"Last-Translator: PCMan <pcman.tw@gmail.com>\n"
+"Language-Team: Novell Language <language@novell.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. ok button label
+#. txt_ok
+msgid "OK"
+msgstr "確定"
+
+#. cancel button label
+#. txt_cancel
+msgid "Cancel"
+msgstr "取消"
+
+#. reboot button label
+#. txt_reboot
+msgid "Reboot"
+msgstr "重新開機"
+
+#. continue button label
+#. txt_continue
+msgid "Continue"
+msgstr "繼續"
+
+#. txt_bootoptions
+msgid "Boot Options"
+msgstr "開機選項"
+
+#. window title for exit dialog
+#. txt_exit_title (see txt_exit_dialog)
+msgid "Exiting..."
+msgstr "正在離開..."
+
+#. txt_exit_dialog
+msgid ""
+"You are leaving the graphical boot menu and\n"
+"starting the text mode interface."
+msgstr ""
+"您將離開圖形開機選單並\n"
+"啟動文字模式介面。"
+
+#. txt_help
+msgid "Help"
+msgstr "求助"
+
+#. window title for kernel loading (see txt_load_kernel)
+#. txt_load_kernel_title
+msgid "Starting..."
+msgstr "正在啟動..."
+
+#. Keep the three newlines!
+#. txt_load_kernel
+msgid ""
+"Loading Linux Kernel\n"
+"\n"
+"\n"
+msgstr ""
+"正在載入 Linux 核心\n"
+"\n"
+"\n"
+
+#. Keep the three newlines!
+#. txt_load_memtest
+msgid ""
+"Loading memtest86\n"
+"\n"
+"\n"
+msgstr ""
+"正在載入 memtest86\n"
+"\n"
+"\n"
+
+#. info box title
+#. txt_info_title
+msgid "Boot loader"
+msgstr "Boot loader"
+
+#. error box title
+#. txt_error_title
+msgid "I/O error"
+msgstr "輸入/輸出錯誤"
+
+#. boot disk change dialog title
+#. txt_change_disk_title
+msgid "Change Boot Disk"
+msgstr "更換開機磁片"
+
+#. txt_insert_disk
+#, c-format
+msgid "Insert boot disk %u."
+msgstr "插入開機磁片 %u。"
+
+#. txt_insert_disk2
+#, c-format
+msgid ""
+"This is boot disk %u.\n"
+"Insert boot disk %u."
+msgstr ""
+"這是開機磁片 %u。\n"
+"插入開機磁片 %u。"
+
+#. <product> is e.g. SuSE Linux X.Y or Enterprise Server Z
+#. txt_insert_disk3
+#, c-format
+msgid ""
+"This is not a suitable boot disk.\n"
+"Please insert boot disk %u."
+msgstr ""
+"這不是適當的開機磁片。\n"
+"請插入開機磁片 %u。"
+
+#. password dialog title
+#. txt_password_title
+msgid "Password"
+msgstr "密碼"
+
+#. Keep the newlines and spaces after ':'!
+#. txt_password
+msgid ""
+"Enter your password:   \n"
+"\n"
+"\n"
+msgstr ""
+"輸入您的密碼：   \n"
+"\n"
+"\n"
+
+#. dvd warning title
+#. txt_dvd_warning_title
+msgid "DVD Error"
+msgstr "DVD 錯誤"
+
+#. txt_dvd_warning2
+msgid ""
+"This is a two-sided DVD. You have booted from the second side.\n"
+"\n"
+"Turn the DVD over then continue."
+msgstr ""
+"這是雙面 DVD。您是從第二面開機。\n"
+"\n"
+"請將 DVD 翻轉，然後繼續。"
+
+#. power off dialog title
+#. txt_power_off_title
+msgid "Power Off"
+msgstr "關閉電源"
+
+#. txt_power_off
+msgid "Halt the system now?"
+msgstr "要立即終止系統嗎？"
+
+#. dialog title for hard disk installation
+#. txt_harddisk_title
+msgid "Hard Disk Installation"
+msgstr "硬碟安裝"
+
+#. txt_hd_diskdevice
+msgid "Disk Device (scan all disks if empty)\n"
+msgstr "磁碟裝置 (如果是空的，將掃描所有磁碟)\n"
+
+#. txt_directory
+msgid "Directory\n"
+msgstr "目錄\n"
+
+#. dialog title for ftp installation
+#. txt_ftp_title
+msgid "FTP Installation"
+msgstr "FTP 安裝"
+
+#. txt_server
+msgid "Server\n"
+msgstr "伺服器\n"
+
+#. txt_password
+msgid "Password\n"
+msgstr "密碼\n"
+
+#. label for ftp user input
+#. txt_user1
+msgid "User (anonymous login if empty)\n"
+msgstr "使用者 (如果是空的，將以匿名登入)\n"
+
+#. dialog title for nfs installation
+#. txt_nfs_title
+msgid "NFS Installation"
+msgstr "NFS 安裝"
+
+#. label for smb user input
+#. txt_user2
+msgid "User (using \"guest\" if empty)\n"
+msgstr "使用者 (如果是空的，將使用 \"guest\")\n"
+
+#. dialog title for smb installation
+#. txt_smb_title
+msgid "SMB (Windows Share) Installation"
+msgstr "SMB (Windows 共享) 安裝"
+
+#. dialog title for http installation
+#. txt_http_title
+msgid "HTTP Installation"
+msgstr "HTTP 安裝"
+
+#. as in Windows Authentication Domain
+#. txt_domain
+msgid "Domain\n"
+msgstr "網域\n"
+
+#. button label for other/more options
+#. txt_other_options
+msgid "Other Options"
+msgstr "其他選項"
+
+#. label for language selection
+#. txt_language
+msgid "Language"
+msgstr "語言"
+
+#. label for keymap selection
+#. txt_keymap
+msgid "Keymap"
+msgstr "鍵盤對應表"
+
+#. label for d-i mode menu
+#. txt_normal_mode
+msgid "Normal mode"
+msgstr "一般模式"
+
+#. label for d-i mode menu
+#. txt_expert_mode
+msgid "Expert mode"
+msgstr "專家模式"
+
+#. title for accessibility menu
+#. txt_access
+msgid "Accessibility"
+msgstr "無障礙環境"
+
+#. label for accessibility menu
+#. txt_access_none
+msgid "None"
+msgstr "無"
+
+#. label for accessibility menu
+#. txt_access_v1
+msgid "Lesser Visual Impairment"
+msgstr "輕微視覺障礙"
+
+#. label for accessibility menu
+#. txt_access_v2
+msgid "Moderate Visual Impairment"
+msgstr "中度視覺障礙"
+
+#. label for accessibility menu
+#. txt_access_v3
+msgid "Blindness"
+msgstr "盲目"
+
+#. label for accessibility menu
+#. txt_access_m1
+msgid "Minor Motor Difficulties"
+msgstr "輕微活動困難"
+
+#. label for accessibility menu
+#. txt_access_m2
+#, fuzzy
+msgid "Motor Difficulties - pointing devices"
+msgstr "活動困難 — pointing 裝置"
+
+#. label for accessibility menu
+#. txt_access_m3
+#, fuzzy
+msgid "Motor Difficulties - switch devices"
+msgstr "活動困難 — switch 裝置"
+
+#. label for accessibility menu
+#. txt_access_all
+msgid "Everything"
+msgstr "所有東西"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_ubuntu
+msgid "^Start or install Ubuntu"
+msgstr "啟動 Ubuntu (^S)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_ubuntu_xforcevesa
+msgid "Start Ubuntu in safe ^graphics mode"
+msgstr "以安全圖形模式啟動 Ubuntu (^g)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_kubuntu
+msgid "^Start or install Kubuntu"
+msgstr "啟動 Kubuntu (^S)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_kubuntu_xforcevesa
+msgid "Start Kubuntu in safe ^graphics mode"
+msgstr "以安全圖形模式啟動 Kubuntu (^g)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_edubuntu
+msgid "^Start or install Edubuntu"
+msgstr "啟動 Edubuntu (^S)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_edubuntu_xforcevesa
+msgid "Start Edubuntu in safe ^graphics mode"
+msgstr "以安全圖形模式啟動 Edubuntu (^g)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_xubuntu
+msgid "^Start or install Xubuntu"
+msgstr "啟動 Xubuntu (^S)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_xubuntu_xforcevesa
+msgid "Start Xubuntu in safe ^graphics mode"
+msgstr "以安全圖形模式啟動 Xubuntu (^g)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_install_text
+msgid "^Install in text mode"
+msgstr "安裝到硬碟(^I)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_install
+msgid "^Install to the hard disk"
+msgstr "安裝到硬碟(^I)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_workstation
+msgid "Install a ^workstation"
+msgstr "安裝工作站(^w)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_oem
+msgid "Install in ^OEM mode"
+msgstr "以 OEM 模式安裝(^O)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_lamp
+msgid "Install a ^LAMP server"
+msgstr "安裝 ^LAMP 伺服器"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_server
+msgid "Install a ^server"
+msgstr "安裝伺服器 (^s)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_check
+msgid "^Check CD for defects"
+msgstr "^檢查 CD 是否有缺損"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_rescue
+msgid "^Rescue a broken system"
+msgstr "救援已損壞的系統(^R)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_memtest
+msgid "^Memory test"
+msgstr "記憶體測試(^M)"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_hd
+msgid "^Boot from first hard disk"
+msgstr "從第一個硬碟開機(^B)"

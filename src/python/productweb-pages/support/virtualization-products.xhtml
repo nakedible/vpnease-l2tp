@@ -1,0 +1,566 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Virtualization Products</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">What Is Virtualization?</h1>
+
+          <p>
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Virtualization">Virtualization</a>
+            products allow sharing the resources of one physical computer with multiple
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Virtual_machine">virtual machines</a>.
+            Each virtual machine resembles a physical computer but consumes only a fraction of the
+            physical computer's resources.  The resources used by the virtual machine
+            are provided by the host computer.  Virtualization
+            allows you to run multiple different products and operating systems on
+            the same hardware.  For instance, the host computer may run Windows
+            Server 2003 while virtual machines (also known as guests) may run
+            Linux, Windows XP, and other operating systems, without any compatibility
+            issues.
+          </p>
+
+          <p>
+            With virtualization, you can even overcome differences between processor
+            architectures.  For instance, <n:invisible n:macro="productname" /> can 
+            be installed on PowerPC-based Mac OS X computers, even though
+            <n:invisible n:macro="productname" /> itself requires an Intel/AMD x86
+            processor.
+          </p>
+
+          <p>
+            <n:invisible n:macro="productname" /> supports all major virtualization
+            products.  You can install <n:invisible n:macro="productname" /> on an
+            existing server computer by first installing a supported virtualization
+            product and then installing <n:invisible n:macro="productname" /> into
+            a virtual machine.  This saves money and resources, and further hides the
+            host hardware from <n:invisible n:macro="productname" />, allowing you to
+            use hardware and network configurations not directly supported by
+            <n:invisible n:macro="productname" />.
+          </p>
+        </div> <!-- what is virtualization? -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Supported Virtualization Products</h1>
+
+          <p>
+            <n:invisible n:macro="productname" /> supports the following virtualization products:
+          </p>
+
+          <ul>
+            <li><a class="cb-external" target="_blank" href="http://www.vmware.com/products/server/">VMware Server</a></li>
+            <li><a class="cb-external" target="_blank" href="http://www.vmware.com/products/vi/esx/">VMware ESX Server</a></li>
+            <li><a class="cb-external" target="_blank" href="http://www.vmware.com/products/ws/">VMware Workstation</a></li>
+            <li><a class="cb-external" target="_blank" href="http://www.microsoft.com/windowsserversystem/virtualserver/default.mspx">Microsoft Virtual Server</a></li>
+            <li><a class="cb-external" target="_blank" href="http://www.microsoft.com/windows/virtualpc/default.mspx">Microsoft Virtual PC</a></li>
+            <li><a class="cb-external" target="_blank" href="http://technet2.microsoft.com/windowsserver2008/en/servermanager/virtualization.mspx">Microsoft Hyper-V</a></li>
+            <li><a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine">KVM</a> (free)</li>
+            <li><a class="cb-external" target="_blank" href="http://www.parallels.com/en/products/workstation/">Parallels Workstation</a></li>
+            <li><a class="cb-external" target="_blank" href="http://www.parallels.com/en/products/desktop/">Parallels Desktop</a></li>
+          </ul>
+        </div> <!-- supported virtualization products -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Other Virtualization Products</h1>
+
+          <p>
+            <n:invisible n:macro="productname" /> should work correctly in all
+            <strong class="cb-bold">full virtualization systems</strong>,
+            which provide virtual PC hardware (32-bit x86 processor) to the virtual machine. 
+            Such systems include
+            <a class="cb-external" target="_blank" href="http://fabrice.bellard.free.fr/qemu/">Qemu</a> and
+            <a class="cb-external" target="_blank" href="http://www.cl.cam.ac.uk/research/srg/netos/xen/">Xen</a>
+            in full virtualization mode.
+            However, <n:invisible n:macro="productname" /> does not support
+            installation into these alternative systems, and functionality cannot 
+            be guaranteed.
+          </p>
+        </div> <!-- other virtualization products -->
+      </div> <!-- virtualization overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Installing <n:invisible n:macro="productname" /> Using Virtualization Products</h1>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Common Requirements</h1>
+
+          <ul>
+          <li>Virtual hard disk of at least 2 GB (about 1.86 GiB)</li>
+          <li>256 MiB of memory for virtual machine (512 MiB recommended)</li>
+          <li>One or two virtual network interfaces (Ethernet)</li>
+          </ul>
+
+          <p>
+            Installing <n:invisible n:macro="productname" /> server on virtualization products is very similar
+            to installing onto physical hardware.  There are product specific variations on how virtual machines
+            are created, started, and configured for server use (automatic starting on host startup, and so on).
+            Please refer to your virtualization product manuals for more information.  Instructions for VMware Server
+            and KVM are described below as illustrations.
+            Also see <a href="#post-installation-steps">Common Post-Installation Steps</a> below.
+          </p>
+
+          <p>
+            A prepackaged virtual appliance is available for VMware on the
+            <a href="download-home.html"><n:invisible n:macro="productname" /> Download</a> page.
+            No product installation is necessary when using a virtual appliance: simply unpack the
+            appliance files, review virtual machine configuration, and take the virtual machine into use.
+          </p>
+        </div> <!-- common requirements -->
+
+        <div class="cb-section">
+          <a name="post-installation-steps" />
+
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Common Post-Installation Steps</h1>
+
+          <p>
+            After configuring the <n:invisible n:macro="productname" /> server, 
+            you should perform the following steps to ensure that the product performs as reliably
+            and securely as possible.
+          </p>
+
+          <ul>
+            <li><strong class="cb-bold">Virtual machine boot order</strong>:
+                Check that the virtual machine starts into <n:invisible n:macro="productname" />
+                when the virtual machine is rebooted.  In particular, check that there is no
+                virtual CD/DVD image in the virtual machine CD/DVD drive.  Alternatively,
+                change virtual machine boot order to prefer booting from hard disk instead
+                of CD/DVD.</li>
+            <li><strong class="cb-bold">Virtual machine autostart on host reboot</strong>:
+                If available in the virtualization product, ensure that the virtual machine
+                starts automatically when the host reboots.  This is important for instance
+                with power outages, to ensure that remote access service is automatically
+                restarted after the host computer reboot.</li>
+            <li><strong class="cb-bold">Take a backup or a snapshot of the virtual machine</strong>:
+                Power off the virtual machine and take a backup of the virtual machine
+                directory.  Some virtualization products also provide a snapshot capability,
+                which can be used instead.  A backup or a snapshot allows you to roll back to
+                an earlier configuration in case of a problem with the product (a
+                configuration error, accidental deletion of user accounts, etc).</li>
+            <li><strong class="cb-bold">Host computer automatic reboot</strong>:
+                Because most operating systems have trouble performing reliably over extended
+                periods (months), it is recommended to set up an automatic reboot schedule for
+                the host computer.  For instance, the host computer could be configured to
+                reboot once a week or once a month.  This minimizes risk of host computer
+                related remote access service disruptions.  <n:invisible n:macro="productname" />
+                will automatically reboot the virtual machine periodically to minimize
+                disruptions caused by the virtual machine.</li>
+            <li><strong class="cb-bold">Host computer network configuration</strong>:
+                The host computer should not have a configured IP address in order to
+                minimize risks of host computer intrusion. If the host computer needs to have an IP address
+                (which is quite typical), host computer firewall settings should be carefully configured and
+                the remote access should be reachable only
+                through a firewall port forwarding function.</li>       
+            <li><strong class="cb-bold">Host computer power management</strong>:
+                Check host computer BIOS and operating system power management settings.
+                The host computer should never power off, despite lack of any activity.</li>
+            <li><strong class="cb-bold">Host computer screensaver</strong>:
+                Check host computer screensaver settings.  The preferred screensaver is
+                a simple black screen to minimize performance impact of the screensaver.
+            </li>
+            <li><strong class="cb-bold">Host computer RAID settings</strong>:
+                If your host computer uses RAID disk array, check that RAID settings are
+                correct.  In particular, check that the host computer alarms you somehow
+                if integrity of the RAID configuration is threatened by a failing disk.</li>
+            <li><strong class="cb-bold">Host computer UPS settings</strong>:
+                If your host computer is connected to a UPS, check that the UPS settings
+                are correct.  Check that UPS alarms are delivered to you using e.g. email,
+                and simulate a power failure to ensure that the alarms are actually
+                delivered.</li>
+          </ul>
+        </div> <!-- post-installation steps -->
+
+        <div class="cb-section">
+          <a name="known-limitations" />
+
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Known Limitations</h1>
+
+          <p>
+            Virtual machines running <n:invisible n:macro="productname" /> should not be suspended.
+            Suspend/resume causes a large time synchronization discrepancy which disrupts VPN service.  Please
+            shut down virtual machines instead of suspending them.
+          </p>
+
+        </div> <!-- known limitations -->
+
+      </div> <!-- installing on a virtualization product -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">VMware (Workstation, Server, ESX Server)</h1>
+
+        <p>
+          <a class="cb-external" target="_blank" href="http://www.vmware.com/">VMware</a> has several different virtualization
+          products intended to a wide range of users; from desktop to data center use.
+          They also provide free products, such as VMware Server and VMware Player.
+          <n:invisible n:macro="productname" /> works best with
+          <a class="cb-external" target="_blank" href="http://www.vmware.com/products/server/">VMware Server</a> and
+          <a class="cb-external" target="_blank" href="http://www.vmware.com/products/vi/esx/">VMware ESX Server</a>.
+          <n:invisible n:macro="productname" /> can be used with other VMware products as well, but they may
+          be less ideal environments.  For instance,
+          <a class="cb-external" target="_blank" href="http://www.vmware.com/products/ws/">VMware Workstation</a>
+          does not provide
+          an easy and reliable way to start virtual machines automatically when the host
+          computer boots up, which is important for a network service like
+          <n:invisible n:macro="productname" />.
+        </p>
+
+        <p>
+          To install <n:invisible n:macro="productname" /> using VMware Server, do as follows
+          (these steps are for Linux version of VMware Server, but are very similar to the
+          Windows version; ESX Server installation is slightly different but the same parameters
+          apply):
+        </p>
+
+        <ul>
+          <li>
+            Create virtual machine
+            <ul>
+              <li>Select <strong class="cb-guilabel">File -> New -> Virtual Machine</strong>.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select <strong class="cb-guilabel">Custom</strong>.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select <strong class="cb-guilabel">Guest Operating System</strong> value
+                  <strong class="cb-guilabel">2. Linux</strong>, and select
+                  <strong class="cb-guilabel">Ubuntu</strong> from the
+                  <strong class="cb-guilabel">Version</strong> dropdown menu.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select an appropriate name for the virtual machine
+                  (e.g. <strong class="cb-userinput"><n:invisible n:macro="productname" /> Server</strong>),
+                  and check the storage location for virtual machine files.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select number of processors as <strong class="cb-guilabel">One</strong>.
+                  <n:invisible n:macro="productname" /> supports multiprocessor environments,
+                  but in typical cases the extra performance is not necessary.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>In some VMware products you will be asked whether the new virtual
+                  machine should be made private (visible only to VMware user creating the virtual machine) or not.
+                  Select whichever is more appropriate for you.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Specify memory size of <strong class="cb-userinput">512 MB</strong> (recommended).
+                  256 MB is the minimum supported by <n:invisible n:macro="productname" />.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select <strong class="cb-guilabel">Network Connection</strong> value
+                  <strong class="cb-guilabel">Use bridged networking</strong>.
+                  This connects your virtual machine directly to the local Ethernet network.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select <strong class="cb-guilabel">I/O Adapter Types</strong> value
+                  <strong class="cb-guilabel">SCSI adapter</strong> /
+                  <strong class="cb-guilabel">LSI Logic</strong>.  In general the default
+                  selection is best.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select <strong class="cb-guilabel">Create a new virtual disk</strong>.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select <strong class="cb-guilabel">Virtual Disk Type</strong> value
+                  <strong class="cb-guilabel">SCSI (Recommended)</strong>.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Specify size for new virtual disk as
+                  <strong class="cb-userinput">2.0</strong> (GB).
+                  Check the <strong class="cb-guilabel">Allocate all disk space now</strong> and
+                  <strong class="cb-guilabel">Split disk into 2GB files</strong> checkboxes.
+                  Click <strong class="cb-guilabel">Next</strong>.</li>
+              <li>Select a name for the virtual disk file.  The default is typically OK.
+                  Click <strong class="cb-guilabel">Finish</strong>.</li>
+              <li>VMware will now create the virtual disk file, which should take about one
+                  minute.  When complete, VMware will return you to the main administration window.</li>
+            </ul>
+          </li>
+          
+          <li>
+            Finalize configuration and configure bootup from <n:invisible n:macro="productname" /> Live CD
+            <ul>
+              <li>Open virtual machine settings window by clicking
+                  <strong class="cb-guilabel">Edit virtual machine settings</strong>.</li>
+              <li>Select <strong class="cb-guilabel">Options</strong> tab.
+                <ul>
+                  <li>Select <strong class="cb-guilabel">Power</strong> and check the
+                  <strong class="cb-guilabel">Power on after opening the virtual machine</strong> and
+                  <strong class="cb-guilabel">Close after powering off or suspending</strong> checkboxes.</li>
+                  <li>Select <strong class="cb-guilabel">Snapshot</strong> and check the
+                  <strong class="cb-guilabel">Disable snapshots</strong> checkbox.</li>
+                  <li>Select <strong class="cb-guilabel">Startup/Shutdown</strong>, select the
+                  <strong class="cb-guilabel">Power on virtual machine</strong> under the label
+                  <strong class="cb-guilabel">On host startup</strong>, and
+                  <strong class="cb-guilabel">Shut down guest operating system</strong> under the label
+                  <strong class="cb-guilabel">On host shutdown</strong>.</li>
+                </ul>
+              </li>
+              <li>Select <strong class="cb-guilabel">Hardware</strong> tab.
+                <ul>
+                  <li>Select <strong class="cb-guilabel">CD-ROM 1 (IDE 1:0)</strong> (or similar).
+                      Check the <strong class="cb-guilabel">Connect at power on</strong> checkbox.
+                      Select the <strong class="cb-guilabel">Use ISO image:</strong> option,
+                      and click the file browsing icon to locate the
+                      <n:invisible n:macro="productname" /> Live CD ISO image file.</li>
+                  <li>Select <strong class="cb-guilabel">Floppy 1</strong> (or similar), and click
+                      <strong class="cb-guilabel">Remove</strong> to remove the unnecessary floppy device.</li>
+                  <li>Select <strong class="cb-guilabel">Ethernet 1</strong> (or similar).
+                      Ensure that <strong class="cb-guilabel">Connect at power on</strong> checkbox is
+                      checked, and that the <strong class="cb-guilabel">Bridged: Connected directly to
+                      to the physical network</strong> option is selected.</li>
+                  <li>If you wish to use a configuration with two network interfaces
+                      (see <a href="server-requirements.html">Server Requirements</a>),
+                      click <strong class="cb-guilabel">Add...</strong>.  Select
+                      <strong class="cb-guilabel">Ethernet Adapter</strong> from the
+                      <strong class="cb-guilabel">Hardware Types</strong> list and click
+                      <strong class="cb-guilabel">Next</strong>.
+                      Select <strong class="cb-guilabel">Bridged: Connected directly to the physical network</strong>
+                      option for <strong class="cb-guilabel">Network Connection</strong>, ensure that
+                      the <strong class="cb-guilabel">Connect at power on</strong> checkbox is checked, and click
+                      <strong class="cb-guilabel">Finish</strong>.
+                  </li>
+                </ul>
+              </li>
+              <li>Click <strong class="cb-guilabel">OK</strong> to close the Virtual Machine Settings
+                  window.</li>
+            </ul>
+          </li>
+
+          <li>
+            Boot from <n:invisible n:macro="productname" /> Live CD and install <n:invisible n:macro="productname" /> server
+            <ul>
+              <li>Start the new virtual machine by clicking the green "play" icon (<strong class="cb-guilabel">Power On</strong>).</li>
+              <li>Enter the BIOS setup menu of the virtual machine: get virtual machine focus
+                  by clicking on the virtual machine display area, and press
+                  <strong class="cb-keycap">F2</strong> when instructed by the BIOS.  The BIOS menu
+                  should appear.</li>
+              <li>Navigate to the <strong class="cb-guilabel">Boot</strong> menu by pressing the
+                  right arrow key multiple times.  Navigate the list of boot devices using the
+                  down arrow key until the <strong class="cb-guilabel">CD-ROM Drive</strong> text is
+                  active.  Press the plus key (on the keypad) until the
+                  <strong class="cb-guilabel">CD-ROM Drive</strong> is first in the boot list.</li>
+              <li>Navigate to the <strong class="cb-guilabel">Exit</strong> menu by pressing the
+                  right arrow key.  Ensure that <strong class="cb-guilabel">Exit Saving Changes</strong>
+                  is selected and press <strong class="cb-keycap">Enter</strong>.  Confirm the
+                  save operation by selecting <strong class="cb-guilabel">Yes</strong> and press
+                  <strong class="cb-keycap">Enter</strong>.</li>
+              <li>The Live CD should now boot in the virtual machine.  The remaining installation
+                  steps are the same as in a normal installation.  Select the
+                  virtual hard disk as the installation target.  Remember to eject the CD-ROM or
+                  disable the CD drive of the virtual machine before initial configuration, so that
+                  <n:invisible n:macro="productname" /> boots correctly from the hard disk after
+                  installation.
+                  For more information, 
+                  see <a href="server-installation.html">Server Installation</a>.</li>
+            </ul>
+          </li>
+          <li>
+            Finalize installation
+            <ul>
+              <li>Disable boot from the Live CD as follows.
+                  In the main VMware screen click <strong class="cb-guilabel">Edit virtual machine settings</strong>.
+                  Select <strong class="cb-guilabel">CD-ROM (IDE 1:0)</strong> (or similar), 
+                  and clear the <strong class="cb-guilabel">Connect at power on</strong> checkbox.
+                  Close the settings window by clicking
+                  <strong class="cb-guilabel">OK</strong>.</li>
+              <li>Check the Common Post-Installation Steps above.</li>
+            </ul>
+          </li>
+        </ul>
+      
+      </div> <!-- vmware -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">KVM</h1>
+
+        <p>
+          <a href="http://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine">KVM (Kernel-based Virtual Machine)</a>
+          is a free, high quality virtualization technology built directly into modern Linux platforms.
+          KVM provides high performance through hardware assisted virtualization.  It thus requires a
+          relatively modern PC with either Intel VT-x or AMD-V (also known as AMD Pacifica) processor virtualization technology
+          for maximum performance.
+          We suggest that you use a reliable and stable Linux distribution for deploying KVM.  For instance,
+          the <a href="http://www.ubuntu.com/server" class="cb-external" target="_blank">Ubuntu Server</a> is a good free platform for this purpose.
+        </p>
+
+        <p>
+          KVM management is command line based, which allows ordinary Linux scripts to be used for e.g. startup.
+	  An alternative solution is to use some GUI wrappers for KVM such as
+          <a href="http://virt-manager.et.redhat.com/" class="cb-external" target="_blank">virt-manager</a>.
+          The following instructions assume that the host has X server configured.  Installation without X server
+          is similar, except that remote VNC connections are used throughout the installation.
+        </p>
+
+        <p>
+          To install <n:invisible n:macro="productname" /> on KVM, do as follows:
+        </p>
+
+        <ul>
+          <li>
+            Login with proper permissions (e.g. as root).  Read the KVM manual pages for an overview of KVM and its options.
+<pre>
+$ man kvm
+$ man kvm-qemu   # may vary depending on distribution
+</pre>
+          </li>
+          <li>
+            Create a virtual machine
+            <ul>
+              <li>
+                Create a directory for the virtual machine:
+<pre>
+$ mkdir /&lt;path&gt;/kvm/vpnease
+$ cd /&lt;path&gt;/kvm/vpnease
+</pre>
+              </li>
+              <li>
+                Create a virtual disk for the virtual machine:
+<pre>
+# in the virtual machine directory
+$ dd if=/dev/zero of=disk.bin bs=1M count=4096  # 4 GiB
+</pre>
+              </li>
+            </ul>
+          </li>
+          <li>
+            VPNease installation
+            <ul>
+              <li>
+                If necessary in your distribution, start KVM kernel modules:
+<pre>
+$ modprobe kvm        # for both AMD and Intel
+$ modprobe kvm-amd    # for AMD
+$ modprobe kvm-intel  # for Intel
+</pre>
+              </li>
+              <li>
+                Start the installer:
+<pre>
+$ kvm -hda disk.bin \
+      -cdrom vpnease_&lt;version&gt;.iso \
+      -boot d \
+      -std-vga \
+      -net nic,vlan=0,model=rtl8139 \
+      -net tap,vlan=0,ifname=vpnease0
+</pre>                
+              </li>
+              <li>
+                You should configure network connectivity for the virtual machine at this point.
+                The virtual machine will have a virtual eth0 Ethernet device, which will send and
+                receive packets from the host vpnease0 (or whatever name was given above) TAP device.
+                <ul>
+                  <li>
+                    The simplest approach is to configure a static address from a virtual subnet
+                    for the virtual machine, and assign the host TAP device an address from the same virtual 
+                    subnet.  Then, allow routing  with NAT (MASQUERADE or SNAT) from the TAP device to the external network.
+                    Finally, add port forwarding for UDP ports 500 and 4500 (IPsec) and TCP ports 80 and 443
+                    (web UI) from the external network to the virtual machine.
+                  </li>
+                  <li>
+                    Several other configurations are possible.  For instance, KVM supports a bridged connection
+                    mode.  See KVM documentation for more information on network configuration alternatives.
+                    Note that the KVM "user" networking mode is not recommended because of its limitations.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Install <n:invisible n:macro="productname" /> normally, see
+                <a href="server-installation.html">Server Installation</a>.
+                Once installation is complete, power off the virtual machine.
+              </li>
+              <li>
+                To perform initial configuration, start KVM again with the following options
+                (the difference to the previous options is that booting happens from the hard
+                disk rather than the CD drive):
+<pre>
+$ kvm -hda disk.bin \
+      -boot c \
+      -std-vga \
+      -net nic,vlan=0,model=rtl8139 \
+      -net tap,vlan=0,ifname=vpnease0
+</pre>                
+              </li>
+              <li>
+                When initial configuration is done, ensure that the virtual machine gets a demo license.  This indicates
+                that networking functions at the basic level.  You can also test client connections
+                at this point.  Once done, shutdown the product from the web UI and exit KVM.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Configure automatic startup for the server:
+            <ul>
+              <li>
+                The KVM command line above is suitable for starting up the KVM virtual machine
+                from e.g. /etc/rcN.d/ startup scripts, except that a different graphics device
+                needs to be used.  The following command line starts up the KVM virtual machine
+                as above, but with VNC graphics suitable for startup from system scripts even
+                without X being installed on the host (you can change the VNC display number to
+                whatever you wish to use):
+<pre>
+$ kvm -hda disk.bin \
+      -boot c \
+      -std-vga \
+      -vnc :1 \
+      -net nic,vlan=0,model=rtl8139 \
+      -net tap,vlan=0,ifname=vpnease0
+</pre>                
+              </li>
+              <li>
+                You should place a startup script in your system startup (consult your Linux
+                distribution for specifics), which (1) probes the KVM kernel modules if necessary
+                (see above); (2) starts up the KVM virtual machine e.g. as above; and (3) sets up
+                the host networking correctly for the virtual machine.  For the last step, you can
+                use KVM interface scripts, or simply write your custom scripts.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Test your setup
+            <ul>
+              <li>
+                Reboot the host computer.
+              </li>
+              <li>
+                Once the system is up and running, launch a VNC viewer to connect to the virtual
+                machine graphics display:
+<pre>
+# this varies per distribution
+$ vncviewer :1.0
+$ tightvncviewer :1.0
+$ xvncviewer :1.0
+$ xtightvncviewer :1.0
+</pre>                
+              </li>
+              <li>
+                If everything has been set up correctly, you will see the
+                <n:invisible n:macro="productname" /> web UI.  Ensure that
+                <n:invisible n:macro="productname" /> server gets an IP address,
+                and that connection to the license server is up: this indicates
+                that networking functions correctly.
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+      <p>
+        QEMU is a virtualization platform almost identical to KVM, but it does
+        not require hardware virtualization support (Intel VT-x or AMD Pacifica).
+        However, it is considerably slower and thus not recommended.
+      </p>
+  
+      </div> <!-- kvm and qemu -->
+
+    </n:invisible>
+  </body>
+</html>
+

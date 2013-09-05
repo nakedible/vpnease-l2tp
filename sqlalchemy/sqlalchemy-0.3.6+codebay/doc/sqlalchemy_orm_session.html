@@ -1,0 +1,829 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.orm.session</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_orm_query.html">module sqlalchemy.orm.query</a>
+
+               |   
+            Next: <a href="sqlalchemy_pool.html">module sqlalchemy.pool</a>
+    </div>
+
+        <h2>module sqlalchemy.orm.session</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_orm_session.html#docstrings_sqlalchemy.orm.session_modfunc">Module Functions</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_orm_session.html#docstrings_sqlalchemy.orm.session_modfunc_class_mapper">class_mapper()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_orm_session.html#docstrings_sqlalchemy.orm.session_modfunc_object_mapper">object_mapper()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_orm_session.html#docstrings_sqlalchemy.orm.session_modfunc_object_session">object_session()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_orm_session.html#docstrings_sqlalchemy.orm.session_Session">class Session(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_orm_session.html#docstrings_sqlalchemy.orm.session_SessionTransaction">class SessionTransaction(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.orm.session"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.orm.session</h3>
+    
+    
+    
+
+        
+    
+    <A name="docstrings_sqlalchemy.orm.session_modfunc"></a>
+    
+    <div class="subsection">
+
+    <h3>Module Functions</h3>
+    
+    
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.orm.session_modfunc_class_mapper"></a>
+    <b>def class_mapper(<i>class_</i>, <i>entity_name=None</i>, <i>compile=True</i>)</b>
+    <div class="docstring">
+    <p>Given a class and optional entity_name, return the primary Mapper associated with the key.</p>
+<p>If no mapper can be located, raises <tt class="docutils literal"><span class="pre">InvalidRequestError</span></tt>.</p>
+
+    </div>
+    </div>
+
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.orm.session_modfunc_object_mapper"></a>
+    <b>def object_mapper(<i>object</i>, <i>raiseerror=True</i>)</b>
+    <div class="docstring">
+    <p>Given an object, return the primary Mapper associated with the object instance.</p>
+<dl class="docutils">
+<dt>object</dt>
+<dd>The object instance.</dd>
+<dt>raiseerror</dt>
+<dd>Defaults to True: raise an <tt class="docutils literal"><span class="pre">InvalidRequestError</span></tt> if no mapper can
+be located.  If False, return None.</dd>
+</dl>
+
+    </div>
+    </div>
+
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.orm.session_modfunc_object_session"></a>
+    <b>def object_session(<i>obj</i>)</b>
+    <div class="docstring">
+    <p>Return the Session to which the given object is bound, or None if none.</p>
+
+    </div>
+    </div>
+
+        
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.orm.session_Session"></a>
+    
+    <div class="subsection">
+
+    <h3>class Session(object)</h3>
+    
+    
+    <div class="darkcell"><p>Encapsulates a set of objects being operated upon within an
+object-relational operation.</p>
+<p>The Session object is <strong>not</strong> threadsafe.  For thread-management
+of Sessions, see the <tt class="docutils literal"><span class="pre">sqlalchemy.ext.sessioncontext</span></tt> module.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>bind_to=None</i>, <i>hash_key=None</i>, <i>import_session=None</i>, <i>echo_uow=False</i>, <i>weak_identity_map=False</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def bind_mapper(<i>self</i>, <i>mapper</i>, <i>bindto</i>)</b>
+    <div class="docstring">
+    <p>Bind the given <cite>Mapper</cite> to the given Engine or Connection.</p>
+<p>All subsequent operations involving this Mapper will use the
+given <cite>bindto</cite>.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def bind_table(<i>self</i>, <i>table</i>, <i>bindto</i>)</b>
+    <div class="docstring">
+    <p>Bind the given <cite>Table</cite> to the given Engine or Connection.</p>
+<p>All subsequent operations involving this Table will use the
+given <cite>bindto</cite>.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def clear(<i>self</i>)</b>
+    <div class="docstring">
+    <p>Remove all object instances from this Session.</p>
+<p>This is equivalent to calling <tt class="docutils literal"><span class="pre">expunge()</span></tt> for all objects in
+this Session.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def close(<i>self</i>)</b>
+    <div class="docstring">
+    <p>Close this Session.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def connect(<i>self</i>, <i>mapper=None</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Return a unique connection corresponding to the given mapper.</p>
+<p>This connection will not be part of any pre-existing
+transactional context.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def connection(<i>self</i>, <i>mapper</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Return a Connection corresponding to the given mapper.</p>
+<p>Used by the <tt class="docutils literal"><span class="pre">execute()</span></tt> method which performs select
+operations for Mapper and Query.</p>
+<p>If this Session is transactional, the connection will be in
+the context of this session's transaction.  Otherwise, the
+connection is returned by the contextual_connect method, which
+some Engines override to return a thread-local connection, and
+will have close_with_result set to True.</p>
+<p>The given <cite>**kwargs</cite> will be sent to the engine's
+<tt class="docutils literal"><span class="pre">contextual_connect()</span></tt> method, if no transaction is in
+progress.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_transaction(<i>self</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Return a new SessionTransaction corresponding to an
+existing or new transaction.</p>
+<p>If the transaction is new, the returned SessionTransaction
+will have commit control over the underlying transaction, else
+will have rollback control only.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def delete(<i>self</i>, <i>object</i>, <i>entity_name=None</i>)</b>
+    <div class="docstring">
+    <p>Mark the given instance as deleted.</p>
+<p>The delete operation occurs upon <tt class="docutils literal"><span class="pre">flush()</span></tt>.</p>
+
+    </div>
+    </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>deleted = property()</b>
+         <div class="docstring">
+         <p>A Set of all objects marked as 'deleted' within this Session</p>
+
+         </div> 
+         </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>dirty = property()</b>
+         <div class="docstring">
+         <p>A Set of all objects marked as 'dirty' within this Session</p>
+
+         </div> 
+         </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>echo_uow = property()</b>
+         <div class="docstring">
+         
+         </div> 
+         </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def execute(<i>self</i>, <i>mapper</i>, <i>clause</i>, <i>params</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Using the given mapper to identify the appropriate Engine
+or Connection to be used for statement execution, execute the
+given ClauseElement using the provided parameter dictionary.</p>
+<p>Return a ResultProxy corresponding to the execution's results.</p>
+<p>If this method allocates a new Connection for the operation,
+then the ResultProxy's <tt class="docutils literal"><span class="pre">close()</span></tt> method will release the
+resources of the underlying Connection, otherwise its a no-op.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def expire(<i>self</i>, <i>obj</i>)</b>
+    <div class="docstring">
+    <p>mark the given object as expired.</p>
+<p>this will add an instrumentation to all mapped attributes on the instance such that when
+an attribute is next accessed, the session will reload all attributes on the instance
+from the database.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def expunge(<i>self</i>, <i>object</i>)</b>
+    <div class="docstring">
+    <p>Remove the given object from this Session.</p>
+<p>This will free all internal references to the object.
+Cascading will be applied according to the <em>expunge</em> cascade
+rule.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def flush(<i>self</i>, <i>objects=None</i>)</b>
+    <div class="docstring">
+    <p>flush all the object modifications present in this session to the database.</p>
+<p>'objects' is a list or tuple of objects specifically to be flushed; if None, all
+new and modified objects are flushed.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get(<i>self</i>, <i>class_</i>, <i>ident</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>return an instance of the object based on the given identifier, or None if not found.</p>
+<p>The ident argument is a scalar or tuple of primary key column values in the order of the
+table def's primary key columns.</p>
+<p>the entity_name keyword argument may also be specified which further qualifies the underlying
+Mapper used to perform the query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_bind(<i>self</i>, <i>mapper</i>)</b>
+    <div class="docstring">
+    <p>Return the Engine or Connection which is used to execute
+statements on behalf of the given <cite>Mapper</cite>.</p>
+<p>Calling <tt class="docutils literal"><span class="pre">connect()</span></tt> on the return result will always result
+in a Connection object.  This method disregards any
+SessionTransaction that may be in progress.</p>
+<p>The order of searching is as follows:</p>
+<ol class="arabic simple">
+<li>if an Engine or Connection was bound to this Mapper
+specifically within this Session, return that Engine or
+Connection.</li>
+<li>if an Engine or Connection was bound to this Mapper's
+underlying Table within this Session (i.e. not to the Table
+directly), return that Engine or Conneciton.</li>
+<li>if an Engine or Connection was bound to this Session,
+return that Engine or Connection.</li>
+<li>finally, return the Engine which was bound directly to the
+Table's MetaData object.</li>
+</ol>
+<p>If no Engine is bound to the Table, an exception is raised.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def has_key(<i>self</i>, <i>key</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def identity_key(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Get an identity key.</p>
+<p>Valid call signatures:</p>
+<blockquote>
+<dl class="docutils">
+<dt>identity_key(class_, ident, entity_name=None)</dt>
+<dd><dl class="first last docutils">
+<dt>class_</dt>
+<dd>mapped class (must be a positional argument)</dd>
+<dt>ident</dt>
+<dd>primary key, if the key is composite this is a tuple</dd>
+<dt>entity_name</dt>
+<dd>optional entity name</dd>
+</dl>
+</dd>
+<dt>identity_key(instance=instance)</dt>
+<dd><dl class="first last docutils">
+<dt>instance</dt>
+<dd>object instance (must be given as a keyword arg)</dd>
+</dl>
+</dd>
+<dt>identity_key(class_, row=row, entity_name=None)</dt>
+<dd><dl class="first last docutils">
+<dt>class_</dt>
+<dd>mapped class (must be a positional argument)</dd>
+<dt>row</dt>
+<dd>result proxy row (must be given as a keyword arg)</dd>
+<dt>entity_name</dt>
+<dd>optional entity name (must be given as a keyword arg)</dd>
+</dl>
+</dd>
+</dl>
+</blockquote>
+
+    </div>
+    </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>identity_map = property()</b>
+         <div class="docstring">
+         <p>A dictionary consisting of all objects within this Session keyed to their _instance_key value.</p>
+
+         </div> 
+         </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def import_instance(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Deprecated. A synynom for <tt class="docutils literal"><span class="pre">merge()</span></tt>.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def is_expired(<i>self</i>, <i>obj</i>, <i>unexpire=False</i>)</b>
+    <div class="docstring">
+    <p>Return True if the given object has been marked as expired.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def load(<i>self</i>, <i>class_</i>, <i>ident</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>return an instance of the object based on the given identifier.</p>
+<p>If not found, raises an exception.  The method will <em>remove all pending changes</em> to the object
+already existing in the Session.  The ident argument is a scalar or tuple of
+primary key columns in the order of the table def's primary key columns.</p>
+<p>the entity_name keyword argument may also be specified which further qualifies the underlying
+Mapper used to perform the query.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def mapper(<i>self</i>, <i>class_</i>, <i>entity_name=None</i>)</b>
+    <div class="docstring">
+    <p>Given an Class, return the primary Mapper responsible for
+persisting it.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def merge(<i>self</i>, <i>object</i>, <i>entity_name=None</i>, <i>_recursive=None</i>)</b>
+    <div class="docstring">
+    <p>Copy the state of the given object onto the persistent
+object with the same identifier.</p>
+<p>If there is no persistent instance currently associated with
+the session, it will be loaded.  Return the persistent
+instance. If the given instance is unsaved, save a copy of and
+return it as a newly persistent instance. The given instance
+does not become associated with the session.</p>
+<p>This operation cascades to associated instances if the
+association is mapped with <tt class="docutils literal"><span class="pre">cascade=&quot;merge&quot;</span></tt>.</p>
+
+    </div>
+    </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>new = property()</b>
+         <div class="docstring">
+         <p>A Set of all objects marked as 'new' within this Session.</p>
+
+         </div> 
+         </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def query(<i>self</i>, <i>mapper_or_class</i>, <i>entity_name=None</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>return a new Query object corresponding to this Session and the mapper, or the classes' primary mapper.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def refresh(<i>self</i>, <i>obj</i>)</b>
+    <div class="docstring">
+    <p>reload the attributes for the given object from the database, clear any changes made.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def save(<i>self</i>, <i>object</i>, <i>entity_name=None</i>)</b>
+    <div class="docstring">
+    <p>Add a transient (unsaved) instance to this Session.</p>
+<p>This operation cascades the <cite>save_or_update</cite> method to
+associated instances if the relation is mapped with
+<tt class="docutils literal"><span class="pre">cascade=&quot;save-update&quot;</span></tt>.</p>
+<p>The <cite>entity_name</cite> keyword argument will further qualify the
+specific Mapper used to handle this instance.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def save_or_update(<i>self</i>, <i>object</i>, <i>entity_name=None</i>)</b>
+    <div class="docstring">
+    <p>Save or update the given object into this Session.</p>
+<p>The presence of an <cite>_instance_key</cite> attribute on the instance
+determines whether to <tt class="docutils literal"><span class="pre">save()</span></tt> or <tt class="docutils literal"><span class="pre">update()</span></tt> the instance.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def scalar(<i>self</i>, <i>mapper</i>, <i>clause</i>, <i>params</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    <p>Like execute() but return a scalar result.</p>
+
+    </div>
+    </div>
+
+                    
+         <div class="darkcell">
+         <A name=""></a>
+         <b>sql = property()</b>
+         <div class="docstring">
+         
+         </div> 
+         </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def update(<i>self</i>, <i>object</i>, <i>entity_name=None</i>)</b>
+    <div class="docstring">
+    <p>Bring the given detached (saved) instance into this
+Session.</p>
+<p>If there is a persistent instance with the same identifier
+already associated with this Session, an exception is thrown.</p>
+<p>This operation cascades the <cite>save_or_update</cite> method to
+associated instances if the relation is mapped with
+<tt class="docutils literal"><span class="pre">cascade=&quot;save-update&quot;</span></tt>.</p>
+
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.orm.session_SessionTransaction"></a>
+    
+    <div class="subsection">
+
+    <h3>class SessionTransaction(object)</h3>
+    
+    
+    <div class="darkcell"><p>Represents a Session-level Transaction.</p>
+<p>This corresponds to one or more sqlalchemy.engine.Transaction
+instances behind the scenes, with one Transaction per Engine in
+use.</p>
+<p>The SessionTransaction object is <strong>not</strong> threadsafe.</p>
+</div>
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>session</i>, <i>parent=None</i>, <i>autoflush=True</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def add(<i>self</i>, <i>connectable</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def close(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def commit(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def connection(<i>self</i>, <i>mapper_or_class</i>, <i>entity_name=None</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_or_add(<i>self</i>, <i>connectable</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def rollback(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_orm_query.html">module sqlalchemy.orm.query</a>
+
+               |   
+            Next: <a href="sqlalchemy_pool.html">module sqlalchemy.pool</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

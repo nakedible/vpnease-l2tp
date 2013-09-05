@@ -1,0 +1,1951 @@
+@import url("form.css");
+
+/*
+Design by Andrea Peltrin <http://passiomatic.com/>
+*/
+
+/* ---------------------------------------------------
+=page
+------------------------------------------------------ */
+
+
+html, body {
+	margin: 0;
+	padding: 0;
+	
+	direction: ltr;
+}
+
+body { 	
+	
+	color: #000;		
+	background: #133b4d;
+
+	
+	/* IE5 centering fix */
+	text-align: center;	
+}
+
+/* IE5 don't inherit font size in TD, 
+so specify it here */
+body, td { 	
+	font: normal 12px/18px Verdana, sans-serif;	
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* ---------------------------------------------------
+=titles
+------------------------------------------------------ */
+
+
+h1, h2, h3, h4, h5, h6, caption {
+	
+	font: normal 12px/18px Verdana, sans-serif;	
+
+}
+
+
+
+h1 {	
+	font-size: 18px;
+		
+	padding-bottom: .5em;		
+	margin-bottom: 1.5em;	
+	
+	border-bottom: 1px solid #ccc;
+}
+
+h2 {	
+
+	font-size: 16px;
+		
+	margin-top: 1.125em;
+	margin-bottom: .5625em;
+	
+	
+	font-weight: bold;	
+}
+
+h3, caption {
+	font-size: 14px;
+	
+	margin-top: 1.285em;
+	margin-bottom: .642em;
+	
+	
+	font-weight: bold;
+
+}
+
+
+h4 {
+	font-weight: bold;
+
+}
+
+
+
+
+/* ---------------------------------------------------
+=misc
+------------------------------------------------------ */
+
+a img {
+	border: none;
+}
+
+hr {
+	visibility: hidden;
+	
+	margin: 0;
+	margin-top: 1.5em;
+	padding: 0;
+	
+	border: none;
+}
+
+p, ul, ol, dl {
+	margin-bottom: .75em;
+}
+
+/* ---------------------------------------------------
+=main
+------------------------------------------------------ */
+
+#header, #main-w, #footer {
+	
+	margin: 0 auto;
+	width: 960px;  
+	
+	/* centering reset */
+	text-align: left;	
+	
+
+}
+
+
+#main-w {
+	margin-bottom: 1.5em;
+	
+	background: #fff url(bg-main-2.gif) top left repeat-y;
+	
+	
+	
+}
+
+#main {
+	
+	background: transparent url(bg-main.gif) bottom left no-repeat;
+	
+	padding-bottom: 20px; /* = bg height */
+}
+
+
+
+#no-nav  #main-w {
+	background: #fff;
+}
+
+
+#no-nav  #main {
+	background: transparent url(bg-main-no-nav.gif) bottom left no-repeat;
+}
+
+/* ---------------------------------------------------
+=header 
+------------------------------------------------------ */
+
+#header  {
+	margin-top: 3em;
+	
+	background: #b1d9ad url(bg-header.jpg) top left no-repeat;
+	
+	height: 80px;
+	
+	
+}
+
+#logo {	
+	margin-left: 1.5em;
+}
+
+
+/* ---------------------------------------------------
+=nav
+------------------------------------------------------ */
+
+#context {
+
+	
+	background: #269abf;
+	
+	border-left: 2px solid #fff;
+	border-top: 2px solid #fff;	
+	
+	color: #D0EBF5;
+	
+	padding-left: 9px;
+
+	padding-top: 4px;
+	padding-bottom: 5px;
+		
+}
+
+
+#nav {
+		
+	border-left: 2px solid #fff;
+	border-top: 2px solid #fff;
+	
+	padding-bottom: 20px;
+	
+}
+
+#nav h3 {	
+	/* reset */
+	font-size: 100%;
+	margin: 0;	
+	
+	
+	margin-top: 9px;
+	margin-bottom: 5px; /* + LI 4px = 9px */
+	padding-left: 9px;
+
+	color: #286073;	
+	color: #000;	
+	
+
+
+		
+}
+#nav h3#h-status {	
+
+	
+}
+#nav ul, #nav ol {	
+	list-style: none;
+	
+	padding-bottom: 9px;
+	background: transparent url(bg-nav-a.gif) bottom left repeat-x;
+}
+
+
+#nav li {	
+	
+}
+
+
+#nav li.last {
+	border: none;
+}
+
+
+
+#nav li.current {
+	
+	
+}
+
+
+#nav a:link, 
+#nav a:visited {
+	display: block;
+	
+	text-decoration: none;
+	
+	border: none;	
+
+	padding-left: 9px;
+
+	padding-top: 4px;
+	padding-bottom: 5px;
+
+/*
+	font-weight: bold;	
+*/	
+	/*
+	background: transparent url(bg-nav-a.gif) bottom left repeat-x;
+	*/
+	color: #286073;	
+	
+	font-size: 11px;
+	
+
+				
+	/* IE5 value */
+	width: 160px; 
+  	voice-family: "\"}\""; 
+	voice-family:inherit;
+	/* IE6 fix */
+	width: 151px; /* 162px-9px-2px */
+  	
+}
+
+#nav li a:hover { 
+	color: #222;	
+	background-color: #e1f3fa;	
+}
+
+#nav li.current a:link, 
+#nav li.current a:visited {
+	color: #222;	
+	background: #fff;	
+	
+	/*font-weight: bold;	
+	*/
+	
+	/*text-decoration: none;
+	*/
+}
+
+#nav h3.disabled { 
+	color: #6d99a8;	
+}
+
+#nav .disabled {
+	color: #6d99a8;	
+}
+
+
+
+
+/* ---------------------------------------------------
+=table
+------------------------------------------------------ */
+
+table {
+	border-collapse: collapse;
+	
+	
+	background: transparent;
+	
+	width: 100%;	
+/*	display: block;*/
+	
+	/*margin-bottom: 1.5em;*/
+}
+
+
+table thead {
+	
+}
+
+table th {
+	text-align: left;	
+	
+	color: #598c54;	
+}
+
+
+/*
+col.alt, tr.alt {
+	
+}
+*/
+
+
+table td, table th  {
+	vertical-align: top;
+	text-align: left;
+	
+	padding-right: .75em;
+	padding-top: .375em;
+	padding-bottom: .375em;	
+}
+
+
+table td {
+
+	border-top: 1px solid #e5e5e5;
+	
+
+}
+
+
+/* ---------------------------------------------------
+=footer
+------------------------------------------------------ */
+
+#footer {	
+	color: #406b80;	
+	
+	text-align: center;
+}
+
+#copyr {
+
+}
+#footer a:link,
+#footer a:visited {	
+	color: #406b80;	
+	
+}
+
+
+
+
+/* ---------------------------------------------------
+=hyperlinks
+----------------------------------------------------- */
+
+a:link, a:visited, a:hover, a:active {
+
+	text-decoration: underline;
+
+	color: #269abf;	
+
+}
+
+a:visited {		
+
+}
+
+a:hover {	
+	text-decoration: none;
+}
+
+
+
+
+
+/* ---------------------------------------------------
+=utilities
+----------------------------------------------------- */
+
+.cut {clear: both; height: 1px; overflow: hidden; }
+
+.hidden { display: none;}
+.inline { display: inline; }
+.clear-float {	
+	/* auto-clear floated children */
+	overflow: hidden;	
+}
+
+.clear-float-ie {	
+	/* auto-clear floated children */
+	overflow: hidden;
+	/* IE6+IE5 fix see:
+	http://www.positioniseverything.net/easyclearing.html			
+	Really needed only when the clearing element hasn't a 
+	dimension applied to it.''
+	*/	
+	
+	/* this doesn't work n IE5, it 
+	cuts the el. height:
+	_height: 1%;			
+	*/		
+	_width: 100%;			
+}
+
+
+/* ---------------------------------------------------
+=misc
+------------------------------------------------------ */
+
+_ {
+	
+}
+
+
+.note {
+	color: #666;
+	
+	font-style: italic;
+
+}
+
+.notice {
+	font-style: italic;
+}
+
+.report {
+
+	margin-bottom: 1.5em;
+}
+
+.report dt {
+	float: left;
+	
+	width: 50%;
+	
+	color: #598c54;	
+	font-weight: bold;
+	
+
+}
+
+.report dt, .report dd {
+	
+	padding-top: .375em;
+	padding-bottom: .375em;	
+		
+	border-bottom: 1px solid #e5e5e5;
+
+}
+
+
+
+table.key-value {
+	
+}
+
+table.key-value th {
+	
+	color: #628060;
+
+	border-bottom: 1px solid #c6e5c3;
+	font-weight: normal;
+	
+	font-size: 11px;
+	
+}
+
+table.key-value td {
+	
+	border: none;
+	border-bottom: 1px solid #c6e5c3;
+	
+	font-size: 11px;
+	
+	
+}
+
+table.key-value td .warning {
+ 	color: #cc1100;
+} 
+    
+
+
+table.key-value caption {	
+	margin-top: 0;	
+}
+
+
+.progress-bar,
+.activity-bar {
+	background: #eee;
+	border: 1px solid #668c62;
+	
+	width: 300px;
+
+	margin: 0 auto;
+	margin-bottom: .75em;
+			
+	position: relative;
+}
+
+.progress-bar img,
+.activity-bar img {
+	display: block;
+}
+
+
+.progress-bar span,
+.activity-bar span {
+	position: absolute;
+	
+	top: 0;
+	left: 0;
+	
+	font-size: 11px;
+	
+	width: 300px;
+	
+	text-align: center;
+		
+	
+	display: block;
+
+}
+
+/* ---------------------------------------------------
+=status
+------------------------------------------------------ */
+
+
+#status {
+	padding-top: 1.5em;
+}
+
+
+
+#status a:link, #status a:visited {
+	color: #395936;
+}
+
+
+#status h3 {
+	margin: 0;
+
+	/* reset size */
+	font-size: 1.0em;
+	
+
+}
+
+#status span {
+/*	color: #395936;*/
+	
+
+	
+}
+
+#status b {
+	color: #000;
+	
+	/* 14px */
+	font-size: 14px;
+	font-weight: bold;
+	
+
+			
+}
+
+#status ul {
+	list-style: none;
+}
+
+
+#status li {
+	float: left;
+	padding-right: .75em;
+	margin-right: .75em;
+	
+	/*border-right: 1px solid #9cbf99;
+	*/
+	background: transparent url(sep.gif) top right repeat-y;
+	
+	width: 10em;
+}
+
+#status li.message {
+	width: 20em;
+} 
+
+#status li.message span.error,
+#status li.message span.warning
+{	
+	font-weight: bold;
+	
+	padding: 0 2px;
+	
+	text-transform: uppercase;
+	font-size: 11px;
+	
+} 
+
+
+#status li.message span.error
+{
+	color: #fff;
+	background: #FF1900;	
+} 
+
+#status li.message span.warning {	
+	background: #fff459;
+} 
+
+
+
+
+
+#status li.last {
+	border-right: none;
+	background:  none;
+	
+	padding-right: 0;
+	margin-right: 0;
+	
+	text-align: right;
+	
+	float: right;
+} 
+
+
+
+
+#current-time {	
+	position: absolute;
+
+	background: #D0EBF5;
+
+	top: 3px;
+	right: 3px;
+	
+	padding: .375em;
+	
+	border: 1px solid #57B8D9;
+	
+	
+}
+
+/* ---------------------------------------------------
+=changelog
+------------------------------------------------------ */
+
+.changelog h3 {
+	font-size: 13px;
+}
+
+.changelog ul {
+	font-size: 11px;
+	margin-left: 2em;
+}
+
+.changelog li {
+	font-size: 11px;
+}
+
+.changelog .changelog-date {
+	float: right;
+	color: #888888;
+	font-size: 9px;
+}
+
+.changelog .new-version {
+	background: #E1F3FA;
+	margin-bottom: 1.5em;
+	border-left: .75em solid  #269ABF;
+	padding: .75em;
+}
+
+.changelog .new-version h3 {
+	margin-top: 0;
+}
+
+
+
+.changelog .current-version {
+	background: #dcffd9;
+	margin-bottom: 1.5em;
+	border-left: .75em solid  #B2D9AD;
+	padding: .75em;
+}
+
+.changelog .current-version h3 {
+	margin-top: 0;
+}
+
+
+.changelog .old-version {
+	background: #dddddd;
+	margin-bottom: 1.5em;
+	border-left: .75em solid  #aaaaaa;
+	padding: .75em;
+}
+
+.changelog .old-version h3 {
+	margin-top: 0;
+}
+
+#updatebutton {
+	text-align: right;
+	margin-top: .75em;
+}
+
+
+
+/* ---------------------------------------------------
+=live cd
+------------------------------------------------------ */
+
+
+
+#nav .wizard  {
+	list-style: none;
+}
+
+
+
+#nav .wizard li {
+	
+	padding-left: 9px;
+
+	padding-top: 4px;
+	padding-bottom: 5px;
+
+	color: #286073;	
+	
+	font-size: 11px;
+					
+	/* IE5 value */
+	width: 160px; 
+  	voice-family: "\"}\""; 
+	voice-family:inherit;
+	/* IE6 fix */
+	width: 151px; /* 162px-9px-2px */
+  	
+}
+
+
+
+
+
+#nav .wizard a:link, 
+#nav .wizard a:visited {
+	
+	/* reset values */
+
+	display: inline;	
+	padding: 0;
+}
+
+#nav .wizard a:hover { 
+	color: #222;	
+	background-color: #e1f3fa;	
+}
+
+#nav .wizard .current {
+	color: #222;	
+	background: #fff;	
+	
+
+}
+
+#nav .wizard .disabled {
+	color: #6d99a8;	
+}
+
+
+
+/* ---------------------------------------------------
+=user 
+------------------------------------------------------ */
+
+.paginator {
+
+	border-top: 1px solid #ccc;
+
+	padding-top: .75em;
+	margin-top: 1.5em;
+
+
+}
+.paginator .next input {
+	margin-right: 0;
+
+}
+
+.paginator .next {
+	width: 20%;
+
+	text-align: right;
+		
+	float: right;
+	
+	font-weight: bold;
+}
+
+.paginator .prev {
+	width: 20%;
+		
+	float: left;
+}
+
+.paginator .cancel {
+	/* Avoid rounding 
+	errors on IE */
+	width: 59%;
+		
+	text-align: center;
+	
+	float: left;
+}
+
+
+h1.wizard-page-title span {
+	float: left;
+}
+
+h1.wizard-page-title .next {
+	float: right;
+	width: 10em;
+	
+	font-size: 12px;
+	
+	text-align: right;
+	font-weight: bold;	
+}
+
+h1.wizard-page-title .next input {
+	margin-right: 0;
+}
+
+
+
+/* ---------------------------------------------------
+=external links (borrowed from cb.css for other use)
+------------------------------------------------------ */
+
+
+ a.cb-external:link,  
+a.cb-external:visited  
+{  
+	background: url(external.gif) center right no-repeat;
+  	padding-right: 12px;  
+}
+
+a.cb-external:hover {
+  
+}
+form {
+	
+}
+
+fieldset {
+    padding: 0;
+	margin-bottom: .75em;    
+
+    border: none;
+}
+
+
+
+legend {
+	
+}
+
+
+label {
+    display: block; 
+
+    margin: 0;
+    margin-top: .75em; 
+    margin-bottom: .325em; 
+    
+    cursor: pointer;
+    _cursor: default;
+}
+
+label span {
+	font-size: 11px;
+	color: #666;
+}
+
+input, select, textarea {        
+ 	padding: 3px 3px;   
+    margin: 0;    
+
+	font: inherit; 
+	
+	background: #fff;   
+}
+
+input[type='text'], input[type='password'], select, textarea {    
+ 	border: 1px solid #999;
+}
+
+
+
+textarea {    
+    line-height: 1.5;
+    width: 95%;
+}
+
+input:focus, 
+select:focus,
+textarea:focus {    
+	background: #ffffcc;	
+	border-color: #d9d982;   
+}
+
+input.button {
+	
+	font-weight: bold;	
+	
+	padding: 3px 5px;
+	/* IE */
+	_padding: 3px 0;
+
+	line-height: 1.0;	
+	
+	
+    margin: 0;
+    margin-right: .75em; /* space between the next button */
+	
+	color: #0b4f70;	
+	
+	border: 1px solid #afd0db;
+	border-bottom: 1px solid #286073;
+	border-right: 1px solid #286073;
+	
+	cursor: pointer;
+	
+	background: #d0ebf5 url(bg-button.gif) bottom left repeat-x;
+}
+
+/*
+See: "Gridding the 960"
+http://cameronmoll.com/archives/2006/12/gridding_the_960/
+*/
+
+/* ---------------------------------------------------
+=layout
+------------------------------------------------------ */
+
+
+.unit {
+	float: left;	
+	
+	/* = lineheight */
+	margin-right: 18px;		
+	
+	width: 102px;
+}
+
+
+.span-3 {
+	width: 162px;
+}
+
+.span-6 {
+	width: 342px;
+}
+
+
+.span-12 {
+	width: 702px;
+}
+
+.content {
+	width: 720px;
+	
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
+}
+
+.append-1 {
+	/* = unit + lineheight */
+	margin-right: 78px;		
+}
+
+.full {
+	/* span across full page width 
+	*/
+	width: auto;
+	float: none;
+	
+	margin-right: 0;	
+}
+
+
+.last {
+	/* reset margin */
+	margin-right: 0;
+}
+
+
+.round {
+	border-radius: 1em;
+	
+	-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;
+}
+
+.box {
+	
+	
+	padding: .75em;
+	margin-bottom: 1.5em;	
+
+	background: transparent url(bg-box.gif) no-repeat top center;
+}
+
+
+
+
+
+.cb-section {
+	/* = 2 * line-height */ 
+ 	margin-bottom: 3em;
+}
+
+.cb-section .cb-section {
+  	/* = line-height */ 
+	margin-bottom: 1.5em;
+}
+
+.cb-section .cb-section .cb-section {
+  	/* = line-height / 2*/ 
+ 	margin-bottom: .75em; 	 	
+}
+
+
+
+.cb-page-heading {
+	/* use h1 in site.css */
+}
+
+/* error - plain or unused tag */
+.cb-section h1 {
+	
+}
+
+/* error - plain or unused tag */
+.cb-section h2 {
+
+}
+
+/* error - plain or unused tag */
+.cb-section h3 {
+
+}
+
+/* error - plain or unused tag */
+.cb-section h4 {
+
+}
+
+.cb-section h1.cb-heading {
+	
+	/* matches h2 in site.css */
+	font-size: 16px;
+		
+	margin-top: 1.125em;
+	margin-bottom: .5625em;
+		
+	font-weight: bold;				
+	
+	border: none;
+	
+	padding: 0;
+}
+
+.cb-section .cb-section h1.cb-heading 
+{
+	
+	/* matches h3 in site.css */
+	font-size: 14px;
+	
+	margin-top: 1.285em;
+	margin-bottom: .642em;
+		
+	font-weight: bold;
+	
+	border: none;
+}
+
+.cb-section .cb-section .cb-section h1.cb-heading {
+	
+	font-size: 12px;
+
+	margin-top: 1.5em;
+	margin-bottom: .75em;
+					
+	font-weight: bold;
+	
+	border: none;
+}
+
+.cb-section hr {
+	display: none;
+}
+
+.cb-section p {
+	/* use p in site.css */
+
+}
+
+/* lists */
+
+.cb-section ol {
+  
+}
+
+.cb-section ul, 
+.cb-section ol {
+
+	margin-left: 2.5em;
+
+}
+
+.cb-section li {
+ 	/* matches p */
+	 	
+ 	/*margin-bottom: 0.75em;
+ 	*/
+}
+
+.cb-section li p {
+
+}
+
+.cb-section ul, 
+.cb-section ol {   
+} 
+ 
+.cb-section ul li, 
+.cb-section ol li {  
+        margin-top: 0.5em; 
+        margin-bottom: 0.5em; 
+} 
+ 
+.cb-section ul li li, 
+.cb-section ol li li {  
+        margin-top: 0.0em; 
+        margin-bottom: 0.0em; 
+}
+
+/* pre and other special divs */
+
+.cb-section pre {
+  display: block;
+  clear: both;
+    
+  margin: 1.5em 3em 1.5em 3em;
+  padding: 1.5em;
+  background-color: #eeeeee;
+}
+
+/* a "no-nevow-form" selector would be nice but not possible */
+div.cb-error {
+  
+	/* ??? */
+	clear: both;
+    
+	background: #ffffff;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	
+	
+	border: .75em solid #FF1900;
+  
+}
+
+div.cb-error p {
+ 
+}
+
+div.cb-warning {
+  
+	/* ??? */
+	clear: both;
+	
+	background: #fffcd9;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	
+	
+	border-left: .375em solid #fff459;
+  
+}
+
+div.cb-warning p {
+
+}
+
+div.cb-note {
+	/* ??? */
+	clear: both;
+	
+	background: #E1F3FA;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	
+	border-left: .375em solid #57b8d9;
+
+}
+
+div.cb-note p {
+
+}
+
+div.cb-tip {
+
+	/* ??? */
+	clear: both;
+	
+	background: #dcffd9;
+	margin: 1.5em 3em 1.5em 3em;
+	padding: .75em .75em .375em .75em;
+	
+	border-left: .375em solid #b1d9ad;
+
+}
+
+div.cb-tip p {
+
+}
+
+div.cb-fixme {
+  clear: both;
+  background: #ff0000;
+  margin: 1em 3em 1em 3em;
+  padding: 1em 1em 1em 1em;
+  border: 2px solid #000000;
+  color: #ffffff;
+  font-weight: bolder;
+}
+
+div.cb-fixme:before {
+  content: "FIXME";
+}
+
+div.cb-fixme p {
+  margin: 1em 0em 1em 0em;
+  color: #ffffff;
+  font-weight: normal;
+}
+
+
+/* ---------------------------------------------------
+=floated image
+------------------------------------------------------ */
+
+.cb-image-float-right {
+  
+	margin-left: .75em;  
+ 	float: right;  
+  
+}
+
+/* ---------------------------------------------------
+=tables
+------------------------------------------------------ */
+
+/* see site.css */
+
+
+/* ---------------------------------------------------
+=strong and other special spans
+------------------------------------------------------ */
+
+
+/* plain strong should not occur inside sections */
+.cb-section strong {
+
+}
+
+.cb-section strong.cb-bold {
+  font-weight: bold;
+  
+}
+
+.cb-section strong.cb-filename {
+	font-family: monospace;
+	
+	color:#598C54;
+}
+
+.cb-section strong.cb-registry {
+ 	font-family: monospace;
+	color:#286073;		
+}
+
+.cb-section strong.cb-guilabel {
+	
+	color:#598C54;
+	
+	text-transform: capitalize;
+	font-variant: small-caps;
+	
+	font-size: 11px;
+			
+}
+
+.cb-section strong.cb-userinput {
+	font-weight: bold;
+	color: #000000;
+}
+
+.cb-section strong.cb-keycap {
+	border: 1px solid #ccc;	
+	
+	border-right: 1px solid #333;	
+	border-bottom: 1px solid #333;	
+
+	color: #333;
+	padding: 2px;
+	background: #eee;
+	
+	font-weight: normal;
+	
+	text-transform: uppercase;
+	
+	font-size: 11px;
+
+}
+
+.cb-section strong.cb-fixme {
+  font-weight: bolder;
+  font-family: monospace;
+  font-size: 150%;
+  color: #FF0000;
+  background-color: #330000;
+}
+
+
+/* ---------------------------------------------------
+=linked images
+------------------------------------------------------ */
+
+
+.cb-section a img {
+  vertical-align: middle;
+}
+
+.cb-section a:hover img {
+  
+}
+
+.cb-section a img:hover {
+  
+}
+
+
+/* ---------------------------------------------------
+=external links
+------------------------------------------------------ */
+
+
+.cb-section a.cb-external:link,  
+.cb-section a.cb-external:visited  
+{  
+	background: url(external.gif) center right no-repeat;
+  	padding-right: 12px;  
+}
+
+.cb-section a.cb-external:hover {
+  
+}
+/*
+ *  formal
+ */
+
+.nevow-form {
+  
+}
+
+/* first level */
+
+.nevow-form fieldset.group {
+   	margin: 0;
+	margin-top: 2.5em;
+	margin-bottom: 1.5em;
+	background: #eee;
+	border: none;
+	clear: both;
+}
+
+.nevow-form fieldset.collapsible-group {
+	background: #eee url(bg-fieldset1-top.gif) top left no-repeat;
+}
+
+/* collapsible-group-contents is used for lower rounded edge and only works if surrounding div is .collapsible-group */
+.nevow-form fieldset.group .collapsible-group-contents {
+	background: transparent url(bg-fieldset1-bottom.gif) bottom left no-repeat;
+	/* vert. .75 takes into account fields 
+	margin-bottom */	
+	padding: 0 .75em .75em .75em;
+	margin-top: .75em;	
+	/* for IE, we need to take into account abs. positioned
+	legend elements (see below) */
+	_margin-top: 1.5em;
+}
+
+/* background on error */
+.nevow-form fieldset.child-error { 
+	background-color: #ffdddd;
+	background-image: url(bg-fieldset1-top-err.gif);    
+}
+
+.nevow-form fieldset.child-error .collapsible-group-contents { 
+	background-image: url(bg-fieldset1-bottom-err.gif);    
+}
+
+
+
+.nevow-form fieldset.group .collapsible-group-summary {
+	padding: .75em 0 0 .75em;
+}
+
+
+
+/* second level */
+
+.nevow-form fieldset.group .collapsible-group-contents fieldset.group {		
+	background: #e0e0e0  url(bg-fieldset2-top.gif) top left no-repeat;			
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+
+}
+
+.nevow-form fieldset.group .collapsible-group-contents fieldset.group .collapsible-group-contents {	
+	background: transparent url(bg-fieldset2-bottom.gif) bottom left no-repeat;	
+}
+
+/* background on error */
+.nevow-form fieldset.group .collapsible-group-contents fieldset.child-error { 
+	background-color: #ffcccc;
+	background-image: url(bg-fieldset2-top-err.gif);    
+}
+
+.nevow-form fieldset.group .collapsible-group-contents fieldset.child-error .collapsible-group-contents { 
+	background-image: url(bg-fieldset2-bottom-err.gif);    
+}
+
+
+/* ---- highlight ----- */
+
+.nevow-form fieldset.highlight {
+	/* this overrides both group and 
+	collapsible-group classes
+	*/
+	background: #ffffcc !important;
+}
+
+
+/* we need to apply a different bg to 
+inner elements too.
+*/
+	
+.nevow-form fieldset.highlight  .collapsible-group-contents {
+	/* first and second level */
+	background: #ffffcc !important;
+}
+
+
+
+
+/* ------------------------------------------------ */
+
+.nevow-form fieldset.group legend {
+ 	font-weight: bold;  
+ 	
+ 	background: #B2D9AD;
+ 	background: #D0EBF5;
+ 	
+ 	padding: 0 2px;
+ 	
+
+ 	
+
+}
+
+
+/* IE6 BUG FIXES ==================================================================== */
+.nevow-form fieldset {
+
+	position:expression('relative'); /* Fixes IE problem with fieldset+legend boundaries */
+	overflow: expression('visible');
+}
+.nevow-form fieldset legend { 	
+ 	margin-left: expression('-7px');
+	position: expression('absolute'); 
+	top: expression('-.75em'); /* Fixes IE problem with fieldset+legend boundaries */
+	/*left:expression('.75em');*/
+}
+
+/* /IE6 BUG FIXES ==================================================================== */
+
+
+
+.nevow-form fieldset.group description {
+	display: none;
+	font-style: italic;
+}
+
+
+
+.nevow-form fieldset.group .field {
+	margin-bottom: .75em;
+ 	/* auto-clear floated children */
+	overflow: hidden;	
+	/* don't use height, 
+	or IE5 will complain	
+	*/
+	_width: 90%;
+}
+
+.nevow-form fieldset.group .field .label {
+  	margin: 0;
+	float: left;
+	width: 21em;  
+  	margin-right: 1em;
+}
+.nevow-form fieldset.group .field .inputs {  
+	/* 21em + 1em gap */
+	/*margin-left: 22em;
+	*/
+	float: left;
+}
+
+/* labels used next to widgets */
+.nevow-form fieldset.group .field label {
+	display: inline; 	
+	cursor: pointer;  
+}
+
+
+/* labels used on the left, not clickable */
+.nevow-form fieldset.group .field label.label {
+	cursor: default;  
+}
+
+
+
+.nevow-form fieldset.group .field .inputs input,
+.nevow-form fieldset.group .field .inputs textarea,
+.nevow-form fieldset.group .field .inputs select {
+ 	background: #fff;
+ 	border: 1px solid #999;
+ 	padding: 3px 3px;      
+ 	color: #000;	
+}
+
+
+.nevow-form fieldset.group .field .inputs input.disabled,
+.nevow-form fieldset.group .field .inputs select.disabled,
+.nevow-form fieldset.group .field .inputs textarea.disabled
+{
+ 	background: #EEEEEE; 	
+ 	border: 1px solid #fff;
+ 	border-left: 1px solid #666; 	    
+ 	border-top: 1px solid #666; 	    
+ 	color: #666;
+}
+
+.nevow-form fieldset.group .checkbox .inputs input.disabled,
+.nevow-form fieldset.group .radiochoice .inputs input.disabled
+{ 	
+	/* do not apply borders for checkboxes 
+	and radio buttons */
+ 	border: none;	
+}
+
+
+
+.nevow-form fieldset.group .field .inputs input:focus,
+.nevow-form fieldset.group .field .inputs input.focus,
+.nevow-form fieldset.group .field .inputs select:focus,
+.nevow-form fieldset.group .field .inputs select.focus,
+.nevow-form fieldset.group .field .inputs textarea:focus,
+.nevow-form fieldset.group .field .inputs textarea.focus
+{
+	background: #ffffcc;	
+	border-color: #d9d982;
+}
+
+/* reset styles for radio groups and checkboxes 
+*/
+.nevow-form fieldset.group .radiochoice .inputs input,
+.nevow-form fieldset.group .checkbox .inputs input
+{
+ 	background: transparent; 	
+ 	border: none;
+ 	padding: 0;      
+}
+
+
+/*
+ *
+ *  FIXME: SELECT and OPTION are really ugly and difficult to style.
+ *
+ *  See: http://www.easy-designs.net/articles/replaceSelect/
+ */
+
+
+.nevow-form fieldset.group .field .inputs option {
+	background: #fff;
+	padding: 0 3px;
+}
+
+.nevow-form .actions {
+	display: none;
+}
+
+.nevow-form .actions input {
+	display: none;
+}
+
+/* this ensures that floated buttons are contained, fixing some layout issues */
+.nevow-form .submit-group-clear {
+	display: block;
+	clear: both;
+	font-size: 0px;
+}
+
+.nevow-form div.submit-group {
+	position: relative !important;  /* to position floats */
+	margin-left: 1.5em;
+}
+
+.nevow-form fieldset.group div.submit-group {
+	position: relative !important;  /* to position floats */
+	margin-left: 1.5em;
+}
+
+.nevow-form div.submit-field {
+	float: left;
+	clear: none;
+	padding: 0px;
+	margin-left: 0;
+	margin-right: 0.5em;
+	margin-top: 1.5em;
+}
+
+.nevow-form fieldset.group div.submit-field {
+	float: left;
+	clear: none;
+	padding: 0px;
+	margin-left: 0;
+	margin-right: 0.5em;
+}
+
+.nevow-form input.submit-input {
+	font-weight: bold;	
+	padding: 3px 5px;
+	/* IE */
+	_padding: 3px 0;
+	line-height: 1.0;			
+	margin: 0;
+	margin-right: 1.5em; /* space between the next button */
+	color: #0b4f70;	
+	border: 1px solid #afd0db;
+	border-bottom: 1px solid #286073;
+	border-right: 1px solid #286073;
+	cursor: pointer;
+	background: #d0ebf5 url(bg-button.gif) bottom left repeat-x;
+}
+
+/* XXX: too generic? */
+.nevow-form .message {
+	color: #d7202d;
+	float:left;
+	clear:both;
+	background:#fff;
+	padding: 1px 2px;
+}
+
+.nevow-form .errors { 
+	display: none;
+}
+
+/* counteract styling for .error */
+.nevow-form .field.error {
+	background: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-weight: normal;
+}
+
+/* collapsible groups */
+
+.nevow-form .collapsible-show {
+	display: block;
+}
+
+.nevow-form .collapsible-hide {
+	display: none;
+}
+
+
+
+/*
+ * FIXME
+ */
+
+.child-error { 
+}
+
+
+.listbuttons { 
+	float: right !important;
+}
+
+.listbuttons a { 
+	text-decoration: none;
+	border: none;
+}
+
+.listbuttons img { 
+	text-decoration: none;
+	border: none;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+.listbuttons-last { 
+/*
+	float: right !important;
+*/
+	text-align:right;		
+	padding-top: .375em;
+}
+
+.listbuttons-last a:link,
+.listbuttons-last a:visited { 
+	text-decoration: none;
+	border: none;
+}
+
+.listbuttons-last img { 
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+/* FIXME, separate images */
+.listbuttons-last img:hover { 
+}
+
+.nevow-form .textinput input,
+.nevow-form .semihidden input.semihidden,
+.nevow-form .semihiddenpassword input.semihidden,
+.nevow-form .hiddenpassword input {
+	width: 15em;
+}
+
+/*
+.nevow-form .selectchoice select {
+	width: 25em;
+}
+*/
+
+/*
+.nevow-form input.semihidden {
+	background: #ffcccc !important;
+}
+*/
+
+
+/*
+ *  temporary styling hacks
+ */
+
+body.submit-in-progress { 
+  cursor: wait;
+}
+
+.cb-section h2.step-heading {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  border-bottom: 1px solid #dddddd;
+  margin: 1.2em 0 0.8em 0;
+}
+
+div.login-error {
+  color: #ff0000;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+#login-logo {
+  margin-left: 2em;
+}
+
+#current-time-heading {
+  float: right;
+  color: #888888;
+}
+
+#nav li.disabled {
+	display: block;
+	
+	text-decoration: none;
+	
+	border: none;	
+
+	padding-left: 9px;
+
+	padding-top: 4px;
+	padding-bottom: 5px;
+
+	color: #aaa;
+	
+	font-size: 11px;
+					
+	/* IE5 value */
+	width: 160px; 
+  	voice-family: "\"}\""; 
+	voice-family:inherit;
+	/* IE6 fix */
+	width: 151px; /* 162px-9px-2px */
+  	
+
+}
+
+#nav li.disabled.current {
+	color: #aaa;	
+	background: #fff;	
+
+}
+
+#table-status-service th,
+#table-status-hardware th {
+	width: 135px;
+}
+
+#table-status-service td,
+#table-status-hardware td {
+	margin-right: auto;
+}
+
+#table-status-network th,
+#table-status-license th {
+	width: 95px;
+}
+
+#table-status-network td,
+#table-status-license td {
+	margin-right: auto;
+}
+
+#login-form #username,
+#login-form #password {
+	width: 12em;
+}
+
+#config-ddns_group-ddns_provider option,
+#management-locale_group-timezone option,
+#management-reboot_group-reboot_day option,
+#management-reboot_group-reboot_time option { 
+	width: 19em;
+}
+
+#user-other-platform-list dt {
+	font-weight: bold;
+	margin-top: 0.5em;
+}
+
+#user-other-platform-list dd {
+	margin-left: 2em;
+	margin-bottom: 0.5em;
+}
+
+/* holly hack for forms; otherwise dynamic list editing and collapses fail to layout properly */
+/* Hides from IE5-mac \*/
+* html form fieldset.group {height: 1%;}
+* html form div.collapsible-group-summary {height: 1%;}
+* html form div.collapsible-group-contents {height: 1%;}
+/* End hide from IE5-mac */
+
+/* for generic hollyfixes */
+/* \*/
+* html .hollyfix { height: 1%;} }
+/* */
+
+/* specific hollyfixes, e.g. for creep bug */
+/* See: http://www.positioniseverything.net/explorer/creep.html */
+/* \*/
+* html .cb-note,
+* html .cb-tip,
+* html .cb-warning,
+* html .cb-error,
+* html .cb-fixme,
+* html .changelog .new-version,
+* html .changelog .current-version,
+* html .changelog .old-version
+{ height: 1%; }
+/* */
+
+/* makes livecd nicer to use */
+#livecd-content {
+  min-height: 350px;
+}

@@ -1,0 +1,16 @@
+= Windows XP Client Issues =
+
+[[PageOutline]]
+
+----
+
+== Windows XP Home Edition does not support IPsec prior to SP2 ==
+
+Windows XP Home Edition does not support IPsec connections prior to SP2.
+Because VPNease uses IPsec-based L2TP/IPsec connections, VPNease cannot be
+used in Windows XP Home Edition computers which do not have Service Pack 2 (SP2)
+installed.
+
+Workaround: install Windows XP Home Edition SP2.
+
+----

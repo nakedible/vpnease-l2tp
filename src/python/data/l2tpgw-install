@@ -1,0 +1,7 @@
+#!/usr/bin/python
+
+# arguments: device, hostname, username, password
+
+import os, sys
+from codebay.l2tpserver.installer import install
+install.Install().run(sys.argv)

@@ -1,0 +1,33 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/demux.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/demux.c	2006-12-03 19:29:52.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/demux.c	2006-12-03 20:23:30.000000000 +0200
+@@ -2305,8 +2305,12 @@
+ 
+ 	for (p = md->chain[ISAKMP_NEXT_D]; p != NULL; p = p->next)
+ 	{
++#if 1 /* l2tp-workaround: ignore Delete SA notifications */
++	    openswan_log("l2tp-workaround: ignoring Delete SA notification.");
++#else
+ 	    accept_delete(st, md, p);
+ 	    DBG_cond_dump(DBG_PARSING, "del:", p->pbs.cur, pbs_left(&p->pbs));
++#endif
+ 	}
+ 
+ 	for (p = md->chain[ISAKMP_NEXT_VID]; p != NULL; p = p->next)
+Index: openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/ipsec_doi.c	2006-12-03 19:29:52.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.c	2006-12-03 20:23:37.000000000 +0200
+@@ -511,6 +511,11 @@
+ 	*r_hash_start;	/* start of what is to be hashed */
+     bool isakmp_sa = FALSE;
+ 
++#if 1 /* l2tp-workaround: do not ever send Delete SA messages */
++    openswan_log("l2tp-workaround: not sending Delete SA messages.");
++    return;
++#endif
++
+     /* If there are IPsec SA's related to this state struct... */
+     if (IS_IPSEC_SA_ESTABLISHED(st->st_state))
+     {

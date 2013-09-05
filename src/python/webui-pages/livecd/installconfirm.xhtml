@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <table class="key-value">
+        <tr>
+          <th>Device information</th>
+          <td><n:invisible n:render="devicehuman" /></td>
+        </tr>
+        <tr>
+          <th>Size</th>
+          <td><n:invisible n:render="sizehuman" /> (<n:invisible n:render="sizebytes" /> bytes)</td>
+        </tr>
+        <tr>
+          <th>Type</th>
+          <td><n:invisible n:render="bustype" /></td>
+        </tr>
+        <tr>
+          <th>Linux name</th>
+          <td><n:invisible n:render="device" /></td>
+        </tr>
+        <tr>
+          <th>Recovery information</th>
+          <td><n:invisible n:render="recovery" /></td>
+        </tr>
+        <tr>
+          <th>Installation model</th>
+          <td><n:invisible n:render="installation_model" /></td>
+        </tr>
+      </table>
+
+      <div class="cb-section">
+        <div class="cb-warning">
+          <p>
+            Installation will erase all existing data on the target device!
+          </p>
+        </div>
+        <n:invisible n:render="form confirm_installation" />
+      </div>
+    </n:invisible>
+  </body>
+</html>
+

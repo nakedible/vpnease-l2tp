@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Ask More</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          Please use the form below to ask any question about <n:invisible n:macro="productname" />.
+          Our sales team will answer to your question as soon as possible.
+          You can also send us e-mail directly to <a href="mailto:sales@vpnease.com">sales@vpnease.com</a>.
+        </p>
+
+        <n:invisible n:render="form info" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

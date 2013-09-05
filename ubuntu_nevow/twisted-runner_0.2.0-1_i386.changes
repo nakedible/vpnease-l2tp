@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 22:43:07 +0300
+Source: twisted-runner
+Binary: python2.4-twisted-runner python-twisted-runner
+Architecture: source all i386
+Version: 0.2.0-1
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted-runner - Process management, including an inetd server
+ python2.4-twisted-runner - Process management, including an inetd server
+Changes: 
+ twisted-runner (0.2.0-1) dapper; urgency=low
+ .
+   * New upstream release
+Files: 
+ 4a77b21bb59bda41e4ca17766f35bae8 368 python optional twisted-runner_0.2.0-1.dsc
+ da2d55e8de5c7e0c08a0e91d2fc95bd6 14540 python optional twisted-runner_0.2.0-1.tar.gz
+ cce2c579cccb38bece0f6f6dc3145968 6978 python optional python-twisted-runner_0.2.0-1_all.deb
+ 1320482e69089d7f4f3f41e6501e5d10 16532 python optional python2.4-twisted-runner_0.2.0-1_i386.deb

@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Step 1: Prerequisites</h2>
+        <ul> <!-- prereqs -->
+          <li>Ensure that you have administrator privileges. You need administrator privileges
+            to install Windows updates and configure the VPN connection.</li>
+          <li>Ensure that you have the latest Windows 2000 Service Pack (SP4) installed. You can
+              check your Windows Service Pack version from 
+              <strong class="cb-guilabel">Start &rarr; Settings &rarr; Control Panel &rarr; System</strong>.
+          </li>
+          <li>Ensure that you have downloaded latest Windows updates from 
+            <a href="http://update.microsoft.com/" class="cb-external" target="_blank">Microsoft Update</a>.
+            Searching for Windows updates required by <n:invisible n:macro="productname" /> may
+            not be possible without latest Windows updates.
+          </li>
+        </ul>
+        
+        <h2 class="step-heading">Step 2: Install required Windows updates</h2>
+          <p>
+            <n:invisible n:macro="productname" /> requires <strong class="cb-bold">High Encryption Pack (HEP)</strong>
+            and <strong class="cb-bold">Windows 2000 NAT traversal update</strong> to be installed.
+          </p>
+          
+          <ul>
+            <li>
+                Go to <a href="http://update.microsoft.com/" class="cb-external" target="_blank">Microsoft Update</a> site.
+              </li>
+              <li>
+                Select <strong class="cb-guilabel">Use administrator options</strong> from 
+                <strong class="cb-guilabel">Options</strong> menu.
+              </li>
+              <li>
+                Select <strong class="cb-guilabel">search the Windows Update Catalog</strong> link found
+                under <strong class="cb-guilabel">Update multiple operating systems</strong>. 
+                The search page requires you to install an ActiveX component (Windows Update).
+              </li>
+              <li>
+                To find <strong class="cb-bold">Windows 2000 NAT traversal update</strong>, 
+                enter <strong class="cb-userinput">818043</strong> to the search field
+                and click <strong class="cb-guilabel">Search</strong>. Add the Windows 2000 update
+                to your basket.   
+              </li>
+              <li>
+                To find <strong class="cb-bold">High Encryption Pack (HEP)</strong>, 
+                enter <strong class="cb-userinput">High Encryption Pack</strong> to the search field and
+                and click <strong class="cb-guilabel">Search</strong>. Add the Windows 2000 update
+                to your basket.   
+              </li>
+              <li>
+                Download and install the selected updates.  Updates require computer reboot.
+              </li>  
+          </ul>
+          
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

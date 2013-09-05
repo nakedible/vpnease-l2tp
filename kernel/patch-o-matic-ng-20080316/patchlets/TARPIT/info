@@ -1,0 +1,5 @@
+Title: iptables TARPIT target
+Author: "Aaron Hopkins" <lists@die.net>
+Status: Works for me
+Repository: extra
+Requires: linux < 2.6.0

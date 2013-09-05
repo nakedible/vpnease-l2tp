@@ -1,0 +1,3 @@
+#!/bin/sh
+# True if geoip is applied in given kernel tree.
+[ -f $KERNEL_DIR/include/linux/netfilter/xt_geoip.h ] && echo geoip

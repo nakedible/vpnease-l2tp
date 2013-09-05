@@ -1,0 +1,151 @@
+iptables v1.3.0 Changelog
+======================================================================
+This version requires kernel >= 2.4.4
+This version recommends kernel >= 2.4.18
+
+Bugs fixed from 1.3.0rc1:
+
+- Fix realm match save/restore issue
+	[ Harald Welte ]
+
+- Fix hashlimit rule deletion from userspace
+	[ Samuel Jean ]
+
+- Fix hashlimit parameter handling / iptables-save
+	[ Nikolai Malykh ]
+
+- Fix multiport inversion
+	[ Phil Oester ]
+
+Bugs fixed from 1.2.11:
+
+- Fix compilation on systems where /bin/sh != bash
+	[ Jozsef Kadlecsik ]
+
+- Fix setting lib_dir in ip*tables-{save,restore}
+	[ Martin Josefsson ]
+
+- Fix module-autoloading in certain cases
+	[ Harald Welte ]
+
+- libipt_TTL: limit range of valid TTL to 0-255
+	[ Maciej Soltysiak ]
+
+- libip6t_HL: limit range of valid HL to 0-255
+	[ Maciej Soltysiak ]
+
+- libip{6}t_limit: Fix half-working limit invert check 
+	[ Phil Oester ]
+
+- libipt_connbytes: Update to use the IP_CONNTRACK_ACCT counters
+	[ Harald Welte ]
+
+- libipt_conntrack: Fix typo
+	[ Phil Oester ]
+
+- libipt_dstlimit: Fix half-working invert check 
+	[ Phil Oester ]
+
+- libipt_helper: Prevent user from using --helper multiple times
+	[ Nicolas Bouliane ]
+
+- libipt_iprange: Print error message if --dst-range used twice
+	[ Nicolas Bouliane ]
+
+- libipt_nth: Fix help message syntax
+	[ Harald Welte ]
+
+- libipt_psd: Fix option parsing
+	[ Pablo Neira ]
+
+- libipt_random: Fix help message syntax
+	[ Harald Welte ]
+
+- libipt_realm: Fix inversion of options
+	[ Simon Lodal ]
+
+- libipt_time: Fix C++ style delayed variable definition
+	[ Olivier Clerget ]
+
+- libipt_time: Print message about time match not adhering daylight saving
+	[ Phil Oester ]
+
+- libipt_tos: Print Error message if --tos is specified twice
+	[ Nicolas Bouliane ]
+
+- libipt_ttl: Cleanup ttl option parsing
+	[ Phil Oester ]
+
+- libipt_u32: Fix option parsing
+	[ Piotr Gasid'o ]
+
+
+Changes from 1.2.11:
+
+- libiptc: complete rewrite for performance reasons
+	[ Harald Welte, Martin Josefsson ]
+
+- introduce "DO_MULTI=1" mode to build a muilti-call binary
+	[ Bastiaan Bakker ]
+
+- code cleanup, use C99 initializers
+	[ Harald Welte, Pablo Neira ]
+
+- Extension revision number support (if kernel supports the getsockopts).
+	[ Rusty Russell ]
+
+- Don't need ipt_entry_target()/ip6t_entry_target().
+	[ Rusty Russell ]
+
+- Don't re-initialize libiptc/libip6t unless modprobe attempt succeeds.
+	[ Rusty Russell ]
+
+- Implement IPTABLES_LIB_DIR and IP6TABLES_LIB_DIR environment variables
+	[ Rusty Russell ]
+
+- Add manpage section about 'raw' table
+	[ Harald Welte ]
+
+
+- libip{6}t_ROUTE: add ROUTE --tee mode
+	[ Patrick Schaaf ]
+
+- libip{6}t_multiport: Print Error message when `!' is used
+	[ Patrick McHardy, Phil Oester ]
+
+- New libip6t_physdev Match
+	[ Bart De Schuymer ]
+
+- libipt_CLUSTERIP: Fix compiler warning about const
+	[ Harald Welte ]
+
+- libipt_DNAT: Print Error message if `:' is used for port range
+- libipt_SNAT: Print Error message if `:' is used for port range
+	[ Phil Oester ]
+
+- libipt_LOG: Add --log-uid option
+	[ John Lange ]
+
+- libipt_MARK: add bitwise operators
+	[ Henrik Nordstrom, Rusty Russell ]
+
+- libipt_SET: Update to ipset2
+	[ Jozsef Kadlecsik ]
+
+- libipt_account: Update to 0.1.16
+	[ Piotr Gasid'o ]
+
+- New libipt_comment Match
+	[ Brad Fisher ]
+
+- New libipt_hashlimit Match, supersedes dstlimit
+	[ Harald Welte ]
+
+- libipt_ttl: Use string_to_number()
+	[ Rusty Russell ]
+
+
+Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
+iptables but rather distributed as a seperate package
+(ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot)
+

@@ -1,0 +1,201 @@
+.ig \"-*- nroff -*-
+Copyright (c) 2004 Katalix Systems Ltd.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by Katalix Systems Ltd instead of in
+the original English.
+..
+.\"
+.\" MAN PAGE COMMENTS to openl2tp-docs@lists.sourceforge.net
+.\"
+.TH ippool_rpc 4 "12 September 2004" "IpPool" "IpPool Manual"
+.PD
+.SH NAME
+ippool_rpc \- IP Pool Daemon RPC Interface
+.PD
+.SH SYNOPSIS
+This document describes the 
+.B RPC
+management interface of
+.B ippoold.
+.PP
+The general user of
+.B ippoold
+should find this document useful as it lists all parameters accessible
+over the interface.
+.PP
+.PD
+.SH DESCRIPTION
+An application wishing to control and/or obtain status information from
+.B ippoold
+must implement all or part of this interface as an RPC client. The 
+.B ippoold
+RPC interface definition is defined in 
+.I ippool_rpc.x
+which is available in the application source distribution. This file
+may be processed by RPC tools such as
+.BR rpcgen ( 1 ) 
+to generate C, C++ or even Java source code that implements the
+interface.
+.PP
+.B ippoold
+was originally written for the
+.B OpenL2TP
+project but was repackaged as a separate application so that it could 
+be used by other applications. 
+.PD
+.SH BUILDING CLIENT APPLICATIONS
+You can safely skip this section if you are already familiar with Sun RPC.
+.PP
+There are several tools to help build Sun RPC client applications, some of which
+are proprietary and cost money. To build Java client applications, tools such as 
+.nf
+http://netbula.com/
+http://www.onc-rpc-xdr.com/
+.fi
+may be used. To build C applications,
+.BR rpcgen ( 3 )
+is available.
+.BR ippoolconfig
+is an RPC client application implementing the interfaces of 
+.I ippool_rpc.x
+and is a good place to look for example code.
+.PP
+.BR rpcgen
+generates C code from the interface definition file, 
+.I ippool_rpc.x. When building client applications, 
+.BR rpcgen
+should generate client stubs and XDR (architecture independant
+structure serialization) which are simply linked with the client
+application code.
+.nf
+rpcgen -N -M -C -L -h -o ippool_rpc.h ippool_rpc.x
+rpcgen -N -M -C -L -c -o ippool_rpc_xdr.c ippool_rpc.x
+rpcgen -N -M -C -L -l -o ippool_rpc_client.c ippool_rpc.x
+cc -o myapp myapp.o ippool_rpc_xdr.o ippool_rpc_client.o
+.fi
+.PP
+The generated file
+.I ippool_rpc.h
+defines C structures and function prototypes for all interfaces. The
+client application simply calls the functions as if they were linked
+directly with the application. Under the hood, RPC serializes the data
+and passes it (usually) over a network to the application server. When
+the response comes back, the client's RPC function call returns as if
+all the work were done locally.
+.PP
+Refer to
+.BR rpc ( 3 )
+for more details about RPC.
+.PD
+.SH INTERFACES
+.PP
+This section covers the interface details.
+.LP
+.SS IPPOOL
+.nf
+Operations:-
+STATUS                       POOL_CREATE(struct ip_pool params)
+STATUS                       POOL_DELETE(string pool_name)
+STATUS                       POOL_MODIFY(struct ip_pool params)
+struct ip_pool               POOL_GET(string pool_name)
+struct ip_pool_list          POOL_LIST(void)
+STATUS                       POOL_ADDRBLOCK_ADD(string pool_name, 
+                                           struct ip_pool_addrblock blk)
+STATUS                       POOL_ADDRBLOCK_REMOVE(string pool_name, 
+                                              struct ip_pool_addrblock blk)
+STATUS                       POOL_ADDRBLOCK_RESERVE(string pool_name, 
+                                               struct ip_pool_addrblock blk)
+STATUS                       POOL_ADDRBLOCK_UNRESERVE(string pool_name, 
+                                                 struct ip_pool_addrblock blk)
+struct ip_addr_alloc_result  POOL_ADDR_ALLOC(string pool_name)
+STATUS                       POOL_ADDR_FREE(string pool_name, struct ip_addr addr)
+.fi
+.PP 16
+Referenced by: pool_name
+.PP
+IP address pools contain one or more address blocks of IP
+addresses. Address blocks are specified by first address and number of
+addresses in the block. Address blocks may be added and removed from a
+pool, or reserved and unreserved. In this way, a group of IP addresses
+may be configured by an operator.
+.LP
+.IP "\fICreate-only parameters:-\fP"
+.LP
+.TP 24
+.B pool_name
+Identifies the pool. Must be unique.
+.LP
+.IP "\fIModifiable parameters:-\fP"
+.LP
+.TP 24
+.B trace
+Enables or disables logging messages from the pool. If enabled,
+messages are logged each time an address is allocated from the pool or
+returned back to it. Default is off.
+.TP
+.B drain
+Drains the pool of allocated addresses. Addresses already allocated may
+be freed but new addresses may not be allocated. This may be useful for
+an administrator to move the system over to a new configuration without
+interrupting service.
+.TP
+.B max_addrs
+Maximum number of addresses that may be assigned to the pool. Default 
+is 0 (unlimited).
+.LP
+.IP "\fIAddress Block parameters:-\fP"
+.LP
+.TP
+.B first_addr
+First address of an address block.
+.TP
+.B netmask
+The netmask bounding the addresses in the address block. Default: 255.255.255.0.
+.TP
+.B num_addrs
+Number of addresses in the address block starting at
+.I first_addr.
+The default value is derived from the netmask, i.e. 256 for a netmask of
+255.255.255.0.
+.PD
+.SH LICENSE
+.PP
+.B IpPool
+is dual-licensed. Users can choose to use the IpPool software as an
+Open Source/Free Software product under the terms of the GNU General
+Public License (http://www.fsf.org/licenses/) or can purchase a
+commercial license from Katalix Systems Ltd.  All applications written
+to the interface specified in this document fall under this
+license. Any application, even a closed source application, is deemed
+to be a
+.I derived work
+when it implements this interface. Users not wanting to have this restriction
+must purchase a commercial license. For details see the
+.I LICENSE
+file in the
+.B IpPool
+source distribution. 
+.PD
+.SH FILES
+.TP 8
+.BI /usr/lib/openl2tp/ippool_rpc.x
+is the RPC interface definition source file.
+It may be used to generate C or Java API source code using appropriate tools.
+.PD
+.SH "SEE ALSO"
+.br
+.BR ippoolconfig ( 1 ),
+.BR ippoold ( 8 ),
+.BR rpc ( 3 ).

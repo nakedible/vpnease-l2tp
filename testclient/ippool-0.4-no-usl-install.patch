@@ -1,0 +1,14 @@
+diff -ru ippool-0.4/usl/Makefile ippool-0.4.new/usl/Makefile
+--- ippool-0.4/usl/Makefile	2005-09-10 20:26:30.000000000 +0300
++++ ippool-0.4.new/usl/Makefile	2006-08-31 17:38:55.000000000 +0300
+@@ -56,8 +56,8 @@
+ 			$(CC) -c $(CFLAGS) $< -o $@
+ 
+ install:		all
+-			$(INSTALL) -d $(DESTDIR)/usr/lib
+-			$(INSTALL) libusl.a $(DESTDIR)/usr/lib
++#			$(INSTALL) -d $(DESTDIR)/usr/lib
++#			$(INSTALL) libusl.a $(DESTDIR)/usr/lib
+ 
+ checkin:		clean
+ 			ci -u -q Makefile $(USL_SRCS.c) $(USL_SRCS.h) $(USL_SRCS_TEST.c)

@@ -1,0 +1,1814 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - module sqlalchemy.databases.mysql</title>
+	
+    
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+    <link rel="stylesheet" href="docutil.css"></link>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_databases_postgres.html">module sqlalchemy.databases.postgres</a>
+
+               |   
+            Next: <a href="sqlalchemy_databases_oracle.html">module sqlalchemy.databases.oracle</a>
+    </div>
+
+        <h2>module sqlalchemy.databases.mysql</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_modfunc">Module Functions</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_modfunc_descriptor">descriptor()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_modfunc_kw_colspec">kw_colspec()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSBigInteger">class MSBigInteger(MSInteger)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSBinary">class MSBinary(Binary)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSBoolean">class MSBoolean(Boolean)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSChar">class MSChar(CHAR)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSDate">class MSDate(Date)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSDateTime">class MSDateTime(DateTime)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSDecimal">class MSDecimal(MSNumeric)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSDouble">class MSDouble(MSNumeric)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSEnum">class MSEnum(MSString)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSFloat">class MSFloat(Float)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSInteger">class MSInteger(Integer)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSLongText">class MSLongText(MSText)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSMediumBlob">class MSMediumBlob(MSBinary)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSMediumText">class MSMediumText(MSText)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSNumeric">class MSNumeric(Numeric)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSSmallInteger">class MSSmallInteger(SmallInteger)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSString">class MSString(String)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSText">class MSText(TEXT)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSTime">class MSTime(Time)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSTimeStamp">class MSTimeStamp(TIMESTAMP)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSTinyText">class MSTinyText(MSText)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MySQLCompiler">class MySQLCompiler(ANSICompiler)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MySQLDialect">class MySQLDialect(ANSIDialect)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MySQLDialect">class MySQLDialect(ANSIDialect)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MySQLExecutionContext">class MySQLExecutionContext(DefaultExecutionContext)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MySQLIdentifierPreparer">class MySQLIdentifierPreparer(ANSIIdentifierPreparer)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MySQLSchemaDropper">class MySQLSchemaDropper(ANSISchemaDropper)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MySQLSchemaGenerator">class MySQLSchemaGenerator(ANSISchemaGenerator)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_array">class array(object)</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql"></a>
+    
+    <div class="subsection">
+
+    <h3>module sqlalchemy.databases.mysql</h3>
+    
+    
+    
+
+        
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_modfunc"></a>
+    
+    <div class="subsection">
+
+    <h3>Module Functions</h3>
+    
+    
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_modfunc_descriptor"></a>
+    <b>def descriptor()</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                
+    <div class="darkcell">
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_modfunc_kw_colspec"></a>
+    <b>def kw_colspec(<i>self</i>, <i>spec</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+        
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSBigInteger"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSBigInteger(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSInteger">MSInteger</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSBinary"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSBinary(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Binary">Binary</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSBoolean"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSBoolean(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Boolean">Boolean</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_bind_param(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSChar"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSChar(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_CHAR">CHAR</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSDate"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSDate(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Date">Date</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSDateTime"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSDateTime(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_DateTime">DateTime</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSDecimal"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSDecimal(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSNumeric">MSNumeric</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSDouble"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSDouble(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSNumeric">MSNumeric</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>precision=10</i>, <i>length=2</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSEnum"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSEnum(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSString">MSString</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>*enums</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSFloat"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSFloat(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Float">Float</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>precision=10</i>, <i>length=None</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSInteger"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSInteger(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Integer">Integer</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>length=None</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSLongText"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSLongText(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSText">MSText</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSMediumBlob"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSMediumBlob(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSBinary">MSBinary</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSMediumText"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSMediumText(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSText">MSText</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSNumeric"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSNumeric(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Numeric">Numeric</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>precision=10</i>, <i>length=2</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSSmallInteger"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSSmallInteger(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_SmallInteger">SmallInteger</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>length=None</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSString"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSString(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_String">String</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>length=None</i>, <i>*extra</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSText"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSText(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_TEXT">TEXT</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>**kw</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSTime"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSTime(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_Time">Time</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def convert_result_value(<i>self</i>, <i>value</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSTimeStamp"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSTimeStamp(<a href="sqlalchemy_types.html#docstrings_sqlalchemy.types_TIMESTAMP">TIMESTAMP</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MSTinyText"></a>
+    
+    <div class="subsection">
+
+    <h3>class MSTinyText(<a href="sqlalchemy_databases_mysql.html#docstrings_sqlalchemy.databases.mysql_MSText">MSText</a>)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_col_spec(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MySQLCompiler"></a>
+    
+    <div class="subsection">
+
+    <h3>class MySQLCompiler(ANSICompiler)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def for_update_clause(<i>self</i>, <i>select</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def limit_clause(<i>self</i>, <i>select</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_cast(<i>self</i>, <i>cast</i>)</b>
+    <div class="docstring">
+    <p>hey ho MySQL supports almost no types at all for CAST</p>
+
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MySQLDialect"></a>
+    
+    <div class="subsection">
+
+    <h3>class MySQLDialect(ANSIDialect)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>module=None</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def compiler(<i>self</i>, <i>statement</i>, <i>bindparams</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_connect_args(<i>self</i>, <i>url</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_execution_context(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dbapi(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_execute(<i>self</i>, <i>cursor</i>, <i>statement</i>, <i>parameters</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_executemany(<i>self</i>, <i>cursor</i>, <i>statement</i>, <i>parameters</i>, <i>context=None</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_rollback(<i>self</i>, <i>connection</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_default_schema_name(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def has_table(<i>self</i>, <i>connection</i>, <i>table_name</i>, <i>schema=None</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def moretableinfo(<i>self</i>, <i>connection</i>, <i>table</i>)</b>
+    <div class="docstring">
+    <p>runs SHOW CREATE TABLE to get foreign key/options information about the table.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def preparer(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def reflecttable(<i>self</i>, <i>connection</i>, <i>table</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemadropper(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemagenerator(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def supports_sane_rowcount(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def type_descriptor(<i>self</i>, <i>typeobj</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MySQLDialect"></a>
+    
+    <div class="subsection">
+
+    <h3>class MySQLDialect(ANSIDialect)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>module=None</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def compiler(<i>self</i>, <i>statement</i>, <i>bindparams</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_connect_args(<i>self</i>, <i>url</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def create_execution_context(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def dbapi(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_execute(<i>self</i>, <i>cursor</i>, <i>statement</i>, <i>parameters</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_executemany(<i>self</i>, <i>cursor</i>, <i>statement</i>, <i>parameters</i>, <i>context=None</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def do_rollback(<i>self</i>, <i>connection</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_default_schema_name(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def has_table(<i>self</i>, <i>connection</i>, <i>table_name</i>, <i>schema=None</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def moretableinfo(<i>self</i>, <i>connection</i>, <i>table</i>)</b>
+    <div class="docstring">
+    <p>runs SHOW CREATE TABLE to get foreign key/options information about the table.</p>
+
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def preparer(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def reflecttable(<i>self</i>, <i>connection</i>, <i>table</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemadropper(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def schemagenerator(<i>self</i>, <i>*args</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def supports_sane_rowcount(<i>self</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def type_descriptor(<i>self</i>, <i>typeobj</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MySQLExecutionContext"></a>
+    
+    <div class="subsection">
+
+    <h3>class MySQLExecutionContext(DefaultExecutionContext)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def post_exec(<i>self</i>, <i>engine</i>, <i>proxy</i>, <i>compiled</i>, <i>parameters</i>, <i>**kwargs</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MySQLIdentifierPreparer"></a>
+    
+    <div class="subsection">
+
+    <h3>class MySQLIdentifierPreparer(ANSIIdentifierPreparer)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def __init__(<i>self</i>, <i>dialect</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MySQLSchemaDropper"></a>
+    
+    <div class="subsection">
+
+    <h3>class MySQLSchemaDropper(ANSISchemaDropper)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def drop_foreignkey(<i>self</i>, <i>constraint</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def visit_index(<i>self</i>, <i>index</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_MySQLSchemaGenerator"></a>
+    
+    <div class="subsection">
+
+    <h3>class MySQLSchemaGenerator(ANSISchemaGenerator)</h3>
+    
+    
+    
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def get_column_specification(<i>self</i>, <i>column</i>, <i>override_pk=False</i>, <i>first_pk=False</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+                    
+    <div class="darkcell">
+    
+    <A name=""></a>
+    <b>def post_create_table(<i>self</i>, <i>table</i>)</b>
+    <div class="docstring">
+    
+    </div>
+    </div>
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+            
+    
+
+    
+    
+    <A name="docstrings_sqlalchemy.databases.mysql_array"></a>
+    
+    <div class="subsection">
+
+    <h3>class array(object)</h3>
+    
+    
+    <div class="darkcell"><p>array(typecode [, initializer]) -&gt; array</p>
+<p>Return a new array whose items are restricted by typecode, and
+initialized from the optional initializer value, which must be a list,
+string. or iterable over elements of the appropriate type.</p>
+<p>Arrays represent basic values and behave very much like lists, except
+the type of objects stored in them is constrained.</p>
+<p>Methods:</p>
+<p>append() -- append a new item to the end of the array
+buffer_info() -- return information giving the current memory info
+byteswap() -- byteswap all the items of the array
+count() -- return number of occurences of an object
+extend() -- extend array by appending multiple elements from an iterable
+fromfile() -- read items from a file object
+fromlist() -- append items from the list
+fromstring() -- append items from the string
+index() -- return index of first occurence of an object
+insert() -- insert a new item into the array at a provided position
+pop() -- remove and return item (default last)
+read() -- DEPRECATED, use fromfile()
+remove() -- remove first occurence of an object
+reverse() -- reverse the order of the items in the array
+tofile() -- write all items to a file object
+tolist() -- return the array converted to an ordinary list
+tostring() -- return the array converted to a string
+write() -- DEPRECATED, use tofile()</p>
+<p>Attributes:</p>
+<p>typecode -- the typecode character used to create the array
+itemsize -- the length in bytes of one array item</p>
+</div>
+    
+
+
+    
+
+    </div>
+
+
+
+    
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+            Up: <a href="docstrings.html">Generated Documentation</a>
+
+               |   
+            Previous: <a href="sqlalchemy_databases_postgres.html">module sqlalchemy.databases.postgres</a>
+
+               |   
+            Next: <a href="sqlalchemy_databases_oracle.html">module sqlalchemy.databases.oracle</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

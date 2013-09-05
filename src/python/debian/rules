@@ -1,0 +1,177 @@
+#!/usr/bin/make -f
+
+DEB_AUTO_CLEANUP_RCS            := yes
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+
+DEB_PYTHON_COMPILE_VERSION	:= 2.4
+DEB_PYTHON_VERSIONS             := 2.4
+DEB_FIXPERMS_EXCLUDE		:= dhclient_signal xklaviertool
+
+name=l2tpgw
+dst=debian/$(name)
+dst_startup=$(dst)/usr/lib/l2tpgw/startup-scripts/
+
+build-dhclient-signal::
+	(cd ../ocaml/; make -f Makefile clean; make -f Makefile)
+	cp ../ocaml/dhclient_signal data/
+
+build-xklaviertool::
+	(cd ../c/xklaviertool; make -f Makefile clean; make -f Makefile)
+	cp ../c/xklaviertool/xklaviertool data/
+
+build-notifytool:
+	(cd ../c/notifytool; make -f Makefile clean; make -f Makefile)
+	cp ../c/notifytool/notifytool data/
+
+build-partedalldevices:
+	(cd ../c/partedalldevices; make -f Makefile clean; make -f Makefile)
+	cp ../c/partedalldevices/parted_all_devices data/
+
+build-vpnease-mib-so:
+	(cd ../c/vpnease-snmp; make -f Makefile clean; make -f Makefile)
+	cp ../c/vpnease-snmp/vpneaseMIB.so data/
+
+build-radauthuser:
+	(cd ../c/radauthuser; make -f Makefile clean; make -f Makefile)
+	cp ../c/radauthuser/radauthuserng data/radauthuser
+
+build/l2tpgw:: build-dhclient-signal build-xklaviertool build-notifytool build-partedalldevices build-vpnease-mib-so build-radauthuser
+
+# XXX: use install args instead of chmod..
+
+binary-install/l2tpgw::
+	# XXX: scripts in datadir are not obfuscated, which is ok
+	(old_pwd=`pwd`; cd $(dst)/usr/lib/python2.4/site-packages/; python $${old_pwd}/obfuscate.py codebay)
+
+	(cd $(dst)/usr/lib/python2.4/site-packages/; zip -r codebay.zip codebay; rm -rf codebay; echo "codebay.zip" > codebay.pth)
+
+	install -d $(dst)/usr/lib/l2tpgw
+	install -d $(dst)/usr/lib/l2tpgw/installer
+	install -d $(dst)/usr/lib/l2tpgw/postupdate
+
+	-for p in \
+		data/l2tpgw-syslogdaemon \
+		data/l2tpgw-syslogwrapper \
+		data/l2tpgw-update \
+		data/l2tpgw-update-product \
+		data/l2tpgw-runner \
+		data/l2tpgw-install \
+		data/vpnease-init \
+		data/vpnease-update \
+		data/dhclient_signal \
+		data/xklaviertool \
+		data/notifytool \
+		data/parted_all_devices \
+		data/vpneaseMIB.so \
+		data/radauthuser \
+		data/l2tpgw-gnome-autostart \
+		data/l2tpgw-cron \
+		webui.tac \
+		livecd.tac \
+		data/gnome-splash.png \
+		data/gnome-background.png \
+		data/gnome-desktop-icon.png \
+		; do \
+			install $${p} $(dst)/usr/lib/l2tpgw/; \
+	done
+
+	# pretty ugly, but otherwise patterns cannot be easily used...
+	-for p in \
+		. \
+		static \
+		legal \
+		livecd \
+		user \
+		user/installation \
+		user/installation/other \
+		user/installation/osx104 \
+		user/installation/osx105 \
+		user/installation/vista \
+		user/installation/win2000 \
+		user/installation/winxp \
+		user/installation/winmobile \
+		admin \
+		admin/misc \
+		admin/config \
+		admin/contact \
+		admin/management \
+		admin/status \
+		admin/users \
+		admin/wizard; do \
+			install -d $(dst)/usr/lib/l2tpgw/webui-pages/$${p}; \
+			install webui-pages/$${p}/*.{xhtml,css,js,png,gif,jpg,reg,exe} $(dst)/usr/lib/l2tpgw/webui-pages/$${p}/; \
+	done
+
+	# scriptaculous & prototype
+	#install webui-pages/static/scriptaculous-js-1.6.4/lib/prototype.js $(dst)/usr/lib/l2tpgw/webui-pages/static/
+	#for i in \
+	#	builder.js \
+	#	controls.js \
+	#	dragdrop.js \
+	#	effects.js \
+	#	scriptaculous.js \
+	#	slider.js \
+	#	unittest.js; do \
+	#		install webui-pages/static/scriptaculous-js-1.6.4/src/$${i} $(dst)/usr/lib/l2tpgw/webui-pages/static/; \
+	#done
+
+	# installer files
+	install webui-pages/autorun-installed-files.zip $(dst)/usr/lib/l2tpgw/installer/
+
+	# snmp mibs
+	install -d $(dst)/usr/lib/l2tpgw/mibs
+	install -d $(dst)/usr/share/snmp/mibs
+	-for i in ../c/vpnease-snmp/*MIB*.txt; do \
+		install $${i} $(dst)/usr/lib/l2tpgw/mibs/; \
+		install $${i} $(dst)/usr/lib/l2tpgw/webui-pages/static/; \
+		install $${i} $(dst)/usr/share/snmp/mibs/; \
+	done
+
+	install -d $(dst_startup)
+	install data/codebayrc.py $(dst_startup)
+	install data/vpnease-syslog $(dst_startup)
+	install data/vpnease-preinit $(dst_startup)
+	install data/vpnease-postinit $(dst_startup)
+	install data/vpnease-webui $(dst_startup)
+
+	install -d $(dst)/usr/bin/
+	install data/l2tpgw-init-wrapper $(dst)/usr/bin/
+
+	install -d $(dst)/var/lib/l2tpgw/
+	install data/pci.ids.20080211 $(dst)/var/lib/l2tpgw/
+
+	chmod 0755 $(dst)/usr/lib/l2tpgw/l2tpgw-syslogdaemon
+	chmod 0755 $(dst)/usr/lib/l2tpgw/l2tpgw-syslogwrapper
+	chmod 0755 $(dst)/usr/lib/l2tpgw/l2tpgw-update
+	chmod 0755 $(dst)/usr/lib/l2tpgw/l2tpgw-update-product
+	chmod 0755 $(dst)/usr/lib/l2tpgw/l2tpgw-runner
+	chmod 0755 $(dst)/usr/lib/l2tpgw/l2tpgw-install
+
+	chmod 4755 $(dst)/usr/lib/l2tpgw/dhclient_signal
+	chmod 0755 $(dst)/usr/lib/l2tpgw/xklaviertool
+	chmod 0755 $(dst)/usr/lib/l2tpgw/notifytool
+	chmod 0755 $(dst)/usr/lib/l2tpgw/parted_all_devices
+	chmod 0755 $(dst)/usr/lib/l2tpgw/l2tpgw-cron
+
+	chmod 0755 $(dst)/usr/lib/l2tpgw/vpnease-init
+	chmod 0755 $(dst)/usr/lib/l2tpgw/vpnease-update
+
+	chmod 0755 $(dst)/usr/bin/l2tpgw-init-wrapper
+
+	# certificate related
+	install data/management-connection-revoked-certificates.txt $(dst)/var/lib/l2tpgw/management-connection-revoked-certificates.txt
+
+	# postupdate
+	(cd postupdate/backup-files && \
+	for i in update-files.zip vpnease-init vpnease-update; do \
+		md5sum -c $$i.md5 || exit 1; \
+	done)
+
+	for i in update-files.zip vpnease-init vpnease-update; do \
+		install postupdate/backup-files/$${i} $(dst)/usr/lib/l2tpgw/postupdate; \
+		install postupdate/backup-files/$${i}.md5 $(dst)/usr/lib/l2tpgw/postupdate; \
+	done
+	install data/l2tpgw-postupdate $(dst)/usr/lib/l2tpgw/l2tpgw-postupdate
+	install data/l2tpgw-postupdate-script $(dst)/usr/lib/l2tpgw/l2tpgw-postupdate-script

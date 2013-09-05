@@ -1,0 +1,127 @@
+.ig \"-*- nroff -*-
+Copyright (c) 2004 Katalix Systems Ltd.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by Katalix Systems Ltd instead of in
+the original English.
+..
+.\"
+.\" MAN PAGE COMMENTS to openl2tp-docs@lists.sourceforge.net
+.\"
+.TH ippoold 8 "12 September 2004" "IpPool" "IpPool Manual"
+.PD
+.SH NAME
+ippoold \- IP Pool daemon
+.PD
+.SH SYNOPSIS
+.hy 0
+.na
+.B ippoold [\-f] [\-R] [\-d] [\-L log-facility]
+.ad b
+.hy 1
+.PD
+.SH DESCRIPTION
+.PP
+.B ippoold
+maintains one or more static IP address pools.
+.PP
+Each address pool is given a unique name by the administrator.
+Applications allocate addresses from a named pool and free addresses
+back to a named pool when they are no longer needed. Each pool is
+completely separate; one pool's addresses may overlap anothers.
+.PP
+Individual IP address pools may contain any number of contiguous address
+blocks. Individual addresses within those address blocks may
+be reserved by an administrator to handle cases where some addresses
+are manually assigned. Address blocks may be added or removed from 
+a pool as required, even when the pool is in use.
+.PP
+.B ippoold
+does not require allocated addresses to be periodically refreshed like
+DHCP does. An application that allocates addresses must always return
+them to the pool when it is finished. Failure to do so is a bug and will
+result in IP address leaks.
+.PP
+.B ippoold
+is intended for use by any application that needs IP addresses for
+temporary use. It was originally written for the
+.B OpenL2TP
+project but was repackaged as a separate application so that it could 
+be used by other applications. A pppd plugin is provided, enabling a 
+PPP server to allocate addresses from a pool.
+.PD
+.SH OPTIONS
+.TP 8
+.B \-d
+Enable debug messages.
+.TP
+.B \-f
+Run in the foreground. By default,
+.B ippoold
+forks itself and runs in the background. For debugging, it is
+sometimes useful to run the application in the foreground. Note that
+when run in the foreground, any trace messages are sent to the
+controlling terminal rather than to syslog.
+.TP
+.B \-L \fIlog-facility\fP
+By default,
+.B ippoold
+logs messages to the LOG_DAEMON syslog facility. This option may be used
+to log messages to one of the localN facilities instead (local0..local7)
+so that the logged messages can be directed via syslog configuration
+to a separate file or syslog server. See 
+.BR syslog.conf ( 5 )
+for how to configure syslog.
+.TP
+.B \-R
+Enables remote management. 
+.B ippoold
+is controlled using Sun RPC requests. Sun RPC requests may be sent
+over a network so a control application implementing the
+.B IpPool
+RPC API documented in
+.BR ippool_rpc ( 4 )
+may control
+.B ippoold
+remotely. In most environments, remote configuration isn't useful so
+is disabled by default. However, in closed cluster or chassis systems
+where IP addresses are needed by applications running on different
+CPUs, the ability to control
+.B ippoold
+over a network using RPC is extremely useful.
+.PD
+.SH CONFIGURATION
+There are no configuration files! All configuration is done using an
+application supporting the
+RPC interface documented in 
+.BR ippool_rpc ( 4 ).
+One such application is 
+.BR ippoolconfig ( 1 )
+which provides an intuitive command line interface.
+.PP
+Since
+.B ippoold
+is managed by Sun RPC which is available in most commercial operating systems
+including Microsoft Windows, Sun Solaris and even embedded RTOS such
+as WindRiver's VxWorks, custom management applications may be developed
+to control 
+.BR ippoold .
+.PD
+.SH "REPORTING BUGS"
+Please report bugs to <openl2tp-bugs@lists.sourceforge.net>.
+.PD
+.SH "SEE ALSO"
+.br
+.BR ippoolconfig ( 1 ),
+.BR ippool_rpc ( 4 )

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <n:invisible n:render="will_not_update">
+          <p>
+            Click <strong class="cb-guilabel">Shut down</strong> to shut down the server.
+            Shutting down takes 10-20 seconds.
+          </p>
+        </n:invisible>
+
+        <n:invisible n:render="will_update">
+          <p>
+            Click <strong class="cb-guilabel">Shut down</strong> to shut down the server.
+            Shutting down takes 10-20 seconds.
+          </p>
+
+          <div class="cb-note">
+            <p>
+              A product update is available.  The product will be updated the next time you start
+              up the server.
+            </p>
+            <p>
+              If you do not wish to update the product on next startup, please disable <strong class="cb-guilabel">Check for updates when rebooting</strong>
+              from the <strong class="cb-guilabel">License &amp; Maintenance</strong> page before
+              shutting down.
+            </p>
+          </div>
+        </n:invisible>
+
+        <n:invisible n:render="form buttons" />
+      </div>
+    </n:invisible>
+    
+    <n:invisible n:pattern="contexthelp">
+      <div class="context-help-items">
+      </div>
+    </n:invisible>
+    
+  </body>
+</html>

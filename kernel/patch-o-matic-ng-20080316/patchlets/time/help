@@ -1,0 +1,34 @@
+
+This option adds CONFIG_IP_NF_MATCH_TIME, which supplies a time match module.
+This match allows you to filter based on the packet arrival time/date
+(arrival time/date at the machine which the netfilter is running on) or
+departure time/date (for locally generated packets).
+
+Supported options are:
+[ --timestart value ]
+    Match only if it is after `value' (Inclusive, format: HH:MM ; default 00:00).
+
+[ --timestop  value ]
+    Match only if it is before `value' (Inclusive, format: HH:MM ; default 23:59).
+
+[ --days listofdays ]
+    Match only if today is one of the given days. (format: Mon,Tue,Wed,Thu,Fri,Sat,Sun ; default everyday)
+
+[ --datestart date ]
+    Match only if it is after `date' (Inclusive, format: YYYY[:MM[:DD[:hh[:mm[:ss]]]]]
+    h,m,s start from 0 ; default to 1970)
+
+[ --datestop date ]
+    Match only if it is before `date' (Inclusive, format: YYYY[:MM[:DD[:hh[:mm[:ss]]]]]
+    h,m,s start from 0 ; default to 2037)
+
+Example:
+  -A INPUT -m time --timestart 8:00 --timestop 18:00 --days Mon,Tue,Wed,Thu,Fri
+  will match packets that have an arrival timestamp in the range 8:00->18:00 from Monday
+  to Friday.
+
+  -A OUTPUT -m time --timestart 8:00 --timestop 18:00 --Days Mon --date-stop 2010
+  will match the packets (locally generated) that have a departure timestamp
+  in the range 8:00->18:00 on Monday only, until 2010
+
+NOTE: the time match does not track changes in daylight savings time

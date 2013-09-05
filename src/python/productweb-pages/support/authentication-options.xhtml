@@ -1,0 +1,669 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Authentication Options</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          <n:invisible n:macro="productname" /> has a flexible authentication architecture, which can
+          authenticate VPN users against both a built-in local database and remote
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/RADIUS">RADIUS</a> servers.  Windows
+          Active Directory can be used through the
+          <a class="cb-external" target="_blank" href="http://www.microsoft.com/technet/network/ias/default.mspx">Internet Authentication Service (IAS)</a> Windows component.
+          Both locally and remotely defined users can be used at the same time. 
+          The local database always has priority over any external RADIUS servers. 
+          External servers are consulted only if a user is not found in the local database.  
+        </p>
+
+        <div class="cb-note">
+          <p>
+            User password change feature is not available
+            through the user web interface for RADIUS-authenticated VPN users.
+            Site-to-site connections are always authenticated using the local user database only.
+          </p>
+        </div>
+
+        <p>
+          <n:invisible n:macro="productname" /> supports a wide variety of different RADIUS servers
+          and proxies.  Popular RADIUS servers for small and medium-sized businesses include:
+          <ul>
+            <li><a class="cb-external" target="_blank" href="http://www.microsoft.com/technet/network/ias/default.mspx">Internet Authentication Service (IAS)</a> for Windows servers</li>
+            <li><a class="cb-external" target="_blank" href="http://www.freeradius.org/">FreeRADIUS</a>, a commercial grade freely available open source RADIUS server</li>
+          </ul>
+        </p>
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Using Windows Active Directory</h1>
+
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Overview</h1>
+
+          <p>
+            To authenticate <n:invisible n:macro="productname" /> users against a Windows server, it is easiest to use Microsoft's
+            <a class="cb-external" target="_blank" href="http://www.microsoft.com/technet/network/ias/default.mspx">Internet Authentication Service (IAS)</a> module available for Windows
+            server platforms.  In short, IAS provides a RADIUS server module which authenticates users against Active Directory.
+            IAS is available for Windows Server 2000, Windows Server 2003, and Windows Server 2008 (where IAS is available
+            under the name Network Policy Server, NPS).
+          </p>
+
+          <p>
+            Setting up IAS:
+          </p>
+          <ul>
+            <li>Install IAS</li>
+            <li>Configure each <n:invisible n:macro="productname" /> server as a RADIUS client for IAS</li>
+            <li>Create a RADIUS policy to authenticate and authorize <n:invisible n:macro="productname" /> users</li>
+          </ul>
+          
+          <p>
+            There are several ways to control which users are allowed VPN remote access.  The detailed instructions below
+            cover the typically desirable configuration where VPN access is granted to users by group membership in a new or existing Windows group
+            (for instance, <strong class="cb-guilabel"><n:invisible n:macro="productname" /> Users</strong>).
+          </p>
+        </div> <!-- Overview (AD) -->
+        
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Installing and Configuring IAS</h1>
+
+          <p>
+            These instructions are for Microsoft Windows Server 2003 for Small Business
+            Server, Service Pack 1, but apply to other Windows versions with minor changes.
+          </p>
+          <p>
+            To set up IAS authentication, do as follows:
+          </p>
+          <ul>
+            <li>Install IAS: Open <strong class="cb-guilabel">Start</strong> &rarr;
+                                  <strong class="cb-guilabel">Control Panel</strong> &rarr;
+                                  <strong class="cb-guilabel">Add or Remove Programs</strong> &rarr;
+                                  <strong class="cb-guilabel">Add/Remove Windows Components</strong>.
+                Click on <strong class="cb-guilabel">Networking Services</strong> and click <strong class="cb-guilabel">Details...</strong>.
+                Check <strong class="cb-guilabel">Internet Authentication Service</strong>, click
+                <strong class="cb-guilabel">OK</strong>, and complete the requested installation steps.
+                Reboot after IAS has been installed.
+            </li>
+            <li>
+              Start IAS: <strong class="cb-guilabel">Start</strong> &rarr;
+                         <strong class="cb-guilabel">Administrative Tools</strong> &rarr;
+                         <strong class="cb-guilabel">Internet Authentication Service</strong>.
+            </li>
+            <li>
+              Add RADIUS clients: click once on <strong class="cb-guilabel">RADIUS Clients</strong> on the tree view.
+              <ul>
+                <li>
+                  Right click to open the context menu, and select <strong class="cb-guilabel">New RADIUS Client</strong>.
+                </li>
+                <li>
+                  Enter a <strong class="cb-guilabel">Friendly name</strong>, enter the <n:invisible n:macro="productname" />
+                  server's IP address into the <strong class="cb-guilabel">Client address (IP or DNS)</strong> field, and
+                  click <strong class="cb-guilabel">Next</strong>.
+                </li>
+                <li>
+                  Leave <strong class="cb-guilabel">Client Vendor</strong> as <strong class="cb-guilabel">RADIUS Standard</strong>,
+                  set <strong class="cb-guilabel">Shared secret</strong> and <strong class="cb-guilabel">Confirm shared secret</strong>
+                  to the same shared secret configured into the <n:invisible n:macro="productname" /> server, and
+                  click <strong class="cb-guilabel">Finish</strong>.
+                </li>
+              </ul>
+              Repeat these steps for all RADIUS clients (i.e., for all <n:invisible n:macro="productname" /> servers).
+            </li>
+            <li>
+              Edit RADIUS policies: click once on <strong class="cb-guilabel">Remote Access Policies</strong> to see a list
+              of policies.
+              <ul>
+                <li>
+                  Right click to open the context menu, and select <strong class="cb-guilabel">New Remote Access Policy</strong>.
+                  Click <strong class="cb-guilabel">Next</strong> to start the wizard.
+                </li>
+                <li>
+                  Select <strong class="cb-guilabel">Set up a custom policy</strong>, and enter a useful policy name into
+                  the <strong class="cb-guilabel">Policy name</strong> field (example: <strong class="cb-userinput">VPNease Policy</strong>),
+                  and click <strong class="cb-guilabel">Next</strong>.
+                </li>
+                <li>
+                  Click <strong class="cb-guilabel">Add...</strong> to add a new policy condition, select
+                  <strong class="cb-guilabel">Windows-Groups</strong> attribute, and click <strong class="cb-guilabel">Add...</strong>.
+                  In the <strong class="cb-guilabel">Groups</strong> window, click <strong class="cb-guilabel">Add...</strong>,
+                  enter the name of the Windows group you wish to indicate remote access (example:
+                  <strong class="cb-userinput"><n:invisible n:macro="productname" /> Users</strong>) to the
+                  <strong class="cb-guilabel">Enter the object names to select</strong>
+                  field, click <strong class="cb-guilabel">Check Names</strong> and <strong class="cb-guilabel">OK</strong> to close the
+                  Select Groups dialog, then click <strong class="cb-guilabel">OK</strong> to close the Groups dialog.
+                  Click <strong class="cb-guilabel">Next</strong> in the wizard dialog.
+                </li>
+                <li>
+                  Add any other relevant policy conditions here.  For instance, you may wish to restrict VPN access to specific
+                  <n:invisible n:macro="productname" /> servers by identifying them with NAS-Identifier.
+                  Note, however, that the syntax used for attribute value matching is regular expression based:
+                  "test" will match both "test" and "mytest", while "^test$" will only match "test".
+                  See
+                  <a class="cb-external" target="_blank" href="http://technet2.microsoft.com/windowsserver/en/library/41f30bc9-b444-46b1-a62a-34b03ef4ee581033.mspx?mfr=true">Pattern matching syntax</a>.
+                </li>
+                <li>
+                  Select <strong class="cb-guilabel">Grant remote access permission</strong> and click
+                  <strong class="cb-guilabel">Next</strong>.
+                </li>
+                <li>
+                  Click <strong class="cb-guilabel">Edit Profile...</strong> and select the <strong class="cb-guilabel">Authentication</strong>
+                  tab.
+                  Change authentication settings so that the following options are enabled:
+                  <strong class="cb-guilabel">Microsoft Encrypted Authentication version 2 (MS-CHAP v2)</strong> and its suboption
+                  <strong class="cb-guilabel">User can change password after it has expired</strong>,
+                  <strong class="cb-guilabel">Unencrypted authentication (PAP, SPAP)</strong>.
+                   At this point Windows may offer to view a help on authentication; if so, click <strong class="cb-guilabel">No</strong>.
+                  Click <strong class="cb-guilabel">Next</strong>.
+                </li>
+                <li>
+                  Click <strong class="cb-guilabel">Finish</strong>.  The new policy should now appear in the policy list with highest
+                  priority.
+                </li>
+              </ul>
+            </li>
+            <li>
+              If you wish to authorize <n:invisible n:macro="productname" /> web administration using RADIUS, see instructions below.
+            </li>
+            <li>
+              Edit user accounts.  Add every allowed VPN user to the Windows group entered above.
+            </li>
+            <li>
+              To add a fixed IP address for a user (Framed-IP-Address), see below.
+            </li>
+            <li>
+              Configuration is now completed: restart the IAS server to ensure changes have taken effect.
+               You should test RADIUS authentication with a test client.
+              You can also choose to customize your remote access policy or other settings further.
+            </li>
+          </ul>
+        </div> <!-- installation and initial configuration -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Limitations</h1>
+          <p>
+            Note that the following features do not interoperate currently with <n:invisible n:macro="productname" /> or
+            some VPN clients:
+          </p>
+          <ul>
+            <li>Non-ASCII (international) characters in VPN usernames or passwords</li>
+            <li>Forced user password change during MSCHAPv2 authentication ("User must change password at next logon" option
+                from Active Directory Users and Computers view)</li>
+          </ul>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Configuring Fixed IP Addresses</h1>
+
+          <p>
+            If you wish to use fixed IP addresses for VPN users, a RADIUS Framed-IP-Address
+            attribute needs to be included in a RADIUS Access-Accept packet.
+            There are two places where RADIUS Framed-IP-Address assignment can be controlled:
+          </p>
+          <ul>
+            <li>
+              IAS remote access policies
+              <ul>
+                <li>
+                  <strong class="cb-guilabel">Internet Authentication Service (Local)</strong> &rarr;
+                  <strong class="cb-guilabel">Remote Access Policies</strong> &rarr;
+                  &lt;policyname&gt; &rarr;
+                  <strong class="cb-guilabel">Properties</strong> &rarr;
+                  <strong class="cb-guilabel">Edit Profile</strong> &rarr;
+                  <strong class="cb-guilabel">IP</strong> &rarr;
+                  <strong class="cb-guilabel">IP address assignment (Framed-IP-Address)</strong>
+                </li>
+              </ul>
+            </li>
+            <li>
+              Active Directory user profiles
+              <ul>
+                <li>
+                  <strong class="cb-guilabel">Active Directory Users and Computers</strong> &rarr;
+                  &lt;user&gt; &rarr;
+                  <strong class="cb-guilabel">Properties</strong> &rarr;
+                  <strong class="cb-guilabel">Dial-In</strong> &rarr;
+                  <strong class="cb-guilabel">Assign a Static IP Address</strong>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <p>
+            When the Active Directory user profile specifies a dial-in address, that address
+            overrides any IAS Framed-IP-Address settings.
+          </p>
+
+          <p>
+            There are many ways to configure Framed-IP-Address assignment in IAS; please consult
+            Microsoft documentation for details.  However, in simple configurations the following
+            settings are straightforward to configure:
+          </p>
+          <ul>
+            <li>
+              Set the remote access policy <strong class="cb-guilabel">IP address assignment (Framed-IP-Address)</strong>
+              setting to <strong class="cb-guilabel">Server settings determine IP address assignment</strong>.
+            </li>
+            <li>
+              Set the Active Directory user profile <strong class="cb-guilabel">Assign a Static IP Address</strong>
+              for those users for whom you wish to force a specific VPN address.
+            </li>
+          </ul>
+
+          <p>
+            Note that this configuration is not sufficient if a user should be forced a different
+            fixed address for different VPN access servers.  Please consult Microsoft documentation
+            if you need to configure a more advanced setup.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Configuring Web UI Administrator Authorization</h1>
+
+          <p>
+            By default users authenticated through IAS are only authorized to use VPN connections
+            and access the user web interface; users are not allowed to login as administrators to
+            the <n:invisible n:macro="productname" /> server.  Because administrator access is such
+            a critical capability, enabling administrator access for RADIUS authenticated users
+            requires deliberate RADIUS server configuration; see below for RADIUS details.
+          </p>
+
+          <p>
+            To enable <n:invisible n:macro="productname" /> server web UI administrator access for
+            a IAS authenticated user, do as follows:
+          </p>
+          <ul>
+            <li>
+              Create a new Windows group whose membership indicates that a user should have
+              access to the <n:invisible n:macro="productname" /> web UI administrator interface.
+              You may, of course, use an existing group.
+            </li>
+            <li>
+              Create a new remote access policy (see instructions above), with the following
+              specific settings:
+              <ul>
+                <li>
+                  Name the policy clearly, e.g. as <strong class="cb-userinput">VPNease Administrators</strong>.
+                </li>
+                <li>
+                  Add policy condition: <strong class="cb-guilabel">Service-Type</strong> equals <strong class="cb-guilabel">Authenticate-Only</strong>
+                  (used by <n:invisible n:macro="productname" /> server for web UI authentication).
+                </li>
+                <li>
+                  Add policy condition: <strong class="cb-guilabel">Authentication-Type</strong> equals <strong class="cb-guilabel">PAP</strong>.
+                </li>
+                <li>
+                  Add policy condition: <strong class="cb-guilabel">NAS-Identifier</strong> matches the set of <n:invisible n:macro="productname" />
+                  servers to which administrator access should be granted (you may skip this condition if you don't need server identification).
+                </li>
+                <li>
+                  Add policy condition: <strong class="cb-guilabel">Windows-Groups</strong> contains a Windows group that you wish to use
+                  to signify administrator access (e.g. <strong class="cb-userinput"><n:invisible n:macro="productname" /> Administrators</strong>).
+                </li>
+                <li>
+                  Add any other policy conditions that you feel are appropriate for ensuring that only
+                  administratos are granted access.
+                </li>
+                <li>
+                  Select the action for authenticated users as <strong class="cb-guilabel">Grant remote access permission</strong>.
+                </li>
+              </ul>
+            </li>
+            <li>
+              Ensure that the policy has a higher priority than a policy for ordinary <n:invisible n:macro="productname" /> users.
+            </li>
+            <li>
+              Open the policy properties and click <strong class="cb-guilabel">Edit Profile</strong>.
+              Configure the <strong class="cb-guilabel">Authentication</strong> settings (see above for details).
+              Then select
+              <strong class="cb-guilabel">Advanced</strong> (Specify additional connection attributes to be returned to the Remote Access server).
+              Click <strong class="cb-guilabel">Add...</strong>, select <strong class="cb-guilabel">Vendor-Specific</strong> and click
+              <strong class="cb-guilabel">Add</strong>.
+            </li>
+            <li>
+              In the <strong class="cb-guilabel">Multivalued Attribute Information</strong> window, click <strong class="cb-guilabel">Add</strong>.
+              Select <strong class="cb-guilabel">Enter Vendor Code</strong> and enter <strong class="cb-userinput">26058</strong>.  Select conformance
+              level <strong class="cb-guilabel">Yes, it conforms</strong> and click <strong class="cb-guilabel">Configure Attribute...</strong>.
+              Enter the following values:
+              <ul>
+                <li>
+                  Vendor-assigned attribute number: 1
+                </li>
+                <li>
+                  Attribute format: Decimal
+                </li>
+                <li>
+                  Attribute value: 1
+                </li>
+              </ul>
+            </li>
+            <li>
+              Close all the nested windows, and restart the IAS service.
+            </li>
+          </ul>
+
+          <p>
+            At this point RADIUS requests are first checked against the administrator remote access policy defined above, and
+            if that policy fails to match, the non-administrator remote access policy is then checked.  Note that it is important
+            that the administrator policy not <strong class="cb-bold">reject</strong> non-administrator users because web UI
+            authentication for normal users would be prevented.  The intent of the policy conditions is to ensure this does not happen.
+          </p>
+
+          <p>
+            Finally, note that IAS (or a RADIUS server in general) cannot distinguish between user and administrator RADIUS requests.
+            If the username and password are correct, the server should reply with Access-Accept, and the presence of the vendor specific
+            attribute defines whether the <n:invisible n:macro="productname" /> server should allow administrator access.  If the attribute
+            is not present, administrator authentication fails despite the RADIUS server returning an Access-Accept response.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">More Information about IAS</h1>
+
+          <p>
+            For more information about IAS:
+          </p>
+          <ul>
+            <li><a class="cb-external" target="_blank" href="http://www.microsoft.com/technet/network/ias/default.mspx">Internet Authentication Service</a></li>
+            <li><a class="cb-external" target="_blank" href="http://technet2.microsoft.com/windowsserver/en/library/41f30bc9-b444-46b1-a62a-34b03ef4ee581033.mspx?mfr=true">Pattern matching syntax</a></li>
+            <li><a class="cb-external" target="_blank" href="http://www.microsoft.com/technet/network/ias/iasfaq.mspx">Internet Authentication Service: Frequently Asked Questions</a></li>
+            <li><a class="cb-external" target="_blank" href="http://www.microsoft.com/downloads/details.aspx?FamilyID=27c432bf-5ed0-4763-8909-36e7c310ae3c&amp;displaylang=en">Windows Server 2003 Internet Authentication Service (IAS) Operations Guide</a></li>
+          </ul>
+        </div>
+      </div> <!-- Using Windows Active directory -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Configuring FreeRADIUS</h1>
+
+        <p>
+          See <a class="cb-external" target="_blank" href="http://wiki.freeradius.org/Configuration">wiki.freeradius.org/Configuration</a>.
+        </p>
+      </div> <!-- configuring freeradius -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading"><n:invisible n:macro="productname" /> RADIUS Details</h1>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Particular Features of the <n:invisible n:macro="productname" /> RADIUS Implementation</h1>
+
+          <ul>
+            <li>
+              RADIUS Service-Type:
+              RADIUS Service-Type attribute is set to Framed-User when authenticating a user VPN connection, and to Authenticate-Only when
+              a user is authenticating to the user web interface.  Please ensure that your RADIUS server handles both of these service
+              types correctly (you may deny user web interface access by treating the requests differently, but we recommend that you
+              treat the requests the same way).
+            </li>
+            <li>
+              RADIUS authentication method:
+              <n:invisible n:macro="productname" /> translates the negotiated PPP authentication method (negotiated using PPP inside the
+              L2TP/IPsec encrypted transport connection) directly into RADIUS authentication as follows:
+              PPP PAP (Password Authentication Protocol) is translated to RADIUS PAP, while
+              PPP MSCHAPv2 (Microsoft CHAPv2) is translated to RADIUS MSCHAPv2.
+              Other PPP authentication methods are not supported, because they do not translate well to the RADIUS protocol.
+              In particular, methods other than PAP and MSCHAPv2 would require the RADIUS server to store plaintext versions of user
+              passwords.
+              Web authentication always uses RADIUS PAP authentication.
+            </li>
+            <li>
+              RADIUS Proxy-State attribute:
+              Access-Request packets sent by <n:invisible n:macro="productname" /> contain a Proxy-State attribute because
+              the product contains a built-in RADIUS proxy.  This means that all RADIUS proxies in the path from
+              <n:invisible n:macro="productname" /> to the RADIUS server, and the RADIUS server itself, must support the Proxy-State
+              attribute to work correctly with <n:invisible n:macro="productname" /> server.
+            </li>
+            <li>
+              RADIUS Framed-IP-Address attribute:
+              <n:invisible n:macro="productname" /> respects the Framed-IP-Address RADIUS attribute in an Access-Accept response.
+              The address provided by the RADIUS server is assigned to the VPN client as its PPP address.  The Framed-IP-Address
+              must not overlap with the PPP client range configured in the <n:invisible n:macro="productname" /> administrator
+              interface.
+            </li>
+            <li>
+              RADIUS Session-Timeout attribute:
+              <n:invisible n:macro="productname" /> respects the Session-Timeout RADIUS attribute in an Access-Accept response.
+            </li>
+            <li>
+              RADIUS NAS-Identifier attribute:
+              <n:invisible n:macro="productname" /> allows you to configure NAS-Identifier which allows you to identify the
+              <n:invisible n:macro="productname" /> server reliably even if the server's IP address is dynamic or changes at
+              some point.  If NAS Identifier is left empty in the administrator interface, the NAS-Identifier is omitted from
+              RADIUS Access-Request packets.
+            </li>
+            <li>
+              Username for IAS authentication can be both plain (example: <strong class="cb-userinput">john.doe</strong>) or contain
+              a domain name (example: <strong class="cb-userinput">john.doe@example.com</strong>).  The IAS server accepts both forms.
+              This is not guaranteed of other RADIUS servers.
+            </li>
+            <li>
+              <n:invisible n:macro="productname" /> ignores most response attributes other than message type (Access-Reject, Access-Accept)
+              and MSCHAPv2 related attributes.    However, Framed-IP-Address and Session-Timeout are supported.
+            </li>
+            <li>
+              <n:invisible n:macro="productname" /> does not send or receive RADIUS accounting packets.
+            </li>
+          </ul>
+        </div> <!-- particular features -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">NAT Compatibility</h1>
+
+          <p>
+            When a NAT or port forwarding device exists between a RADIUS client
+            (<n:invisible n:macro="productname" /> server) and a RADIUS server, care must be taken to ensure
+            that RADIUS works correctly:
+          </p>
+          <ul>
+            <li>
+              The address of the RADIUS client (<n:invisible n:macro="productname" /> server) as seen by the
+              RADIUS server is the address of the NAT device, which is different from the address of the RADIUS client;
+              a similar difference of apparent address occurs when the RADIUS server is behind
+              a port forwarding device.
+              These differences in apparent address of the other peer affect RADIUS authentication.
+              To ensure that authentication works correctly, configure the address associated with a certain
+              RADIUS secret to the apparent address as seen by the server in question.
+              For instance, if the RADIUS client is behind a NAT device, associate the RADIUS secret in the
+              RADIUS server to the address of the NAT device.
+            </li>
+            <li>
+              The NAS-IP-Address attribute in RADIUS Access-Request packets may be meaningless and unreliable
+              if a RADIUS client (<n:invisible n:macro="productname" /> server) is behind a NAT device.  Use
+              the NAS-Identifier to identify servers instead.
+            </li>
+          </ul>
+
+          <p>
+            By taking these two basic issues into account, RADIUS should work through NAT and port forwarding
+            devices without any problems.
+          </p>
+        </div> <!-- nat compatibility -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Attributes of <n:invisible n:macro="productname" /> Access-Request Packets</h1>
+
+          <p>
+            Attributes contained in <n:invisible n:macro="productname" /> Access-Request RADIUS packets (VPN authentication,
+            uses RADIUS PAP or RADIUS MSCHAPv2, depending on negotiated PPP authentication method; here RADIUS MSCHAPv2):
+          </p>
+          <ul>
+            <li>Service-Type: Framed-User</li>
+            <li>Framed-Protocol: PPP</li>
+            <li>User-Name: varies</li>
+            <li>MS-CHAP-Challenge: varies (Microsoft vendor specific)</li>
+            <li>MS-CHAP2-Response: varies (Microsoft vendor specific)</li>
+            <li>NAS-IP-Address: varies</li>
+            <li>NAS-Port: 0</li>
+            <li>Proxy-State: varies</li>
+            <li>NAS-Port-Type: Virtual</li>
+            <li>NAS-Identifier: varies (omitted if empty)</li>
+          </ul>
+
+          <p>
+            Attributes contained in <n:invisible n:macro="productname" /> Access-Request RADIUS packets (web authentication,
+            always uses RADIUS PAP):
+          </p>
+          <ul>
+            <li>User-Name: varies</li>
+            <li>User-Password: varies</li>
+            <li>Service-Type: Authenticate-Only</li>
+            <li>NAS-IP-Address: varies</li>
+            <li>NAS-Port: 0</li>
+            <li>Proxy-State: varies</li>
+            <li>NAS-Port-Type: Virtual</li>
+            <li>NAS-Identifier: varies (omitted if empty)</li>
+          </ul>
+        </div> <!-- access request attributes -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Supported Attributes of Access-Accept Packets</h1>
+
+          <p>
+            Attributes supported in Access-Accept packets (for VPN authentication):
+          </p>
+          <ul>
+            <li>Framed-IP-Address</li>
+            <li>Session-Timeout</li>
+            <li>VE-User-Administrator-Privileges (VPNease vendor specific)</li>
+          </ul>
+        </div> <!-- access accept attributes -->
+      </div> <!-- radius details -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Authenticating Administrators Using RADIUS</h1>
+
+        <p>
+          When <n:invisible n:macro="productname" /> sends a web authentication request (with Service-Type
+          set to Authentication-Only), you can configure your RADIUS server to grant web UI administrator
+          privileges to the user by adding the following vendor specific attribute to the Access-Accept packet:
+        </p>
+        <ul>
+          <li>Vendor number: 26058</li>
+          <li>Attribute number: 1 (VE-User-Administrator-Privileges)</li>
+          <li>Attribute type: Integer</li>
+          <li>Attribute value: 1</li>
+        </ul>
+
+        <p>
+          Without this attribute, the user has no administrator privileges and cannot log in through the
+          web administrator interface.
+        </p>
+
+        <p>
+          You can download a RADIUS dictionary file with this attribute from the
+          <a href="latest-version.html">download</a> page.
+        </p>
+      </div> <!-- authenticating admin users -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading"><n:invisible n:macro="productname" /> RADIUS Packet Dumps</h1>
+
+        <p>
+          The following slightly simplified packet dumps are provided to help resolve RADIUS server configuration problems.
+        </p>
+
+        <p>
+          Example packet dumps for RADIUS MSCHAPv2 authentication of a remote access VPN connection against a Windows Server 2003 IAS server:
+        </p>
+<pre>Frame 1 (N bytes on wire, N bytes captured)
+    [...]
+Ethernet II, Src: ss:ss:ss:ss:ss:ss, Dst: dd:dd:dd:dd:dd:dd
+    [...]
+Internet Protocol, Src: x.x.x.x (x.x.x.x), Dst: y.y.y.y (y.y.y.y)
+    [...]
+User Datagram Protocol, Src Port: XXXX (XXXX), Dst Port: radius (1812)
+    [...]
+Radius Protocol
+    Code: Access-Request (1)
+    Packet identifier: 0xXX (X)
+    Length: N
+    Authenticator: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    Attribute Value Pairs
+        AVP: l=N  t=Service-Type(6): Framed-User(2)
+            Service-Type: Framed-User (2)
+        AVP: l=N  t=Framed-Protocol(7): PPP(1)
+            Framed-Protocol: PPP (1)
+        AVP: l=N  t=User-Name(1): xxxxxxxx
+            User-Name: xxxxxxxx
+        AVP: l=N  t=Vendor-Specific(26) v=Microsoft(311)
+            VSA: l=N t=MS-CHAP-Challenge(11): XXXXXXXX...
+                MS-CHAP-Challenge: XXXXXXXX...
+        AVP: l=N  t=Vendor-Specific(26) v=Microsoft(311)
+            VSA: l=N t=MS-CHAP2-Response(25): XXXXXXXX...
+                MS-CHAP2-Response: XXXXXXXX...
+        AVP: l=N  t=NAS-IP-Address(4): x.x.x.x
+            NAS-IP-Address: x.x.x.x (x.x.x.x)
+        AVP: l=N  t=NAS-Port(5): 0
+            NAS-Port: 0
+        AVP: l=N  t=Proxy-State(33): XXXX
+            Proxy-State: XXXX
+        AVP: l=N  t=NAS-Port-Type(61): Virtual(5)
+            NAS-Port-Type: Virtual (5)
+        AVP: l=N  t=NAS-Identifier(32): xxxxxxxx   [omitted if empty]
+            NAS-Identifier: xxxxxxxx
+</pre>
+
+        <p>
+          Example packet dumps for RADIUS PAP authentication of a user web interface connection against a Windows Server 2003 IAS server:
+        </p>
+<pre>Frame 1 (N bytes on wire, N bytes captured)
+    [...]
+Ethernet II, Src: ss:ss:ss:ss:ss:ss, Dst: dd:dd:dd:dd:dd:dd
+    [...]
+Internet Protocol, Src: x.x.x.x (x.x.x.x), Dst: y.y.y.y (y.y.y.y)
+    [...]
+User Datagram Protocol, Src Port: XXXX (XXXX), Dst Port: radius (1812)
+    [...]
+Radius Protocol
+    Code: Access-Request (1)
+    Packet identifier: 0xXX (X)
+    Length: N
+    Authenticator: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    Attribute Value Pairs
+        AVP: l=N  t=User-Name(1): xxxxxxxx
+            User-Name: xxxxxxxx
+        AVP: l=N  t=User-Password(2): Encrypted
+            User-Password: XXXXXXXX...
+        AVP: l=N  t=Service-Type(6): Authenticate-Only(8)
+            Service-Type: Authenticate-Only (8)
+        AVP: l=N  t=NAS-IP-Address(4): x.x.x.x
+            NAS-IP-Address: x.x.x.x (x.x.x.x)
+        AVP: l=N  t=NAS-Port(5): 0
+            NAS-Port: 0
+        AVP: l=N  t=Proxy-State(33): XXXX
+            Proxy-State: XXXX
+        AVP: l=N  t=NAS-Port-Type(61): Virtual(5)
+            NAS-Port-Type: Virtual (5)
+        AVP: l=N  t=NAS-Identifier(32): xxxxxxxx   [omitted if empty]
+            NAS-Identifier: xxxxxxxx
+</pre>
+      </div> <!-- radius packet dumps -->
+
+    </n:invisible>
+  </body>
+</html>
+

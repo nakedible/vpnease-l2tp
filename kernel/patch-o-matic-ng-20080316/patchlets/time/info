@@ -1,0 +1,4 @@
+Title:		iptables ``time'' match
+Author: 	Fabrice MARIE <fabrice@netfilter.org>
+Status:		Works within it's limitations
+Repository:	external

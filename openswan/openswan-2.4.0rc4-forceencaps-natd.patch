@@ -1,0 +1,29 @@
+diff -ru openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.c openswan-2.4.0rc4/programs/pluto/nat_traversal.c
+--- openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.c	2006-08-25 14:55:09.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/nat_traversal.c	2006-08-25 16:44:21.000000000 +0300
+@@ -377,18 +377,24 @@
+ 	/**
+ 	 * Second one with my IP & port
+ 	 */
++#if 0 /* do not break our nat-t hash: all clients do not like servers 
++       * behind NAT by default. */
+ 	if(st->st_connection->forceencaps) {
+ 	    _natd_hash(st->st_oakley.hasher, hash
+ 		       , st->st_icookie
+ 		       , is_zero_cookie(st->st_rcookie) ? md->hdr.isa_rcookie : st->st_rcookie
+ 		       , &(md->iface->ip_addr),0);
+ 	} else {
++#endif
+ 	    _natd_hash(st->st_oakley.hasher, hash
+ 		       , st->st_icookie
+ 		       , is_zero_cookie(st->st_rcookie) ? md->hdr.isa_rcookie : st->st_rcookie
+ 		       , &(md->iface->ip_addr)
+-		       , ntohs(st->st_remoteport));
++		       , ntohs(md->iface->port));
++#if 0 /* l2tp-workaround: see above. */
+ 	}
++#endif
++
+ 	return (out_generic_raw(np, &isakmp_nat_d, outs,
+ 		hash, st->st_oakley.hasher->hash_digest_len, "NAT-D"));
+ }

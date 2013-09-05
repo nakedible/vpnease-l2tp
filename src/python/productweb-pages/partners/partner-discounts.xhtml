@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Partner Discounts For Service Providers</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          The service provider partner discount is based on the collective monthly amount of product license fees
+          for the partner's customers, measured in euros excluding VAT.  The discount structure is cumulative:
+        </p>
+
+        <table id="partner-discount">
+          <tr>
+            <th>Monthly fee limit</th>
+            <th>Discount for fees exceeding limit</th>
+            <th>Cumulative discount for fees below limit</th>
+          </tr>
+          <tr>
+            <td>500&#x20ac;</td>
+            <td>10%</td>
+            <td>0&#x20ac;</td>
+          </tr>
+          <tr>
+            <td>1000&#x20ac;</td>
+            <td>15%</td>
+            <td>50&#x20ac;</td>
+          </tr>
+          <tr>
+            <td>2500&#x20ac;</td>
+            <td>20%</td>
+            <td>275&#x20ac;</td>
+          </tr>
+          <tr>
+            <td>5000&#x20ac;</td>
+            <td>25%</td>
+            <td>775&#x20ac;</td>
+          </tr>
+          <tr>
+            <td>10000&#x20ac;</td>
+            <td>30%</td>
+            <td>2025&#x20ac;</td>
+          </tr>
+        </table>
+
+        <p>
+          Example: for collective monthly license fees of 7000&#x20ac; (excluding VAT), the discount
+          is computed as follows:
+        </p>
+        <ul>
+          <li>First 500 euros: no discount</li>
+          <li>Next 500 euros (500 to 1000 euros): 50&#x20ac;</li>
+          <li>Next 1500 euros (1000 to 2500 euros): 225&#x20ac;</li>
+          <li>Next 2500 euros (2500 to 5000 euros): 500&#x20ac;</li>
+          <li>Next 2000 euros (5000 to 7000 euros): 500&#x20ac;</li>
+          <li>Total discount: (50 + 225 + 500 + 500) euros = 1275&#x20ac;</li>
+        </ul>
+
+        <p>
+          If applicable, VAT is added to final partner fee after discount has been subtracted.
+          See <a href="payment-options.html">Payment Options</a> for regional VAT details.
+        </p>
+      </div> <!-- partner discount model -->
+
+    </n:invisible>
+  </body>
+</html>
+
+

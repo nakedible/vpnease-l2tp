@@ -1,0 +1,26 @@
+This patch allows you to implement Port Knocking and SPA (Simple Packet
+Authentication) in kernel space.
+
+pknock options:
+
+	--knockports port[,port,port,...]	Matches destination port(s).
+	--time seconds
+	--t seconds				Time between port match.
+	--opensecret [secret]			hmac must be in the packets.
+	--closesecret [secret]
+	--strict				Knocks sequence must be exact.
+	--name [rule_name]			Rule name.
+	--checkip				Matches if the source ip is in the list.
+	--chkip
+
+
+Example:
+
+iptables -P INPUT DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A INPUT -p tcp -m state --state NEW 				\
+	-m pknock --knockports 3000,2000,5000 --time 10 --name SSH 	\
+	-m tcp --dport 22 -j ACCEPT
+
+For more information go to http://portknocko.berlios.de/

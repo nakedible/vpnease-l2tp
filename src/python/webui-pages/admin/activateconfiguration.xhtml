@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          Configuration changed, activating new configuration.  Please wait while the
+          VPN service restarts.
+        </p>
+
+        <br />
+
+        <div class="activity-bar">
+          <img src="/static/progress-2.gif" alt="*" height="18" width="300" /><span>Activating configuration...</span>
+        </div>
+
+        <n:invisible n:render="if_not_local">
+          <br />
+          <br />
+          <div class="cb-note">
+            <p>
+              If you changed the IP address of the <n:invisible n:macro="productname" /> server, please close this
+              browser window.
+            </p>
+          </div>
+        </n:invisible>
+
+      </div>
+
+      <!-- provides us with activation_followup_uri and activation_is_quick -->
+      <script type="text/javascript" n:render="followup_uri" />
+
+      <!-- ajax update code for the activation process -->
+      <script type="text/javascript">
+      // <![CDATA[
+
+        function _activation_update(resp, xhr) {
+          /*
+           *  The connection will be down for some time during activation.
+           *  That causes the Ajax requests to time out or fail with some
+           *  error; both are propagated here as resp = null.
+           */
+          try {
+            //alert("Activation update check with response:" + resp);
+            var t = resp.split('\n');   /* fails if resp = null, caught below */
+            var n = null;
+
+            var activity = t[0];
+            var status = t[1];
+
+            n = document.getElementById("activation-current-activity");
+            if(n) {
+              n.lastChild.nodeValue = activity;
+            }
+
+            if (status == 'success') {
+              window.location = activation_followup_uri + '?result=success';
+            } else if (status == 'failure') {
+              window.location = activation_followup_uri + '?result=failure';
+            }
+          } catch(e) {
+            ;
+            // alert(e);
+          }
+          
+          return true;
+        }
+
+        if(activation_is_quick) {
+          // this is a fake activation to make user more comfortable
+          timer = setTimeout(function(){
+                               window.location = activation_followup_uri + '?result=success';
+                             }, 3000);
+        } else {
+          if(cb_ajax_supported()) {
+            // Fixme: Max timeout.
+            create_continuous_ajax_request_with_delay(webui_root_uri + "ajaxactivateconfiguration.html", _activation_update, 10000, 1000);
+          }
+        }
+
+      // ]]>
+      </script>
+
+      <!-- kick off the actual process -->
+      <n:invisible n:render="start_activation" />
+
+    </n:invisible>
+  </body>
+</html>

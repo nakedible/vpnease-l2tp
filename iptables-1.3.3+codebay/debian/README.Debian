@@ -1,0 +1,202 @@
+iptables for Debian
+===================
+
+  0. introduction
+  1. upgrade notes
+  2. quick start
+  3. running iptables
+  4. kernel configuration
+  5. extension and compilation notes
+  6. help! help! help!
+
+
+[ 0. introduction ]
+
+  The iptables binary is basically a user-space configuration tool
+  for the linux kernel's netfilter packet filtering. It can be used
+  to configure NAT/MASQUERADING (Network Address Translation),
+  firewalling, ip accounting and other things. The package does not
+  provide any default rules or security.
+
+
+[ 1. upgrade notes ]
+
+  init scripts
+  
+    If you have upgraded from an earlier version of the iptables
+    package, you may still have the deprecated init.d scripts and
+    state information installed, but orphaned from the package.
+    This was necessary to preserve existing configurations. Run
+    "update-rc.d -f iptables remove" and delete this list of files
+    and directories to get rid of it all:
+  
+      /etc/default/iptables 
+      /etc/init.d/iptables 
+      /var/lib/iptables/
+      /var/lib/ip6tables/
+
+    I'm certain someone will file a bug report about the orphaned
+    files, but it was done intentionally. Suggestions for a better
+    approach are welcomed.
+
+  owner module
+
+    owner module support for kernels versions less than 2.4.20 was 
+    officially removed with the 1.2.9-7 upload. It was broken since 
+    at least 1.2.9-6.
+
+
+[ 2. quick start ]
+
+  Here is a quick example of using ifupdown, possibly the simplest
+  method of initiating a packet filtering script in Debian. This is
+  an example of "auto" and "iface" stanzas in /etc/network/interfaces
+  that run the a packet filtering script (with the interface
+  name and address as arguments) before actually bringing up the
+  interface.
+
+    auto eth0
+    iface eth0 inet dhcp
+      pre-up /etc/myfirewall.sh 
+
+  The next example uses in-line calls to iptables to configure ip
+  masquerading (basically, connection sharing) for a ppp or pppoe
+  provider. This example is not intended to secure or anything.
+
+    auto ppp0
+    iface ppp0 inet ppp
+      provider bobsispchickenandribshack
+      pre-up echo 1 > /proc/sys/net/ipv4/ip_forward
+      pre-up iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+
+
+[ 3. running iptables ]
+
+  There are a number of ways to "run" iptables in Debian.  Many 
+  may prefer packages like firehol, shorewall, firestarter,
+  ipmenu, fireflier, ferm, gnome-lokkit, guarddog, hlfl, knetfilter,
+  mason, lokkit, fiaif, filtergen, guidedog, or uif--just to name
+  some that were packaged for Debian at some point, to configure 
+  and maintain packet filtering rules.
+  
+  Do-it-yourselfers may prefer any variety of self-written or
+  acquired scripts to run at system startup. These are relatively
+  easy to incorporate into Debian's SysV init tree by placing
+  the executable script into /etc/init.d and applying it with
+  update-rc.d, preferably at a level before any network interfaces
+  are configured. (This example calls the script before network
+  interfaces are enabled.):
+  
+    update-rc.d myfirewall start 40 S . stop 89 0 6 .
+  
+  Some may prefer to use iptables-save and iptables-restore to save
+  rule sets. The deprecated iptables init.d script in included in
+  the example section as a reference for a state based init script.
+  You can get the same basic functionality by using saving your
+  rules with iptables-save and using ifupdown to apply them.
+
+    # sample /etc/network/interfaces lines
+    pre-up iptables-restore < /etc/iptables.up.rules
+    post-down iptables-restore < /etc/iptables.down.rules
+  
+  One of the more powerful packet filter configurations is a number
+  of scripts called through Debian's ifupdown system. Here is a
+  brief introduction to ifupdown:
+
+    Debian uses ifupdown (see ifup(8), ifdown(8) and interfaces(5))
+    to manipulate network interfaces. Each interface is provided
+    with several scripting hooks: pre-up, up, down, and post-down.
+    These hooks are available to each interface as in-line
+    directives in /etc/network/interfaces and also as *.d/
+    directories called with run-parts (see run-parts(8)):
+    
+       /etc/network/if-up.d/
+       /etc/network/if-pre-up.d/
+       /etc/network/if-down.d/
+       /etc/network/if-post-down.d/
+
+    A useful set of variables are passed to the environment of
+    the hooks with either the in-line directives or the *.d
+    sub-directories. Here is a sample of such variables passed to a
+    hook for eth0:
+    
+       IFACE=eth0
+       IF_ADDRESS=192.168.2.2
+       IF_BROADCAST=192.168.2.255
+       IF_GATEWAY=192.168.2.1
+       IF_NETMASK=255.255.255.0
+       IF_NETWORK=192.168.2.0
+
+
+[ 4. kernel configuration ]
+
+  iptables requires kernel netfilter support and support for various
+  netfilter capabilities. Here are a hints from the menuconfig
+  selections in the kernel source for 2.6.12:
+
+    Device Drivers  --->
+        Networking support  --->
+	    [*] Networking support
+	      Networking options  --->
+	          [M] Network packet filtering (replaces ipchains)  --->
+
+
+[ 5. extension and compilation notes ]
+
+  iptables extensions (plug-ins) are installed in /lib/iptables/.
+  There are generally two types of extensions: targets and matches.
+  Targets usually have an upper-case portion of the filename: i.e,.
+  libipt_SNAT.so is used as "--jump SNAT". Matches are usually all
+  lower case: i.e., libipt_owner.so is used as "--match owner".
+
+  The various extensions are built based on the kernel source used
+  to compile iptables. iptables source code includes kernel patches
+  that will allow additional extensions to be built. The additions
+  are not official and are not documented in the iptables man page.
+  A number of the extensions conflict with one another, some are
+  broken, and some require kernel level changes to netfilter that
+  require a specific iptables build. A custom iptables build may
+  require a custom kernel build. The custom iptables binaries may
+  not work with "regular" and stock kernel builds and packages.
+
+  An innocuous set of additional extensions are included with the
+  package as a user convenience, but they are only useful with
+  upgraded or custom kernels. No third-party-source is included.
+
+
+[ 6. help! help! help! ]
+
+  Need more help? You can find more information in
+  /usr/share/doc/iptables/. The NAT and packet filtering HOWTOS are
+  there in English in HTML format -- other languages are available
+  at http://www.iptables.org/ and http://www.netfilter.org/.
+  There are example packet filtering scripts available in
+  /usr/share/doc/iptables/examples/.
+
+  For any problems specific to the Debian iptables package, you can
+  send e-mail to iptables@packages.debian.org or file bug reports.
+  See http://bugs.debian.org/ and please use the reportbug program
+  in the reportbug package for sending bug reports if possible.
+
+  (IMPORTANT BUG REPORT NOTE! The iptables package contains support
+  for features that your kernel may not support. If your kernel
+  has support built-in or the appropriate modules are loaded, the
+  table, match, and target names should be visible in the /proc
+  filesystem:
+
+     /proc/net/ip_tables_matches
+     /proc/net/ip_tables_names
+     /proc/net/ip_tables_targets
+
+  As an example, to use "-m blah" you should see "blah" listed in 
+  /proc/net/ip_tables_matches. If not, iptables will complain about
+  a missing target/chain/match. You will have to add "blah" support
+  to your kernel.)
+
+  Debian mailing lists, such as debian-firewall and debian-user are
+  also available. See http://lists.debian.org/ for more information.
+  The iptables/netfilter sites (the URLs are above) also host useful
+  mailing lists.
+
+
+The End.

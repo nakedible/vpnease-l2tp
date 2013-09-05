@@ -1,0 +1,11 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+echo "Loading module..."
+modprobe pppox
+if [ -f ../../kernel/pppol2tp.o ]; then
+    insmod ../../kernel/pppol2tp.o
+else
+    insmod ../../kernel/pppol2tp.ko
+fi

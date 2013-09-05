@@ -1,0 +1,346 @@
+#!/usr/bin/perl -w
+#
+# patch2pom, helper script for the patch-o-matic 'next generation' package
+# (C) 2005      by Jonas Berlin <xkr47@outerspace.dyndns.org>
+#
+# This code is subject to the GNU GPLv2
+#
+# The separate PatchChunk.pm and PatchFile.pm files are required for
+# proper operation.
+#
+# This script takes a diff -Nru on input and converts it to
+# patch-o-matic-ng format by extracting new files from the diff as
+# separate files and making trivial updates to known file types using
+# "ladd" files. Any changes not matching the above criteria are passed
+# forward as a normal diff.
+#
+# If run as
+#
+#   ./patch2pom patch-o-matic/foobar/linux-2.6 < mypatch.patch
+#
+# .. then the command will create a directory structure below
+# patch-o-matic/foobar/linux-2.6/ with new files and/or .ladd files
+# when possible. Any parts of the diff that cannot be applied as new
+# files or .ladd files are passed forward to a patch file called
+# patch-o-matic/foobar/linux-2.6.patch. Example output directory
+# structure:
+#
+# pom-ng/foobar/linux-2.6/net/ipv4/netfilter/ipt_foobar.c
+# pom-ng/foobar/linux-2.6/net/ipv4/netfilter/Kconfig.ladd
+# pom-ng/foobar/linux-2.6/net/ipv4/netfilter/Makefile.ladd
+# pom-ng/foobar/linux-2.6/include/linux/netfilter_ipv4/ip_foo.h.ladd
+# pom-ng/foobar/linux-2.6/include/linux/netfilter_ipv4/ip_foo.h.ladd_2
+# ...
+# pom-ng/foobar/linux-2.6.patch
+#
+# Tip: when creating new versions of already existing modules in
+#      pom-ng, it might be convenient to give a different destination
+#      and then compare the results.
+#
+# Note: If files already exist in the given destination directory,
+#       they will not be removed, so before re-running the same
+#       command, you probably want to erase the old one first. The
+#       same goes for the patch optionally created by this script.
+
+BEGIN {
+    my $scripthome = $0;
+    $scripthome =~ s![^/]+$!!;
+    push @INC, $scripthome;
+}
+
+use strict;
+use File::Path;
+use Date::Parse;
+
+use PatchChunk;
+use PatchFile;
+
+my $pombase = shift @ARGV;
+
+unless(defined($pombase)) {
+
+    print STDERR 'usage: '.$0.' pomdir-base
+The command expects a diff -Nru style diff on standard input.
+
+Examples:
+
+diff -Nru orig-linux linux | '.$0.' patch-o-matic-ng/foobar/linux-2.6
+
+  This will create files in patch-o-matic-ng/foobar/linux-2.6/ and/or
+  a patch file patch-o-matic-ng/foobar/linux-2.6.patch
+
+diff -Nru orig-iptables iptables | '.$0.' patch-o-matic-ng/foobar/iptables
+
+  Creates files in .../iptables and/or patch file .../iptables.patch
+';
+    exit(1);
+}
+
+$pombase =~ s!/+$!!;
+
+sub create_file {
+    my ($file, @content) = @_;
+
+    $file = $pombase.'/'.$file;
+
+    my $dir = $file;
+    $dir =~ s![^/]+$!!;
+
+    mkpath($dir);
+
+    open NEWFILE, '>', $file;
+    print NEWFILE @content;
+    close NEWFILE;
+}
+
+my $patch_file_opened = 0;
+
+sub pprint {
+    unless($patch_file_opened) {
+	my $pomparent = $pombase;
+	$pomparent =~ s![^/]+$!!;
+	mkpath($pomparent) if(length($pomparent));
+
+	$patch_file_opened = 1 if(open PATCHFILE, '>', $pombase.'.patch');
+    }
+    print PATCHFILE @_;
+}
+
+# ensure that a FilePatch object only contains alternating "common" and "new" lines
+sub check_adds_only {
+    my $file = shift;
+
+    foreach my $chunk (@{$file->{chunks}}) {
+	my $state = 0;
+	foreach my $chunktype (@{$chunk->{minichunktypes}}) {
+	    if($chunktype != ($state ? $PatchChunk::TYPE_NEW : $PatchChunk::TYPE_BOTH)) {
+		return 0;
+	    }
+	    $state = !$state;
+	}
+    }
+
+    return 1;
+}
+
+my %ladd_idx;
+
+
+sub ladd_filename {
+    my $filename = shift;
+
+    $ladd_idx{$filename} = 1 unless(defined($ladd_idx{$filename}));
+    my $ladd_filename = $filename.".ladd";
+    $ladd_filename .= "_".$ladd_idx{$filename} if($ladd_idx{$filename} > 1);
+    $ladd_idx{$filename}++;
+
+    return $ladd_filename;
+}
+
+###### the core logic for creating new and .ladd files and .patch file
+sub handle_file {
+    my $file = shift;
+
+    my $filename = $file->{new}->{file};
+    $filename =~ s!^[^/]+/!!;
+
+    if(scalar(@{$file->{chunks}}) == 1 &&
+       $file->{chunks}->[0]->{oldstart} == 0 &&
+       $file->{chunks}->[0]->{oldlen} == 0 &&
+       scalar(@{$file->{chunks}->[0]->{minichunks}}) == 1 &&
+       $file->{chunks}->[0]->{minichunktypes}->[0] == $PatchChunk::TYPE_NEW) {
+
+	### It's a totally new file
+
+	my @content = @{$file->{chunks}->[0]->{minichunks}->[0]};
+	chomp $content[$#content] if($file->{chunks}->[0]->{nonewline});
+
+	create_file($filename, @content);
+
+    } elsif($filename =~ m!/Kconfig$!) {
+
+	### 2.6 Kconfig
+
+	my $success = 0;
+
+	if(check_adds_only($file)) {
+
+	    $success = 1;
+	  kconfig_bail:
+	    foreach my $chunk (@{$file->{chunks}}) {
+		for(my $i=0; $i<scalar(@{$chunk->{minichunks}})-1; $i+=2) {
+
+		    my @lines = @{$chunk->{minichunks}->[$i+1]};
+		    my $state = 0;
+		    for($i=0; $i<=$#lines; ++$i) {
+			if($state == 0 && $lines[$i] =~ /^$/) {
+			    # do nothing
+			} elsif(($state == 0 || $state == 3) && $lines[$i] =~ /^config \S+$/) {
+			    $state = 1;
+			} elsif($state == 0) {
+			    $success = 0; last kconfig_bail;
+
+			} elsif($state >= 1 && $state <= 2) {
+			    if($lines[$i] =~ /^\t\S/) {
+				$state++;
+			    } else {
+				$success = 0; last kconfig_bail;
+			    }
+			} elsif($state == 3) {
+			    unless($lines[$i] =~ /^\t|^$/) {
+				$success = 0; last kconfig_bail;
+			    }
+			} else {
+			    die "Internal bug, please report\n";
+			}
+		    }
+
+		    ##TODO## maybe check that post-context matches /^\S/
+
+		    unless($state == 3) {
+			$success = 0; last kconfig_bail;
+		    }
+		}
+	    }
+
+	    if($success) {
+		foreach my $chunk (@{$file->{chunks}}) {
+		    for(my $i=0; $i<scalar(@{$chunk->{minichunks}})-1; $i+=2) {
+
+			my $ladd_filename = ladd_filename($filename);
+
+			my @lines = @{$chunk->{minichunks}->[$i+1]};
+
+			while($lines[$#lines] =~ /^$/) {
+			    delete $lines[$#lines];
+			}
+
+			create_file($ladd_filename, @lines);
+		    }
+		}
+	    }
+	}
+
+	pprint $file->format() unless($success);
+
+    } elsif($filename =~ m!/Documentation/Configure\.help$!) {
+
+	### 2.4 Configure.help
+
+	##TODO## implement algorithm if somebody still wants this
+
+	pprint $file->format();
+
+    } elsif($filename =~ m!/(?:Makefile|Config\.in)$!) {
+
+	### Makefile
+	### 2.4 Config.in
+
+	if(check_adds_only($file)) {
+	    foreach my $chunk (@{$file->{chunks}}) {
+		for(my $i=0; $i<scalar(@{$chunk->{minichunks}})-1; $i+=2) {
+
+		    # pick last line of preceding context lines
+		    my $context_minichunk = $chunk->{minichunks}->[$i];
+		    my $context = @$context_minichunk[scalar(@{$context_minichunk})-1];
+
+		    my $ladd_filename = ladd_filename($filename);
+
+		    create_file($ladd_filename, $context, @{$chunk->{minichunks}->[$i+1]});
+		}
+	    }
+
+	} else {
+	    pprint $file->format();
+	}
+
+    } elsif($filename =~ m![^/]\.[ch]$!) {
+
+	### *.c
+	### *.h
+
+	my $success = 0;
+
+	if(check_adds_only($file)) {
+	    $success = 1;
+
+	  source_bail:
+	    foreach my $chunk (@{$file->{chunks}}) {
+		for(my $i=0; $i<scalar(@{$chunk->{minichunks}})-1; $i+=2) {
+
+		    # pick last line of preceding context lines
+		    my $context_minichunk = $chunk->{minichunks}->[$i];
+		    my $context = @$context_minichunk[scalar(@{$context_minichunk})-1];
+
+		    # if "here" mentioned in comment, we accept
+		    unless($context =~ m!/\*(?:\*[^/]|[^*])+\shere(?:\*[^/]|[^*])*\*/!) {
+			$success = 0; last source_bail;
+		    }
+		}
+	    }
+
+	    ##TODO## we could accept partial .ladd conversion and modify the patch
+
+	    if($success) {
+		foreach my $chunk (@{$file->{chunks}}) {
+		    for(my $i=0; $i<scalar(@{$chunk->{minichunks}})-1; $i+=2) {
+
+			# pick last line of preceding context lines
+			my $context_minichunk = $chunk->{minichunks}->[$i];
+			my $context = @$context_minichunk[scalar(@{$context_minichunk})-1];
+
+			my $ladd_filename = ladd_filename($filename);
+
+			create_file($ladd_filename, $context, @{$chunk->{minichunks}->[$i+1]});
+		    }
+		}
+	    }
+	}
+
+	pprint $file->format() unless($success);
+
+    } else {
+
+	### default
+
+	pprint $file->format();
+    }
+}
+
+############# main parse loop
+
+my $file = new PatchFile();
+
+while(<>) {
+    while(!$file->add_line($_)) {
+	unless($file->{started}) {
+	    if(/^Files .* differ$/) {
+		print STDERR "Ignoring: $_";
+	    } elsif(/^Only in/) {
+		print STDERR "ABORTING: It seems you forgot the -N flag from your diff command.. I got: $_";
+		exit(1);
+	    } elsif(/^Common /) {
+		print STDERR "ABORTING: It seems you forgot the -r flag from your diff command.. I got: $_";
+		exit(1);
+	    } elsif(/^[\d><]/) {
+		print STDERR "ABORTING: It seems you forgot the -u flag from your diff command.. I got: $_";
+		exit(1);
+	    } else {
+		print;
+	    }
+	    last;
+	}
+
+	if($file->{success}) {
+	    handle_file($file);
+	}
+
+	$file = new PatchFile();
+    }
+}
+
+$file->finish();
+
+handle_file($file) if($file->{success});
+
+close PATCHFILE if($patch_file_opened);

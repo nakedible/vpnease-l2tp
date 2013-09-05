@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Step 1: Activate VPN (first time only)</h2>
+        <ul>
+          <li>
+            Open <strong class="cb-guilabel">System Preferences</strong> and click
+            <strong class="cb-guilabel">Network</strong>.
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">+</strong> (plus sign) in the service list on the left.
+            Select <strong class="cb-guilabel">VPN</strong> from the <strong class="cb-guilabel">Interface</strong>
+            dropdown, ensure that <strong class="cb-guilabel">VPN Type</strong> is set to
+            <strong class="cb-guilabel">L2TP over IPSec</strong>,
+            and click <strong class="cb-guilabel">Create</strong>.
+            If there is already an L2TP VPN service on the list, you don't need to add a new one.
+          </li>
+        </ul>
+
+        <h2 class="step-heading">Step 2: Set-up VPN access configuration</h2>
+        <ul>
+          <li>
+            Open <strong class="cb-guilabel">System Preferences</strong> and click
+            <strong class="cb-guilabel">Network</strong>.
+            Select the VPN service (<strong class="cb-guilabel">VPN (L2TP)</strong>)
+            from the service list on the left.
+          </li>
+          
+          <li>
+            Select <strong class="cb-guilabel">Add Configuration</strong> from the
+            <strong class="cb-guilabel">Configuration</strong> dropdown, enter a
+            name for your VPN profile, and click <strong class="cb-guilabel">Create</strong>.
+          </li>
+
+          <li>
+            Enter the following fields:
+            <ul>
+              <li>
+                <strong class="cb-guilabel">Server Address</strong>: 
+                <n:invisible n:macro="productname" /> server address
+                (e.g. <strong class="cb-userinput">vpn.company.com</strong> or
+                <strong class="cb-userinput">123.123.123.123</strong>).
+              </li>
+              <li>
+                <strong class="cb-guilabel">Account Name</strong>:
+                Your <n:invisible n:macro="productname" /> username
+                (e.g. <strong class="cb-userinput">john.doe</strong>).
+              </li>
+              <li>
+                <strong class="cb-guilabel">Show VPN status in menu bar</strong>:
+                Check this option.
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            Click <strong class="cb-guilabel">Authentication Settings</strong>,
+            and enter the following fields:
+            <ul>
+              <li>
+                <strong class="cb-guilabel">Password</strong>:
+                If you want to save your <n:invisible n:macro="productname" /> password to this computer, 
+                enter your <n:invisible n:macro="productname" /> password here.
+                If you leave the <strong class="cb-guilabel">Password</strong> field empty,
+                your <n:invisible n:macro="productname" /> password will be asked every time the VPN connection is opened.
+              </li>
+              <li>
+                <strong class="cb-guilabel">Shared Secret</strong>:
+                Your <n:invisible n:macro="productname" /> shared secret is
+                <img src="/static/hidden.gif" class="print-only" /><span class="screen-only"><strong class="cb-userinput"><n:invisible n:render="primary_psk" /></strong></span>
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            Click <strong class="cb-guilabel">OK</strong> to close the Authentication Settings window.
+          </li>
+
+          <li>
+            Click <strong class="cb-guilabel">Advanced</strong>, and check the
+            <strong class="cb-guilabel">Send all traffic over VPN connection</strong> checkbox.  Without
+            this setting you may experience various connectivity problems.  Close the Advanced settings window.
+          </li>
+
+          <li>
+            Click <strong class="cb-guilabel">Apply</strong> and close the Network window to finish configuration.
+          </li>
+
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>
+

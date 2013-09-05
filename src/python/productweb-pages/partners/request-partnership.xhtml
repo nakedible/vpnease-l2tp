@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Request Partnership</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          Please fill in the form below to request <n:invisible n:macro="productname" />
+          partnership.  We will contact you within a week to confirm your partner status.
+          See the partner process for <a href="service-provider-partner-process.html">service provider partners</a>
+          and <a href="installation-partner-process.html">installation partners</a> for details about the
+          type of partnership you are interested in.
+        </p>
+
+        <n:invisible n:render="form partnership" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 22:18:14 +0300
+Source: twisted-lore
+Binary: python-twisted-lore python2.4-twisted-lore
+Architecture: source all
+Version: 0.2.0
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted-lore - Documentation generator with HTML and LaTeX support
+ python2.4-twisted-lore - Documentation generator with HTML and LaTeX support
+Changes: 
+ twisted-lore (0.2.0) dapper; urgency=low
+ .
+   * New upstream version.
+Files: 
+ 5070cba2583fc00041391ce7abf98cc1 356 python optional twisted-lore_0.2.0.dsc
+ 5f07e96cdd31ee06fd82f167ae9a7f09 71926 python optional twisted-lore_0.2.0.tar.gz
+ f0731bb7041653fd64cc93e0f03e8494 41666 python optional python-twisted-lore_0.2.0_all.deb
+ fa653dfb2630bf5a9a79bbb0a336d082 36450 python optional python2.4-twisted-lore_0.2.0_all.deb

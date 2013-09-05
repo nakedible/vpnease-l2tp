@@ -1,0 +1,28 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 12-l2tpd-pidstr.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/l2tpd.c
++++ l2tpd-0.69/l2tpd.c
+@@ -1023,7 +1023,7 @@
+             log(LOG_LOG, "%s: Unable to read pid file [%s]\n",
+                     __FUNCTION__, gconfig.pidfile);
+         }
+-        buf[i] = '\0';
++        buf[l] = '\0';
+         pid = atoi(buf);
+ 
+         /* If the previous server process is not still running,
+@@ -1036,7 +1036,7 @@
+     if(! pidfilewritten) {
+         unlink(gconfig.pidfile);
+         if ((i = open (gconfig.pidfile, O_WRONLY | O_CREAT, 0640)) >= 0) {
+-            snprintf (buf, strlen(buf), "%d\n", (int)getpid());
++            snprintf (buf, sizeof(buf), "%d\n", (int)getpid());
+             write (i, buf, strlen(buf));
+             close (i);
+             pidfilewritten = 1;
+

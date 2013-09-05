@@ -1,0 +1,22 @@
+#!/usr/bin/python
+
+from codebay.l2tpserver import crontab
+import sys
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        raise Exception('Usage: l2tpgw-cron <prerun|minutely|everyfiveminutes|hourly|watchdognotify>')
+
+    cmd = sys.argv[1]
+    if cmd == 'prerun':
+        crontab.run_prerun()
+    elif cmd == 'minutely':
+        crontab.run_minutely()
+    elif cmd == 'everyfiveminutes':
+        crontab.run_everyfiveminutes()
+    elif cmd == 'hourly':
+        crontab.run_hourly()
+    elif cmd == 'watchdognotify':
+        crontab.show_cron_watchdog_notify()
+    else:
+        raise Exception('unknown command: %s' % cmd)

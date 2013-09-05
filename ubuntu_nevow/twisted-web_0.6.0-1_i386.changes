@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 22:46:01 +0300
+Source: twisted-web
+Binary: python2.4-twisted-web python-twisted-web
+Architecture: source all
+Version: 0.6.0-1
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted-web - An HTTP protocol implementation together with clients and servers
+ python2.4-twisted-web - An HTTP protocol implementation together with clients and servers
+Changes: 
+ twisted-web (0.6.0-1) dapper; urgency=low
+ .
+   * New upstream release
+Files: 
+ 7c7379bb61c2d21b66390a6d41ec102e 357 python optional twisted-web_0.6.0-1.dsc
+ a92d45cf6d2cabfc5da03c7be20ffbec 312914 python optional twisted-web_0.6.0-1.tar.gz
+ cdddd0ce39bd4132cb0e2ded714e69cb 156954 python optional python-twisted-web_0.6.0-1_all.deb
+ 8e54499345d32c4eb0d0cf2bc6b62247 164118 python optional python2.4-twisted-web_0.6.0-1_all.deb

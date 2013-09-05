@@ -1,0 +1,32 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 19:00:20 +0300
+Source: twisted
+Binary: python-twisted-core twisted-doc-api python2.4-twisted-core twisted-doc python2.4-twisted-bin python2.4-twisted python-twisted
+Architecture: source all i386
+Version: 2.4.0
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted - Event-based framework for internet applications (transitional pac
+ python-twisted-core - Event-based framework for internet applications (dummy package)
+ python2.4-twisted - Event-based framework for internet applications (transitional pac
+ python2.4-twisted-bin - Event-based framework for internet applications
+ python2.4-twisted-core - Event-based framework for internet applications
+ twisted-doc - The official documentation of Twisted
+ twisted-doc-api - The auto-generated API docs of Twisted
+Changes: 
+ twisted (2.4.0) dapper; urgency=low
+ .
+   * New upstream version.
+Files: 
+ e1f86e650fc4a44de8c3c1461484766b 428 python optional twisted_2.4.0.dsc
+ f286bf7ece28db337524bdb4ba6be469 1333610 python optional twisted_2.4.0.tar.gz
+ 27557236d96292beee95a260c55fa1be 8722 python optional python-twisted-core_2.4.0_all.deb
+ 588eb32dac84d3d7ee48751eb89d7374 675178 python optional python2.4-twisted-core_2.4.0_all.deb
+ c726768cfd4e4ea6eebe6f3addf90bba 634894 doc optional twisted-doc_2.4.0_all.deb
+ 2e68c58a768ecac73de075e5d1d88a13 852 doc optional twisted-doc-api_2.4.0_all.deb
+ 1ae476c516907a6081953a0ce5d815df 1342 python optional python-twisted_2.4.0_all.deb
+ 2de1d42668ba730e8892c88520956a78 8214 python optional python2.4-twisted_2.4.0_all.deb
+ 9afba73df80aca12814453f1d1625bca 17418 python optional python2.4-twisted-bin_2.4.0_i386.deb

@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 22:03:30 +0300
+Source: twisted-conch
+Binary: python2.4-twisted-conch python-twisted-conch
+Architecture: source all
+Version: 1:0.7.0-1
+Distribution: dapper
+Urgency: low
+Maintainer: Matthias Klose <doko@debian.org>
+Changed-By: Mikko Varso <mikko.varso@iki.fi>
+Description: 
+ python-twisted-conch - The Twisted SSH Implementation (default python version)
+ python2.4-twisted-conch - The Twisted SSH Implementation (for Python 2.4)
+Changes: 
+ twisted-conch (1:0.7.0-1) dapper; urgency=low
+ .
+   * New upstream release
+Files: 
+ 1ce9bb2c26f3e9631d6276f9819ef4c2 361 python optional twisted-conch_0.7.0-1.dsc
+ 52bc462199264fb7ecf48f93cafeacf5 166325 python optional twisted-conch_0.7.0-1.tar.gz
+ 5309d2b3c309a7efd3830988c3026832 24378 python optional python-twisted-conch_0.7.0-1_all.deb
+ 0a438f542e4febb6ca2e78eb1f0663ba 155712 python optional python2.4-twisted-conch_0.7.0-1_all.deb

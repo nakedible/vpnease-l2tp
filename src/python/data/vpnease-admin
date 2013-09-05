@@ -1,0 +1,8 @@
+#!/usr/bin/python
+#
+#  VPNease server-side administrator script.
+#
+
+from codebay.l2tpadmin import vpneaseadmin
+
+vpneaseadmin.main()

@@ -1,0 +1,12 @@
+diff -ru net-snmp-5.2.1.2.orig/debian/rules net-snmp-5.2.1.2/debian/rules
+--- net-snmp-5.2.1.2.orig/debian/rules	2007-08-21 15:55:44.000000000 +0300
++++ net-snmp-5.2.1.2/debian/rules	2007-08-22 10:40:22.000000000 +0300
+@@ -28,7 +28,7 @@
+ CFLAGS += -g
+ endif
+ 
+-MIB_MODULES = host smux ucd-snmp/dlmod ucd-snmp/diskio
++MIB_MODULES = host ucd-snmp/dlmod ucd-snmp/diskio
+ BACKUP = aclocal.m4 config.guess config.sub configure ltmain.sh stamp-h \
+          stamp-h.in include/net-snmp/net-snmp-config.h.in
+ #ifeq "$(ARCH)" "i386"

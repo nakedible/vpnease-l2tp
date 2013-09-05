@@ -1,0 +1,11 @@
+diff -ru freeradius-1.1.0.orig/debian/control freeradius-1.1.0/debian/control
+--- freeradius-1.1.0.orig/debian/control	2007-07-08 04:26:01.000000000 +0300
++++ freeradius-1.1.0/debian/control	2007-07-08 04:26:36.000000000 +0300
+@@ -1,6 +1,5 @@
+ Source: freeradius
+-Build-Depends: debhelper (>= 5), libltdl3-dev, libpam0g-dev, libmysqlclient15-dev | libmysqlclient-dev, libgdbm-dev, libldap2-dev, libsasl2-dev, libiodbc2-dev, libkrb5-dev, snmp, autotools-dev, dpatch (>= 2), libperl-dev
+-Build-Conflicts: libssl-dev
++Build-Depends: debhelper (>= 5), libltdl3-dev, libpam0g-dev, libmysqlclient15-dev | libmysqlclient-dev, libgdbm-dev, libldap2-dev, libsasl2-dev, libiodbc2-dev, libkrb5-dev, snmp, autotools-dev, dpatch (>= 2), libperl-dev, libssl-dev
+ Section: net
+ Priority: optional
+ Maintainer: Paul Hampson <Paul.Hampson@anu.edu.au>

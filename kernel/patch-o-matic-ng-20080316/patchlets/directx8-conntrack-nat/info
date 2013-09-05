@@ -1,0 +1,5 @@
+Title: DirectX8 Conntrack/NAT helpers
+Author:	Eddie Shi <eddieshi@broadcom.com>
+Status: untested, ripped from USR9106 source code
+Requires: linux < 2.6.0
+Repository: extra

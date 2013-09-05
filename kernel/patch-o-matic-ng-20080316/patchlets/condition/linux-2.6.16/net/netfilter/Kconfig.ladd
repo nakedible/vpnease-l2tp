@@ -1,0 +1,12 @@
+config NETFILTER_XT_MATCH_CONDITION
+        tristate  '"condition" match support'
+        depends on NETFILTER_XTABLES
+        help
+          This option allows you to match firewall rules against condition
+          variables stored in the /proc/net/nf_condition directory.
+
+          N.B.: older versions used /proc/net/ipt_condition. You can
+          reenable it with "compat_dir_name".
+
+          If you want to compile it as a module, say M here and read
+          Documentation/modules.txt.  If unsure, say `N'.

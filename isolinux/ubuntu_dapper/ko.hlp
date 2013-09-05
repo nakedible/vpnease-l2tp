@@ -1,0 +1,145 @@
+F1Ubuntu에 오신 것을 환영합니다.Ubuntu 6.06의 라이브 CD-ROM 입니다. 빌드 날짜는
+20060806.1입니다.
+
+도움말 목록
+
+KEY    도움말 주제
+
+<F1F1>   현재 페이지로, 도움말 목록.
+<F2F2>   Ubuntu를 운영하기 위한 요건.
+<F3F3>   CD-ROM를 사용하는 특수한 부팅 방식
+<F4F4>   추가 부팅 방식:  구조 모드
+<F5F5>   특수한 부팅 인자: 개관
+<F6F6>   특수한 시스템을 위한 부팅 인자
+<F7F7>   일부 디스크 컨트롤러를 위한 부팅 인자
+<F8F8>   부트스트랩 시스템에서 사용할 부팅 인자
+<F9F9>   도움을 받으려면,
+<F10F10>  Copyrights and warranties.
+
+자세한 내용을 보기 위해서는 F2에서 F10을 누르거나, 도움말을 빠져나오기 위해 Esc를 누르십시오.F2Ubuntu를 설치하기 위한 요건.우분투 라이브 시스템을 사용하고자 합 경우 최소한 램 128 MB가 필요합니다.
+
+라이브 시스템은 하드디스크에 있는 공간을 사용하지는 않습니다. 하지만 스왑 공간이 있을 경우 스왑 공간을 사용할 것입니다.
+
+자세한 내용은 FAQ를 참조하십시오. 이 문서는 우분투 웹사이트에서 구하실 수 있습니다. http://www.ubuntu.com/
+
+우분투를 선택해주셔서 감사합니다!
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F3부팅 방식선택할 수 있는 부팅 방식의 목록
+
+live
+  라이브 시스템을 시작합니다.
+memtest
+  메모리를 테스트합니다.
+
+위 부팅방식을 사용하고자 하면 프롬프트에 입력을 하십시요. 필요할 경우 그 뒤에 부팅 인자를 입력할 수도 있습니다. 예를 들면:
+
+  boot: live acpi=off
+
+확실하지 않다면 ENTER만을 입력하여 기본 설치 방식을 부팅 인자 없이 사용해보십시요.
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F4복구 모드전에 설치했던 시스템을 복구하기 위해서는 이를
+선택하십시요.
+
+rescue
+  복구 모드로 부팅합니다.
+
+위 부팅방식을 사용하고자 하면 프롬프트에 입력을 하십시요. 필요할 경우 그 뒤에 부팅 인자를 입력할 수도 있습니다. 예를 들면:
+
+  boot: rescue acpi=off
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F5특수한 부팅 인자 - 개관일부 시스템에서는 특별한 부팅 인자를 입력해야 하는 경우도 있습니다. boot: prompt in order to boot the
+system. For example, Linux may not be able to autodetect your hardware, and
+you may need to explicitly specify its location or type for it to be
+recognized.
+
+사용할 수 있는 부팅 인자에는 어떤 것이 있는 지에 대해 더 자세히 알고자 한다면 다음을 입력하십시요:
+
+<F6F6>   특수한 머신를 위한 부팅 인자
+<F7F7>   여러 가지 디스크 컨트롤러를 위한 부팅 인자
+<F8F8>   부트스트랩 시스템에서 사용할 부트 인자
+
+설치 프로그램에서 동적으로 로드하는 커널 모듈이 많이 있습니다. 하지만 이 경우 명령행을 통해 모듈에 인자를 입력할 수가 없습니다.
+모듈을 로드할 때 인자를 입력하고자 한다면 expert 모드(<F3F3> 참조)로 부팅하시기 바랍니다.
+
+부트스트랩 시스템에서 동적으로 로드하는 커널 모듈이 많이 있습니다. 이 경우 명령행을 통해 모듈에 인자를 입력할 수가 없습니다.
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F6특수한 부팅 인자 - 다양한 하드웨어의 지원You can use the following boot parameters at the boot: prompt, in
+combination with the boot method (see <F3F3>>). If you use hex numbers
+you have to use the 0x prefix (e.g., 0x300).
+
+하드웨어                                   지정할 인자
+
+IBM PS/1이나 ValuePoint (IDE 디스크)        hd=cylinders,heads,sectors
+일부 IBM 싱크 패드                           floppy=thinkpad
+IBM Pentium Microchannel               mca-pentium no-hlt
+I/O 포트 보호                              reserve=iobase,extent[,...]
+FPU에 문제가 있는 오래된 머신                     no387
+화면 출력에 문제가 있는 일부 노트북                   vga=771
+부팅 도중에 시스템이 멈출 때, 마지막으로 출력되는 메시지가 "aec671x-detect.."라면, 다음을 시도해 주십시오.
+                                       gdth=disable:y
+시스템이 멈추거나 다른 여러 가지 하드웨어 문제가 발생할 경우 APIC 인터럽트 라우팅을 해제하십시오.
+                                       noapic nolapic
+
+예를 들어:
+
+  boot: live vga=771 noapic nolapic
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F7특수한 부팅 인자 - 다양한 디스크 드라이브You can use the following boot parameters at the boot: 프롬프트에 부팅 방식과 함께
+입력하시면 됩니다(<F3F3>> 참조).
+
+하드웨어                         지정할 인자
+
+Adaptec 151x, 152x           aha152x=iobase[,irq[,scsi-id[,reconnect]]]
+Adaptec 1542                 aha1542=iobase[,buson,busoff[,dmaspeed]]
+Adaptec 274x, 284x           aic7xxx=no_reset (0일 때 사용안함)
+BusLogic SCSI 호스트            buslogic=iobase
+일부 DELL 컴퓨터                  aic7xxx=no_probe
+Future Domain TMC-8xx/950    tmc8xx=mem_base,irq
+NCR-기반의 SCSI 컨트롤러            sym53c8xx=safe:y
+Pro Audio Spectrum           pas16=iobase,irq
+PS/2 ESDI (MCA)              ed=cyl,head,sec
+Seagate ST-0x                st0x=mem_base,irq
+Trantor T128                 t128=mem_base,irq
+
+예를 들어:
+
+  boot: live sym53c8xx=safe
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F8특수 부팅 인자 - 설치 시스템You can use the following boot parameters at the boot: 프롬프트에 부팅 방식과 함께
+입력하시면 됩니다(<F3F3>> 참조). 이 인자들은 부트스트랩 시스템의 동작을 제어합니다.
+
+결과                                      인자
+
+Verbose debugging                       DEBCONF_DEBUG=5
+부트 과정 디버깅하기                             BOOT_DEBUG=2|3
+프레임버퍼 사용안함                              debian-installer/framebuffer=false
+USB 자동 인식을 사용하지 않음                      debian-installer/probe/usb=false
+PCMCIA를 사용하지 않음                         hw-detect/start_pcmcia=false
+강제로 네트워크 설정을 정적으로 함.                    netcfg/disable_dhcp=true
+키보드맵 설정                                 bootkbd=es
+PCI 맵의 ACPI를 사용하지 않습니다(일부 HP 서버나 Via 기반 머신에 유용합니다)
+                                        pci=noacpi
+
+예를 들어:
+
+  boot: live debian-installer/framebuffer=false
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F9도움을 받는 방법우분투를 시작하는데 실패하더라도 좌절하지 마십시오! 언제든지 우분투 팀에 도움을 요청해 보십시요! 특히 시작 중에 겪을 수 있는 문제에
+대해 알려주십시오. 이런 종류의 문제는 여러 사람에게 영향을 끼치기 때문입니다. 겪고 계신 문제가 이미 보고되어 간단한 해결책이 이미
+나온 경우도 있습니다. 그렇지 않더라도 어떤 문제인지를 알려주고 문제를 같이 해결할 수 있었으면 합니다. 그러면 다음에 다른 사용자가
+같은 문제를 겪더라도 여러분의 노력으로 많은 도움을 얻을 수도 있을 겁니다.
+
+자세한 내용은 FAQ를 참조하십시오. 이 문서는 우분투 웹사이트에서 구하실 수 있습니다. http://www.ubuntu.com/
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다.F10저작권과 보증Ubuntu is Copyright (C) 2004-2006 Canonical Ltd., and incorporates the work
+of many other original authors and contributors.
+
+우분투 시스템은 누구나 자유롭게 배포할 수 있습니다. 시스템 시작 후 각 꾸러미의 배포 조건은 /usr/share/doc/꾸러미
+이름/copyright에서 확인해보실 수 있습니다.
+
+우분투는 법에서 허용하는 한도 내에서 아무런 보증을 하지 않습니다.
+
+이 시스템은 데비안 기반 시스템입니다. 데비안 프로젝트에 대해서 더 자세히 알고자 할 경우 http://www.debian.org/를
+참조하십시오.
+
+F1을 도움말 목록을 보실 수 있고, ESC를 누르면 도움말을 빠져나올 수 있습니다. 

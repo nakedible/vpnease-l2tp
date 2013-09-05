@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+  </head>
+  <body>
+
+    <n:invisible n:pattern="content">
+
+      <p>
+        This device contains an installed <n:invisible n:macro="productname" /> server.  To activate the server,
+        reboot the computer from this device.  <n:invisible n:macro="productname" /> contains an integrated Linux
+        distribution and does not need a host operating system.
+      </p>
+
+      <p>
+        Note that the device has been repartitioned by the <n:invisible n:macro="productname" /> installer.
+        If you wish to erase <n:invisible n:macro="productname" /> from this device you need to repartition and
+        reformat the device (this applies particularly to USB sticks).  To do this, boot this Live CD and
+        follow instructions to repartition the device.
+      </p>
+
+      <p>
+        <strong>Please do not modify data on this device unless you wish to erase
+        the <n:invisible n:macro="productname" /> installation.</strong>
+      </p>
+
+    </n:invisible>
+  </body>
+</html>

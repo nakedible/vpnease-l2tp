@@ -1,0 +1,77 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 03-l2tpd-cfgpath.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/doc/l2tpd.conf.sample
++++ l2tpd-0.69/doc/l2tpd.conf.sample
+@@ -10,7 +10,7 @@
+ ;
+ ; [global]								; Global parameters:
+ ; port = 1701						 	; * Bind to port 1701
+-; auth file = /etc/l2tp/l2tp-secrets 	; * Where our challenge secrets are
++; auth file = /etc/l2tpd/l2tp-secrets 	; * Where our challenge secrets are
+ ; access control = yes					; * Refuse connections without IP match
+ ; rand source = dev                     ; Source for entropy for random
+ ;                                       ; numbers, options are:
+--- l2tpd-0.69.orig/doc/l2tp-secrets.5
++++ l2tpd-0.69/doc/l2tp-secrets.5
+@@ -27,7 +27,7 @@
+ 
+ .SH "FILES"
+ 
+-\fB\fR/etc/l2tp/l2tpd.conf \fB\fR/etc/l2tp/l2tp\-secrets 
++\fB\fR/etc/l2tpd/l2tpd.conf \fB\fR/etc/l2tpd/l2tp\-secrets 
+ \fB\fR/var/run/l2tp\-control
+ .SH "BUGS"
+ 
+--- l2tpd-0.69.orig/file.h
++++ l2tpd-0.69/file.h
+@@ -49,10 +49,10 @@
+ #define SENSE_ALLOW -1
+ #define SENSE_DENY 0
+ 
+-#define DEFAULT_AUTH_FILE "/etc/l2tp/l2tp-secrets"
+-#define ALT_DEFAULT_AUTH_FILE "/etc/l2tpd/l2tp-secrets"
+-#define DEFAULT_CONFIG_FILE "/etc/l2tp/l2tpd.conf"
+-#define ALT_DEFAULT_CONFIG_FILE "/etc/l2tpd/l2tpd.conf"
++#define DEFAULT_AUTH_FILE "/etc/l2tpd/l2tp-secrets"
++#define ALT_DEFAULT_AUTH_FILE "/etc/l2tp/l2tp-secrets"
++#define DEFAULT_CONFIG_FILE "/etc/l2tpd/l2tpd.conf"
++#define ALT_DEFAULT_CONFIG_FILE "/etc/l2tp/l2tpd.conf"
+ #define DEFAULT_PID_FILE "/var/run/l2tpd.pid"
+ 
+ /* Definition of an LNS */
+--- l2tpd-0.69.orig/doc/l2tpd.conf.5
++++ l2tpd-0.69/doc/l2tpd.conf.5
+@@ -15,7 +15,7 @@
+ .TP 
+ .B auth file
+ Specify where to find the authentication file used to authenticate
+-l2tp tunnels. The default is /etc/l2tp/l2tp\-secrets.
++l2tp tunnels. The default is /etc/l2tpd/l2tp\-secrets.
+ 
+ .TP 
+ .B Port
+@@ -141,7 +141,7 @@
+ 
+ .SH "FILES"
+ 
+-\fB\fR/etc/l2tp/l2tpd.conf \fB\fR/etc/l2tp/l2tp\-secrets 
++\fB\fR/etc/l2tpd/l2tpd.conf \fB\fR/etc/l2tpd/l2tp\-secrets 
+ \fB\fR/var/run/l2tp\-control
+ .SH "BUGS"
+ 
+--- l2tpd-0.69.orig/doc/l2tpd.8
++++ l2tpd-0.69/doc/l2tpd.8
+@@ -30,7 +30,7 @@
+ 
+ .SH "FILES"
+ 
+-\fB\fR/etc/l2tp/l2tpd.conf \fB\fR/etc/l2tp/l2tp\-secrets 
++\fB\fR/etc/l2tpd/l2tpd.conf \fB\fR/etc/l2tpd/l2tp\-secrets 
+ \fB\fR/var/run/l2tp\-control
+ .SH "BUGS"
+ 

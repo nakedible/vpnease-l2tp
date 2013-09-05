@@ -1,0 +1,11 @@
+# Defaults for openl2tp initscript
+# sourced by /etc/init.d/openl2tp
+# installed at /etc/default/openl2tp by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# Additional options that are passed to the Daemon.
+# Use -R to allow remote RPC command : 
+DAEMON_OPTS=""

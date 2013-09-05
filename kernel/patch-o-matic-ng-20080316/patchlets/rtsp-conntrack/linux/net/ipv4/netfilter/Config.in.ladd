@@ -1,0 +1,8 @@
+        dep_tristate '    Basic SNMP-ALG support (EXPERIMENTAL)' CONFIG_IP_NF_NAT_SNMP_BASIC $CONFIG_IP_NF_NAT
+        if [ "$CONFIG_IP_NF_RTSP" = "m" ]; then
+          define_tristate CONFIG_IP_NF_NAT_RTSP m
+        else
+          if [ "$CONFIG_IP_NF_RTSP" = "y" ]; then
+            define_tristate CONFIG_IP_NF_NAT_RTSP $CONFIG_IP_NF_NAT
+          fi
+        fi

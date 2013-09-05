@@ -1,0 +1,71 @@
+#! /usr/bin/perl -w
+use strict;
+
+if (@ARGV != 1) {
+    print STDERR "Usage: $0 localechooser-source-tree\n";
+    exit 1;
+}
+
+my $localechooser = $ARGV[0];
+
+# hardcoded for now because it's messy to work this out any other way
+my %langcode_override = (
+    'Chinese (Simplified)' => 'zh_CN',
+    'Chinese (Traditional)' => 'zh_TW',
+    'Portuguese (Brazil)' => 'pt_BR',
+    'Portuguese' => 'pt_PT',
+);
+
+# The real localised names for these languages use characters not present in
+# our font.
+my %langname_override = (
+    'Punjabi (Gurmukhi)' => 'Punjabi (Gurmukhi)',
+);
+
+my %langcodes;
+open LIST, '<:utf8', "$localechooser/languagelist"
+    or die "$0: can't open $localechooser/languagelist: $!";
+while (<LIST>) {
+    chomp;
+    next if /^#/ or not /\S/;
+    my @bits = split /;/;
+    next if $bits[0] eq 'C';
+    my $lang;
+    if (exists $langcode_override{$bits[0]}) {
+	$lang = $langcode_override{$bits[0]};
+    } else {
+	$lang = $bits[4];
+    }
+    $langcodes{$bits[0]} = $lang;
+}
+close LIST;
+
+my %langnames;
+open L10N, '<:utf8', "$localechooser/languagelist.l10n"
+    or die "$0: can't open $localechooser/languagelist.l10n: $!";
+while (<L10N>) {
+    chomp;
+    next if /^#/ or not /\S/;
+    next unless /(.*?): (.*?)\s*$/;
+    my ($lang_c, $lang_trans) = ($1, $2);
+    next if $lang_c eq 'C';
+    if (exists $langname_override{$lang_c}) {
+	$langnames{$lang_c} = $langname_override{$lang_c};
+    } else {
+	$langnames{$lang_c} = $lang_trans;
+    }
+}
+close L10N;
+
+binmode STDOUT, ':utf8';
+
+print "/lang.defaultnames [\n";
+for my $lang_c (sort { $langcodes{$a} cmp $langcodes{$b} } keys %langcodes) {
+    print qq{  [ "$langcodes{$lang_c}" };
+    if (exists $langnames{$lang_c}) {
+	print qq{"$langnames{$lang_c}" ]\n};
+    } else {
+	print qq{"$lang_c" ]\n};
+    }
+}
+print "] def\n";

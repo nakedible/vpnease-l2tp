@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          <n:invisible n:macro="productname" /> server allows users to safely access company intranet remotely,
+          giving them a secure, encrypted access to all internal services such as e-mail and file servers.  It
+          also allows you to connect multiple company sites together using encrypted site-to-site connections.
+        </p>
+
+        <p>
+          This Live CD allows you to install <n:invisible n:macro="productname" /> to a hard drive or a
+          USB stick.  You can test the product without charge for a 30 day period without registration
+          (see <a class="cb-external" target="_blank" href="http://www.vpnease.com/topic/end-user-license-agreement" n:render="link_maybe">www.vpnease.com</a> for updates and license details).
+          Click <strong class="cb-guilabel">Install / Recovery</strong> from the menu on the left to start installation.
+        </p>
+
+        <p>
+          The <strong class="cb-guilabel">Format USB stick</strong> menu option allows you to repartition and reformat
+          a USB stick for normal USB storage.  A USB stick used as a <n:invisible n:macro="productname" />
+          installation target is not suitable for USB storage unless it is reformatted after use.
+        </p>
+      </div>
+
+      <n:invisible n:render="reset_state" />
+
+    </n:invisible>
+  </body>
+</html>
+

@@ -1,0 +1,1848 @@
+# -*- tcl -*-
+
+source test_procs.tcl
+
+############################################################################
+# Tests 1.* - basic list/create/modify/show/delete operations
+############################################################################
+
+test ippool-1.1 { List ippools } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-1.1
+	ippoolConfig pool list
+    } \
+    {
+
+
+}
+
+test ippool-1.2 { Create an ippool 'one' } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-1.2
+	ippoolConfig pool create pool_name=one
+	ippoolConfig pool list
+    } \
+    {
+
+Created pool one
+	one
+}
+
+test ippool-1.3 { Show ippool 'one' } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-1.3
+	ippoolConfig pool show pool_name=one
+    } \
+    {
+
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+}
+
+test ippool-1.4 { Modify ippool 'one' } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-1.4
+	ippoolConfig pool modify pool_name=one drain=yes
+	ippoolConfig pool show pool_name=one
+    } \
+    {
+
+Modified pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: YES
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+}
+
+test ippool-1.5 { Delete ippool 'one' } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-1.5
+	ippoolConfig pool delete pool_name=one
+	ippoolConfig pool list
+    } \
+    {
+
+Deleted pool one
+
+}
+
+test ippool-1.6 { Create ippool that already exists } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-1.6
+	ippoolConfig pool create pool_name=one
+	ippoolConfig pool list
+	ippoolConfig pool create pool_name=one
+	ippoolConfig pool list
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+	one
+Error at or near 'create'
+Operation failed: File exists
+	one
+Deleted pool one
+}
+
+############################################################################
+# Tests 2.* - optional create parameters
+############################################################################
+
+test ippool-2.1 { Create ippool drain= } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.1
+	ippoolConfig pool create pool_name=one drain=yes
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: YES
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+test ippool-2.2 { Create ippool first_addr=, derive block size } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.2
+	ippoolConfig pool create pool_name=one first_addr=10.1.2.3
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.2.3 thru 10.1.2.255 (size 253), netmask 255.255.255.0
+  total addresses: 253, available: 252
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.2.3 thru 10.1.2.254
+
+Deleted pool one
+}
+
+test ippool-2.3 { Create ippool max_addrs= } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.3
+	ippoolConfig pool create pool_name=one max_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 10
+  debug messages: NO, drain: NO
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+test ippool-2.4 { Create ippool num_addrs= first_addr= } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.4
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Deleted pool one
+}
+
+test ippool-2.5 { Create ippool num_addrs= (illegal) } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.5
+	ippoolConfig pool create pool_name=one num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Error at or near 'create'
+Operation failed: Invalid argument
+Error at or near 'show'
+Operation failed: No such file or directory
+Error at or near 'delete'
+Operation failed: No such file or directory
+}
+
+test ippool-2.6 { Create ippool netmask= (illegal) } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.6
+	ippoolConfig pool create pool_name=one netmask=255.255.255.0
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Error at or near 'create'
+Operation failed: Invalid argument
+Error at or near 'show'
+Operation failed: No such file or directory
+Error at or near 'delete'
+Operation failed: No such file or directory
+}
+
+test ippool-2.7 { Create ippool trace= } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.7
+	ippoolConfig pool create pool_name=one trace=yes
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: YES, drain: NO
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+test ippool-2.8 { Complex create ippool with args } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-2.8
+	ippoolConfig pool create pool_name=one \
+	  drain=yes \
+	  first_addr=10.1.1.1 \
+	  max_addrs=10 \
+	  netmask=255.255.255.0 \
+	  num_addrs=10 \
+	  trace=yes
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 10
+  debug messages: YES, drain: YES
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Deleted pool one
+}
+
+############################################################################
+# Tests 3.* - modify parameters
+############################################################################
+
+test ippool-3.1 { Modify ippool drain= } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-3.1
+	ippoolConfig pool create pool_name=one 
+	ippoolConfig pool modify pool_name=one drain=yes
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Modified pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: YES
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+test ippool-3.2 { Modify ippool max_addrs= } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-3.2
+	ippoolConfig pool create pool_name=one 
+	ippoolConfig pool modify pool_name=one max_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Modified pool one
+IP pool one:-
+  max pool size: 10
+  debug messages: NO, drain: NO
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+test ippool-3.3 { Modify ippool trace= } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-3.3
+	ippoolConfig pool create pool_name=one 
+	ippoolConfig pool modify pool_name=one trace=yes
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Modified pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: YES, drain: NO
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+test ippool-3.4 { Complex modify ippool with all args } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-3.4
+        ippoolConfig pool create pool_name=one
+	ippoolConfig pool modify pool_name=one \
+	  drain=yes \
+	  max_addrs=10 \
+	  trace=yes
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Modified pool one
+IP pool one:-
+  max pool size: 10
+  debug messages: YES, drain: YES
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+############################################################################
+# Tests 4.* - address blocks
+############################################################################
+
+test ippool-4.1 { Add address block to empty ippool } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.1
+	ippoolConfig pool create pool_name=one
+	ippoolConfig pool address add pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Added address block to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Deleted pool one
+}
+
+test ippool-4.2 { Add address block to non-empty ippool } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.2
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool address add pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Added address block to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  total addresses: 110, available: 110
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.100
+
+Deleted pool one
+}
+
+test ippool-4.3 { Skip network addresses when adding address blocks } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.3
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.0 num_addrs=10 netmask=255.255.255.0
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address add pool_name=one first_addr=10.2.0.0 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.0 thru 10.1.1.9 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 9
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.9
+
+Added address block to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.0 thru 10.1.1.9 (size 10), netmask 255.255.255.0
+    base 10.2.0.0 thru 10.2.0.99 (size 100), netmask 255.255.255.0
+  total addresses: 110, available: 108
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.9
+    base 10.2.0.1 thru 10.2.0.99
+
+Deleted pool one
+}
+
+test ippool-4.4 { Netmask limits address range } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.4
+
+	# 10.1.1.254 should be the last address allocated to pool, i.e. no spill into 10.1.2.x
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.250 num_addrs=10 netmask=255.255.255.0
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address add pool_name=one first_addr=10.2.0.200 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.250 thru 10.1.1.255 (size 6), netmask 255.255.255.0
+  total addresses: 6, available: 5
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.250 thru 10.1.1.254
+
+Added address block to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.250 thru 10.1.1.255 (size 6), netmask 255.255.255.0
+    base 10.2.0.200 thru 10.2.0.255 (size 56), netmask 255.255.255.0
+  total addresses: 62, available: 60
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.250 thru 10.1.1.254
+    base 10.2.0.200 thru 10.2.0.254
+
+Deleted pool one
+}
+
+test ippool-4.5 { Netmask is used to determine network/broadcast addresses } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.5
+
+	# 10.1.1.255 is a legal address for netmask 255.0.0.0
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.250 num_addrs=5 netmask=255.0.0.0
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+
+	# 10.1.255.255 is a legal address for netmask 255.0.0.0
+	ippoolConfig pool create pool_name=one first_addr=10.1.255.250 num_addrs=5 netmask=255.0.0.0
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+
+	# 10.255.255.255 is a broadcast address for netmask 255.0.0.0
+	ippoolConfig pool create pool_name=one first_addr=10.255.255.250 num_addrs=5 netmask=255.0.0.0
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.250 thru 10.1.1.254 (size 5), netmask 255.0.0.0
+  total addresses: 5, available: 5
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.250 thru 10.1.1.254
+
+Deleted pool one
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.255.250 thru 10.1.255.254 (size 5), netmask 255.0.0.0
+  total addresses: 5, available: 5
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.255.250 thru 10.1.255.254
+
+Deleted pool one
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.255.255.250 thru 10.255.255.254 (size 5), netmask 255.0.0.0
+  total addresses: 5, available: 5
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.255.255.250 thru 10.255.255.254
+
+Deleted pool one
+}
+
+test ippool-4.6 { Add/remove address blocks } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.6
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address add pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address remove pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address remove pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Added address block to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  total addresses: 110, available: 110
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.100
+
+Removed address block from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Removed address block from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+test ippool-4.7 { Can't remove partial address blocks } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.7
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address remove pool_name=one first_addr=10.1.1.1 num_addrs=5
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address remove pool_name=one first_addr=10.1.1.5 num_addrs=5
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Error at or near 'remove'
+Operation failed: No such file or directory
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Error at or near 'remove'
+Operation failed: No such file or directory
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Deleted pool one
+}
+
+test ippool-4.8 { Reserve/unreserve address blocks } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.8
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool address add pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool address reserve pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address unreserve pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Added address block to pool one
+Reserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  total addresses: 110, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Unreserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  total addresses: 110, available: 110
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.100
+
+Deleted pool one
+}
+
+test ippool-4.9 { Reserve/unreserve partial address blocks } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.9
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool address add pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool address reserve pool_name=one first_addr=10.1.1.5 num_addrs=2
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address reserve pool_name=one first_addr=10.2.1.3 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address unreserve pool_name=one first_addr=10.2.1.5 num_addrs=1
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address unreserve pool_name=one first_addr=10.2.1.8 num_addrs=2
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Added address block to pool one
+Reserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+  total addresses: 110, available: 108
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.100
+
+Reserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+    base 10.2.1.3 thru 10.2.1.12 (size 10), netmask 255.255.255.0
+  total addresses: 110, available: 98
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.2
+    base 10.2.1.13 thru 10.2.1.100
+
+Unreserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+    base 10.2.1.3 thru 10.2.1.4 (size 2), netmask 255.255.255.0
+    base 10.2.1.6 thru 10.2.1.12 (size 7), netmask 255.255.255.0
+  total addresses: 110, available: 99
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.2
+    base 10.2.1.5 thru 10.2.1.5
+    base 10.2.1.13 thru 10.2.1.100
+
+Unreserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+    base 10.2.1.3 thru 10.2.1.4 (size 2), netmask 255.255.255.0
+    base 10.2.1.6 thru 10.2.1.7 (size 2), netmask 255.255.255.0
+    base 10.2.1.10 thru 10.2.1.12 (size 3), netmask 255.255.255.0
+  total addresses: 110, available: 101
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.2
+    base 10.2.1.5 thru 10.2.1.5
+    base 10.2.1.8 thru 10.2.1.9
+    base 10.2.1.13 thru 10.2.1.100
+
+Deleted pool one
+}
+
+test ippool-4.10 { Remove address blocks when some addresses are reserved } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-4.10
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool address add pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool address reserve pool_name=one first_addr=10.1.1.5 num_addrs=2
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address reserve pool_name=one first_addr=10.2.1.3 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address remove pool_name=one first_addr=10.2.1.1 num_addrs=100
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address remove pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Added address block to pool one
+Reserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+  total addresses: 110, available: 108
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.100
+
+Reserved address block in pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.100 (size 100), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+    base 10.2.1.3 thru 10.2.1.12 (size 10), netmask 255.255.255.0
+  total addresses: 110, available: 98
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.2
+    base 10.2.1.13 thru 10.2.1.100
+
+Removed address block from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  reserved address blocks:-
+    base 10.1.1.5 thru 10.1.1.6 (size 2), netmask 255.255.255.0
+  total addresses: 10, available: 8
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.4
+    base 10.1.1.7 thru 10.1.1.10
+
+Removed address block from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+Deleted pool one
+}
+
+############################################################################
+# Tests 5.* - address allocation / free
+############################################################################
+
+test ippool-5.1 { Allocate address success } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-5.1
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=3
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Allocated address 10.1.1.1 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 2
+  pool use statistics:-
+    allocs: 1, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.3
+
+Deleted pool one
+}
+
+test ippool-5.2 { Allocate address failure (pool out of addresses) } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-5.2
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=3
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Allocated address 10.1.1.1 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 2
+  pool use statistics:-
+    allocs: 1, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.3
+
+Allocated address 10.1.1.2 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 1
+  pool use statistics:-
+    allocs: 2, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.3 thru 10.1.1.3
+
+Allocated address 10.1.1.3 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 0
+  pool use statistics:-
+    allocs: 3, frees: 0, alloc_fails: 0
+
+Error at or near 'allocate'
+Operation failed: Too many open files
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 0
+  pool use statistics:-
+    allocs: 3, frees: 0, alloc_fails: 1
+
+Deleted pool one
+}
+
+test ippool-5.3 { Address allocate/free success } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-5.3
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=3
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.2
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.1
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.3
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Allocated address 10.1.1.1 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 2
+  pool use statistics:-
+    allocs: 1, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.3
+
+Allocated address 10.1.1.2 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 1
+  pool use statistics:-
+    allocs: 2, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.3 thru 10.1.1.3
+
+Allocated address 10.1.1.3 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 0
+  pool use statistics:-
+    allocs: 3, frees: 0, alloc_fails: 0
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 1
+  pool use statistics:-
+    allocs: 3, frees: 1, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.2
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 2
+  pool use statistics:-
+    allocs: 3, frees: 2, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.2
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 3
+  pool use statistics:-
+    allocs: 3, frees: 3, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.3
+
+Deleted pool one
+}
+
+test ippool-5.4 { Addresses allocated from second block once first is exhausted } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-5.4
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=3
+	ippoolConfig pool address add pool_name=one first_addr=10.2.1.1 num_addrs=5
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.2
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.2.1.1
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.1
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.3
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Added address block to pool one
+Allocated address 10.1.1.1 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 7
+  pool use statistics:-
+    allocs: 1, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.3
+    base 10.2.1.1 thru 10.2.1.5
+
+Allocated address 10.1.1.2 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 6
+  pool use statistics:-
+    allocs: 2, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.3 thru 10.1.1.3
+    base 10.2.1.1 thru 10.2.1.5
+
+Allocated address 10.1.1.3 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 5
+  pool use statistics:-
+    allocs: 3, frees: 0, alloc_fails: 0
+
+Allocated address 10.2.1.1 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 4
+  pool use statistics:-
+    allocs: 4, frees: 0, alloc_fails: 0
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 5
+  pool use statistics:-
+    allocs: 4, frees: 1, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.2
+    base 10.2.1.2 thru 10.2.1.5
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 6
+  pool use statistics:-
+    allocs: 4, frees: 2, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.2
+    base 10.2.1.1 thru 10.2.1.5
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 7
+  pool use statistics:-
+    allocs: 4, frees: 3, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.2
+    base 10.2.1.1 thru 10.2.1.5
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.3 (size 3), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.5 (size 5), netmask 255.255.255.0
+  total addresses: 8, available: 8
+  pool use statistics:-
+    allocs: 4, frees: 4, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.3
+    base 10.2.1.1 thru 10.2.1.5
+
+Deleted pool one
+}
+
+test ippool-5.5 { Reserved addresses are not allocated } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-5.5
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 num_addrs=10
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address reserve 10.1.1.2 num_addrs=2
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.4
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.1
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.5
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Allocated address 10.1.1.1 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 9
+  pool use statistics:-
+    allocs: 1, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.2 thru 10.1.1.10
+
+Error at or near '10.1.1.2'
+Allocated address 10.1.1.2 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 8
+  pool use statistics:-
+    allocs: 2, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.3 thru 10.1.1.10
+
+Allocated address 10.1.1.3 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 7
+  pool use statistics:-
+    allocs: 3, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.4 thru 10.1.1.10
+
+Error at or near 'free'
+Operation failed: Invalid argument
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 7
+  pool use statistics:-
+    allocs: 3, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.4 thru 10.1.1.10
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 8
+  pool use statistics:-
+    allocs: 3, frees: 1, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.1
+    base 10.1.1.4 thru 10.1.1.10
+
+Error at or near 'free'
+Operation failed: Invalid argument
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 8
+  pool use statistics:-
+    allocs: 3, frees: 1, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.1
+    base 10.1.1.4 thru 10.1.1.10
+
+Deleted pool one
+}
+
+test ippool-5.6 { Network and broadcast addresses are not allocated } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-5.6
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.253 netmask=255.255.255.0 num_addrs=10
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.254
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool address free pool_name=one addr=10.1.1.253
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Allocated address 10.1.1.253 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.253 thru 10.1.1.255 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 1
+  pool use statistics:-
+    allocs: 1, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.254 thru 10.1.1.254
+
+Allocated address 10.1.1.254 from pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.253 thru 10.1.1.255 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 0
+  pool use statistics:-
+    allocs: 2, frees: 0, alloc_fails: 0
+
+Error at or near 'allocate'
+Operation failed: Too many open files
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.253 thru 10.1.1.255 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 0
+  pool use statistics:-
+    allocs: 2, frees: 0, alloc_fails: 1
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.253 thru 10.1.1.255 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 1
+  pool use statistics:-
+    allocs: 2, frees: 1, alloc_fails: 1
+  available address blocks:-
+    base 10.1.1.254 thru 10.1.1.254
+
+Returned address to pool one
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.253 thru 10.1.1.255 (size 3), netmask 255.255.255.0
+  total addresses: 3, available: 2
+  pool use statistics:-
+    allocs: 2, frees: 2, alloc_fails: 1
+  available address blocks:-
+    base 10.1.1.253 thru 10.1.1.254
+
+Deleted pool one
+}
+
+test ippool-5.7 { Cannot allocate addresses when pool drain is set } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-5.7
+	ippoolConfig pool create pool_name=one first_addr=10.1.1.1 netmask=255.255.255.0 num_addrs=10
+	ippoolConfig pool modify pool_name=one drain=yes
+	ippoolConfig pool address allocate pool_name=one
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Modified pool one
+Error at or near 'allocate'
+Operation failed: Operation not permitted
+IP pool one:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: YES
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Deleted pool one
+}
+
+############################################################################
+# Tests 6.* - config save/restore
+############################################################################
+
+test ippool-6.1 { Save a created ippool } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.1
+        ippoolConfig pool create pool_name=one
+	ippoolConfig config save file=results/ippool-6.1.cfg
+	catFile results/ippool-6.1.cfg
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+
+$
+# ip pools$
+pool create pool_name=one \$
+$
+Deleted pool one
+}
+
+test ippool-6.2 { Save all set parameters of a ippool } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.2
+        ippoolConfig pool create pool_name=one \
+	  drain=yes \
+	  first_addr=10.1.1.1 \
+	  max_addrs=10 \
+	  netmask=255.255.255.0 \
+	  num_addrs=10 \
+	  trace=yes
+	ippoolConfig config save file=results/ippool-6.2.cfg
+	catFile results/ippool-6.2.cfg
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+
+$
+# ip pools$
+pool create pool_name=one \$
+	max_addrs=10 \$
+	trace=yes \$
+	drain=yes \$
+$
+pool address add pool_name=one first_addr=10.1.1.1 num_addrs=10 \$
+	netmask=255.255.255.0$
+Deleted pool one
+}
+
+test ippool-6.3 { Save only non-default parameters of a created ippool } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.3
+        ippoolConfig pool create pool_name=one \
+	  drain=yes \
+	  first_addr=10.1.1.1 \
+	  num_addrs=10 \
+	  trace=yes
+	ippoolConfig config save file=results/ippool-6.3.cfg
+	catFile results/ippool-6.3.cfg
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+
+$
+# ip pools$
+pool create pool_name=one \$
+	trace=yes \$
+	drain=yes \$
+$
+pool address add pool_name=one first_addr=10.1.1.1 num_addrs=10 \$
+	netmask=255.255.255.0$
+Deleted pool one
+}
+
+test ippool-6.4 { Save all modified values of a ippool } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.4
+        ippoolConfig pool create pool_name=one
+        ippoolConfig pool modify pool_name=one \
+	  drain=yes \
+	  max_addrs=10 \
+	  trace=yes
+	ippoolConfig config save file=results/ippool-6.4.cfg
+	catFile results/ippool-6.4.cfg
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Modified pool one
+
+$
+# ip pools$
+pool create pool_name=one \$
+	max_addrs=10 \$
+	trace=yes \$
+	drain=yes \$
+$
+Deleted pool one
+}
+
+test ippool-6.5 { Save only non-default modified values of a ippool } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.5
+        ippoolConfig pool create pool_name=one
+        ippoolConfig pool modify pool_name=one \
+	  max_addrs=10
+	ippoolConfig config save file=results/ippool-6.5.cfg
+	catFile results/ippool-6.5.cfg
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Modified pool one
+
+$
+# ip pools$
+pool create pool_name=one \$
+	max_addrs=10 \$
+$
+Deleted pool one
+}
+
+test ippool-6.6 { Save all created ippools } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.6
+        ippoolConfig pool create pool_name=one
+        ippoolConfig pool create pool_name=two
+        ippoolConfig pool create pool_name=three
+	ippoolConfig config save file=results/ippool-6.6.cfg
+	catFile results/ippool-6.6.cfg
+	ippoolConfig pool delete pool_name=one
+	ippoolConfig pool delete pool_name=two
+	ippoolConfig pool delete pool_name=three
+    } \
+    {
+
+Created pool one
+Created pool two
+Created pool three
+
+$
+# ip pools$
+pool create pool_name=one \$
+$
+pool create pool_name=three \$
+$
+pool create pool_name=two \$
+$
+Deleted pool one
+Deleted pool two
+Deleted pool three
+}
+
+test ippool-6.7 { Restore all parameters from a saved file } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.7
+        ippoolConfig pool create pool_name=one \
+	  drain=no \
+	  first_addr=10.1.1.1 \
+	  max_addrs=1000 \
+	  netmask=255.255.255.0 \
+	  num_addrs=10 \
+	  trace=yes
+	ippoolConfig pool address add pool_name=one first_addr=10.2.1.1 num_addrs=20
+	ippoolConfig pool address reserve pool_name=one first_addr=10.1.1.5 num_addrs=4
+	ippoolConfig config save file=results/ippool-6.7.cfg
+	ippoolConfig pool delete pool_name=one
+	ippoolConfig config restore file=results/ippool-6.7.cfg
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool delete pool_name=one
+    } \
+    {
+
+Created pool one
+Added address block to pool one
+Reserved address block in pool one
+
+Deleted pool one
+Error at or near 'netmask=255.255.255.0'
+Created pool one
+Added address block to pool one
+Added address block to pool one
+IP pool one:-
+  max pool size: 1000
+  debug messages: YES, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+    base 10.2.1.1 thru 10.2.1.20 (size 20), netmask 255.255.255.0
+  total addresses: 30, available: 30
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+    base 10.2.1.1 thru 10.2.1.20
+
+Deleted pool one
+}
+
+test ippool-6.8 { Restore multiple ippools } \
+    { ipPool } \
+    { \
+	clearResult
+	ippoolConfig test log message=ippool-6.8
+        ippoolConfig pool create pool_name=one \
+	  drain=no \
+	  first_addr=10.1.1.1 \
+	  max_addrs=10 \
+	  netmask=255.255.255.0 \
+	  num_addrs=10 \
+	  trace=yes
+        ippoolConfig pool create pool_name=two \
+	  drain=yes \
+	  max_addrs=10 \
+	  trace=yes
+        ippoolConfig pool create pool_name=three \
+	  first_addr=10.1.1.1 \
+	  netmask=255.255.255.0 \
+	  num_addrs=10
+	ippoolConfig config save file=results/ippool-6.8.cfg
+	ippoolConfig pool delete pool_name=one
+	ippoolConfig pool delete pool_name=two
+	ippoolConfig pool delete pool_name=three
+	ippoolConfig config restore file=results/ippool-6.8.cfg
+	ippoolConfig pool list
+	ippoolConfig pool show pool_name=one
+	ippoolConfig pool show pool_name=two
+	ippoolConfig pool show pool_name=three
+
+	ippoolConfig pool delete pool_name=one
+	ippoolConfig pool delete pool_name=two
+	ippoolConfig pool delete pool_name=three
+    } \
+    {
+
+Created pool one
+Created pool two
+Created pool three
+
+Deleted pool one
+Deleted pool two
+Deleted pool three
+Created pool one
+Added address block to pool one
+Created pool three
+Added address block to pool three
+Created pool two
+	one
+	three
+	two
+IP pool one:-
+  max pool size: 10
+  debug messages: YES, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+IP pool two:-
+  max pool size: 10
+  debug messages: YES, drain: YES
+  address blocks:-
+    none
+  total addresses: 0, available: 0
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+
+IP pool three:-
+  max pool size: 0 (unlimited)
+  debug messages: NO, drain: NO
+  address blocks:-
+    base 10.1.1.1 thru 10.1.1.10 (size 10), netmask 255.255.255.0
+  total addresses: 10, available: 10
+  pool use statistics:-
+    allocs: 0, frees: 0, alloc_fails: 0
+  available address blocks:-
+    base 10.1.1.1 thru 10.1.1.10
+
+Deleted pool one
+Deleted pool two
+Deleted pool three
+}
+

@@ -1,0 +1,1919 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/connections.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/connections.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/connections.c	2007-06-14 10:53:33.000000000 +0300
+@@ -44,12 +44,12 @@
+ #ifdef XAUTH_USEPAM
+ #include <security/pam_appl.h>
+ #endif
++#include "state.h"
+ #include "connections.h"	/* needs id.h */
+ #include "pending.h"
+ #include "foodgroups.h"
+ #include "packet.h"
+ #include "demux.h"	/* needs packet.h */
+-#include "state.h"
+ #include "timer.h"
+ #include "ipsec_doi.h"	/* needs demux.h and state.h */
+ #include "server.h"
+@@ -158,8 +158,29 @@
+      * but other ports are not.
+      * So if any port==4500, then set it to 500.
+      */
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: find_host_pair (before): %s:%d %s:%d\n",
++		 (addrtot(myaddr, 0, b1, sizeof(b1)), b1),
++		 myport,
++		 (addrtot(hisaddr, 0, b2, sizeof(b2)), b2),
++		 hisport);
++#endif
++
++#if 1 /* l2tp-workaround patch */
++    /* No port-magic used, host_port_specific not set. */
++#else
+     if(myport == 4500) myport=500;
+     if(hisport== 4500) hisport=500;
++#endif
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: find_host_pair (after): %s:%d %s:%d\n",
++		 (addrtot(myaddr, 0, b1, sizeof(b1)), b1),
++		 myport,
++		 (addrtot(hisaddr, 0, b2, sizeof(b2)), b2),
++		 hisport);
++#endif
+ 
+     for (prev = NULL, p = host_pairs; p != NULL; prev = p, p = p->next)
+     {
+@@ -184,6 +205,9 @@
+ 	    && (!p->him.host_port_specific || p->him.host_port == hisport)
+ 	    )
+ 	{
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: found match (in second loop)");
++#endif
+ 	    if (prev != NULL)
+ 	    {
+ 		prev->next = p->next;	/* remove p from list */
+@@ -328,7 +352,11 @@
+     {
+ 	flush_pending_by_connection(c);
+ 	delete_states_by_connection(c, relations);
++#if 1 /* l2tp-workaround patch */
++	unroute_connection(c, NULL);
++#else
+ 	unroute_connection(c);
++#endif
+     }
+ }
+ 
+@@ -1341,6 +1369,18 @@
+ 	c->newest_ipsec_sa = SOS_NOBODY;
+ 	c->spd.eroute_owner = SOS_NOBODY;
+ 
++#if 1 /* l2tp-workaround patch */
++	/* Note: this should always be zero for template connections and initially zero for non-template connections. */
++	/* Note: this is not currently used for initiated (non-responder) connections. */
++	c->negotiated_natt = 0;
++
++	/* Note: this is always uninitialized for template connections and should not be used for non-template connections. */
++	/* Note: this is not currently used for initiated (non-responder) connections. */
++	c->udp_remote_port = 0;
++
++	/* This is only set when the udp_remote_port in the connection has already used for sa/policy setup. */
++	c->udp_remote_port_used_for_sa_setup = 0;
++#endif
+ 	if (c->policy & POLICY_GROUP)
+ 	{
+ 	    c->kind = CK_GROUP;
+@@ -1425,6 +1465,14 @@
+ 	loglog(RC_FATAL, "attempt to load incomplete connection");
+     }
+ 
++#if 1 /* l2tp-workaround patch */
++    /* If there exists client connections that have same peer IP as
++       our remote IP for this connection and do not have NAT porthop
++       enabled and/or use port ports 500/4500. */
++
++    /* FIXME: missing cleanup.. is this really required? */
++    /* release_conflicting_client_connections(c); */
++#endif
+ }
+ 
+ /* Derive a template connection from a group connection and target.
+@@ -1573,6 +1621,12 @@
+     d->log_file = NULL;
+     d->log_file_err = FALSE;
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Note: just paranoia, these should always be zero in connection which we are instantiating from. */
++    d->negotiated_natt = 0;
++    d->udp_remote_port = 0;
++    d->udp_remote_port_used_for_sa_setup = 0;
++#endif
+     connect_to_host_pair(d);
+ 
+     return d;
+@@ -2132,8 +2186,13 @@
+ 	    else
+ #endif
+ 	    {
++#if 1 /* l2tp-workaround patch */
++		ipsecdoi_initiate(whackfd, c, c->policy, 1
++				  , SOS_NOBODY, importance, FALSE);
++#else
+ 		ipsecdoi_initiate(whackfd, c, c->policy, 1
+ 				  , SOS_NOBODY, importance);
++#endif
+ 		whackfd = NULL_FD;	/* protect from close */
+ 	    }
+ 	}
+@@ -2627,8 +2686,13 @@
+ 	    (void) assign_hold(c, sr, b->transport_proto, &b->our_client, &b->peer_client);
+ 	}
+ #endif
++#if 1 /* l2tp-workaround patch */
++	ipsecdoi_initiate(b->whackfd, c, c->policy, 1
++			  , SOS_NOBODY, pcim_local_crypto, FALSE);
++#else
+ 	ipsecdoi_initiate(b->whackfd, c, c->policy, 1
+ 			  , SOS_NOBODY, pcim_local_crypto);
++#endif
+ 	b->whackfd = NULL_FD;	/* protect from close */
+     }
+     else
+@@ -3045,8 +3109,13 @@
+ 		    }
+ #endif
+ 		    c->gw_info->key->last_tried_time = now();
++#if 1 /* l2tp-workaround patch */
++		    ipsecdoi_initiate(b->whackfd, c, c->policy, 1
++				      , SOS_NOBODY, pcim_local_crypto, FALSE);
++#else
+ 		    ipsecdoi_initiate(b->whackfd, c, c->policy, 1
+ 				      , SOS_NOBODY, pcim_local_crypto);
++#endif
+ 		    b->whackfd = NULL_FD;	/* protect from close */
+ 		}
+ 	    }
+@@ -3329,6 +3398,113 @@
+ //}
+ #endif /* NEVER */
+ 
++#if 1 /* l2tp-workaround patch */
++/* release conflicting connections based on remote address and natt status */
++int
++release_old_connections_by_natt (const struct connection *c)
++{
++    struct connection *d;
++    int released;
++
++    released = 1;
++    while (released) {
++	released = 0;
++	for (d = c; d != NULL; d = d->hp_next) {
++	    if (d == c) continue;
++	    if (IS_INSTANCE(d) && (IS_NATT_DETECTED(d) != IS_NATT_DETECTED(c))) {
++		if (! IS_LIVE_INSTANCE(d)) {
++		    openswan_log ("l2tp-workaround: QI1: cannot remove old connection with same IP and different NAT-T status because it is a dead instance: 0x%p:%d vs. 0x%p:%d", d, IS_NATT_DETECTED(d), c, IS_NATT_DETECTED(c));
++		    return -1;
++
++		    /* NB: may leave some connections unreleased, but this is not a real problem */
++		}
++
++		openswan_log ("l2tp-workaround: QI1: releasing old connection from same IP and different NAT-T status: 0x%p:%d vs. 0x%p:%d", d, IS_NATT_DETECTED(d), c, IS_NATT_DETECTED(c));
++		release_connection(d, FALSE);
++		released = 1;
++		break;
++	    }
++	}
++    }
++    return 0;
++}
++
++/* release conflicting connections based on remote port and address */
++int
++release_old_connections_by_port (const struct connection *c)
++{
++    struct connection *d;
++    char b1[ADDRTOT_BUF],b2[ADDRTOT_BUF];
++
++    if (c == NULL) return -1;
++
++    openswan_log("l2tp-workaround: release conflicting connections when IPsec SA is installed for a new connection: %s", c->name);
++
++    for (d = connections; d != NULL; ) {
++	struct connection *next = d->ac_next;
++	struct connection *e;
++
++	if (c == d) {
++	    d = next;
++	    continue;
++	}
++
++	if (IS_TEMPLATE(d)) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore template connection");
++#endif
++	    d = next;
++	    continue;
++	}
++
++	if (!sameaddr(&c->spd.that.host_addr, &d->spd.that.host_addr)) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore by remote address");
++#endif
++	    d = next;
++	    continue;
++	}
++
++	if (c->udp_remote_port != d->udp_remote_port) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore by remote port: %d != %d", c->udp_remote_port, d->udp_remote_port);
++#endif
++	    d = next;
++	    continue;
++	}
++
++	/* This will fail: we do not know for sure the state of the dead connection and cannot be sure if we are able to
++	 * remove it without breaking something. We cannot also ignore it because it's ipsec policy/sa might still be in place.
++	 */
++	if (IS_DEAD_INSTANCE(d)) {
++	    openswan_log("l2tp-workaround: cannot remove a dead instance: %d", d->kind);
++	    return -1;
++
++	    /* NB: may leave some connections unreleased, but this is not a real problem */
++	}
++
++	if (! IS_LIVE_INSTANCE(d)) {
++	    openswan_log("l2tp-workaround: cannot remove a non-instance connection: %d", d->kind);
++	    return -1;
++
++	    /* NB: may leave some connections unreleased, but this is not a real problem */
++	}
++
++	openswan_log("l2tp-workaround: releasing connection: %s [%s:%d]", d->name, ip_str(&(d->spd.that.host_addr)), d->udp_remote_port);
++
++	/* Note: unroute_connection cannot unroute used connection, could maybe use sag_eroute
++	 * instead but seems like it is not needed.
++	 *
++	 * unroute_connection(d);
++	 * (void) sag_eroute(st, d->spd, ERO_DELETE, "delete");
++	 */
++	release_connection(d, FALSE);
++	d = next;
++    }
++    return 0;
++}
++#endif
++
+ /* an ISAKMP SA has been established.
+  * Note the serial number, and release any connections with
+  * the same peer ID but different peer IP address.
+@@ -3409,8 +3585,30 @@
+ 		    continue;
+ 		if (src->that.protocol != srd->that.protocol)
+ 		    continue;
++#if 1 /* l2tp-workaround patch */
++		/* Check real port (udp_remote_port) instead of host-port in case nat-t is detected. */
++
++		/* Note: this means the route_owner cannot be used reliably for "ip route" routing checks anymore
++		 * because the subnet is not the only factor here. This is not a problem because we do not use "ip route"
++		 * at all.
++		 */
++		{
++		    u_int16_t src_hisport = src->that.port;
++		    u_int16_t srd_hisport = srd->that.port;
++
++		    if (IS_RESPONDER(c) && IS_NATT_DETECTED(c)) {
++			src_hisport = c->udp_remote_port;
++		    }
++		    if (IS_RESPONDER(d) && IS_NATT_DETECTED(d)) {
++			srd_hisport = d->udp_remote_port;
++		    }
++		    if (src_hisport != srd_hisport)
++			continue;
++		}
++#else
+ 		if (src->that.port != srd->that.port)
+ 		    continue;
++#endif
+ 		passert(oriented(*d));
+ 		if (srd->routing > best_routing)
+ 		{
+@@ -3423,6 +3621,9 @@
+ 		    continue;
+ 		if (src->this.protocol != srd->this.protocol)
+ 		    continue;
++#if 1 /* l2tp-workaround patch */
++		/*  Local port is never faked, so it should never cause problems in comparison. */
++#endif
+ 		if (src->this.port != srd->this.port)
+ 		    continue;
+ 		if (srd->routing > best_erouting)
+@@ -3855,6 +4056,10 @@
+ }
+ #endif
+ 
++#if 1 /* l2tp-workaround patch */
++/* This set of functions are no longer used: they were called redundantly in quickmode and in rcv_info. */
++#else
++
+ /* find_client_connection: given a connection suitable for ISAKMP
+  * (i.e. the hosts match), find a one suitable for IPSEC
+  * (i.e. with matching clients).
+@@ -4247,6 +4452,7 @@
+     )
+     return d;
+ }
++#endif
+ 
+ int
+ connection_compare(const struct connection *ca
+Index: openswan-2.4.0rc4.quilt/programs/pluto/ikev1_quick.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/ikev1_quick.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/ikev1_quick.c	2007-06-14 10:03:40.000000000 +0300
+@@ -764,7 +764,11 @@
+ 		      c->spd.this.protocol || c->spd.that.protocol ||
+ 		      c->spd.this.port || c->spd.that.port;
+ 
++#if 1 /* l2tp-workaround patch */
++    /* This looks like a no-op to me.. */
++#else
+     st->st_connection = c;
++#endif
+ 
+ #ifdef NAT_TRAVERSAL
+     if (isakmp_sa->hidden_variables.st_nat_traversal & NAT_T_DETECTED) {
+@@ -773,7 +777,11 @@
+        if (isakmp_sa->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME)) { 
+  	  has_client = TRUE;
+        }
++#if 1 /* l2tp-workaround patch */
++       /* Never change port in quick mode, only in mainmode I3! */
++#else
+        nat_traversal_change_port_lookup(NULL, st);
++#endif
+     }
+     else {
+        st->hidden_variables.st_nat_traversal = 0;
+@@ -879,9 +887,10 @@
+ 
+ #ifdef NAT_TRAVERSAL
+ #if 1 /* l2tp-workaround: initiator, may safely include nat-oa.
+-       * Does not work with racoon: we do not care. */
++       * Does not work with racoon: we do not care because we
++       * only initiate against ourselves. */
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)
+-	&& (!(st->st_policy & POLICY_TUNNEL))) {
++	&& (!(st->st_policy & POLICY_TUNNEL))) {  /* = transport */
+ 	if (!nat_traversal_add_natoa(ISAKMP_NEXT_NONE, &rbody, st)) {
+ 	    reset_cur_state();
+ 	    return STF_INTERNAL_ERROR;
+@@ -1054,14 +1063,127 @@
+ static stf_status quick_inI1_outR1_authtail(struct verify_oppo_bundle *b
+     , struct adns_continuation *ac);
+ 
++#if 1 /* l2tp-workaround patch */
++extern int release_old_connections_by_natt(const struct connection *c);
++extern int release_old_connections_by_port(const struct connection *c);
++extern void flush_pending_by_connection(struct connection *c);
++#endif
++
++#if 1 /* l2tp-workaround patch */
++void try_cleanup_states(struct msg_digest *md)
++{
++    struct connection *c = md->st->st_connection;
++
++    if (IS_LIVE_INSTANCE(c)) {
++	/* FIXME: it would be best to accept the current connection, but cleanup all the states which depend on
++	 * this connection: delete ipsec sa:s and policies, etc.
++	 */
++	flush_pending_by_connection(c);
++	release_connection(c, FALSE); /* Note: this also deletes the connection if it is type INSTANCE. */
++	md->st = NULL;
++    } else if (IS_DEAD_INSTANCE(c)) {
++	/* Cannot delete instance which is going away. We just hope that the peer will try again after this
++	 * current connection has disappeared. */
++	/* Note: this should not happen, because GOING_AWAY is only a temporary state when deleting states. */
++    } else {
++	/* The current connection is not an instance.. should not happen because in mainmode start we check that
++	 * the connection type. */
++    }
++}
++#endif
++
+ stf_status
+ quick_inI1_outR1(struct msg_digest *md)
+ {
+     const struct state *const p1st = md->st;
+     struct connection *c = p1st->st_connection;
++#if 1 /* l2tp-workaround patch */
++    struct connection *d;
++    int released;
++#endif
+     struct payload_digest *const id_pd = md->chain[ISAKMP_NEXT_ID];
+     struct verify_oppo_bundle b;
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Return value STF_IGNORE is ok here when the current connection/state gets deleted
++     * because the client is expected to retransmit and it then gets invalid cookie back.
++     */
++
++    if (c == NULL) {
++	openswan_log ("l2tp-workaround: refusing quickmode start because no connection selected.");
++	return STF_IGNORE;
++    }
++
++    /* Here we explicitly check that the (possibly new) quickmode uses correct port and does *not* try to portfloat here. */
++    if (md->sender_port != c->udp_remote_port) {
++	openswan_log ("l2tp-workaround: refusing quickmode start from port: %d, expecting messages from port: %d", md->sender_port, c->udp_remote_port);
++	return STF_IGNORE;
++    }
++
++    /* If no NAT-T, nuke our connection if existing permanent connection with same IP */
++    if (! (p1st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	for (d = c; d != NULL; d = d->hp_next) {
++	    if (d == c) continue;
++
++	    /* For VPNease, permanent connections are client-mode site-to-site connections.
++	     * Here we block an incoming non-NAT-T connection from IP X, port 500 (no NAT-T),
++	     * if existing permanent (site-to-site client) connection to IP X, ports 500 / 4500
++	     * exists.
++	     *
++	     * This might be tolerable in some contrived configurations, but we don't need to
++	     * support this case.  The incoming connection is thus simply dropped to ensure
++	     * that the site-to-site connection works correctly.
++	     *
++	     * FIXME: if site-to-site connection is added later, there may already be client
++	     * connections such as this one, causing trouble.  Currently this is not handled.
++	     * The fix would require changes to whack code where new client site-to-site
++	     * connections are added (e.g. when their IP address is resolved), or to main/quick
++	     * mode initiator code for permanent connections.
++	     */
++
++	    if (IS_PERMANENT(d)) {
++		openswan_log("l2tp-workaround: QI1: refusing non-natt connection because of permanent connection to the same IP");
++		try_cleanup_states(md); /* Make sure to delete the non-functional phase1 SA:s here. */
++		return STF_IGNORE; /* FIXME: the client has no idea what did go wrong.. and we have no means to tell it. */
++	    }
++	}
++    }
++
++    /* Check if the remote port has changed after SA setup and drop connection in that case.
++     *
++     * This may happen if the port match in mainmode start has matched for an old connection not done by this
++     * current peer and we thought it was a mainmode rekey.. duh. This can be seen for example when the same port was
++     * earlier used by a peer which did not perform porthop for some reason or when a new peer started mainmode from
++     * the same port which was used by an earlier peer after porthop.
++     *
++     * This may also mean that the peer tries to porthop again in mainmode rekey.. not nice.
++     */
++    if ((p1st->st_connection->udp_remote_port_used_for_sa_setup != 0) &&
++	(p1st->st_connection->udp_remote_port_used_for_sa_setup != p1st->st_connection->udp_remote_port)) {
++	openswan_log("l2tp-workaround: QI1: refusing connection because of inconsistent porthop: earlier port: %d, current: %d",
++		     p1st->st_connection->udp_remote_port_used_for_sa_setup, p1st->st_connection->udp_remote_port);
++	try_cleanup_states(md); /* Cleanup offending connection and states. */
++	return STF_IGNORE; /* Note: hope that client persists and tries phase1 again. */
++    }
++
++    /* Release conflicting old connections with same address but different natt status. */
++    if (release_old_connections_by_natt(c) < 0) {
++	/* VPNease: if we didn't force NAT-T for all site-to-site connections, we would have
++	 * to deal with the following corner case: a remote VPNease server acts as a site-to-site
++	 * client to our direction, but also NATs client remote access traffic to us.  In this
++	 * case, an incoming client connection would nuke the site-to-site connection and vice
++	 * versa.  But, because we force NAT-T regardless of actual packet NATting, both the
++	 * remote server and the clients will have NAT-T enabled, and will not conflict.
++	 */
++	return STF_IGNORE; /* Note: we hope that this situation do not persist and that the client retransmits. */
++    }
++
++    /* Release conflicting old connections with same port (and address) before SA setup. */
++    if (release_old_connections_by_port(c) < 0) {
++	return STF_IGNORE; /* Note: we hope that this situation do not persist and that the client retransmits. */
++    }
++#endif
++
+     /* HASH(1) in */
+     CHECK_QUICK_HASH(md
+ 	, quick_mode_hash12(hash_val, hash_pbs->roof, md->message_pbs.roof
+@@ -1118,6 +1240,38 @@
+ 	b.his.proto = b.my.proto = 0;
+ 	b.his.port = b.my.port = 0;
+     }
++
++#if 1 /* l2tp-workaround patch */
++    /* Force addresses and ports always in connections:
++     * Note that this does not have any real use other than sanitizing the internal state now that the
++     * later responder quick-mode processing does not search/switch connections anymore.
++     */
++
++    openswan_log ("l2tp-workaround: forcing addresses and ports in connection regardless of ID payloads.");
++
++    b.his.proto = 17;
++    b.his.port = 0; /* Note: this is not actually used for anything anymore, but setting it for sanity. */
++
++    happy(addrtosubnet(&c->spd.that.host_addr, &b.his.net));
++    b.his.net.addr.u.v4.sin_port = htons(b.his.port);
++
++    b.my.proto = 17;
++    b.my.port = 1701;
++
++    happy(addrtosubnet(&c->spd.this.host_addr, &b.my.net));
++    b.my.net.addr.u.v4.sin_port = htons(b.my.port);
++
++    {
++	char my[SUBNETTOT_BUF],his[SUBNETTOT_BUF];
++	subnettot(&b.his.net, 0, his, sizeof(his));
++	subnettot(&b.my.net,  0, my, sizeof(my));
++	openswan_log ("l2tp-workaround: peer: net: %s, proto: %d, port: %d",
++		      his, b.his.proto, b.his.port);
++	openswan_log ("l2tp-workaround: host: net: %s, proto: %d, port: %d",
++		      my, b.my.proto, b.my.port);
++    }
++#endif
++
+     b.step = vos_start;
+     b.md = md;
+     b.new_iv_len = p1st->st_new_iv_len;
+@@ -1541,6 +1695,17 @@
+      * a suitable connection (our current one only matches for hosts).
+      */
+     {
++#if 1 /* l2tp-workaround patch */
++	/* This whole matching here is quite pointless: the state is matched based on cookies and the state must have
++	 * a connection which is the right one for us.
++	 * The only thing we should do here is to check if the received (and possibly tweaked) id information matches
++	 * the address/port information in our current connection.
++	 */
++	/* Note: address/port in id information (b) is already set earlier to mach the ones in connection. And port
++	 * in md is checked to match tha one in connection, too. */
++
++	struct connection *p = c;
++#else
+ 	struct connection *p = find_client_connection(c
+ 	    , our_net, his_net, b->my.proto, b->my.port, b->his.proto, b->his.port);
+ 
+@@ -1679,7 +1844,17 @@
+ #endif
+ 	    c = p;
+ 	}
++#endif
+ 	/* fill in the client's true ip address/subnet */
++#if 1 /* l2tp-workaround patch */
++	/* It seems like the has_client_wildcard is never true for us: only when using --clientwithin option.
++	 * It also seems like the whack never sets the has_port_wildcard (which might be the real reason why
++	 * the client subnet port never got updated in the original pluto code. Currently it is no longer
++	 * required because we use the port stored in the connection (udp_remote_port) when nat traversal is
++	 * detected.
++	 */
++	/* Disable dead code for sanity. */
++#else
+ 	if (p->spd.that.has_client_wildcard)
+ 	{
+ 	    p->spd.that.client = *his_net;
+@@ -1697,10 +1872,13 @@
+             p->spd.that.port = b->his.port;
+             p->spd.that.has_port_wildcard = FALSE;
+         }
+-
++#endif
+ 
+ 
+ #ifdef VIRTUAL_IP
++#if 1 /* l2tp-workaround patch */
++	/* Buggy? This seems like a broken-else-problem to me, fortunately it is not used by us: remove the dead code for sanity. */
++#else
+ 	else if (is_virtual_connection(c))
+ 	{
+ 	    c->spd.that.client = *his_net;
+@@ -1709,6 +1887,7 @@
+ 		c->spd.that.has_client = FALSE;
+ 	}
+ #endif
++#endif
+     }
+     passert((p1st->st_policy & POLICY_PFS)==0 || p1st->st_pfs_group != NULL );
+ 
+@@ -1726,6 +1905,9 @@
+ 	 * that authenticated the ISAKMP SA.  We only need it in this
+ 	 * routine, so we can "reach back" to p1st to get it.
+ 	 */
++#if 1 /* l2tp-workaround patch */
++	/* This is no longer required, because connection is not changed above. */
++#else
+ 	if (st->st_connection != c)
+ 	{
+ 	    struct connection *t = st->st_connection;
+@@ -1734,6 +1916,7 @@
+ 	    set_cur_connection(c);
+ 	    connection_discard(t);
+ 	}
++#endif
+ 
+ 	st->st_try = 0;	/* not our job to try again from start */
+ 
+@@ -1765,7 +1948,12 @@
+ #ifdef NAT_TRAVERSAL
+ 	if (p1st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) {
+ 	    st->hidden_variables.st_nat_traversal = p1st->hidden_variables.st_nat_traversal;
++
++#if 1 /* l2tp-workaround patch */
++	    /* The port change is not allowed in quickmode so this is no longer required (would be no-op if called) */
++#else
+ 	    nat_traversal_change_port_lookup(md, md->st);
++#endif
+ 	}
+ 	else {
+ 	    st->hidden_variables.st_nat_traversal = 0;
+Index: openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/ipsec_doi.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.c	2007-06-14 11:02:18.000000000 +0300
+@@ -893,11 +893,48 @@
+     pb_stream reply;	/* not actually a reply, but you know what I mean */
+     pb_stream rbody;
+ 
++    /* FIXME: here we could clean non-permanent connections from the
++     * known remote address, where client has no NAT traversal and/or
++     * port 500 or 4500.  These will clash with the newly initiated
++     * connection later, so we should just nuke them here.
++     *
++     * An alternative place for this cleanup could be in connections.c
++     * [see the end of the add_connection() for a note].
++     *
++     * This should fix the corner case where such connections exist,
++     * and a new permanent connection to the remote address is added
++     * later.  This corner case should be very rare so there is no
++     * fix at the moment.
++     */
++
+     /* set up new state */
+     st->st_connection = c;
+ 
+     set_state_ike_endpoints(st, c);
+ 
++#if 1 /* l2tp-workaround patch */
++    /*
++     * Mainmode rekey handling.
++     */
++    if (predecessor == NULL) {
++	/* Initial connection: store used port to new state to
++	 * initialize it. This is not strictly required, unless the
++	 * already used connection is reinitiated by whack in which
++	 * case the remote port in connection must be reset.
++	 */
++	c->udp_remote_port = st->st_remoteport;
++    } else {
++	/* Rekey: use previously set local and remote ports and the
++	 * interface from earlier state. Note that the interface in
++	 * connection (which is set to the new state initially) is
++	 * never porthopped so it cannot be used here.
++	 */
++	st->st_remoteport = predecessor->st_remoteport;
++	st->st_localport = predecessor->st_localport;
++	st->st_interface = predecessor->st_interface;
++    }
++#endif
++
+     set_cur_state(st);	/* we must reset before exit */
+     st->st_policy = policy & ~POLICY_IPSEC_MASK;
+     st->st_whack_sock = whack_sock;
+@@ -1036,14 +1073,47 @@
+     return STF_OK;
+ }
+ 
++#if 1 /* l2tp-workaround patch */
+ void
+ ipsecdoi_initiate(int whack_sock
+ 		  , struct connection *c
+ 		  , lset_t policy
+ 		  , unsigned long try
+ 		  , so_serial_t replacing
+-		  , enum crypto_importance importance)
++		  , enum crypto_importance importance
++		  , bool is_rekey)
++#else
++void
++ipsecdoi_initiate(int whack_sock
++		  , struct connection *c
++		  , lset_t policy
++		  , unsigned long try
++		  , so_serial_t replacing
++                  , enum crypto_importance importance)
++#endif
+ {
++#if 1 /* l2tp-workaround patch */
++    /* Finding phase1 state here will lead to a wrong decision at
++     * least in the following scenario: there exists a roadwarrior
++     * connection to our wildcard connection and its endpoint IP is
++     * the same which we are now initiating our connection. This leads
++     * to the situation where this connections phase1 SA is from the
++     * roadwarrior connection and the negotiation will fail. Because
++     * we never initiate connections wihtout deleting and adding them,
++     * an easy fix here is to skip finding the ISAKMP SA (we know
++     * there is none for this connection).
++     */
++
++    /*
++     * But, when rekeying phase1 or phase2 SA, we should try to find
++     * existing phase1 to avoid starting phase1 from scratch on every
++     * rekey.
++     */
++    struct state *st = NULL;
++    if (is_rekey) {
++	st = find_phase1_state(c, ISAKMP_SA_ESTABLISHED_STATES | PHASE1_INITIATOR_STATES);
++    }
++#else
+     /* If there's already an ISAKMP SA established, use that and
+      * go directly to Quick Mode.  We are even willing to use one
+      * that is still being negotiated, but only if we are the Initiator
+@@ -1053,6 +1123,7 @@
+      */
+     struct state *st = find_phase1_state(c
+ 	, ISAKMP_SA_ESTABLISHED_STATES | PHASE1_INITIATOR_STATES);
++#endif
+ 
+     if (st == NULL)
+     {
+@@ -1145,8 +1216,13 @@
+ 		policy |= POLICY_TUNNEL;
+ 	}
+ 	passert(HAS_IPSEC_POLICY(policy));
++#if 1 /* l2tp-workaround patch */
++	ipsecdoi_initiate(whack_sock, st->st_connection, policy, try
++			  , st->st_serialno, st->st_import, TRUE);
++#else
+ 	ipsecdoi_initiate(whack_sock, st->st_connection, policy, try
+ 			  , st->st_serialno, st->st_import);
++#endif
+     }
+ }
+ 
+@@ -1886,6 +1962,12 @@
+ 		     , enum_show(&ident_names, id->isaid_idtype), buf);
+     }
+ 
++#if 1 /* l2tp-workaround patch. */
++    /* Never switch connections, certificates not used. */
++    openswan_log("l2tp-workaround: do not switch connections based on id payload.");
++    return TRUE;
++#else
++
+      /* check for certificates */
+      decode_cert(md);
+ 
+@@ -1970,6 +2052,7 @@
+     }
+ 
+     return TRUE;
++#endif
+ }
+ 
+ /* State Transition Functions.
+@@ -2043,6 +2126,62 @@
+ 			     , &md->sender
+ 			     , md->sender_port);
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Check connection type and remote port of all returned host-pair connections and use the
++     * first matching. Discard found host-pair connections if no match found.
++     */
++
++#if L2TP_DEBUG
++    if (c != NULL) {
++	openswan_log("l2tp-debug: MI1: find connection returned: 0x%p", c);
++    }
++#endif
++    if (c != NULL) {
++	struct connection *found = NULL;
++	struct connection *d;
++
++	for (d = c; d != NULL; d = d->hp_next) {
++	    if (IS_TEMPLATE(d)) {
++		continue;
++	    }
++
++	    /* Note: we do not need a portcheck for permanent connections because we do not accept initiation or rekey from peer in this case. */
++	    if (IS_PERMANENT(d)) {
++		if ((md->sender_port == 500) || (md->sender_port == 4500)) {
++		    openswan_log("l2tp-workaround: MI1: discarded because the address and port match a permanent connection: 0x%p, %d", d, md->sender_port);
++		    return STF_IGNORE;
++		} else {
++		    /* Allow natted connection from the permanent connection's peer address. */
++		    continue;
++		}
++	    }
++
++	    if (d->udp_remote_port == md->sender_port) {
++		/* Dead state (GOING_AWAY) does not last, but is used only temporarily while deleting the connection/state.
++		 * So this check is not a problem. */
++		if (IS_DEAD_INSTANCE(d)) {
++		    openswan_log("l2tp-workaround: MI1: discarded because remote port matches existing dead connection instance: 0x%p, %d", d, d->udp_remote_port);
++		    return STF_IGNORE;
++		}
++
++		if (IS_LIVE_INSTANCE(d)) {
++		    if (found == NULL) {
++			openswan_log("l2tp-debug: MI1: based on remote port using existing connection: 0x%p, %d", d, d->udp_remote_port);
++			found = d;
++		    } else {
++			openswan_log("l2tp-workaround: MI1: matches more than one existing live connection instance: using the first one (0x%p) and ignoring the later: 0x%p, port: %d", found, d, d->udp_remote_port);
++		    }
++		    continue;
++		}
++
++		/* Should not happen. */
++		openswan_log("l2tp-workaround: MI1: discarded because remote port matches existing connection of unknown kind %d: 0x%p, %d", d->kind, d, d->udp_remote_port);
++		return STF_IGNORE;
++	    }
++	}
++	c = found;
++    }
++#endif
+     if (c == NULL)
+     {
+ 	/* See if a wildcarded connection can be found.
+@@ -2116,6 +2255,12 @@
+ #endif
+ 	    c = rw_instantiate(c, &md->sender
+ 			       , NULL, NULL);
++#if 1 /* l2tp-workaround patch */
++	    /* Store peer remote port in connection.
++	     */
++	    c->udp_remote_port = md->sender_port;
++	    openswan_log("l2tp-workaround: instantiated new connection 0x%p, with remote port: %d", c, c->udp_remote_port);
++#endif
+ 	}
+     }
+ 
+@@ -2477,6 +2622,36 @@
+     reset_cur_state();
+ }
+ 
++#if 1 /* l2tp-workaround patch */
++
++    /* This is a helper used for detecting NAT-T changes in MM I2.
++     * See below where this is called. */
++
++extern void try_cleanup_states(struct msg_digest *md);
++
++struct rv {
++    struct state *st;
++    struct state *orig;
++};
++
++static void
++check_natt_state(struct state *st, void *data)
++{
++    struct rv *d = (struct rv*)data;
++
++    if (d == NULL) return;
++    if ((d->st == NULL) || (st == NULL)) return;
++    if ((d->st->st_connection == NULL) || (st->st_connection == NULL)) return;
++
++    if (d->st->st_connection == st->st_connection) {
++	if ((d->st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) != (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	    /* same connection but different nat-t status */
++	    d->orig = st;
++	}
++    }
++}
++#endif
++
+ stf_status
+ main_inI2_outR2(struct msg_digest *md)
+ {
+@@ -2514,6 +2689,45 @@
+     if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_KA) {
+        nat_traversal_new_ka_event();
+     }
++#if 1 /* l2tp-workaround patch */
++    /* Check that the natt status has not changed if this mainmode was treated as rekey (existing phase1/2 sa)
++     */
++
++    /* Check that the connection natt status has not changed: new state has different natt status than the old state(s).
++     * Note: all the phase1 and phase2 states for the same connection should always have the same natt state and if this
++     * is violated then it must mean that we mistaked the new incoming mainmode as a mainmode rekey for this connection.
++     */
++    {
++	struct rv ret;
++
++	ret.st = st;
++	ret.orig = NULL;
++
++	for_each_state((void*)check_natt_state, &ret);
++
++	if (ret.orig != NULL) {
++	    openswan_log("l2tp-workaround: MI2: refusing connection because of changed natt status.");
++
++	    /* Restore natt status so that policy/sa removal is possible based on connection alone. */
++	    st->st_connection->negotiated_natt = ret.orig->hidden_variables.st_nat_traversal;
++
++	    try_cleanup_states(md); /* Cleanup the offending old connection. */
++	    return STF_IGNORE;
++
++	    /* Note: we hope that client retransmits and tries again from scratch after timeout.
++	     * It does not matter if we are committed at this point or not because the connection and state
++	     * are already gone and we no longer match for subsequent client messages for this exchange anyways.
++	     */
++
++	    /* There might be, in theory, multiple clashing states in the
++	     * connection.  It doesn't matter though, because we delete them
++	     * all above if even one clashing state is found.  The above restore
++	     * code assumes that the "clash" is unique for kernel state cleanup.
++	     * The assumption is correct but not obvious.
++	     */
++	}
++    }
++#endif
+ #endif
+ 
+     {
+@@ -2637,6 +2851,13 @@
+ 	return STF_INTERNAL_ERROR;
+ #endif
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Disabled certificate sending just to be sure that the find_host_connection
++     * is not called from here.
++     *
++     * We never use certificates and in addition to this change, we will also set
++     * nocrsend pluto option to ensure that no cert code is never used. */
++#else
+     /* CR out */
+     if (send_cr)
+     {
+@@ -2672,6 +2893,7 @@
+ 	    }
+ 	}
+     }
++#endif
+ 
+ #ifdef NAT_TRAVERSAL
+     if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATD) {
+@@ -2986,11 +3208,16 @@
+     size_t hash_len;
+     stf_status r = STF_OK;
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Ignore peer ID in main mode. */
++    openswan_log("l2tp-workaround: ignoring peer ID in main mode (MR3 and MI3).");
++#else
+     /* ID Payload in.
+      * Note: this may switch the connection being used!
+      */
+     if (!decode_peer_id(md, initiator, aggrmode, FALSE))
+ 	return STF_FAIL + INVALID_ID_INFORMATION;
++#endif
+ 
+     /* Hash the ID Payload.
+      * main_mode_hash requires idpl->cur to be at end of payload
+@@ -3232,6 +3459,13 @@
+ 	    return r;
+     }
+ 
++#if 1 /* l2tp-workaround patch */
++    /* This is the only place where the port change is allowed. */
++    if (nat_traversal_enabled && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	/* for responder, latch to new port */
++	nat_traversal_change_port_lookup(md, md->st);
++    }
++#endif
+     /* send certificate if we have one and auth is RSA */
+     mycert = st->st_connection->spd.this.cert;
+ 
+Index: openswan-2.4.0rc4.quilt/programs/pluto/kernel.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/kernel.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/kernel.c	2007-06-14 10:03:40.000000000 +0300
+@@ -1,4 +1,4 @@
+-/* routines that interface with the kernel's IPsec mechanism
++ /* routines that interface with the kernel's IPsec mechanism
+  * Copyright (C) 1997 Angelos D. Keromytis.
+  * Copyright (C) 1998-2002  D. Hugh Redelmeier.
+  *
+@@ -149,6 +149,9 @@
+ 
+ /* forward declaration */
+ static bool shunt_eroute(struct connection *c
++#if 1 /* l2tp-workaround patch */
++			 , struct state *st
++#endif
+                          , struct spd_route *sr
+                          , enum routing_t rt_kind
+                          , unsigned int op, const char *opname);
+@@ -620,6 +623,12 @@
+ bool
+ trap_connection(struct connection *c)
+ {
++#if 1 /* l2tp-workaround patch */
++    /* No need to modify sdp here because this function is not really called in our case.. */
++    /* Changed this to return false always because we do not want to use it at all.
++     * Need to fix all callers if really used from anywhere. Called only from group config which we do not use. */
++    return FALSE;
++#else
+     switch (could_route(c))
+     {
+     case route_impossible:
+@@ -641,11 +650,16 @@
+     }
+ 
+     return FALSE;
++#endif
+ }
+ 
+ /* delete any eroute for a connection and unroute it if route isn't shared */
+ void
++#if 1 /* l2tp-workaround patch */
++unroute_connection(struct connection *c, struct state *st)
++#else
+ unroute_connection(struct connection *c)
++#endif
+ {
+     struct spd_route *sr;
+     enum routing_t cr;
+@@ -659,8 +673,12 @@
+             /* cannot handle a live one */
+             passert(sr->routing != RT_ROUTED_TUNNEL);
+ #ifdef KLIPS
++#if 1 /* l2tp-workaround patch */
++            shunt_eroute(c, st, sr, RT_UNROUTED, ERO_DELETE, "delete");
++#else
+             shunt_eroute(c, sr, RT_UNROUTED, ERO_DELETE, "delete");
+ #endif
++#endif
+         }
+ 
+         sr->routing = RT_UNROUTED;  /* do now so route_owner won't find us */
+@@ -1134,9 +1152,32 @@
+         }
+     }
+ 
++#if 1 /* l2tp-workaround patch */
++    {
++	int res;
++	struct connection *c = st->st_connection;
++	u_int16_t sr_orig_port = portof(&sr->that.client.addr); /* Network byte-order */
++
++	openswan_log("l2tp-workaround: sag_eroute: responder: %d, natt detected: %d", IS_RESPONDER(c), (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED));
++	if (IS_RESPONDER(c) && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	    openswan_log("l2tp-workaround: sag_eroute: faking remote client subnet port: %d -> %d", ntohs(sr_orig_port), c->udp_remote_port_used_for_sa_setup);
++	    setportof(htons(c->udp_remote_port_used_for_sa_setup), &sr->that.client.addr);
++	}
++
++	res = eroute_connection(sr, inner_spi, inner_proto, inner_satype, proto_info + i, op, opname);
++
++	/* Restore original port in selector */
++	if (IS_RESPONDER(c) && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	    setportof(sr_orig_port, &sr->that.client.addr);
++	    openswan_log("l2tp-workaround: sag_eroute: restored remote client subnet port: %d", ntohs(sr_orig_port));
++	}
++	return res;
++    }
++#else
+     return eroute_connection(sr
+         , inner_spi, inner_proto, inner_satype, proto_info + i
+         , op, opname);
++#endif
+ }
+ 
+ /* compute a (host-order!) SPI to implement the policy in connection c */
+@@ -1174,6 +1215,10 @@
+  */
+ static bool
+ shunt_eroute(struct connection *c
++#if 1 /* l2tp-workaround patch */
++	     /* Include state to be able to detect natt status directly from state. */
++	     , struct state *st
++#endif
+              , struct spd_route *sr
+              , enum routing_t rt_kind
+              , unsigned int op, const char *opname)
+@@ -1187,6 +1232,19 @@
+     ipsec_spi_t spi = shunt_policy_spi(c, rt_kind == RT_ROUTED_PROSPECTIVE);
+     bool ok;
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Modify spd_route to include remote udp port if we are responder and nat-traversal is detected. */
++    bool natt_detected;
++
++    if (st != NULL) {
++	/* To enable deleting states in connection whose natt status is changed. */
++	natt_detected = (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED);
++    } else {
++	openswan_log("l2tp-workaround: no state in shunt_eroute, using connection to detect natt status");
++	natt_detected = IS_NATT_DETECTED(c);
++    }
++#endif
++
+     if (spi == 0)
+     {
+         /* we're supposed to end up with no eroute: rejig op and opname */
+@@ -1239,14 +1297,31 @@
+         if (ue != NULL)
+         {
+             esr->routing = RT_ROUTED_PROSPECTIVE;
++#if 1 /* l2tp-workaround patch */
++	    openswan_log("l2tp-workarond: warning: restoring eclipsed route!");
++            return shunt_eroute(ue, st, esr
++                                , RT_ROUTED_PROSPECTIVE, ERO_REPLACE, "restoring eclipsed");
++#else
+             return shunt_eroute(ue, esr
+                                 , RT_ROUTED_PROSPECTIVE, ERO_REPLACE, "restoring eclipsed");
++#endif
+         }
+     }
+ 
+     ok = TRUE;
+     if (kernel_ops->inbound_eroute)
+     {
++#if 1 /* l2tp-workaround patch */
++	/* Use real perceived udp remote port from connection in ipsec policy if we are responder and nat-t is detected. */
++	/* Note: in host byteorder just like c->udp_remote_port_used_for_sa_setup. Ports in ip_subnet and ip_address are in network byteorder. */
++	u_int16_t that_client_orig_port = portof(&c->spd.that.client.addr); /* Network byte-order */
++
++	openswan_log("l2tp-workaround: shunt_eroute (inbound): responder: %d, natt detected: %d", IS_RESPONDER(c), natt_detected);
++	if (IS_RESPONDER(c) && natt_detected) {
++	    openswan_log("l2tp-workaround: shunt_eroute (inbound): faking remote client subnet port: %d -> %d", that_client_orig_port, c->udp_remote_port_used_for_sa_setup);
++	    setportof (htons(c->udp_remote_port_used_for_sa_setup), &c->spd.that.client.addr);
++	}
++#endif
+         ok = raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
+                         , &c->spd.this.host_addr, &c->spd.this.client
+                         , htonl(spi)
+@@ -1256,9 +1331,38 @@
+                         , 0      /* use lifetime */
+                         , op | (SADB_X_SAFLAGS_INFLOW << ERO_FLAG_SHIFT)
+                         , opname);
++#if 1 /* l2tp-workaround patch */
++	/* Restore the original port */
++	if (IS_RESPONDER(c) && natt_detected) {
++	    setportof (that_client_orig_port, &c->spd.that.client.addr);
++	    openswan_log("l2tp-workaround: shunt_eroute (inbound): restored remote client subnet port: %d", ntohs(that_client_orig_port));
++	}
++#endif
++    }
++#if 1 /* l2tp-workaround patch */
++    {
++	int res;
++	u_int16_t sr_orig_port = portof(&sr->that.client.addr); /* Network byte-order */
++
++	openswan_log("l2tp-workaround: shunt_eroute: responder: %d, natt detected: %d", IS_RESPONDER(c), natt_detected);
++	if (IS_RESPONDER(c) && natt_detected) {
++	    openswan_log("l2tp-workaround: shunt_eroute: faking remote client subnet port: %d -> %d", ntohs(sr_orig_port), c->udp_remote_port_used_for_sa_setup);
++	    setportof(htons(c->udp_remote_port_used_for_sa_setup), &sr->that.client.addr);
++	}
++
++	res = eroute_connection(sr, htonl(spi), SA_INT, SADB_X_SATYPE_INT
++				, null_proto_info, op, opname) && ok;
++	/* Restore original port in selector */
++	if (IS_RESPONDER(c) && natt_detected) {
++	    setportof(sr_orig_port, &sr->that.client.addr);
++	    openswan_log("l2tp-workaround: shunt_eroute: restored remote client subnet port: %d", ntohs(sr_orig_port));
++	}
++	return res;
+     }
++#else
+     return eroute_connection(sr, htonl(spi), SA_INT, SADB_X_SATYPE_INT
+         , null_proto_info, op, opname) && ok;
++#endif
+ }
+ 
+ 
+@@ -1618,6 +1722,11 @@
+     src.maskbits = 0;
+     dst.maskbits = 0;
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Note: the src.add and dst.addr below include the port selector, but
++     * it is ignored by kernel and thus does not matter if it is right or not.
++     */
++#endif
+     if (inbound)
+     {
+         src.addr = c->spd.that.host_addr;
+@@ -2000,6 +2109,19 @@
+          * Note reversed ends.
+          * Not much to be done on failure.
+          */
++#if 1 /* l2tp-workaround patch */
++	/* Use real perceived udp remote port from connection in ipsec policy if we are responder and nat-t is detected. */
++
++	/* Note: in host byteorder just like c->udp_remote_port_used_for_sa_setup. Ports in ip_subnet and ip_address are in network byteorder. */
++	u_int16_t that_client_orig_port = ntohs(portof(&c->spd.that.client.addr));
++
++	openswan_log("l2tp-workaround: setup_half_ipsec_sa: responder: %d, natt detected: %d", IS_RESPONDER(c),  (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED));
++	if (IS_RESPONDER(c) && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	    openswan_log("l2tp-workaround: setup_half_ipsec_sa: faking remote client subnet port: %d -> %d", that_client_orig_port, c->udp_remote_port_used_for_sa_setup);
++	    setportof (htons(c->udp_remote_port_used_for_sa_setup), &c->spd.that.client.addr);
++	}
++#endif
++
+         if (inbound && (c->policy & POLICY_DISABLEARRIVALCHECK) == 0)
+         {
+             struct pfkey_proto_info proto_info[4];
+@@ -2080,6 +2202,13 @@
+                               , ERO_ADD_INBOUND, "add inbound");
+ #endif /* 1 */
+         }
++#if 1 /* l2tp-workaround patch */
++	/* Restore the original port in client subnet just in case. */
++	if (IS_RESPONDER(c) && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	    setportof (htons(that_client_orig_port), &c->spd.that.client.addr);
++	    openswan_log("l2tp-workaround: setup_half_ipsec_sa: restored remote client subnet port: %d", that_client_orig_port);
++	}
++#endif
+     }
+ 
+     /* If there are multiple SPIs, group them. */
+@@ -2158,6 +2287,17 @@
+     if (kernel_ops->inbound_eroute && inbound
+         && c->spd.eroute_owner == SOS_NOBODY)
+     {
++#if 1 /* l2tp-workaround patch */
++	/* Use real perceived udp remote port from connection in ipsec policy if we are responder and nat-t is detected. */
++	/* Note: in host byteorder just like c->udp_remote_port_used_for_sa_setup. Ports in ip_subnet and ip_address are in network byteorder. */
++	u_int16_t that_client_orig_port = ntohs(portof(&c->spd.that.client.addr));
++
++	openswan_log("l2tp-workaround: teardown_half_ipsec_sa: responder: %d, natt detected: %d", IS_RESPONDER(c), (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED));
++	if (IS_RESPONDER(c) && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	    openswan_log("l2tp-workaround: teardown_half_ipsec_sa: faking remote client subnet port: %d -> %d", that_client_orig_port, c->udp_remote_port_used_for_sa_setup);
++	    setportof (htons(c->udp_remote_port_used_for_sa_setup), &c->spd.that.client.addr);
++	}
++#endif
+         (void) raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
+                           , &c->spd.this.host_addr, &c->spd.this.client
+                           , 256, IPSEC_PROTO_ANY
+@@ -2165,6 +2305,13 @@
+                           , SADB_SATYPE_UNSPEC
+                           , null_proto_info, 0
+                           , ERO_DEL_INBOUND, "delete inbound");
++#if 1 /* l2tp-workaround patch */
++	/* Restore the original port in client subnet just in case. */
++	if (IS_RESPONDER(c) && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)) {
++	    setportof (htons(that_client_orig_port), &c->spd.that.client.addr);
++	    openswan_log("l2tp-workaround: teardown_half_ipsec_sa: restored remote client subnet port: %d", that_client_orig_port);
++	}
++#endif
+     }
+ 
+     if (!kernel_ops->grp_sa)
+@@ -2438,8 +2585,13 @@
+ 
+         /* if no state provided, then install a shunt for later */
+         if (st == NULL)
++#if 1 /* l2tp-workaround patch */
++            eroute_installed = shunt_eroute(c, NULL, sr, RT_ROUTED_PROSPECTIVE
++                                            , ERO_REPLACE, "replace");
++#else
+             eroute_installed = shunt_eroute(c, sr, RT_ROUTED_PROSPECTIVE
+                                             , ERO_REPLACE, "replace");
++#endif
+         else
+             eroute_installed = sag_eroute(st, sr, ERO_REPLACE, "replace");
+ 
+@@ -2463,8 +2615,13 @@
+ 
+         /* if no state provided, then install a shunt for later */
+         if (st == NULL)
++#if 1 /* l2tp-workaround patch */
++            eroute_installed = shunt_eroute(c, NULL, sr, RT_ROUTED_PROSPECTIVE
++                                            , ERO_ADD, "add");
++#else
+             eroute_installed = shunt_eroute(c, sr, RT_ROUTED_PROSPECTIVE
+                                             , ERO_ADD, "add");
++#endif
+         else
+             eroute_installed = sag_eroute(st, sr, ERO_ADD, "add");
+     }
+@@ -2629,8 +2786,13 @@
+                 if (esr->eroute_owner == SOS_NOBODY)
+                 {
+                     /* note: normal or eclipse case */
++#if 1 /* l2tp-workaround patch */
++                    (void) shunt_eroute(ero, NULL, esr
++                                        , esr->routing, ERO_REPLACE, "restore");
++#else
+                     (void) shunt_eroute(ero, esr
+                                         , esr->routing, ERO_REPLACE, "restore");
++#endif
+                 }
+                 else
+                 {
+@@ -2649,10 +2811,17 @@
+             else
+             {
+                 /* there was no previous eroute: delete whatever we installed */
++#if 1 /* l2tp-workaround patch */
++                if (st == NULL) {
++                    (void) shunt_eroute(c, NULL, sr
++                                        , sr->routing, ERO_DELETE, "delete");
++		} else
++#else
+                 if (st == NULL)
+                     (void) shunt_eroute(c, sr
+                                         , sr->routing, ERO_DELETE, "delete");
+                 else
++#endif
+                     (void) sag_eroute(st, sr
+                                       , ERO_DELETE, "delete");
+             }
+@@ -2676,6 +2845,11 @@
+                              , inbound_also?
+                              "inbound and outbound" : "outbound only"));
+ 
++#if 1 /* l2tp-workaround patch */
++    /* Update connection-specific remote udp port used for sa setup. */
++    st->st_connection->udp_remote_port_used_for_sa_setup = st->st_connection->udp_remote_port;
++#endif
++
+     switch (could_route(st->st_connection))
+     {
+     case route_easy:
+@@ -2788,11 +2962,19 @@
+                      * setting will convince unroute_connection to delete it.
+                      * unroute_connection would be upset if c->routing == RT_ROUTED_TUNNEL
+                      */
++#if 1 /* l2tp-workaround patch */
++                    unroute_connection(c, st);
++#else
+                     unroute_connection(c);
++#endif
+                 }
+                 else
+                 {
++#if 1 /* l2tp-workaround patch */
++                    (void) shunt_eroute(c, st, sr, sr->routing, ERO_REPLACE, "replace with shunt");
++#else
+                     (void) shunt_eroute(c, sr, sr->routing, ERO_REPLACE, "replace with shunt");
++#endif
+                 }
+             }
+         }
+@@ -2811,6 +2993,10 @@
+     DBG(DBG_CONTROL, DBG_log("if I knew how, I'd eroute() and teardown_ipsec_sa()"));
+ #endif /* !KLIPS */
+ }
++
++#if 1 /* l2tp-workaround patch */
++/* Never update ipsec sa based on changed nat-t binding. */
++#else
+ #ifdef NAT_TRAVERSAL
+ #ifdef KLIPS
+ static bool update_nat_t_ipsec_esp_sa (struct state *st, bool inbound)
+@@ -2873,6 +3059,7 @@
+ #endif /* !KLIPS */
+ }
+ #endif
++#endif
+ 
+ /* Check if there was traffic on given SA during the last idle_max
+  * seconds. If TRUE, the SA was idle and DPD exchange should be performed.
+Index: openswan-2.4.0rc4.quilt/programs/pluto/nat_traversal.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/nat_traversal.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/nat_traversal.c	2007-06-14 10:03:40.000000000 +0300
+@@ -237,6 +237,10 @@
+ 	     p != NULL;
+ 	     p = p->next, i++);
+ 
++#if 1 /* l2tp-workaround patch */
++	/* Initialize nat-t detection state in connection. */
++	st->st_connection->negotiated_natt = 0;
++#endif
+ 	/**
+ 	 * We need at least 2 NAT-D (1 for us, many for peer)
+ 	 */
+@@ -330,6 +334,10 @@
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_ME);
+ #endif
+ 	}
++#if 1 /* l2tp-workaround patch */
++	/* Update nat-t detection state in connection. */
++	st->st_connection->negotiated_natt = st->hidden_variables.st_nat_traversal;
++#endif
+ }
+ 
+ bool nat_traversal_add_natd(u_int8_t np, pb_stream *outs,
+@@ -515,16 +523,14 @@
+ 
+ #if 1 /* l2tp-workaround: add two nat-oa payloads instead of one when using
+        * rfc nat-t and peer did actually use two payloads.
+-       * FIXME: use nat-oa payload count from peer message.
+-       * FIXME: only works as responder, initiator needs different handling */
++       *
++       * FIXME: as a responder we could decide based on sender's NAT-OA behavior
++       * whether to send NAT-OA payloads or not.  Currently this function is
++       * "stateless" with respect to received NAT-OA payloads.
++       */
+ bool nat_traversal_add_natoa(u_int8_t np, pb_stream *outs,
+ 	struct state *st)
+ {
+-	struct isakmp_nat_oa natoa;
+-	pb_stream pbs;
+-	unsigned char ip_val[sizeof(struct in6_addr)];
+-	size_t ip_len = 0;
+-	ip_address *ip;
+ 	unsigned int nat_np;
+ 
+ 	if ((!st) || (!st->st_connection)) {
+@@ -533,15 +539,30 @@
+ 		return FALSE;
+ 	}
+ 
+-	/* Note: with other than rfc NAT-T values, we check if we are not
+-	 * behind nat, then prevent sending NAT-OA. */
+-	if (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) && !(st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME))) {
++	/*
++	 * Caller wants to add NAT-OA payloads allowed by NAT-T "mode" (RFC, non-RFC, etc);
++	 * the negotiated NAT-T mode has NAT-OA payloads but caller doesn't know whether they
++	 * are allowed in this particular situation or not.  Skip adding NAT-OA payloads if
++	 * adding them would cause trouble.
++	 *
++	 * RFC allows sending of NAT-OA payloads in any case.  Pre-RFC implementations don't
++	 * want to see NAT-OA payloads, unless they are needed (i.e. NAT detected).
++	 *
++	 * Mac OS X does not come here: it doesn't like NAT-OA payloads at all.
++	 */
++	
++	if (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) &&
++	    !(st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME))) {
++		/* not behind a NAT with a non-RFC NAT-T mode */
+ 		return TRUE;
+ 	}
+ 
+-	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES
+-		  ? ISAKMP_NEXT_NATOA_RFC : (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES ? ISAKMP_NEXT_NATOA_OSX : ISAKMP_NEXT_NATOA_DRAFTS));
++	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES ?
++		  ISAKMP_NEXT_NATOA_RFC :
++		  (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES ?
++		   ISAKMP_NEXT_NATOA_OSX : ISAKMP_NEXT_NATOA_DRAFTS));
+ 
++	/* with RFC we have two NAT-OAs, add first (remote NAT-OA) here if RFC */
+ 	if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) {
+ 		struct isakmp_nat_oa natoa;
+ 		pb_stream pbs;
+@@ -582,16 +603,24 @@
+ 		close_output_pbs(&pbs);
+ 	}
+ 
+-	ip = &(st->st_localaddr);
++	/* add local NAT-OA */
++	if (1) {
++		struct isakmp_nat_oa natoa;
++		pb_stream pbs;
++		unsigned char ip_val[sizeof(struct in6_addr)];
++		size_t ip_len = 0;
++		ip_address *ip;
+ 
+-	if (!out_modify_previous_np(nat_np, outs)) {
+-		return FALSE;
+-	}
++		ip = &(st->st_localaddr);
++		
++		if (!out_modify_previous_np(nat_np, outs)) {
++			return FALSE;
++		}
+ 
+-	memset(&natoa, 0, sizeof(natoa));
+-	natoa.isanoa_np = np;
++		memset(&natoa, 0, sizeof(natoa));
++		natoa.isanoa_np = np;
+ 
+-	switch (addrtypeof(ip)) {
++		switch (addrtypeof(ip)) {
+ 		case AF_INET:
+ 			ip_len = sizeof(ip->u.v4.sin_addr.s_addr);
+ 			memcpy(ip_val, &ip->u.v4.sin_addr.s_addr, ip_len);
+@@ -599,21 +628,23 @@
+ 			break;
+ 		default:
+ 			loglog(RC_LOG_SERIOUS, "NAT-Traversal: "
+-				"invalid addrtypeof()=%d", addrtypeof(ip));
++			       "invalid addrtypeof()=%d", addrtypeof(ip));
+ 			return FALSE;
+-	}
+-
+-	if (!out_struct(&natoa, &isakmp_nat_oa, outs, &pbs))
+-		return FALSE;
++		}
+ 
+-	if (!out_raw(ip_val, ip_len, &pbs, "NAT-OA"))
+-		return FALSE;
++		if (!out_struct(&natoa, &isakmp_nat_oa, outs, &pbs))
++			return FALSE;
++		
++		if (!out_raw(ip_val, ip_len, &pbs, "NAT-OA"))
++			return FALSE;
++		
++		DBG(DBG_NATT,
++		    DBG_dump("Local NAT-OA (S):", ip_val, ip_len);
++		    );
+ 
+-	DBG(DBG_NATT,
+-		DBG_dump("Local NAT-OA (S):", ip_val, ip_len);
+-	);
++		close_output_pbs(&pbs);
++	}
+ 
+-	close_output_pbs(&pbs);
+ 	return TRUE;
+ }
+ 
+@@ -849,6 +880,9 @@
+ 	     */
+ 	    st->st_remoteport = nfo->dport;
+ 
++#if 1 /* l2tp-workaround patch */
++	    /* Never update ipsec sa. */
++#else
+ 	    if (IS_IPSEC_SA_ESTABLISHED(st->st_state) ||
+ 		IS_ONLY_INBOUND_IPSEC_SA_ESTABLISHED(st->st_state)) {
+ 		if (!update_ipsec_sa(st)) {
+@@ -859,6 +893,7 @@
+ 		    st->st_remoteport = nfo->sport;
+ 		}
+ 	    }
++#endif
+ 	}
+ }
+ 
+@@ -902,7 +937,23 @@
+ 		return;
+ 	}
+ 
+-	if (md) {
++#if 1 /* l2tp-workaround patch */
++	openswan_log("l2tp-workaround: nat-t change port lookup called: md: %p, st->st_connection: %p", md, st->st_connection);
++
++	/* Update also remoteport in current connection. */
++	if ((md != NULL) && (st->st_connection != NULL)) {
++		openswan_log("l2tp-workaround: nat-t change port, responder: %d, initiator: %d, current port: %d", IS_RESPONDER(st->st_connection), IS_INITIATOR(st->st_connection), st->st_connection->udp_remote_port);
++
++		if (IS_RESPONDER(st->st_connection)) {  /* FIXME: could check state */
++			openswan_log("l2tp-workaround: nat-t change port, changing current connection udp_remote_port to: %d", md->sender_port);
++			st->st_connection->udp_remote_port = md->sender_port;
++		}
++	}
++#endif
++	if (md) {  /* NB: only non-null for responder */
++#if 1 /* l2tp-workaround patch */
++	  /* Note: Modifying client port is no longer done here. */
++#endif
+ 		/**
+ 		 * If source port has changed, update (including other
+ 		 * states and established kernel SA)
+@@ -936,7 +987,7 @@
+ 	     || (st->st_state == STATE_QUICK_I1))
+ 	    && (st->hidden_variables.st_nat_traversal & NAT_T_WITH_PORT_FLOATING)
+ 	    && (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED)
+-	    && (st->st_localport != NAT_T_IKE_FLOAT_PORT))
++	    && (st->st_localport != NAT_T_IKE_FLOAT_PORT))  /* last check: not hopped yet */
+ 	{
+ 	    DBG(DBG_NATT
+ 		, DBG_log("NAT-T: floating to port %d", NAT_T_IKE_FLOAT_PORT));
+@@ -944,12 +995,27 @@
+ 	    st->st_localport  = NAT_T_IKE_FLOAT_PORT;
+ 	    st->st_remoteport = NAT_T_IKE_FLOAT_PORT;
+ 	    
++#if 1 /* l2tp-workaround patch */
++	    /* Update also remoteport in current connection. */
++	    if (st->st_connection != NULL) {
++		    openswan_log("l2tp-workaround: nat-t change port, responder: %d, initiator: %d, current port: %d", IS_RESPONDER(st->st_connection), IS_INITIATOR(st->st_connection), st->st_connection->udp_remote_port);
++
++		    if (IS_INITIATOR(st->st_connection)) {
++			    openswan_log("l2tp-workaround: nat-t change port lookup, changing current connection udp_remote_port to: %d", NAT_T_IKE_FLOAT_PORT);
++			    st->st_connection->udp_remote_port = NAT_T_IKE_FLOAT_PORT;
++		    }
++	    }
++#endif
++#if 1 /* l2tp-workaround patch */
++	    /* Removed dead code. */
++#else
+ 	    /*
+ 	     * Also update pending connections or they will be deleted if
+ 	     * uniqueids option is set.
+ 	     * THIS does NOTHING as, both arguments are "st"!
+ 	     */
+ 	    update_pending(st, st);
++#endif
+ 	}
+ 
+ 	/**
+@@ -1009,6 +1075,9 @@
+ 	}
+ }
+ 
++#if 1 /* l2tp-workaround patch */
++/* Note: this is not called because we use netlink kernel interface instead of pfkey interface. */
++#endif
+ void process_pfkey_nat_t_new_mapping(
+ 	struct sadb_msg *msg __attribute__ ((unused)),
+ 	struct sadb_ext *extensions[SADB_EXT_MAX + 1])
+@@ -1063,7 +1132,7 @@
+ 		openswan_log("SADB_X_NAT_T_NEW_MAPPING message from KLIPS malformed: %s", ugh);
+ }
+ 
+-#endif
++#endif  /* NAT_TRAVERSAL */
+ 
+ /*
+  * $Log: nat_traversal.c,v $
+Index: openswan-2.4.0rc4.quilt/programs/pluto/connections.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/connections.h	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/connections.h	2007-06-14 10:03:40.000000000 +0300
+@@ -116,7 +116,7 @@
+ extern void fmt_policy_prio(policy_prio_t pp, char buf[POLICY_PRIO_BUF]);
+ 
+ #if 1 /* l2tp-workaround: check connection type. */
+-#define IS_RESPONDER(c) (((c) != NULL) && (((c)->kind == CK_TEMPLATE) || ((c)->kind == CK_INSTANCE)))
++#define IS_RESPONDER(c) (((c) != NULL) && (((c)->kind == CK_TEMPLATE) || ((c)->kind == CK_INSTANCE) || ((c)->kind == CK_GOING_AWAY)))
+ #define IS_INITIATOR(c) (((c) != NULL) && ((c)->kind == CK_PERMANENT))
+ #endif
+ 
+@@ -128,6 +128,17 @@
+ #include "certs.h"
+ #include "smartcard.h"
+ 
++#if 1 /* l2tp-workaround patch */
++/* Check if the connection has NAT-T detected. */
++#define IS_NATT_DETECTED(c) (((c) != NULL) && ((c)->negotiated_natt & NAT_T_DETECTED))
++/* Helpers to check connection kind. */
++#define IS_PERMANENT(c) (((c) != NULL) && ((c)->kind == CK_PERMANENT))
++#define IS_TEMPLATE(c) (((c) != NULL) && ((c)->kind == CK_TEMPLATE))
++#define IS_INSTANCE(c) (((c) != NULL) && (((c)->kind == CK_INSTANCE) || ((c)->kind == CK_GOING_AWAY)))
++#define IS_LIVE_INSTANCE(c) (((c) != NULL) && ((c)->kind == CK_INSTANCE))
++#define IS_DEAD_INSTANCE(c) (((c) != NULL) && ((c)->kind == CK_GOING_AWAY))
++#endif
++
+ #ifdef VIRTUAL_IP
+ struct virtual_t;
+ #endif
+@@ -244,6 +255,12 @@
+ #ifdef XAUTH_USEPAM
+     pam_handle_t  *pamh;		/*  PAM handle for that connection  */
+ #endif
++
++#if 1 /* l2tp-workaround patch */
++    int negotiated_natt;
++    u_int16_t udp_remote_port;
++    u_int16_t udp_remote_port_used_for_sa_setup;
++#endif
+ };
+ 
+ #define oriented(c) ((c).interface != NULL)
+Index: openswan-2.4.0rc4.quilt/programs/pluto/demux.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/demux.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/demux.c	2007-06-14 10:03:40.000000000 +0300
+@@ -995,6 +995,10 @@
+ 		  , sockaddrof(&st->st_remoteaddr)
+ 		  , sockaddrlenof(&st->st_remoteaddr));
+ 
++    /*
++     *  FIXME: this debug block looks pretty dubious, at least
++     *  if DEBUG is not defined.
++     */
+ #ifdef DEBUG
+     if(DBGP(IMPAIR_JACOB_TWO_TWO)) {
+ 	/* sleep for half a second, and second another packet */
+@@ -2506,7 +2510,14 @@
+      * we can only be in calculating state if state is ignore,
+      * or suspended.
+      */
++#if 1 /* l2tp-workaround patch */
++    /* We may not have a state anymore of the result is STF_FAIL (in MI3) or STF_IGNORE (QI1)
++     * Note: The code below actually expects that the STF_FAIL is always STF_FAIL + reason.
++     */
++    passert(result == STF_IGNORE || result == STF_SUSPEND || result >= STF_FAIL || st->st_calculating==FALSE);
++#else
+     passert(result == STF_IGNORE || result == STF_SUSPEND || st->st_calculating==FALSE);
++#endif
+ 
+     switch (result)
+     {
+@@ -2567,7 +2578,24 @@
+ 
+ #ifdef NAT_TRAVERSAL
+ 		if (nat_traversal_enabled) {
++#if 1 /* l2tp-workaround patch */
++		    /*
++		     * Initiator NAT-T port float (500->500 => 4500->4500).
++		     *
++		     * This was previously done unconditionally here for all states when natt was
++		     * enabled.
++		     * Now we change ports only in mainmode 5th message (MAIN_I3) which
++		     * is done in ipsec_doi.c for responder and here for the initiator.
++		     * Note: that the natt port lookup function is multipurpose: used for updating
++		     * the port received in md as well as proactively changing the port when
++		     * acting as initiator.
++		     */
++		    if (IS_INITIATOR(st->st_connection) && (st->st_state == STATE_MAIN_I3)) {
++			nat_traversal_change_port_lookup(NULL, st);
++		    }
++#else
+ 		    nat_traversal_change_port_lookup(md, md->st);
++#endif
+ 		}
+ #endif
+ 
+@@ -3067,9 +3095,18 @@
+ 	    /* As it is, we act as if this message never happened:
+ 	     * whatever retrying was in place, remains in place.
+ 	     */
++#if 1 /* l2tp-workaround patch */
++	    /* We may not have a state object anymore. */
++	    if (st != NULL) {
++		whack_log(RC_NOTIFICATION + md->note
++			  , "%s: %s", enum_name(&state_names, st->st_state)
++			  , enum_name(&ipsec_notification_names, md->note));
++	    }
++#else
+ 	    whack_log(RC_NOTIFICATION + md->note
+ 		, "%s: %s", enum_name(&state_names, st->st_state)
+ 		, enum_name(&ipsec_notification_names, md->note));
++#endif
+ 
+ 	    if(md->note > 0) {
+ 		SEND_NOTIFICATION(md->note);
+Index: openswan-2.4.0rc4.quilt/programs/pluto/state.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/state.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/state.c	2007-06-14 10:03:40.000000000 +0300
+@@ -1191,8 +1191,27 @@
+ 			     , struct connection *c)
+ {
+     /* reset our choice of interface */
++#if 1 /* l2tp-workaround patch */
++    /* Note: this function is called only in initiator. */
++
++    /* Reset interface in connection only when not rekeying. We do
++     * this check for sanity: it seems to have little effect because
++     * c->interface is not updated in port-hop and should remain the
++     * same (port 500) even if reoriented here.
++     *
++     * The check for initial/rekey is not best possible: we should
++     * check based on mainmode predecessor, but this is enough for
++     * now.
++     */
++    if (c->udp_remote_port == 0) {
++	/* Initial connection, not rekey. */
++	c->interface = NULL;
++	orient(c);
++    }
++#else
+     c->interface = NULL;
+     orient(c);
++#endif
+ 
+     st->st_localaddr  = c->spd.this.host_addr;
+     st->st_localport  = c->spd.this.host_port;
+Index: openswan-2.4.0rc4.quilt/programs/pluto/rcv_info.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/rcv_info.c	2007-05-22 14:49:27.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/rcv_info.c	2007-06-14 10:03:40.000000000 +0300
+@@ -51,6 +51,11 @@
+ #include "openswan/ipsec_policy.h"
+ #include "rcv_info.h"
+ 
++/* l2tp-workaround patch */
++/* We should never come here from server.c because IPSECPOLICY is not defined.
++ * Might as well disable the code in that case.. */
++#ifdef IPSECPOLICY
++
+ /* global */
+ int info_fd = -1;
+ 
+@@ -315,3 +320,6 @@
+ 	/* for now, close the socket */
+ 	close(infofd);
+ }
++
++/* l2tp-workaround patch */
++#endif /* IPSECPOLICY */
+Index: openswan-2.4.0rc4.quilt/programs/pluto/timer.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/timer.c	2007-06-14 10:03:40.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/timer.c	2007-06-14 10:03:40.000000000 +0300
+@@ -233,8 +233,12 @@
+ 
+ #ifdef KLIPS
+ 	case EVENT_SHUNT_SCAN:
++#if 1 /* l2tp-workaround patch */
++	    /* Never use proc to find lost acquire messages: never initiate on demand. */
++#else
+ 	    passert(st == NULL);
+ 	    scan_proc_shunts();
++#endif
+ 	    break;
+ #endif
+ 
+Index: openswan-2.4.0rc4.quilt/programs/pluto/kernel_netlink.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/kernel_netlink.c	2007-06-14 10:03:39.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/kernel_netlink.c	2007-06-14 10:03:40.000000000 +0300
+@@ -875,6 +875,12 @@
+ 	char data[1024];
+     } rsp;
+ 
++#if 1 /* l2tp-workaround patch. */
++    /* This seems like a bad idea: never do anything if received from kernel. */
++    openswan_log("l2tp-workaround: netlink_policy_expire: skip.");
++    return;
++#endif
++
+     if (n->nlmsg_len < NLMSG_LENGTH(sizeof(*upe)))
+     {
+ 	openswan_log("netlink_policy_expire got message with length %lu < %lu bytes; ignore message"
+Index: openswan-2.4.0rc4.quilt/programs/pluto/foodgroups.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/foodgroups.c	2007-05-22 14:49:27.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/foodgroups.c	2007-06-14 10:03:40.000000000 +0300
+@@ -424,7 +424,11 @@
+ 	    if (ci != NULL)
+ 	    {
+ 		set_cur_connection(ci);
++#if 1 /* l2tp-workaround patch */
++		unroute_connection(ci, NULL);
++#else
+ 		unroute_connection(ci);
++#endif
+ 		set_cur_connection(c);
+ 	    }
+ 	}
+Index: openswan-2.4.0rc4.quilt/programs/pluto/rcv_whack.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/rcv_whack.c	2007-05-22 14:49:27.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/rcv_whack.c	2007-06-14 10:03:40.000000000 +0300
+@@ -553,7 +553,11 @@
+ 	    else if (c->policy & POLICY_GROUP)
+ 		unroute_group(c);
+ 	    else
++#if 1 /* l2tp-workaround patch */
++		unroute_connection(c, NULL);
++#else
+ 		unroute_connection(c);
++#endif
+ 	    reset_cur_connection();
+ 	}
+     }
+Index: openswan-2.4.0rc4.quilt/programs/pluto/dpd.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/dpd.c	2007-05-22 14:49:27.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/dpd.c	2007-06-14 10:03:40.000000000 +0300
+@@ -556,7 +556,11 @@
+         /** dpdaction=clear - Wipe the SA & eroute - everything */
+     
+         openswan_log("DPD: Clearing Connection");
++#if 1 /* l2tp-workaround patch */
++        unroute_connection(c, NULL);
++#else
+         unroute_connection(c);
++#endif
+ 	delete_states_by_connection(c, TRUE);  
+ 	break;
+ 
+Index: openswan-2.4.0rc4.quilt/programs/pluto/kernel.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/kernel.h	2007-06-14 10:03:39.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/kernel.h	2007-06-14 10:03:40.000000000 +0300
+@@ -161,7 +161,11 @@
+ 
+ struct connection;	/* forward declaration of tag */
+ extern bool trap_connection(struct connection *c);
++#if 1 /* l2tp-workaround patch */
++extern void unroute_connection(struct connection *c, struct state *st);
++#else
+ extern void unroute_connection(struct connection *c);
++#endif
+ 
+ extern bool has_bare_hold(const ip_address *src, const ip_address *dst
+     , int transport_proto);
+Index: openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/ipsec_doi.h	2007-06-14 11:16:09.000000000 +0300
++++ openswan-2.4.0rc4.quilt/programs/pluto/ipsec_doi.h	2007-06-14 11:27:34.000000000 +0300
+@@ -16,10 +16,18 @@
+ 
+ extern void echo_hdr(struct msg_digest *md, bool enc, u_int8_t np);
+ 
++#if 1 /* l2tp-workaround patch */
++extern void ipsecdoi_initiate(int whack_sock, struct connection *c
++			      , lset_t policy, unsigned long try
++			      , so_serial_t replacing
++			      , enum crypto_importance importance
++			      , bool is_rekey);
++#else
+ extern void ipsecdoi_initiate(int whack_sock, struct connection *c
+ 			      , lset_t policy, unsigned long try
+ 			      , so_serial_t replacing
+ 			      , enum crypto_importance importance);
++#endif
+ 
+ extern void ipsecdoi_replace(struct state *st, unsigned long try);
+ 

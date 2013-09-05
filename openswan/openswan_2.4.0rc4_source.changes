@@ -1,0 +1,21 @@
+Format: 1.7
+Date: Sun,  8 Oct 2006 10:55:11 +0300
+Source: openswan
+Binary: openswan-modules-source kernel-patch-openswan openswan
+Architecture: source
+Version: 2.4.0rc4
+Distribution: unstable
+Urgency: low
+Maintainer: Rene Mayrhofer <rmayr@debian.org>
+Changed-By: root <root@dapper-builder-2>
+Description: 
+ kernel-patch-openswan - IPSEC kernel support for Openswan
+ openswan   - IPSEC utilities for Openswan
+ openswan-modules-source - IPSEC kernel modules source for Openswan
+Changes: 
+ openswan (2.4.0rc4) unstable; urgency=low
+ .
+   * new upstream version.
+Files: 
+ ba74ce6f3ee4f05dc4f7803ef394e20c 422 net optional openswan_2.4.0rc4.dsc
+ 94bc3e282ad95a192d05e979d33a8a1e 3536022 net optional openswan_2.4.0rc4.tar.gz

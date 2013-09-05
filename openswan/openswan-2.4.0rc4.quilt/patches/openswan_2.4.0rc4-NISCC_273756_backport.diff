@@ -1,0 +1,49 @@
+Index: openswan-2.4.0rc4.quilt/include/pluto_constants.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/include/pluto_constants.h	2006-12-03 15:53:21.000000000 +0200
++++ openswan-2.4.0rc4.quilt/include/pluto_constants.h	2006-12-03 15:53:31.000000000 +0200
+@@ -284,7 +284,13 @@
+ #define IS_PHASE1(s) (STATE_MAIN_R0 <= (s) && (s) <= STATE_AGGR_R2)
+ #define IS_PHASE15(s) (STATE_XAUTH_R0 <= (s) && (s) <= STATE_XAUTH_I1)
+ #define IS_QUICK(s) (STATE_QUICK_R0 <= (s) && (s) <= STATE_QUICK_R2)
+-#define IS_ISAKMP_ENCRYPTED(s)     (STATE_MAIN_R2 <= (s) && STATE_AGGR_R0!=(s) && STATE_AGGR_I1 != (s))
++/* l2tp-workaround: backported openswan-2.4.x fix for
++   "NISCC Vulnerability Advisory 273756/NISCC/ISAKMP" http://www.openswan.org/niscc2/
++   openswan CVS commit reference:
++   "Diff for /openswan-2/include/pluto_constants.h between version 1.33.2.2 and 1.33.2.3"
++   msg: "oulu c09 isakmp test case info-sa-notification-message-type-and-data  Ee-notify-msg-type, ee-string  306  4313  4618"
++*/
++#define IS_ISAKMP_ENCRYPTED(s)     (STATE_MAIN_R2 <= (s) && STATE_AGGR_R0!=(s) && STATE_AGGR_I1 != (s) && STATE_INFO != (s))
+ #define IS_ISAKMP_AUTHENTICATED(s) (STATE_MAIN_R3 <= (s))
+ #define IS_ISAKMP_SA_ESTABLISHED(s) ((s) == STATE_MAIN_R3 || (s) == STATE_MAIN_I4 \
+ 				  || (s) == STATE_AGGR_I2 || (s) == STATE_AGGR_R2 \
+Index: openswan-2.4.0rc4.quilt/programs/pluto/spdb_struct.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/spdb_struct.c	2006-12-03 15:53:21.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/spdb_struct.c	2006-12-03 15:53:31.000000000 +0200
+@@ -1011,10 +1011,22 @@
+ 		     * check if this keylen is compatible with 
+ 		     * specified alg_info_ike
+ 		     */
+-		    if (!ike_alg_enc_ok(ta.encrypt, val, c->alg_info_ike, &ugh)) {
+-			ugh = "peer proposed key_len not valid for encrypt algo setup specified";
++		    /* l2tp-workaround: backported a patch to prevent DoS attack.
++		       From: Diff for /openswan-2/programs/pluto/spdb_struct.c between version 1.19 and 1.20.
++		       Msg: Michael's short term fix for bug #486.
++		       NISCC Vulnerability Advisory 273756/NISCC/ISAKMP
++		       http://www.openswan.org/niscc2/
++		    */
++		    if(ta.encrypt == OAKLEY_3DES_CBC) {
++			ta.enckeylen = 24;
++		    } else if(ta.encrypt == OAKLEY_DES_CBC) {
++			ta.enckeylen = 8;
++		    } else {
++			if (!ike_alg_enc_ok(ta.encrypt, val, c->alg_info_ike, &ugh)) {
++			    ugh = "peer proposed key_len not valid for encrypt algo setup specified";
++			}
++			ta.enckeylen=val;
+ 		    }
+-		    ta.enckeylen=val;
+ 		    break;
+ #else
+ 		case OAKLEY_KEY_LENGTH | ISAKMP_ATTR_AF_TV:

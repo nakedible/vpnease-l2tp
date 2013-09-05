@@ -1,0 +1,8 @@
+debian/build/iptables_profectio/include/*.h usr/include
+debian/build/iptables_profectio/include/lib* usr/include
+debian/build/iptables_profectio/libiptc/*.a usr/lib
+debian/build/iptables_profectio/libipq/*.a usr/lib
+debian/build/iptables_profectio/*.a usr/lib
+debian/build/iptables_profectio/libipq/*.3 usr/share/man/man3
+debian/build/doc/netfilter-extensions-HOWTO* usr/share/doc/iptables-dev/html
+debian/build/doc/netfilter-hacking-HOWTO* usr/share/doc/iptables-dev/html

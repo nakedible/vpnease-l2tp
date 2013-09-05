@@ -1,0 +1,166 @@
+diff -ru ppp-2.4.4b1.orig/pppd/auth.c ppp-2.4.4b1/pppd/auth.c
+--- ppp-2.4.4b1.orig/pppd/auth.c	2005-08-28 08:22:48.000000000 +0300
++++ ppp-2.4.4b1/pppd/auth.c	2006-09-24 20:20:59.000000000 +0300
+@@ -195,6 +195,10 @@
+ 
+ int (*allowed_address_hook) __P((u_int32_t addr)) = NULL;
+ 
++/* Hook for a plugin to know authentication result for a peer or
++   NULL peername if peer not yet known. */
++void (*auth_result_peer) __P((bool success, char *username, int namelen)) = NULL;
++
+ /* A notifier for when the peer has authenticated itself,
+    and we are proceeding to the network phase. */
+ struct notifier *auth_up_notifier = NULL;
+@@ -900,13 +904,26 @@
+  * The peer has failed to authenticate himself using `protocol'.
+  */
+ void
+-auth_peer_fail(unit, protocol)
++auth_peer_fail(unit, protocol, username, namelen)
+     int unit, protocol;
++    char *username;
++    int namelen;
+ {
+     /*
+      * Authentication failure: take the link down
+      */
+     lcp_close(unit, "Authentication failed");
++    if (auth_result_peer) {
++	if (username != NULL && namelen != 0) {
++	    if (namelen > sizeof(peer_authname) - 1)
++		namelen = sizeof(peer_authname) - 1;
++	    BCOPY(username, peer_authname, namelen);
++	    peer_authname[namelen] = 0;
++	    auth_result_peer(0, peer_authname, namelen + 1);
++	} else {
++	    auth_result_peer(0, NULL, 0);
++	}
++    }
+     status = EXIT_PEER_AUTH_FAILED;
+ }
+ 
+@@ -965,8 +982,12 @@
+      * If there is no more authentication still to be done,
+      * proceed to the network (or callback) phase.
+      */
+-    if ((auth_pending[unit] &= ~bit) == 0)
++    if ((auth_pending[unit] &= ~bit) == 0) {
++	if (auth_result_peer) {
++	    auth_result_peer(1, peer_authname, namelen + 1);
++	}
+         network_phase(unit);
++    }
+ }
+ 
+ /*
+diff -ru ppp-2.4.4b1.orig/pppd/chap-new.c ppp-2.4.4b1/pppd/chap-new.c
+--- ppp-2.4.4b1.orig/pppd/chap-new.c	2005-07-13 13:41:58.000000000 +0300
++++ ppp-2.4.4b1/pppd/chap-new.c	2006-09-24 20:10:51.000000000 +0300
+@@ -260,7 +260,7 @@
+ 	} else if (ss->challenge_xmits >= chap_max_transmits) {
+ 		ss->flags &= ~CHALLENGE_VALID;
+ 		ss->flags |= AUTH_DONE | AUTH_FAILED;
+-		auth_peer_fail(0, PPP_CHAP);
++		auth_peer_fail(0, PPP_CHAP, NULL, 0);
+ 		return;
+ 	}
+ 
+@@ -367,7 +367,7 @@
+ 	if (ss->flags & CHALLENGE_VALID) {
+ 		ss->flags &= ~CHALLENGE_VALID;
+ 		if (ss->flags & AUTH_FAILED) {
+-			auth_peer_fail(0, PPP_CHAP);
++			auth_peer_fail(0, PPP_CHAP, rname, strlen(rname));
+ 		} else {
+ 			if ((ss->flags & AUTH_DONE) == 0)
+ 				auth_peer_success(0, PPP_CHAP,
+@@ -549,7 +549,7 @@
+ 	}
+ 	if (ss->flags & AUTH_STARTED) {
+ 		ss->flags = 0;
+-		auth_peer_fail(0, PPP_CHAP);
++		auth_peer_fail(0, PPP_CHAP, NULL, 0);
+ 	}
+ 	if ((cs->flags & (AUTH_STARTED|AUTH_DONE)) == AUTH_STARTED) {
+ 		cs->flags &= ~AUTH_STARTED;
+diff -ru ppp-2.4.4b1.orig/pppd/eap.c ppp-2.4.4b1/pppd/eap.c
+--- ppp-2.4.4b1.orig/pppd/eap.c	2004-11-10 00:39:25.000000000 +0200
++++ ppp-2.4.4b1/pppd/eap.c	2006-09-24 20:10:51.000000000 +0300
+@@ -279,7 +279,7 @@
+ 	output(esp->es_unit, outpacket_buf, EAP_HEADERLEN + PPP_HDRLEN);
+ 
+ 	esp->es_server.ea_state = eapBadAuth;
+-	auth_peer_fail(esp->es_unit, PPP_EAP);
++	auth_peer_fail(esp->es_unit, PPP_EAP, NULL, 0); /* XXX: where to get username? */
+ }
+ 
+ /*
+@@ -1030,7 +1030,7 @@
+ 	}
+ 	if (eap_server_active(esp)) {
+ 		error("EAP authentication of peer failed on Protocol-Reject");
+-		auth_peer_fail(unit, PPP_EAP);
++		auth_peer_fail(unit, PPP_EAP, NULL, 0);
+ 	}
+ 	eap_lowerdown(unit);
+ }
+diff -ru ppp-2.4.4b1.orig/pppd/pppd.h ppp-2.4.4b1/pppd/pppd.h
+--- ppp-2.4.4b1.orig/pppd/pppd.h	2005-08-26 02:59:34.000000000 +0300
++++ ppp-2.4.4b1/pppd/pppd.h	2006-09-24 20:10:51.000000000 +0300
+@@ -535,7 +535,7 @@
+ void np_up __P((int, int));	  /* a network protocol has come up */
+ void np_down __P((int, int));	  /* a network protocol has gone down */
+ void np_finished __P((int, int)); /* a network protocol no longer needs link */
+-void auth_peer_fail __P((int, int));
++void auth_peer_fail __P((int, int, char*, int));
+ 				/* peer failed to authenticate itself */
+ void auth_peer_success __P((int, int, int, char *, int));
+ 				/* peer successfully authenticated itself */
+@@ -558,6 +558,7 @@
+ int  bad_ip_adrs __P((u_int32_t));
+ 				/* check if IP address is unreasonable */
+ 
++
+ /* Procedures exported from demand.c */
+ void demand_conf __P((void));	/* config interface(s) for demand-dial */
+ void demand_block __P((void));	/* set all NPs to queue up packets */
+@@ -715,6 +716,8 @@
+ extern int (*chap_check_hook) __P((void));
+ extern int (*chap_passwd_hook) __P((char *user, char *passwd));
+ 
++extern void (*auth_result_peer) __P((bool success, char *username, int namelen));
++
+ /* Let a plugin snoop sent and received packets.  Useful for L2TP */
+ extern void (*snoop_recv_hook) __P((unsigned char *p, int len));
+ extern void (*snoop_send_hook) __P((unsigned char *p, int len));
+diff -ru ppp-2.4.4b1.orig/pppd/upap.c ppp-2.4.4b1/pppd/upap.c
+--- ppp-2.4.4b1.orig/pppd/upap.c	2005-07-13 13:41:58.000000000 +0300
++++ ppp-2.4.4b1/pppd/upap.c	2006-09-24 20:10:51.000000000 +0300
+@@ -230,7 +230,7 @@
+     if (u->us_serverstate != UPAPSS_LISTEN)
+ 	return;			/* huh?? */
+ 
+-    auth_peer_fail(u->us_unit, PPP_PAP);
++    auth_peer_fail(u->us_unit, PPP_PAP, NULL, 0);
+     u->us_serverstate = UPAPSS_BADAUTH;
+ }
+ 
+@@ -300,7 +300,7 @@
+     }
+     if (u->us_serverstate == UPAPSS_LISTEN) {
+ 	error("PAP authentication of peer failed (protocol-reject)");
+-	auth_peer_fail(unit, PPP_PAP);
++	auth_peer_fail(unit, PPP_PAP, NULL, 0);
+     }
+     upap_lowerdown(unit);
+ }
+@@ -454,7 +454,7 @@
+     } else {
+ 	u->us_serverstate = UPAPSS_BADAUTH;
+ 	warn("PAP peer authentication failed for %q", rhostname);
+-	auth_peer_fail(u->us_unit, PPP_PAP);
++	auth_peer_fail(u->us_unit, PPP_PAP, ruser, ruserlen);
+     }
+ 
+     if (u->us_reqtimeout > 0)

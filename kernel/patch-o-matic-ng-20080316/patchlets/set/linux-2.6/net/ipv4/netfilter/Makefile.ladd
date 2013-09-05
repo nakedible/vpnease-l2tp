@@ -1,0 +1,2 @@
+obj-$(CONFIG_IP_NF_MATCH_TTL) += ipt_ttl.o
+obj-$(CONFIG_IP_NF_MATCH_SET) += ipt_set.o

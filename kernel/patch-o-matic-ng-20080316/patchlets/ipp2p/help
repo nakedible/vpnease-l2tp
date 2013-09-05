@@ -1,0 +1,10 @@
+This option makes possible to match some P2P packets
+therefore helps controlling such traffic. Dropping all
+matches prohibits P2P networks. Combined with conntrack,
+CONNMARK and a packet scheduler it can be used for
+accounting or shaping of P2P traffic.
+
+Examples:
+iptables -A FORWARD -m ipp2p --edk --kazaa --bit -j DROP
+iptables -A FORWARD -p tcp -m ipp2p --ares -j DROP
+iptables -A FORWARD -p udp -m ipp2p --kazaa -j DROP

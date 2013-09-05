@@ -1,0 +1,99 @@
+body 
+{		
+	font: normal 10pt/1.5 serif;
+}
+
+html, body
+{
+	background: #ffffff;
+	color: #000000; 
+	margin: 0;
+}
+
+body {
+	margin: .5cm; 
+	margin-left: 1cm; 
+	padding: 0;
+}
+	
+
+
+/* expand */
+abbr:after, acronym:after
+{	
+	content: ' (' attr(title) ')'; 
+	border: none;
+}
+
+p {
+	font: 10pt/1.5 serif;
+}
+
+/* --------------------
+=headings
+---------------------*/
+
+h1, h2, h3, h4, h5, h6 
+{
+	font-weight: bold;
+}
+
+h1 {
+	font: bold 20pt Verdana, Helvetica, sans-serif; 
+}
+
+h2 {
+	font-size: 16pt;
+}
+
+h3 {
+	font-size: 14pt;
+}
+
+
+/* --------------------
+links
+--------------------- */
+
+a img { 
+	border-style: none; 
+} 
+
+a:link, a:visited, a:hover, a:active
+{
+	color: #33f;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+/* expand */
+/* FF layout problems
+a:after
+{	
+	color: #66f;
+	font-weight: normal;
+	text-decoration: none;
+	content: ' <' attr(href) '>';
+}
+*/
+
+/* --------------------
+dl
+--------------------- */
+
+dl {
+}
+
+dt {
+	color: #3333ff;
+}
+
+dd {
+	color: #000000;
+	margin-left: 3.0em;
+}
+
+#right-box1,
+#right-box2 {
+  display: none;
+}

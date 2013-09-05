@@ -1,0 +1,85 @@
+#!/usr/bin/make -f
+
+# Unpack the source and apply patches with either of
+# "make prep" or "debian/rules prep" in the top directory.
+
+# Change the kernel source/header and iptables source
+# versions in prep.sh in the top directory.
+
+# Custom build tips: Modify and repack iptables source
+# into upstream/. Account for patches/*, patch-o-matic,
+# and install directives in */debian/iptables*.install.
+# Alternatively, you can unpack and then modify sources
+# in debian/build/, but take note that the clean target
+# WILL definitely erase all of your work amd various 
+# build tools call the clean target by default.
+
+# source directory symlinks, see prep.sh
+IPTABLES = iptables_profectio
+KERNEL = kernel_profectio
+
+BUILD_DIR := $(CURDIR)/debian/build
+SRC_DIR := $(BUILD_DIR)/$(IPTABLES)
+STAMP_DIR := $(BUILD_DIR)/stamp
+
+MANDIR = MANDIR=/usr/share/man
+BINDIR = BINDIR=/sbin
+LIBDIR = LIBDIR=/lib
+DESTDIR := DESTDIR=$(CURDIR)/debian/iptables
+#KERNEL_DIR := KERNEL_DIR=$(BUILD_DIR)/$(KERNEL)
+KERNEL_DIR := KERNEL_DIR=/usr
+
+BUILD_VARS := $(LIBDIR) $(KERNEL_DIR)
+INSTALL_VARS := $(DESTDIR) $(MANDIR) $(LIBDIR) $(BINDIR) $(KERNEL_DIR)
+BUILD_TARGETS = all ip6tables-save ip6tables-restore
+
+prep: $(STAMP_DIR)/prep-stamp
+$(STAMP_DIR)/prep-stamp:
+	$(MAKE) prep
+	touch $@
+
+build: $(STAMP_DIR)/build-stamp
+$(STAMP_DIR)/build-stamp: prep
+	dh_testdir
+
+	$(MAKE) -C $(SRC_DIR) $(BUILD_TARGETS) $(BUILD_VARS)
+
+	cd $(SRC_DIR); ar rcs libiptables.a iptables.o
+	cd $(SRC_DIR); ar rcs libip6tables.a ip6tables.o
+
+	touch $@
+
+clean:
+	dh_testdir
+	rm -rf $(BUILD_DIR)
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+
+	$(MAKE) -C $(SRC_DIR) install $(INSTALL_VARS)
+	rm -rf $(SRC_DIR)/include/libipulog
+	install -m0644 -D $(CURDIR)/debian/iptables.lintian.override \
+	$(CURDIR)/debian/iptables/usr/share/lintian/overrides/iptables
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_install
+	dh_installdocs
+	dh_installexamples
+	dh_installchangelogs
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_shlibdeps -X.so
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: prep build clean binary-indep binary-arch binary install

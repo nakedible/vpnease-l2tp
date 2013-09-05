@@ -1,0 +1,116 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/spdb_struct.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/spdb_struct.c	2006-12-03 19:53:37.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/spdb_struct.c	2006-12-03 20:09:10.000000000 +0200
+@@ -339,6 +339,20 @@
+ 			    , tunnel_mode);
+ 			if (*spi_ptr == 0)
+ 			    return FALSE;
++
++#if 0 /* l2tp-workaround: this will not work because kernel
++       * rejects SAs with unknown SPIs (at least for SA update). */
++
++			/* Mark initiator SA:s with type and index.
++			 * Initiator => type is 1, index always zero.
++			 * 0x1YFFFFFF, where Y is index. */
++			{
++			    u_int32_t spi = *spi_ptr;
++			    spi = (spi & 0xFFFFFF0F) | 0x10;
++			    spi = (spi & 0xFFFFFFF0) | 0;
++			    *spi_ptr = spi;
++			}
++#endif
+ 			*spi_generated = TRUE;
+ 		    }
+ 		    if (!out_raw((u_char *)spi_ptr, IPSEC_DOI_SPI_SIZE
+@@ -853,6 +867,10 @@
+ 			}
+ 			else
+ 			{
++
++#if 1 /* l2tp-workaround: does this check do anything useful for us?
++       * Should not be harmful, though.. */
++#endif
+ 			    /* check that we can find a preshared secret */
+ 			    struct connection *c = st->st_connection;
+ 
+@@ -1671,7 +1689,12 @@
+     struct_desc *trans_desc,		/* descriptor for this transformation */
+     pb_stream *trans_pbs,		/* PBS for incoming transform */
+     struct spd_route *sr,		/* host details for the association */
++#if 0 /* l2tp-workaround. */
++    bool tunnel_mode,			/* true for inner most tunnel SA */
++    struct state *st)
++#else
+     bool tunnel_mode)			/* true for inner most tunnel SA */
++#endif
+ {
+     pb_stream r_proposal_pbs;
+     pb_stream r_trans_pbs;
+@@ -1703,6 +1726,27 @@
+ 		IPPROTO_AH : IPPROTO_ESP
+ 	    , sr
+ 	    , tunnel_mode);
++#if 0 /* l2tp-workaround: this will not work because kernel
++       * rejects SAs with unknown SPIs (at least for SA update). */
++
++	/* Mangle responder SPI.
++	 *
++	 * This is always wildcard connection:
++	 * => SPI is 0xXXXXXX0Y, where Y is preshared secret index.
++	 *
++	 * NB: ipsec_spi_t is u_int32_t
++	 * NB: if preshared secret index is >= 16, it is truncated. */
++	{
++	    u_int32_t index = st->st_pss_index;
++	    u_int32_t spi = pi->our_spi;
++
++	    if (index > 0xF) index = 0xF;
++
++	    spi = (spi & 0xFFFFFFF0) | index;
++	    spi = (spi & 0xFFFFFF0F) | 0;
++
++	    pi->our_spi = spi;
++#endif
+ 	/* XXX should check for errors */
+ 	out_raw((u_char *) &pi->our_spi, IPSEC_DOI_SPI_SIZE
+ 	    , &r_proposal_pbs, "SPI");
+@@ -2299,7 +2343,12 @@
+ 		    , &isakmp_ah_transform_desc
+ 		    , &ah_trans_pbs
+ 		    , &st->st_connection->spd
++#if 0 /* l2tp-workaround. */
++		    , tunnel_mode && inner_proto == IPPROTO_AH
++		    , st);
++#else
+ 		    , tunnel_mode && inner_proto == IPPROTO_AH);
++#endif
+ 
+ 	    /* ESP proposal */
+ 	    if (esp_seen)
+@@ -2311,7 +2360,12 @@
+ 		    , &isakmp_esp_transform_desc
+ 		    , &esp_trans_pbs
+ 		    , &st->st_connection->spd
++#if 0 /* l2tp-workaround. */
++		    , tunnel_mode && inner_proto == IPPROTO_ESP
++		    , st);
++#else
+ 		    , tunnel_mode && inner_proto == IPPROTO_ESP);
++#endif
+ 
+ 	    /* IPCOMP proposal */
+ 	    if (ipcomp_seen)
+@@ -2323,7 +2377,12 @@
+ 		    , &isakmp_ipcomp_transform_desc
+ 		    , &ipcomp_trans_pbs
+ 		    , &st->st_connection->spd
++#if 0 /* l2tp-workaround. */
++		    , tunnel_mode && inner_proto == IPPROTO_COMP
++		    , st);
++#else
+ 		    , tunnel_mode && inner_proto == IPPROTO_COMP);
++#endif
+ 
+ 	    close_output_pbs(r_sa_pbs);
+ 	}

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Activate License</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          Please use the form below to activate a <n:invisible n:macro="productname" />
+          floating installation license.  The license key will be activated with the
+          selected parameters within a few days.  You will receive an e-mail confirmation
+          when the license has been activated.
+        </p>
+
+        <n:invisible n:render="form activate" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

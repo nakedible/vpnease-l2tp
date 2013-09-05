@@ -1,0 +1,54 @@
+#!/bin/sh
+
+BROWSER=""
+NOBG=""
+for i in \
+    firefox \
+    iceweasel \
+    mozilla \
+    konqueror \
+    epiphany \
+    opera \
+    w3m \
+    lynx; do
+  TMP=`which $i`
+  if [ x"$BROWSER" == "x" -a x"$TMP" != "x" ]; then
+      BROWSER=$TMP
+      case $i in
+	  w3m) NOBG="yes" ;;
+	  lynx) NOBG="yes" ;;
+	  *) ;;
+      esac
+  fi
+done
+
+INDEXFILE=""
+for i in \
+    README.htm \
+    /cdrom/README.htm \
+    /cdrom0/README.htm \
+    /cdrom1/README.htm \
+    /media/cdrom/README.htm \
+    /media/cdrom0/README.htm \
+    /media/cdrom1/README.htm \
+    /mnt/cdrom/README.htm \
+    /mnt/cdrom0/README.htm \
+    /mnt/cdrom1/README.htm; do
+  if [ x"$INDEXFILE" == "x" -a -f $i ]; then
+      INDEXFILE=$i
+  fi
+done
+
+# echo "BROWSER=$BROWSER, INDEXFILE=$INDEXFILE, NOBG=$NOBG"
+
+if [ x"$BROWSER" != "x" -a x"$INDEXFILE" != "x" ]; then
+    if [ x"$NOBG" != "x" ]; then
+	$BROWSER $INDEXFILE
+    else
+	$BROWSER $INDEXFILE &
+    fi
+    exit 0
+fi
+
+# no browsers
+exit 1

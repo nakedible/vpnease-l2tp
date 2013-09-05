@@ -1,0 +1,2 @@
+# NAT helpers 
+obj-$(CONFIG_IP_NF_NAT_MMS) += ip_nat_mms.o

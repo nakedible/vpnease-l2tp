@@ -1,0 +1,319 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Server Clustering</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          To support high throughput and high availability installations,
+          <n:invisible n:macro="productname" /> supports a multi-server
+          installation where load is balanced across multiple servers,
+          and failed servers are not allocated any client traffic.
+        </p>
+
+        <p>
+          The <n:invisible n:macro="productname" /> load balancing and high availability
+          solution is very straightforward: you install multiple servers,
+          and configure a DNS server to map a certain domain name, such as
+          <strong class="cb-userinput">vpn.example.com</strong>, to the addresses
+          of the servers.  The DNS server then returns a random permutation
+          of the server addresses in response to a client query (performed when the client
+          attempts to establish a VPN connection), effectively sharing load randomly across servers.
+          Further, the DNS server actively monitors each of the <n:invisible n:macro="productname" />
+          servers and removes them from the DNS mapping if they are no longer responsive.
+        </p>
+
+        <p>
+          This DNS-based high availability configuration does not require any special
+          version of <n:invisible n:macro="productname" /> server, but the servers
+          involved in a "cluster" should be configured in a certain way which we'll
+          discuss in this document.  Furthermore, it is preferable that the DNS server
+          be able to monitor and update the DNS mappings dynamically.  Although you can
+          use any DNS server which provides a monitoring feature for the installation, we
+          provide an Ubuntu-based VMware appliance which provides a monitoring DNS
+          server based on the Bind DNS server.  The VMware appliance is provided free of charge
+          provided that you use it in conjunction with a <n:invisible n:macro="productname" />
+          server installation.
+        </p>
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Installation Steps</h1>
+        <p>
+          To install a high availability configuration, do as follows:
+        </p>
+
+        <ul>
+          <li>
+            Install two or more <n:invisible n:macro="productname" /> servers.
+            Note that each server needs a separate product license, and that each
+            product license should have VPN connection limit equal to
+            the total number of potential users.  Otherwise product license may 
+            restrict connections when one or more of the servers fail.
+          </li>
+          <li>
+            Configure the <n:invisible n:macro="productname" /> servers normally.
+            Because servers are used interchangeably, user authentication should be
+            done using the same RADIUS server(s) in all <n:invisible n:macro="productname" /> servers.
+            Client address ranges should not overlap, unless NAT is used for client traffic.
+            Pre-shared key must be the same for all servers.
+          </li>  
+          <li>
+            Test each server separately using a test client.
+          </li>
+          <li>
+            Delegate a certain subdomain from your main domain for VPN connections.
+            For instance, if you own the domain <strong class="cb-userinput">example.com</strong>,
+            you could delegate the subdomain <strong class="cb-userinput">vpn.example.com</strong>
+            for high availability VPN connections.  Delegation requires changes in your existing
+            DNS servers, in particular, new NS records.
+          </li>
+          <li>
+            Install two (or more) DNS servers for handling requests to the delegated subdomain.
+            We suggest that you use the <n:invisible n:macro="productname" /> Monitoring DNS Server,
+            but any DNS server capable of active monitoring and updates is acceptable.
+          </li>
+          <li>
+            Configure each DNS server identically, to monitor <n:invisible n:macro="productname" />
+            servers and map suitable domain names to server clusters.  You can define multiple
+            server clusters, e.g. <strong class="cb-userinput">customer1.vpn.example.com</strong>
+            could map to two servers dedicated for one customer while
+            <strong class="cb-userinput">customer2.vpn.example.com</strong> could map to three
+            servers dedicated to another customer.  You can also map the root of the delegated
+            subdomain, e.g. <strong class="cb-userinput">vpn.example.com</strong> to a server
+            cluster if there is a "primary" server cluster.
+            Make sure that the DNS servers return short Time-To-Live (TTL) values, preferably
+            60 seconds, for all entries related to server clusters.  This allows failover to
+            work quickly and makes load balancing more effective.
+          </li>
+          <li>
+            Test DNS resolution behavior manually both from the corporate intranet, and from
+            the external network.  Check DNS server reaction to an off-line server by turning
+            off one <n:invisible n:macro="productname" /> from each server cluster, and checking
+            that DNS mappings change accordingly with an acceptable delay.
+          </li> 
+        </ul>
+      </div> <!-- installing -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">How Reliable is Server Clustering?</h1>
+
+        <p>
+          The overall reliability of the <n:invisible n:macro="productname" /> high availability
+          configuration is based on full replication of all servers critical to establishing
+          a VPN connection: DNS servers, <n:invisible n:macro="productname" /> servers, and
+          RADIUS servers.  A failure of all but one server of each kind is non-fatal for VPN
+          connectivity.  This gives you a very high level of availability.
+        </p>
+        <p>
+          Further, each server is relatively independent, allowing servers to reside in different
+          geographic locations and use separate Internet providers for connectivity.  This allows,
+          for instance, you to increase reliability by:
+        </p>
+        <ul>
+          <li>
+            Placing monitoring DNS servers in separate locations and separate Internet connections
+            (you can host them on virtual servers if necessary).
+          </li>
+          <li>
+            Placing <n:invisible n:macro="productname" /> servers behind different Internet service
+            providers to minimize chance of simultaneous network disruption.  You can also place the
+            servers in separate IP networks to minimize reliance on Ethernet switches and other
+            supporting devices.
+          </li>
+          <li>
+            Placing the RADIUS servers in separate locations and separate Internet connections.
+            RADIUS servers can be placed in the Internet although this is not recommended due to
+            the low security level of the RADIUS protocol.  Instead, you can place the RADIUS
+            servers in different parts of your company intranet.
+          </li>
+        </ul>
+        <p>
+          Finally, you can minimize the impact of software failures by deploying each server with
+          a different version of the server software (software diversity).  This complicates
+          management slightly but minimizes the chance of simultaneous software failure or
+          simultaneously discovered fatal software weakness in all servers.
+        </p>
+
+        <div class="cb-note">
+          <p>
+            Overall reliability is dependent on measures at all levels of the enterprise, including
+            electricity and UPS arrangements, cabling and Ethernet switches, Internet connectivity,
+            and the actual servers involved in VPN connections.  <n:invisible n:macro="productname" />
+            high availability configuration addresses the reliability of the actual servers, but you
+            need to ensure the high availability of lower level critical resources to maximize overall
+            availability.
+          </p>
+        </div>
+      </div> <!-- how reliable -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Site-to-Site Connections and Clustering</h1>
+
+        <p>
+          Server clustering can only be used for site-to-site connections with limitations.
+          These limitations stem from the fact the multiple available routes for IP subnets
+          requires the use of active routing protocols (such as
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Routing_Information_Protocol">RIP</a> and
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Open_Shortest_Path_First">OSPF</a>)
+          for route failovers to work.  This complicates network design and implementation considerably.
+        </p>
+
+        <p>
+          However, you can configure the following useful site-to-site high availability scenario
+          without using routing protocols:
+        </p>
+        <ul>
+          <li>
+            Deploy the responding side of a site-to-site connection as a server cluster.
+            This is typically a desirable solution because "headquarters" should terminate
+            site-to-site connections from remote sites (a star topology).   The headquarters
+            site is thus more critical for site-to-site connectivity and benefits the most from
+            clustering.
+          </li>
+          <li>
+            Configure each server comprising the server cluster to use NAT for VPN traffic.  This
+            is necessary because otherwise the IP subnets of the remote sites would be reachable
+            through multiple routers from an IP routing standpoint, requiring the use of routing
+            protocols.  With NAT this IP routing problem is not encountered.  However, failover, while
+            allowing new connections to be formed, drops existing connections tied to the NAT
+            address of the failed server.  Further, this configuration restricts connectivity
+            between sites so that connections can only be initiated from remote sites.  This is
+            typically not a problem, because "headquarters" typically hosts any services needed by
+            the remote sites.
+          </li>
+          <li>
+            Do not deploy site-to-site initiators with clustering, and configure them normally.
+            Use the server cluster domain name (mapped to all active servers) as the remote
+            endpoint address.
+          </li>
+        </ul>
+      </div> <!-- site-to-site connections -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading"><n:invisible n:macro="productname" /> Monitoring DNS Server</h1>
+        <p>
+          <n:invisible n:macro="productname" /> monitoring DNS server is a VMware appliance
+          containing a DNS server suitable for <n:invisible n:macro="productname" /> server
+          clustering.  The server is based on Ubuntu 6.06 LTS with required packages (such as
+          the "bind" DNS server) preinstalled.  The appliance contains a monitoring daemon
+          which monitors <n:invisible n:macro="productname" /> servers using ICMP Echo Request
+          packets (pings), and reconfigures and restarts the "bind" DNS server according to
+          the status of the servers.  The monitoring daemon is configured using a simple XML
+          file specific to the monitoring daemon.
+        </p>
+
+        <p>
+          Two DNS servers are required in the <n:invisible n:macro="productname" /> high
+          availability configuration.  Without high availability of the DNS service, high
+          availability of the <n:invisible n:macro="productname" /> would be meaningless.
+          The servers must be installed and configured separately, but the servers must have
+          the same XML configuration file to avoid inconsistent DNS information.  The VMware
+          appliance does not automatically synchronize configuration between the two servers.
+        </p>
+
+        <p>
+          To install a <n:invisible n:macro="productname" /> monitoring DNS server, do as follows
+          (these steps must be done twice to install two servers):
+        </p>
+        <ul>
+          <li>
+            Determine basic DNS and networking information:
+            <ul>
+              <li>The name of the domain delegated to these servers (e.g. vpn.example.com);
+                  the delegation must be configured to the DNS servers above this domain
+                  (e.g. example.com DNS servers).</li>
+              <li>The IP addresses of the two DNS servers (which we will call ns1 and ns2).</li>
+              <li>The IP address of the host for which any mail for the delegated domain
+                  should be delivered; this will be used for the delegated domain's MX record,
+                  and is mandatory.</li>
+              <li>The IP addresses of <n:invisible n:macro="productname" /> servers participating
+                  in server clustering.  If you have multiple server clusters (i.e., logical
+                  servers comprising multiple <n:invisible n:macro="productname" /> servers),
+                  you need IP addresses of <n:invisible n:macro="productname" /> servers for
+                  each cluster, and need to select a name for each cluster.  The name will be
+                  used for naming subdomains (e.g. cluster1.vpn.example.com).</li>
+              <li>Note that you may have one (but only one) "unnamed" cluster.  This cluster
+                  will use the name of the delegated domain (e.g. vpn.example.com) directly.
+                  Other clusters must have a name (e.g. cluster1.vpn.example.com).  The
+                  "unnamed" cluster is convenient when there is a primary group of VPN users.</li>
+            </ul>
+          </li>
+          <li>
+            We will use the following example values below:
+            <ul>
+              <li>Delegated domain name: vpn.example.com</li>
+              <li>Name server addresses: ns1=172.16.0.1, ns2=172.16.0.2</li>
+              <li>Mail delivery address: mail=10.0.0.1</li>
+              <li>Clusters: cluster1=[192.168.0.1, 192.168.0.2], cluster2=[192.168.1.1, 192.168.1.2, 192.168.1.3]</li>
+              <li>NB: actual IP addresses would not typically be private addresses like these.  Private
+                  addresses can be used for both DNS servers and <n:invisible n:macro="productname" />
+                  servers if company firewall is configured with port forwarding.</li>
+            </ul>
+          </li>
+          <li>
+            Unpack the appliance (ZIP file; contact <a href="support-request.html">support</a> to get the appliance),
+            and rename the unpacked directory to something suitable (e.g. vpn-example-com-ns1).
+            Start VMware, open the virtual machine, and review virtual machine configuration settings.  Start the virtual machine.
+          </li>
+          <li>
+            Login as root.  The root password is always "changeme" in the appliance.  Once logged in, change the password immediately.
+          </li>
+          <li>
+            Open the <n:invisible n:macro="productname" /> monitoring DNS server XML configuration file, named
+            /etc/vpnease-dns-server.xml.  Edit the configuration settings to match the networking information
+            described above.  The configuration file has detailed configuration instructions in XML comments.
+          </li>
+          <li>
+            Restart the monitoring server by executing:
+            <pre>$ /etc/init.d/vpnease-dns-server restart</pre>
+          </li>
+          <li>
+            Test that the configured clusters respond appropriately:
+            <pre>$ dig @127.0.0.1 cluster1.vpn.example.com
+...
+
+$ dig @127.0.0.1 cluster2.vpn.example.com
+...</pre>
+            The output should contain A records for all currently responding <n:invisible n:macro="productname" />
+            servers belonging to the cluster.  If you repeat the request, the list of server addresses should
+            change in a "round robin" manner.
+          </li>
+          <li>
+            You should check that the DNS server reacts appropriately to a failed server by turning off a server,
+            and checking that the DNS resolution step (above) returns updated results within a minute or two.
+          </li>
+          <li>
+            Halt the virtual machine (using the "halt" command), review virtual machine settings, ensuring especially
+            that the virtual machine will automatically start when the host is rebooted.  Turn on the virtual machine
+            and ensure that it starts correctly without assistance.  (If possible, reboot the host and ensure that the
+            virtual machine starts correctly without assistance in this case too.)
+          </li>
+          <li>
+            Repeat these steps for the second name server.  It is preferable to copy the configuration XML file
+            using e.g. the "scp" command instead of typing the configuration in twice.
+          </li>
+          <li>
+            Turn off and make backups of the virtual machines by compressing the virtual machine directories using e.g. ZIP.
+          </li>
+        </ul>
+      </div> <!-- monitoring dns server -->
+
+    </n:invisible>
+  </body>
+</html>

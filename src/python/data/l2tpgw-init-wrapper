@@ -1,0 +1,159 @@
+#!/usr/bin/python
+
+import os, sys, time, textwrap, traceback
+
+from codebay.common import logger
+from codebay.l2tpserver import init
+
+# Note: copied from naftalin script.. cannot share.
+def _safe_runcmd(cmd):
+    rc = 1
+    try:
+        rc = os.system(cmd)
+    except:
+        pass
+    return rc
+
+# XXX: not working in all cases: arguments containing double quotes must be escaped
+# at least exception dumps contain problematic characters..
+def _usplash_write(arg):
+    try:
+        _safe_runcmd('/sbin/usplash_write "%s" 1> /dev/null 2> /dev/null' % str(arg))
+    except:
+        pass
+
+def _set_usplash_failure(msg):
+    _usplash_write('FAILURE %s' % str(msg))
+
+def _set_usplash_success(msg):
+    _usplash_write('SUCCESS %s' % str(msg))
+
+def _write_usplash_line(msg):
+    _usplash_write('TEXT %s' % str(msg))
+
+def _write_to_console_and_splash(msg):
+    print msg
+
+    for i in msg.split('\n'):
+        _write_usplash_line(i)
+
+def _set_usplash_timeout(timeout):
+    _usplash_write('TIMEOUT %s' % str(timeout))
+
+# Note: copied from naftalin script.. cannot share.
+def _do_reboot(wait, message):
+    _write_to_console_and_splash('Rebooting...')
+
+    _set_usplash_timeout(60*15)
+
+    r = range(int(wait))
+    r.reverse()
+    for count in r:
+        _set_usplash_failure(str(count))
+        print '.',
+        time.sleep(1)
+    print
+
+    # Note: some error scenarios (at least missing syslog) leave
+    # system in a state where clean shutdown is not possible at all
+    # and we need to use the force.
+    # XXX: better yet would be to force reboot immediately..
+    _safe_runcmd('/sbin/shutdown -r now %s' % message)
+    time.sleep(10*60)
+    _safe_runcmd('sync; sync; sync; sleep 30; /sbin/reboot -f')
+
+
+def _panic(_log, reason):
+    """Write an error to console and bootsplash and panic."""
+
+    exc = '<no exception information available>'
+    try:
+        exc = traceback.format_exc()
+    except:
+        pass
+
+    _set_usplash_failure('PANIC')
+    _safe_runcmd('/sbin/usplash_write QUIT')
+
+    try:
+        _log.error(exc, do_print=False)
+    except:
+        pass
+
+    # XXX: ensure screen is ok and writable, now just wait some time..
+    # - writing while usplash is still active results in disaster..
+    time.sleep(5)
+
+    msg = textwrap.dedent("""\
+
+    Exception:
+    %s
+
+    We are sorry to inform you that VPNease encountered an unrecoverable error.
+
+    If the problem persists after rebooting the machine, consult the FAQ at
+    http://www.vpnease.com/ for possible reasons and resolutions.
+
+    Press <Enter> to reboot, or turn off the power to shut down the computer.
+
+    """ % exc)
+
+    _write_to_console_and_splash(msg)
+
+    ans = sys.stdin.readline()
+    if ans.strip() == 'continue':
+        return
+
+    _do_reboot(10, 'Rebooting after a fatal error.')
+
+
+if __name__ == '__main__':
+    usage = 'Usage %s <preinit|postinit|webuistart|webuistop>' % sys.argv[0]
+
+    if len(sys.argv) < 2:
+        raise Exception(usage)
+
+    _log = logger.get('l2tpgw-init-wrapper')
+
+    if sys.argv[1] == 'preinit':
+        _set_usplash_timeout(10*60)
+
+        try:
+            init.preinit()
+        except:
+            _log.exception('preinit failed, panic')
+            _panic(_log, 'preinit failed')
+
+        _set_usplash_timeout(5*60)
+    elif sys.argv[1] == 'postinit':
+        _set_usplash_timeout(10*60)
+
+        try:
+            init.postinit()
+        except:
+            _log.exception('postinit failed, panic')
+            _panic(_log, 'postinit failed')
+
+        _set_usplash_timeout(5*60)
+    elif sys.argv[1] == 'webuistart':
+        _set_usplash_timeout(10*60)
+
+        try:
+            init.webuistart()
+        except:
+            _log.exception('webui start failed, panic')
+            _panic(_log, 'webui start failed')
+
+        _set_usplash_timeout(5*60)
+    elif sys.argv[1] == 'webuistop':
+        _set_usplash_timeout(10*60)
+
+        try:
+            init.webuistop()
+        except:
+            _log.exception('webui stop failed, ignoring')
+
+        _set_usplash_timeout(5*60)
+    else:
+        raise Exception(usage)
+

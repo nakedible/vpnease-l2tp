@@ -1,0 +1,7 @@
+#
+#  Radius dictionary for VPNease-specific attributes
+#
+
+VENDOR VPNease 26058
+
+ATTRIBUTE VE-User-Administrator-Privileges 1 integer VPNease

@@ -1,0 +1,166 @@
+F1Üdvözöljük a(z) Ubuntu telepítőben!Ez egy Ubuntu 6.06 live CD-ROM,
+készült ekkor: 20060806.1.
+
+SÚGÓ TARTALOM
+
+KULCS  TÉMA
+
+<F1F1>   Ez az oldal, a súgó tartalomjegyzéke.
+<F2F2>   A(z) Ubuntu futtatásának előfeltételei.
+<F3F3>   Különböző rendszerindítási módok a CD-ROM speciális
+használatához.
+<F4F4>   További rendszerindítási módok; helyreállítási mód.
+<F5F5>   Speciális rendszerindító paraméterek, áttekintés.
+<F6F6>   Speciális rendszerindító paraméterek különleges gépekhez.
+<F7F7>   Speciális rendszerindító paraméterek különböző lemezvezérlőkhöz.
+<F8F8>   Speciális paraméterek a rendszer betöltéséhez.
+<F9F9>   Hogyan kaphat segítséget.
+<F10F10>  Szerzői jogok és garancia.
+
+Nyomjon meg egy gombot F2-től F10-ig a részletekért, vagy Escape-et a
+kilépéshez.F2AZ UBUNTU TELEPÍTÉSÉNEK ELŐFELTÉTELEILegalább 128 megabájt RAM-mal kell rendelkeznie az Ubuntu live
+használatához.
+
+A live rendszer használatához nincs szükség szabad helyre az Ön
+merevlemezén. A létező lapozópartíciók azonban felhasználásra kerülnek, ha
+vannak.
+
+További információért keresse a FAQ-ot; ez a dokumentum elérhető az Ubuntu
+honlapjáról: http://www.ubuntu.com/
+
+Köszönjük, hogy az Ubuntut választotta!
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F3RENDSZERINDÍTÁSI MÓDOKElérhető rendszerindítási módok:
+
+live
+  Live rendszer indítása.
+memtest
+  Memóriateszt futtatása.
+
+A rendszerindítási módok használatához csak írja be valamelyiküket
+opcionális rendszerindító paraméterekkel bővítve. Például:
+
+  boot: live acpi=off
+
+Ha bizonytalan, használja az alapértelmezett rendszerindítási módot az ENTER
+leütésével.
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F4HELYREÁLLÍTÁSI MÓDHasználja az alábbi rendszerindítási módok valamelyikét egy létező
+telepítés helyreállításához
+
+rescue
+  Indítás helyreállítási módban.
+
+A rendszerindítási módok használatához csak írja be valamelyiküket
+opcionális rendszerindító paraméterekkel bővítve. Például:
+
+  boot: rescue acpi=off
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F5SPECIÁLIS RENDSZERINDÍTÁSI PARAMÉTEREK - ÁTTEKINTÉSNéhány rendszeren speciális paramétereket kell megadnia a boot: promptnál
+a rendszer indítása érdekében. Például a Linux lehetséges, hogy nem ismeri
+fel automatikusan a hardverét, ezért a felismeréshez saját kezűleg kell
+megadnia a helyét.
+
+A használható rendszerindítási paraméterekért nyomja meg ezt a gombot:
+
+<F6F6>   rendszerindítási paraméterek speciális gépekhez
+<F7F7>   rendszerindítási paraméterek különböző lemezvezérlőkhöz
+<F8F8>   a rendszerindító által megértett rendszerindító paraméterek
+
+A telepítő sok rendszermag-modult dinamikusan tölt be és ezekhez a
+modulokhoz nem lehet paramétereket megadni a parancssorból. Ha a modulok
+betöltésénél meg szeretné adni azok paramétereit, indítsa el a haladó módot
+(lásd <F3F3>).
+
+A rendszerindító sok rendszermag-modult dinamikusan tölt be és ezekhez a
+modulokhoz nem lehet paramétereket megadni a parancssorból.
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F6SPECIÁLIS RENDSZERINDÍTÓ PARAMÉTEREK - KÜLÖNBÖZŐ HARDVEREKAz alábbi rendszerindító paramétereket használhatja a boot: promptnál a
+rendszerindító móddal kombinálva (lásd <F3F3>>). Ha hexadecimális
+számokat használ, ne felejtse el a 0x előtagot (pl.: 0x300).
+
+HARDVER                                MEGADANDÓ PARAMÉTER
+
+IBM PS/1 vagy ValuePoint (IDE lemez)   hd=cylinders,heads,sectors
+Néhány IBM ThinkPad                    floppy=thinkpad
+IBM Pentium Microchannel               mca-pentium no-hlt
+I/O port régiók védelme                reserve=iobase,extent[,...]
+Hibás FPU megkerülése (régi gépeknél)  no387
+Képernyőmegjelenítési problémákkal küzdő laptopok
+                                       vga=771
+Ha induláskor lefagy a rendszer az "aec671x-detect.." üzenettel, próbálja a
+                                       gdth=disable:y
+Ha elakadásokat vagy egyéb hardverhibát észlel, tiltsa le a hibás APIC
+megszakítás átirányítást               noapic nolapic
+
+Például:
+
+  boot: live vga=771 noapic nolapic
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F7SPECIÁLIS RENDSZERINDÍTÓ PARAMÉTEREK - KÜLÖNBÖZŐ LEMEZMEGHAJTÓKAz alábbi rendszerindító paramétereket használhatja a boot: promptot a
+rendszerindító móddal kombinálva (lásd <F3F3>).
+
+HARDVER                      MEGADANDÓ PARAMÉTER
+
+Adaptec 151x, 152x           aha152x=iobase[,irq[,scsi-id[,reconnect]]]
+Adaptec 1542                 aha1542=iobase[,buson,busoff[,dmaspeed]]
+Adaptec 274x, 284x           aic7xxx=no_reset (engedélyezve, ha nem nulla)
+BusLogic SCSI Hosts          buslogic=iobase
+Bizonyos DELL gépek          aic7xxx=no_probe
+Future Domain TMC-8xx/950    tmc8xx=mem_base,irq
+NCR-alapú SCSI vezérlő       sym53c8xx=safe:y
+Pro Audio Spectrum           pas16=iobase,irq
+PS/2 ESDI (MCA)              ed=cyl,head,sec
+Seagate ST-0x                st0x=mem_base,irq
+Trantor T128                 t128=mem_base,irq
+
+Például:
+
+  boot: live sym53c8xx=safe
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F8SPECIÁLIS RENDSZERINDÍTÓ PARAMÉTEREK - TELEPÍTŐAz alábbi rendszerindító paramétereket használhatja a boot: promptot a
+rendszerindító móddal kombinálva (lásd <F3F3>). Ezek a paraméterek a
+rendszerindító működését szabályozzák.
+
+EREDMÉNY                                PARAMÉTER
+
+Bőbeszédű hibakeresés                   DEBCONF_DEBUG=5
+Rendszerindítási foylamat hibakeresése  BOOT_DEBUG=2|3
+A framebuffer letiltása                 debian-installer/framebuffer=false
+Ne keressen USB eszközöket              debian-installer/probe/usb=false
+Ne indítsa el a PCMCIA-t                hw-detect/start_pcmcia=false
+Statikus hálózati beállítás kényszerítése
+                                        netcfg/disable_dhcp=true
+Billentyűzetkiosztás megadása           bootkbd=hu
+ACPI letiltása a PCI térképekhez (hasznos néhány HP kiszolgálónál és
+Via-alapú gépnél)                       pci=noacpi
+
+Például:
+
+  boot: live debian-installer/framebuffer=false
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F9SEGÍTSÉG KÉRÉSEHa nem tudja elindítani az Ubuntut, ne essen kétségbe! Az Ubuntu csapata
+kész segíteni Önnek! Különösen érdekelnek bennünket a rendszerindítással
+kapcsolatos problémák, mivel ezek általában nem csak egy embernél okoznak
+gondot. Vagy hallottunk már erről a problémáról, és egy gyors javítással
+tudunk szolgálni, vagy pedig Önnel együtt megkeresnénk a forrását, így a
+következő felhasználó, akinél ilyen gond merül fel, profitálhat az Ön
+tapasztalataiból.
+
+További információért keresse a FAQ-ot; ez a dokumentum elérhető az Ubuntu
+honlapjáról: http://www.ubuntu.com/
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez.F10SZERZŐI JOGOK ÉS GARANCIAAz Ubuntu Copyright (C) 2004-2006 Canonical Ltd., és magába foglalja sok más
+eredeti szerző és közreműködő munkáját.
+
+Az Ubuntu rendszer szabadon terjeszthető. Indítás után a különböző
+csomagokra vonatkozó terjesztési feltételeket elolvashatja a megfelelő
+fájlban: /usr/share/doc/csomagneve/copyright.
+
+Az Ubuntura nincs SEMMIFÉLE GARANCIA az alkalmazható törvények által
+engedélyezett mértékig.
+
+A rendszer alapja a Debian. További információért a Debian projekttel
+kapcsolatban keresse fel a http://www.debian.org/ címet
+
+Nyomja meg az F1-et a súgó tartalmához, vagy Escape-et a kilépéshez. 

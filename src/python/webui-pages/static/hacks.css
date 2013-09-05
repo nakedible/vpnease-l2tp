@@ -1,0 +1,129 @@
+/*
+ *  VPNease temporary styling hacks CSS
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+body.submit-in-progress { 
+	cursor: wait;
+}
+
+.cb-section h2.step-heading {
+	font-size: 14px;
+	font-weight: bold;
+	color: #000000;
+	border-bottom: 1px solid #dddddd;
+	margin: 1.2em 0 0.8em 0;
+}
+
+div.login-error {
+	color: #ff0000;
+	font-weight: bold;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+#login-logo {
+	margin-left: 2em;
+}
+
+#current-time-heading {
+	float: right;
+	color: #888888;
+}
+
+#nav li.disabled {
+	display: block;
+	text-decoration: none;
+	border: none;	
+	padding-left: 9px;
+	padding-top: 4px;
+	padding-bottom: 5px;
+	color: #aaa;
+	font-size: 11px;
+	/* IE5 value */
+	width: 160px; 
+  	voice-family: "\"}\""; 
+	voice-family:inherit;
+	/* IE6 fix */
+	width: 151px; /* 162px-9px-2px */
+}
+
+#nav li.disabled.current {
+	color: #aaa;	
+	background: #fff;	
+}
+
+#table-status-service th,
+#table-status-hardware th {
+	width: 115px;
+}
+
+#table-status-service td,
+#table-status-hardware td {
+	margin-right: auto;
+}
+
+#table-status-network th,
+#table-status-license th {
+	width: 95px;
+}
+
+#table-status-network td,
+#table-status-license td {
+	margin-right: auto;
+}
+
+#login-form #username,
+#login-form #password {
+	width: 12em;
+}
+
+#config-ddns_group-ddns_provider option,
+#management-locale_group-timezone option,
+#management-reboot_group-reboot_day option,
+#management-reboot_group-reboot_time option { 
+	width: 19em;
+}
+
+#user-other-platform-list dt {
+	font-weight: bold;
+	margin-top: 0.5em;
+}
+
+#user-other-platform-list dd {
+	margin-left: 2em;
+	margin-bottom: 0.5em;
+}
+
+/* holly hack for forms; otherwise dynamic list editing and collapses fail to layout properly */
+/* Hides from IE5-mac \*/
+* html form fieldset.group {height: 1%;}
+* html form div.collapsible-group-summary {height: 1%;}
+* html form div.collapsible-group-contents {height: 1%;}
+/* End hide from IE5-mac */
+
+/* for generic hollyfixes */
+/* \*/
+* html .hollyfix { height: 1%;} }
+/* */
+
+/* specific hollyfixes, e.g. for creep bug */
+/* See: http://www.positioniseverything.net/explorer/creep.html */
+/* \*/
+* html .cb-note,
+* html .cb-tip,
+* html .cb-warning,
+* html .cb-error,
+* html .cb-fixme,
+* html .changelog .new-version,
+* html .changelog .current-version,
+* html .changelog .old-version
+{ height: 1%; }
+/* */
+
+/* makes livecd nicer to use */
+#livecd-content {
+  min-height: 350px;
+}

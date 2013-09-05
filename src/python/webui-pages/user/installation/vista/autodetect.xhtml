@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          To configure your VPN connection, select your operating system, click
+          <strong class="cb-guilabel">Autoconfigure</strong>, and run the downloaded
+          executable (.EXE) file.
+          If you wish to configure your VPN connection manually, click <strong class="cb-guilabel">Configure manually</strong>.
+        </p>
+
+        <p>
+          <n:invisible n:render="form autoconfigure" />
+        </p>
+        <n:invisible n:render="form_autoconfigure_onsubmit_adder" />
+
+        <n:invisible n:render="form user_information_form" />
+      </div>
+    </n:invisible>
+  </body>
+</html>
+

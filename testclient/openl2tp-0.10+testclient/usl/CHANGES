@@ -1,0 +1,21 @@
+# -*- indented-text -*- # 
+
+This file is a history of changes made in each USL release.
+
+----------------------------------------------------------------------------
+V0.2, 01-OCT-2004
+
+- Add usl_fd_poll_hook() to allow apps to do something on every poll
+  (every time select() returns in the main loop).
+
+- Update FSM state _before_ calling registered action routine when 
+  handling FSM events. This allows actions to generate other immediate
+  events.
+
+- Add usl_timer_expiry_set() to allow apps to change the expiry time
+  of a timer.
+
+----------------------------------------------------------------------------
+V0.1, 07-SEP-2004
+
+- Initial version released with OpenL2TP distribution.

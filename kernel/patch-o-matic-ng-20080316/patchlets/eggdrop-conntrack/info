@@ -1,0 +1,5 @@
+Title: eggdrop connection tracking helper
+Author: Magnus Sandin <magnus@sandin.cx>
+Status: Development
+Repository: extra
+Requires: linux < 2.6.0

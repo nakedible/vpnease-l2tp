@@ -1,0 +1,6 @@
+# connection tracking helpers
+
+# rtsp protocol support
+obj-$(CONFIG_IP_NF_RTSP) += ip_conntrack_rtsp.o
+obj-$(CONFIG_IP_NF_NAT_RTSP) += ip_nat_rtsp.o
+

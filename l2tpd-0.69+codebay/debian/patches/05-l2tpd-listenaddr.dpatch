@@ -1,0 +1,122 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 08-l2tpd-listenaddr.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/doc/l2tpd.conf.5
++++ l2tpd-0.69/doc/l2tpd.conf.5
+@@ -18,8 +18,13 @@
+ l2tp tunnels. The default is /etc/l2tpd/l2tp\-secrets.
+ 
+ .TP 
+-.B Port
+-Specify which udp port l2tpd should use. The default is 1701.
++.B listen-addr
++Specify the IP address of the interface that l2tpd should use.  By default,
++it listens on INADDR_ANY (0.0.0.0), meaning it listens on all interfaces.
++
++.TP 
++.B port
++Specify which UDP port l2tpd should use. The default is 1701.
+ 
+ .TP 
+ .B access control
+--- l2tpd-0.69.orig/file.h
++++ l2tpd-0.69/file.h
+@@ -130,6 +130,7 @@
+ 
+ struct global
+ {
++    unsigned int listenaddr;    /* IP address to bind to */ 
+     int port;                   /* Port number to listen to */
+     char authfile[STRLEN];      /* File containing authentication info */
+     char altauthfile[STRLEN];   /* File containing authentication info */
+--- l2tpd-0.69.orig/file.c
++++ l2tpd-0.69/file.c
+@@ -41,6 +41,7 @@
+     int returnedValue;
+ 
+     gconfig.port = UDP_LISTEN_PORT;
++    gconfig.listenaddr = htonl(INADDR_ANY); /* Default is to bind (listen) to all interfaces */
+     lnslist = NULL;
+     laclist = NULL;
+     deflac = (struct lac *) malloc (sizeof (struct lac));
+@@ -821,6 +822,26 @@
+     return 0;
+ }
+ 
++int set_listenaddr (char *word, char *value, int context, void *item)
++{
++    switch (context & ~CONTEXT_DEFAULT)
++    {
++    case CONTEXT_GLOBAL:
++#ifdef DEBUG_FILE
++        log (LOG_DEBUG, "set_listenaddr: Setting listen address to %s\n",
++             value);
++#endif
++        if (set_ip (word, value, &(((struct global *) item)->listenaddr)))
++		return -1;
++	break;
++    default:
++        snprintf (filerr, sizeof (filerr), "'%s' not valid in this context\n",
++                  word);
++        return -1;
++    }
++    return 0;
++}
++
+ int set_localaddr (char *word, char *value, int context, void *item)
+ {
+     struct lac *l;
+@@ -1196,6 +1217,7 @@
+ }
+ 
+ struct keyword words[] = {
++    {"listen-addr", &set_listenaddr},
+     {"port", &set_port},
+     {"rand source", &set_rand_source},
+     {"auth file", &set_authfile},
+--- l2tpd-0.69.orig/network.c
++++ l2tpd-0.69/network.c
+@@ -25,7 +25,6 @@
+ #include "l2tp.h"
+ 
+ char hostname[256];
+-unsigned int listen_addy = INADDR_ANY;  /* Address to listen on */
+ struct sockaddr_in server, from;        /* Server and transmitter structs */
+ int server_socket;              /* Server socket */
+ #ifdef USE_KERNEL
+@@ -47,7 +46,7 @@
+     int length = sizeof (server);
+     gethostname (hostname, sizeof (hostname));
+     server.sin_family = AF_INET;
+-    server.sin_addr.s_addr = htonl (listen_addy);
++    server.sin_addr.s_addr = gconfig.listenaddr; 
+     server.sin_port = htons (gconfig.port);
+     if ((server_socket = socket (PF_INET, SOCK_DGRAM, 0)) < 0)
+     {
+--- l2tpd-0.69.orig/l2tpd.c
++++ l2tpd-0.69/l2tpd.c
+@@ -1049,6 +1049,8 @@
+ void init (int argc,char *argv[])
+ {
+     struct lac *lac;
++    struct in_addr listenaddr;
++
+     init_args (argc,argv);
+     rand_source = 0;
+     init_addr ();
+@@ -1089,8 +1090,9 @@
+          "Written by Mark Spencer, Copyright (C) 1998, Adtran, Inc.\n");
+     log (LOG_LOG, "Forked by Scott Balmos and David Stipp, (C) 2001\n");
+     log (LOG_LOG, "Inhereted by Jeff McAdams, (C) 2002\n");
+-    log (LOG_LOG, "%s version %s on a %s, port %d\n", uts.sysname,
+-         uts.release, uts.machine, gconfig.port);
++    listenaddr.s_addr = gconfig.listenaddr;
++    log (LOG_LOG, "%s version %s on a %s, listening on IP address %s, port %d\n", uts.sysname,
++       uts.release, uts.machine, inet_ntoa(listenaddr), gconfig.port);
+     lac = laclist;
+     while (lac)
+     {

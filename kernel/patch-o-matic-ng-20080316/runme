@@ -1,0 +1,510 @@
+#!/usr/bin/perl
+#
+# runme.pl, part of the patch-o-matig 'next generation' package.
+# (C) 2003-2004 by Harald Welte <laforge@netfilter.org>
+#     2004	by Jozsef Kadlecsik <kadlec@blackhole.kfki.ho>
+#     2006      small fixes by Alan Ezust <alan.ezust@presinet.com>
+# This script is subject to the GNU GPLv2
+#
+# $Id: runme 6736 2007-01-12 17:07:08Z /C=DE/ST=Berlin/L=Berlin/O=Netfilter Project/OU=Development/CN=kaber/emailAddress=kaber@netfilter.org $
+#
+
+use strict;
+use Getopt::Long;
+use Pod::Usage;
+
+require Term::Cap;
+
+my $POMNG_ROOT_DIR = './patchlets';
+my $VERSION = '$Revision: 6736 $';
+
+push(@INC, $POMNG_ROOT_DIR);
+use Netfilter_POM;
+
+$|=1;
+
+sub print_header {
+	my $session = shift;
+
+	print("Welcome to Patch-o-matic ($VERSION)!\n\n");
+	printf("Kernel:   %s, %s\n", $session->{projects}->{linux}->{VERSION}, 
+				     $session->{projects}->{linux}->{PATH});
+	printf("Iptables: %s, %s\n", $session->{projects}->{iptables}->{VERSION},
+				     $session->{projects}->{iptables}->{PATH});
+	print("Each patch is a new feature: many have minimal impact, some do not.\n");
+	print("Almost every one has bugs, so don't apply what you don't need!\n");
+	print("-------------------------------------------------------\n");
+	$session->perror;
+}
+
+sub last_words {
+	my $session = shift;
+
+	print("\nExcellent! Source trees are ready for compilation.\n\n");
+	$session->last_words;
+}
+
+sub print_prompt {
+	my ($reverse) = @_;
+	my $operation;
+
+	print("-----------------------------------------------------------------\n");
+	if ($reverse) {
+		$operation = 'REVERT';
+	} else {
+		$operation = 'apply';
+	}
+	printf("Do you want to %s this patch [N/y/t/f/a/r/b/w/q/?] ", $operation);
+}
+
+sub print_prompt_help {
+	print("Answer one of the following:\n");
+	print("  T to test that the patch will apply cleanly\n");
+	print("  Y to apply patch\n");
+	print("  N to skip this patch\n");
+	print("  F to apply patch even if test fails\n");
+	print("  A to restart patch-o-matic in apply mode\n");
+	print("  R to restart patch-o-matic in REVERSE mode\n");
+	print("  B to walk back one patch in the list\n");
+	print("  W to walk forward one patch in the list\n");
+	print("  Q to quit immediately\n");
+	print("  ? for help\n");
+}
+
+# main
+
+my @patchlets;
+my @repositories;
+my $clrscr = "\n\n\n\n\n\n\n\n\n\n";
+
+my $opt_batch; 
+my $opt_verbose; 
+my $opt_test;
+my $opt_check;
+my $opt_reverse;
+my $opt_repository;
+my $opt_help;
+my $opt_man;
+my @opt_exclude;
+my $opt_path;
+my $opt_iptpath;
+my $opt_download;
+
+my $result = GetOptions("batch" => \$opt_batch,
+			"verbose" => \$opt_verbose,
+			"test" => \$opt_test,
+			"check" => \$opt_check,
+			"reverse" => \$opt_reverse,
+			"exclude=s" => \@opt_exclude,
+			"help" => \$opt_help,
+			"man" => \$opt_man,
+			"download" => \$opt_download,
+			"kernel-path=s" => \$opt_path,
+			"iptables-path=s" => \$opt_iptpath) or pod2usage(2);
+
+pod2usage(-verbose=>2, -exitval=>0) if $opt_man;
+pod2usage(-verbose=>1, -exitval=>0) if $opt_help;
+
+if ($opt_download) {
+	# a list of commands that can download content referred to by
+	# urls and print them and _only_ them on stdout and return
+	# error code on failure
+	my @download_commands_stdout = ("curl -s -L", "wget -q -O -");
+	my @download_commands_file = ("curl -s -L -o ", "wget -q -O ");
+	# this is updated once the command to use has been determined
+	my $download_command_idx = -1;
+
+	open(SOURCES, "<sources.list") || die "could not open sources.list";
+	while (my $source = <SOURCES>) {
+		chomp($source);
+		if ($source =~ m/^\s*\#/ || $source =~ m/^\s*$/) {
+			next;
+		}
+		print "Attempting to download $source/index\n" if ($opt_verbose);
+		my $success = 0; # true if program was launched
+		my $ret = 0; # return code
+
+		# if download command undecided, try one at a time until we successfully execute one
+		if ($download_command_idx == -1) {
+			for ($download_command_idx = 0; $download_command_idx <= $#download_commands_file; ++$download_command_idx) {
+				my $ret = system($download_commands_file[$download_command_idx]." /tmp/pom-runme-index $source/index");
+				if($ret != -1) {
+					# command worked
+					$success = 1;
+					last;
+				}
+			}
+		} else {
+			$ret = system($download_commands_file[$download_command_idx]." /tmp/pom-runme-index $source/index");
+			if($ret != -1) {
+				$success = 1;
+			}
+		}
+		# none of the commands worked or the command stopped working
+		if(!$success) {
+			print STDERR "Failed to execute ".join(" or ", map { s/ .*//; $_ } @download_commands_file)." to download files. Please install one of them.\n";
+			exit(1);
+		}
+		# if process returned nonzero value, skip
+		if($ret & 0xFF00) {
+			print STDERR "Failed to get $source/index, skipping..\n";
+			next;
+		}
+
+		# read the downloaded index file
+		if(!open(INDEX, '<', "/tmp/pom-runme-index")) {
+			print STDERR "Failed to read temporary file /tmp/pom-runme-index: $? - aborting!\n";
+			exit(1);
+		}
+		while (my $patch = <INDEX>) {
+			chomp($patch);
+			if ($patch =~ m/^\s*\#/ || $patch =~ m/^\s*$/) {
+				next;
+			}
+			if ($patch =~ m/[^a-zA-Z0-9\-]/) {
+				print STDERR "$source: bad patch name $patch, ignored\n";
+				next;
+			}
+			# only allow overwriting of external patches
+			if (-f "$POMNG_ROOT_DIR/$patch/info") {
+				if (!open(INFO, "<$POMNG_ROOT_DIR/$patch/info")) {
+					print STDERR "could not open $POMNG_ROOT_DIR/$patch/info\n";
+					next;
+				}
+				my $external = 0;
+				while (<INFO>) {
+					if( /^Repository:\s+external/ ) {
+						$external = 1;
+					}
+				}
+				close(INFO);
+				if (!$external) {
+					print STDERR "$POMNG_ROOT_DIR/$patch exists and is not external\n";
+					next;
+				}
+			}
+
+			print "Attempting to download $source/$patch.tar.gz\n" if ($opt_verbose);
+			if (system($download_commands_stdout[$download_command_idx]." $source/$patch.tar.gz | tar xz -C $POMNG_ROOT_DIR $patch 2>/dev/null")) {
+				# some packages are not gzipped even if extension suggests so.. so try without before complaining
+				if (system($download_commands_stdout[$download_command_idx]." $source/$patch.tar.gz | tar x -C $POMNG_ROOT_DIR $patch 2>/dev/null")) {
+					print STDERR "could not get $source/$patch.tar.gz\n";
+					system("rm -rf $POMNG_ROOT_DIR/$patch");
+					next;
+				}
+			}
+
+			# check for "Repository: external"
+			if (!open(INFO, "<$POMNG_ROOT_DIR/$patch/info")) {
+				print STDERR "could not open $POMNG_ROOT_DIR/$patch/info\n";
+				system("rm -rf $POMNG_ROOT_DIR/$patch");
+				next;
+			}
+			my $external = 0;
+			while (<INFO>) {
+				if( /^Repository:\s+external/ ) {
+					$external = 1;
+				}
+			}
+			close(INFO);
+			if (!$external) {
+				print STDERR "patch is not marked external\n";
+				system("rm -rf $POMNG_ROOT_DIR/$patch");
+				next;
+			}
+			print "Successfully downloaded external patch $patch\n";
+		}
+		close(INDEX);
+	}
+	close(SOURCES);
+}
+
+my %paths;
+my @paths = (
+	{ 'project'	=> 'linux',
+	  'env'		=> 'KERNEL_DIR',
+	  'opt'		=> $opt_path,
+	  'txt'		=> 'kernel source',
+	  'default'	=> '/usr/src/linux',
+	  'check'	=> 'Makefile',
+	},
+	{ 'project'	=> 'iptables',
+	  'env'		=> 'IPTABLES_DIR',
+	  'opt'		=> $opt_iptpath,
+	  'txt'		=> 'iptables source code',
+	  'default'	=> '/usr/src/iptables',
+	  'check'	=> 'Makefile',
+	}
+);
+
+foreach my $path (@paths) {
+	if (!defined($ENV{$path->{env}}) && !$path->{opt}) {
+		print("Hey! $path->{env} is not set.\n");
+		print("Where is your $path->{txt} directory? [$path->{default}] ");
+		my $ptmp = <STDIN>;
+		chomp($ptmp);
+		if ($ptmp ne '') {
+			$paths{$path->{project}} = $ptmp;
+		} else {
+			$paths{$path->{project}} = $path->{default};
+		}
+	} elsif ($path->{opt}) {
+		$paths{$path->{project}} = $path->{opt};
+	} else {
+		$paths{$path->{project}} = $ENV{$path->{env}};
+	}
+	if (!(-d $paths{$path->{project}}
+	      || (-l $paths{$path->{project}} && -d readlink($paths{$path->{project}})))) {
+		print STDERR ("$paths{$path->{project}} doesn't seem to be a directory\n");
+		exit(1);
+	}
+	if (! -f (glob("$paths{$path->{project}}/$path->{check}"))[0]) {
+		print STDERR ("$paths{$path->{project}} doesn't look like a $path->{txt} directory to me.\n");
+		exit(1);
+	}
+}
+
+if ($#ARGV >= 0 && (-f "$POMNG_ROOT_DIR/$ARGV[0]/info"
+		    || -f "$POMNG_ROOT_DIR/$ARGV[0].info")) {
+	# patch or update file
+	# user wants to specify patches manually
+	for my $p (@ARGV) {
+		if (-f "$POMNG_ROOT_DIR/$p/info") {
+			push(@patchlets, $p);
+		} elsif (-f "$p.info") {
+			push(@patchlets, $p);
+		}
+	}
+	# magic repository
+	$opt_repository = 'magic';
+} else {
+	# no patch names given on cmdline, have to consider all patches
+	#
+	opendir(INDIR, $POMNG_ROOT_DIR);
+	my @allfiles = readdir(INDIR);
+	closedir(INDIR);
+	for my $f (@allfiles) {
+		if (-f "$POMNG_ROOT_DIR/$f/info") {
+			push(@patchlets, $f);
+		}
+	}
+	if ($#ARGV == 0) {
+		# single argmument is a repository name 
+		$opt_repository = $ARGV[0];
+	} elsif ($#ARGV == -1) {
+		# no repository given, select 'pending'
+		$opt_repository = 'pending';
+	} else {
+		pod2usage(-verbose=>1, -exitval=>2);
+	}
+}
+
+# remove all 'excluded' patches
+my @new_patchlets;
+for my $p (@patchlets) {
+	push(@new_patchlets, $p)
+		unless grep($_ eq $p, @opt_exclude);
+}
+@patchlets = sort(@new_patchlets);
+# 'updates' is mandatory, unless patch is explicitly specified
+unshift(@patchlets, sort(grep { $_ =~ m,.*/(.*)\.info, && ($_ = $1) } glob("$POMNG_ROOT_DIR/updates/*.patch.info")))
+	unless $opt_repository eq 'magic';
+
+# FIXME implement this as config file, not hardcoded
+if ($opt_repository eq 'magic') {
+	push(@repositories, $opt_repository);
+} else {
+	foreach my $rep (qw(updates submitted pending base extra external obsolete)) {
+		push(@repositories, $rep);
+		last if $opt_repository eq $rep;
+	}
+}
+
+if (defined($ENV{TERM}) && !$opt_batch) {
+	my $terminal = Tgetent Term::Cap { OSPEED => 9600 };
+	$clrscr = $terminal->Tputs('cl', 1);
+}
+
+# list of selected patchlets is misleading at this stage
+# print STDERR ("selected repositories: ",join("|",@repositories),"\n");
+# print STDERR ("selected patchlets: ",join("|",@patchlets),"\n");
+
+$paths{POM} = $POMNG_ROOT_DIR;
+my $session = Netfilter_POM->init(\%paths);
+print("Loading patchlet definitions");
+$session->parse_patchlets;
+printf(" done\n\n");
+sleep 1;
+
+for my $rep (@repositories) {
+
+	PATCHLET: for my $plname (@patchlets) {
+		my $patchlet = $session->{patchlets}->{$plname};
+		next PATCHLET unless defined $patchlet
+				     && ($rep eq $patchlet->{info}->{repository}
+				         || $rep eq 'magic');
+
+		print($clrscr);
+		print_header($session);
+		print("Already applied: ", join(" ", @{$session->{applied}}),"\n");
+
+		next PATCHLET unless $session->requirements_fulfilled($patchlet);
+		print("Testing ${plname}... ");
+		if (grep($_ eq $plname, @{$session->{applied}})) {
+			print("already applied.\n");
+			next PATCHLET;
+		} elsif ($session->apply_patchlet($patchlet, !$opt_reverse, 1, "/tmp/pom-$$", $opt_verbose)) {
+			print("Reverse Test passed - assuming already applied.\n");
+			push(@{$session->{applied}}, $plname);
+			next PATCHLET;
+		}
+		print("not applied\n");
+		printf("The %s patch:\n", $plname);
+		printf("   Author: %s\n", $patchlet->{info}->{author});
+		printf("   Status: %s\n", $patchlet->{info}->{status});
+		printf("   Version: %s\n", $patchlet->{info}->{version})
+			if exists $patchlet->{info}->{version};
+		print "\n";
+		print $patchlet->{info}->{help};
+		my $first_try = 1;
+		$session->{ERRMSG} = '';
+	PROMPT:
+		my $key;
+		if ($opt_batch && $first_try) {
+		    $key = 'y';
+		    $first_try = 0;
+		} else {
+		    print_prompt($opt_reverse);
+		    $key = <STDIN>;
+		}
+		chomp($key);
+		$key = lc($key);
+		if ($key eq 'y') {
+			if ($session->dependencies_fulfilled($patchlet) < 0) {
+				# conflict
+				$session->perror;
+				goto PROMPT;
+			}
+			if ($session->apply($patchlet, $opt_reverse, 1)
+			    && $session->apply($patchlet, $opt_reverse, 0)) {
+				if (!$opt_reverse) {
+					push(@{$session->{applied}}, $plname);
+				} else {
+					$session->{applied} = [ grep($_ ne $plname, @{$session->{applied}}) ];
+				}
+			} else {
+				$session->perror;
+				goto PROMPT;
+			}
+		} elsif ($key eq 't') {
+			if ($session->dependencies_fulfilled($patchlet) < 0
+			    || !$session->apply($patchlet, $opt_reverse, 1)) {
+				$session->perror;
+			} else {
+				print "Patch $plname applies cleanly\n";
+			}
+			goto PROMPT;
+		} elsif ($key eq 'f') {
+			my $ret = $session->dependencies_fulfilled($patchlet);
+			if ($ret == 0) {
+				next PATCHLET unless 
+					$session->apply_dependencies($patchlet, 1, 0);
+			} elsif ($ret == -1) {
+				next PATCHLET;
+			}
+			$session->apply($patchlet, $opt_reverse, 0);
+			push(@{$session->{applied}}, $plname);
+		} elsif ($key eq 'a') {
+			$opt_reverse = !$opt_reverse if $opt_reverse;
+			goto PROMPT;
+		} elsif ($key eq 'r') {
+			$opt_reverse = !$opt_reverse unless $opt_reverse;
+			goto PROMPT;
+		} elsif ($key eq 'b') {
+			print("not implemented yet");
+			goto PROMPT;
+		} elsif ($key eq 'w') {
+			next PATCHLET;
+		} elsif ($key eq 'q') {
+			last_words($session);
+			exit(0);
+		} elsif ($key eq '?') {
+			print_prompt_help();
+			goto PROMPT;
+		}
+	}
+}
+last_words($session);
+
+__END__
+
+=head1 NAME
+
+runme - The patch-o-matic main program
+
+=head1 SYNOPSIS
+
+./runme [options] suite|suite/patch-dir
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--download>
+
+some patches are stored at external locations and are not available by
+default. To add these to the selection of patchlets, add the
+--download switch to the command line and they will be available in
+the "external" suite. You need curl or wget installed for this to
+work.
+
+=item B<--batch>
+
+batch mode, automatically applying patches.
+
+=item B<--test>
+
+test mode, automatically test patches.
+
+=item B<--check>
+
+check mode, automatically checks if patches are alreay applied.
+produces a logfile: rune.out-check
+
+=item B<--reverse>
+
+back out the selected patches.
+
+=item B<--exclude> suite/patch-dir
+
+excludes the named patch. can be used multiple times.
+
+=item B<--help>
+
+print a help message
+
+=item B<--man>
+
+print the whole manpage
+
+=item B<--kernel-path> path
+
+specify the kernel source path
+
+=item B<--iptables-path> path
+
+specify the iptables source path
+
+=item B<--verbose>
+
+verbose output (shows output of patch command)
+
+=back
+
+=head1 DESCRIPTION
+
+B<runme> is the main executable of the patch-o-matic system.
+
+Available suites: updates submitted pending base extra external obsolete
+
+=cut

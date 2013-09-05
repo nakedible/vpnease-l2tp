@@ -1,0 +1,17 @@
+config IP_NF_NAT_MMS
+	tristate
+	depends on IP_NF_CONNTRACK!=n && IP_NF_NAT!=n
+	default IP_NF_NAT if IP_NF_MMS=y
+	default m if IP_NF_MMS=m
+
+config IP_NF_MMS
+	tristate  'MMS protocol support'
+	depends on IP_NF_CONNTRACK
+	help
+	  Tracking MMS (Microsoft Windows Media Services) connections
+	  could be problematic if random ports are used to send the
+	  streaming content. This option allows users to track streaming
+	  connections over random UDP or TCP ports.
+	
+	  If you want to compile it as a module, say M here and read
+	  <file:Documentation/modules.txt>.  If unsure, say `Y'.

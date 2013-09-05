@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Server Requirements</n:invisible>
+
+    <n:invisible n:pattern="content">
+    
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Server Hardware Requirements</h1>
+           
+          <ul>
+            <li>Processor: 32-bit or 64-bit x86, recommended 2 GHz or more</li>
+            <li>Memory: minimum 256 MiB</li>
+            <li>Networking: one or two 10 Mbps or faster Ethernet network interfaces (NICs) depending on the network configuration</li>
+            <li>Storage: 2 GB or larger, dedicated storage device for installation.
+                Storage device can be either hard drive (USB, IDE, SCSI, Serial ATA) or
+                flash memory (USB stick, IDE Compact Flash)
+            </li>
+            <li>BIOS: if USB stick installation is used, must be capable of booting from a USB HDD.
+                If installation target is smaller than 4 GB, requires a BIOS capable of booting from
+                hard disks larger than 512 MB.</li>
+          </ul>
+      </div> <!-- hw requirements -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Server Hardware Compatibility</h1>
+
+          <p>
+            <n:invisible n:macro="productname" /> server is based on the <a class="cb-external" target="_blank" href="http://www.ubuntu.com/">Ubuntu</a> Linux
+            distribution, with up-to-date hardware compatibility for all standard PC hardware.
+            The latest <n:invisible n:macro="productname" /> is based on <a class="cb-external" target="_blank" href="https://help.ubuntu.com/6.06/">Ubuntu 6.06 LTS (Dapper Drake)</a>.
+            For more information on hardware compatibility issues, see:
+          </p>
+          <ul>
+            <li><a class="cb-external" target="_blank" href="http://www.ubuntu.com/support">Ubuntu's support pages</a></li>
+            <li><a class="cb-external" target="_blank" href="https://wiki.ubuntu.com/HardwareSupport">Ubuntu's hardware support Wiki</a></li>
+            <li><a class="cb-external" target="_blank" href="https://help.ubuntu.com/6.06/">Documentation for Ubuntu 6.06 LTS (Dapper Drake)</a></li>
+          </ul>
+
+          <div class="cb-note">
+            <p>
+              Although <n:invisible n:macro="productname" /> is based on the Ubuntu distribution,
+              <strong class="cb-bold">it is not supported by Ubuntu</strong>.
+              Contact <a href="support-home.html"><n:invisible n:macro="productname" /> support</a> or your service provider
+              in all support matters.  Please do not contact Ubuntu for <n:invisible n:macro="productname" /> support.
+            </p>
+          </div>
+
+          <p>
+            A few practical tips in choosing hardware:
+          </p>
+          <ul>
+            <li>Select recent but not the newest possible hardware to minimize risks with immature hardware</li>
+            <li>Use well-known, quality storage devices with long guarantee periods (3 years or more)</li>
+            <li>Flash-based storage devices can be considerably slower than magnetic storage devices,
+                but have no moving parts and can provide more reliable long term operation</li>
+            <li>Favor low temperature and/or fanless components over more powerful, fan-cooled components</li>
+            <li>Check Linux (Ubuntu) compatibility from your seller</li>
+            <li>If Linux compatibility is uncertain, consider using a virtualization product as
+                a platform for the product. This eliminates compatibility issues and allows
+                you to choose any host operating system (e.g. Windows or other Linux variant)</li>
+          </ul>
+      </div> <!-- pc hardware compatibility -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Network Requirements</h1>
+
+        <ul>
+          <li>Internet connection speed: minimum 512 kbps.</li>
+          <li>Internet Service Provider (ISP) must not block the following protocols and ports:
+            <ul>
+              <li>UDP/500 (IPsec)</li>
+              <li>UDP/4500 (IPsec)</li>
+            </ul>
+          </li>
+          <li>The following protocols and ports are optional for <n:invisible n:macro="productname" /> usage: 
+            <ul>
+              <li>TCP/80 (HTTP, administrator and user web user interface access)</li>
+              <li>TCP/443 (HTTPS, administrator and user web user interface access)</li>
+              <li>IP protocol 50 (IPsec ESP without NAT traversal, required for clients without NAT traversal support)</li>
+            </ul>
+          </li>
+        </ul>
+      </div> <!-- network requirements -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Software Requirements</h1>
+          <p>
+            <n:invisible n:macro="productname" /> server has a web-based administrator interface, which requires 
+            Javascript support.
+            <n:invisible n:macro="productname" /> server can be configured with the local Firefox browser
+            automatically installed on the <n:invisible n:macro="productname" /> server.
+            To use the administrator interface from another computer the following browsers are supported: 
+          </p>
+          <ul>
+            <li>Firefox (1.5 or newer)</li>
+            <li>Internet Explorer (6.0 or newer)</li>
+            <li>Safari (2.0.1 or newer)</li>
+          </ul>
+          
+          <p>
+            <n:invisible n:macro="productname" /> also has a separate web-based interface for VPN users, which provides
+            user account management and
+            guides for configuring the VPN client for supported operating systems.
+            <n:invisible n:macro="productname" /> user web interface does not require Javascript and works with almost any browser, such as:
+          </p>
+            <ul>
+              <li>Firefox (1.5 or newer)</li>
+              <li>Internet Explorer (5.0 or newer)</li>
+              <li>Safari</li>
+              <li>Opera</li>
+              <li>Konqueror</li>
+              <li>W3m</li>
+          </ul>
+      </div>
+      
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Virtualization Products</h1>
+
+        <p>
+          In addition to using dedicated hardware, <n:invisible n:macro="productname" /> server
+          can also be installed on existing hardware by using a virtualization product, such as
+          <a class="cb-external" target="_blank" href="http://www.vmware.com/">VMware</a>,
+          <a class="cb-external" target="_blank" href="http://www.microsoft.com/windows/virtualpc/default.mspx">Microsoft Virtual PC</a>,
+          <a class="cb-external" target="_blank" href="http://www.microsoft.com/windowsserversystem/virtualserver/default.mspx">Microsoft Virtual Server</a>,
+          <a class="cb-external" target="_blank" href="http://technet2.microsoft.com/windowsserver2008/en/servermanager/virtualization.mspx">Microsoft Hyper-V</a>,
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine">KVM</a> (free),
+          or
+          <a class="cb-external" target="_blank" href="http://www.parallels.com/">Parallels</a>.
+          See <a href="virtualization-products.html">Virtualization Products</a> for more details.
+        </p>
+
+        <p>
+          Installation on top of a virtualization product is recommended if:
+        </p>
+        <ul>
+          <li>There is existing server hardware that can comfortably share some capacity for
+              terminating remote access connections.  Typically only about 10% of server capacity
+              is required to run a remote access gateway, yielding great hardware savings.
+              If your company manages customer equipment, this is a great opportunity
+              for providing additional options to your customer with minimal investment.</li>
+          <li>Your hardware is not compatible with the Linux distribution (Ubuntu) which is
+              used as a basis for the product.  Virtualization can overcome hardware compatibility
+              issues, because any host operating system (e.g. Windows or other Linux variant)
+              can be installed on the host hardware.  <n:invisible n:macro="productname" />
+              will only see standardized virtual hardware.</li>
+          <li>Your networking hardware is not Ethernet based (e.g. PPPoE or a modem connection).
+              The virtualization product will hide the actual networking hardware and present
+              a virtual Ethernet device for <n:invisible n:macro="productname"/>.</li>
+          <li>You plan to install multiple remote access servers with different configurations,
+              or you need some supporting servers and wish to minimize hardware costs.</li>
+        </ul>
+
+        <p>
+          <n:invisible n:macro="productname" /> has been tested with all major virtualization
+          products.  See <a href="virtualization-products.html">Virtualization Products</a>
+          for more detailed information.
+        </p>
+      </div> <!-- virtualization products -->
+    
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">High Reliability Installations</h1>
+
+        <p>
+          For the high reliability installations we recommend one of the following:
+        </p>
+        <ul>
+          <li>Use a virtualization product and configure RAID hardware to the host
+              computer. This provides storage reliability for the <n:invisible n:macro="productname" />
+              server as well.
+          </li>
+          
+          <li>
+            Use a reliable USB stick (flash memory) or Compact Flash IDE (SATA) hard disk
+            instead of a normal (magnetic) hard disk.  Hard disks are a common cause of failure
+            in server systems, and flash-memory-based hard disks avoid this common cause.
+          </li>
+        </ul>
+
+        <div class="cb-note">
+          <p>
+            <n:invisible n:macro="productname" /> does not support RAID devices directly.
+            To use software or hardware RAID, use a virtualization product and configure
+            RAID in the host computer.
+          </p>
+        </div>
+      </div> <!-- high reliability -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">PC Hardware Reliability Tips</h1>
+
+        <ul>
+          <li>
+            <strong class="cb-bold">Minimize the number of cooling fans and invest in quality fans</strong>.
+            Cooling fans are a common source of failure.  A failing fan results in an increased computer
+            temperature leading to
+            increased risk of processor and other chip instability,
+            increased risk of expansion card failures,
+            and decreased lifetime of hard disks.
+          </li>  
+          <li>
+            <strong class="cb-bold">Check temperature</strong>.
+            Allow the system to run for a day or two, and check case temperature.  You
+            can typically check the temperature values by restarting the computer and entering
+            the BIOS setup screen.  BIOSes typically display temperature and fan information
+            in one of their information screens.  Refer to your computer hardware manuals
+            for information about expected operating temperatures.
+          </li>
+          <li>
+            <strong class="cb-bold">Use quality components</strong>.
+            Purchase quality components (motherboard, memory, network card).  Low quality
+            components may lead to failures which are difficult to trace and correct.
+          </li>
+          <li>
+            <strong class="cb-bold">Run a "torture test"</strong>.
+            Run torture tests on your hardware to ensure the hardware performs correctly
+            under heavy load.  Common hardware torture tests include:
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Memtest86">Memtest86</a>
+            (included on the <n:invisible n:macro="productname" /> Live CD),
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Prime95">Prime95</a>,
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Super_PI">Super PI</a>,
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/SiSoftware_Sandra">SiSoftware Sandra</a>,
+            and
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/BOINC">BOINC</a>.
+          </li>
+          <li>
+            <strong class="cb-bold">Replace hard disks before they fail</strong>.
+            If you use a normal magnetic hard disk, replace it with a new one before it
+            fails.  Typical lifetime of a hard disk in normal use is 3-5 years.  Check
+            your hard disk data sheet for mean-time-to-failure (MTTF) estimates.
+          </li>
+        </ul>
+      </div> <!-- reliability tips -->
+
+    </n:invisible>
+  </body>
+</html>

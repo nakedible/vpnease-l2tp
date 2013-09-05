@@ -1,0 +1,15 @@
+
+#logo img {
+	width: 6cm;
+	height: auto;  /* FIXME */
+}
+
+/* --------------------
+blocks
+--------------------- */
+
+#doc-nav,
+#menu
+{
+	display: none;
+}

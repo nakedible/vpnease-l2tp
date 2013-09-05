@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:n="http://nevow.com/ns/nevow/0.1">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>VPNease - <n:invisible n:render="page_title" /></title>
+<meta name="description" content="" />
+<link rel="stylesheet" href="/static/site.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/layout.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/login.css" type="text/css" media="screen" />  
+<!--[if IE]>
+<link rel="stylesheet" href="/static/iehacks.css" type="text/css" media="screen" />
+<![endif]-->
+<link rel="stylesheet" href="/static/hacks.css" type="text/css" media="screen" />  
+
+<link rel="shortcut icon" href="/static/favicon.ico" />
+<link rel="icon" href="/static/favicon.gif" type="image/gif" />
+
+<script src="/static/commonutils.js" type="text/javascript" />
+<script src="/static/formalutils.js" type="text/javascript" />
+
+<script type="text/javascript" n:render="dynamic_javascript" />
+
+</head>
+
+<body>
+
+
+
+<div id="login-w">
+<div id="login">
+		    
+	<h1>Login</h1> 
+
+    <div class="unit span-6 last">    
+
+
+
+      <div class="login-error"><n:invisible n:render="login_error" /></div>
+
+
+
+		<form action="#" method="post" id="login-form">
+                  <n:attr name="action" n:macro="login_action" />
+
+		    
+		    <fieldset>
+	        <label for="username">Username</label>            
+	        <input id="username" name="username" size="20" type="text" />
+	      
+	        
+	        <label for="password">Password</label>
+                <span>
+                    <input id="password" name="password" size="20" type="password"
+                       onkeypress="formal_hidden_password_capslock_test(this.id, event)"
+                       onblur="formal_hidden_password_capslock_hide(this.id)" />
+                    <span class="capslock-warning" style="visibility: hidden"> Caps Lock is on</span>
+                </span>	
+        	            
+		    </fieldset>
+	    	
+	
+	        <input class="button" name="commit" type="submit" value="Login" />		        		
+		    
+		</form>
+		
+
+
+      <n:invisible n:render="adminlogin_enabled">
+        <br />
+        <br />
+        <p><a href="/admin/">Login as administrator</a></p>
+      </n:invisible>
+
+      <n:invisible n:render="adminlogin_disabled">
+        <br />
+        <br />
+        <p>(Administration not allowed.)</p>
+      </n:invisible>
+
+      <script src="/static/commonutils.js" type="text/javascript" />
+
+      <script type="text/javascript">
+      // <![CDATA[
+        addDOMLoadEvent(function() {
+          n = document.getElementById("username");
+          if (n) {
+            n.focus();
+          }
+        });
+      // ]]>
+      </script>
+
+
+
+                    
+    <!-- /span-6 -->
+    </div>
+ 
+    <div class="unit span-3 last">    
+		
+		<img id="login-logo" src="/static/vpnease-logo.gif" width="150" height="55" alt="VPNease" />
+    <!-- /span-3  -->
+    </div>
+    
+    <!-- old skool clearing float -->
+	<div class="cut">&nbsp;</div>
+
+                                                                      
+<!-- /login -->
+</div>  
+</div>  
+
+
+  </body>
+</html>

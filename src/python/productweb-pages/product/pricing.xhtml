@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Pricing</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <p>
+          <n:invisible n:macro="productname" /> has a monthly per server license fee which
+          depends on the number of concurrent end-user and site-to-site VPN connections as follows:
+        </p>
+
+        <table id="pricing-1" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <th colspan="2">Number of concurrent end-user VPN connections</th>
+          </tr>
+          <tr>
+            <td>1-10</td>
+            <td>9&#x20ac; / connection / month</td>
+          </tr>
+          <tr>
+            <td>11-100</td>
+            <td>8&#x20ac; / connection / month</td>
+          </tr>
+          <tr>
+            <td>More than 100</td>
+            <td>7&#x20ac; / connection / month</td>
+          </tr>
+        </table>
+
+        <table id="pricing-2" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <th colspan="2">Number of site-to-site VPN connections</th>
+          </tr>
+          <tr>
+            <td>One site-to-site endpoint</td>
+            <td>19&#x20ac; / connection / month</td>
+          </tr>
+        </table>
+
+        <p>
+          Note: for a site-to-site connection, two servers and thus two licenses are required (for a total
+          of 38&#x20ac; per site-to-site connection).
+        </p>
+
+        <h2 class="midlabel">Pricing details</h2>
+
+        <ul>
+          <li>
+            Monthly license fee is determined by the highest fee during a calender month.
+            When updating server license, the updated monthly fee recurs at the start of every
+            following month.  If the license fee increases, the difference between current and
+            new monthly fee is invoiced for the current month.  If the license fee decreases, the 
+            difference between current and new monthly fee is not returned.
+          </li>
+          <li>
+            Each <n:invisible n:macro="productname" /> serves requires a
+            separate license, and discounts (for end-user VPN connection count) apply to each server
+            license individually. 
+          </li>
+          <li>
+            Prices do not include VAT, see <a href="payment-options.html">Payment Options</a> for VAT details.
+          </li>
+          <li>
+            Pricing is subject to change with 3 months notice.
+          </li>
+          <li>
+            Please see our <a href="partners-home.html">partner pages</a> for partner pricing information.
+          </li>
+        </ul>
+      </div>
+    </n:invisible>
+  </body>
+</html>

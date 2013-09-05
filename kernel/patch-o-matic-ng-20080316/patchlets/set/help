@@ -1,0 +1,11 @@
+This adds CONFIG_IP_NF_SET, which provides a match which lets you use
+IP sets; the match depends on whether a checked source or destination 
+address/network address/port has its bit set in/added to the given set.
+It also provides a SET target, which can be used to add or remove the 
+addresses/ports of a packet to/from a set. The currently supported types 
+of the sets are: ipmap, macipmap, portmap, iphash, nethash, ipporthash
+and iptree. 
+
+It is possible to chain sets together by binding.
+
+The userspace program ipset(8) is required to define and setup IP sets.

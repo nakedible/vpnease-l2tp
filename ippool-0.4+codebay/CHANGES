@@ -1,0 +1,37 @@
+# -*- indented-text -*- # 
+
+This file is a history of changes made in each release.
+
+----------------------------------------------------------------------------
+V0.4, 10-SEP-2005
+
+- Avoid use of linux __u8, __u16, __u32 types. Use standard uintN_t types 
+  instead. This change is required because newer glibc header files warn 
+  when some newer linux kernel headers are included by application code.
+
+- Change RPC interfaces to use the recently registered official RPC 
+  program numbers rather than numbers in Sun's "experimental" range.
+  Be sure to upgrade client (management) apps in sync with ippoold.
+
+- In the pppd plugin, Use pppd's allowed_address_hook to allow all
+  addresses provided by ippool.
+
+- Fix makefile bug where ppp CFLAGS weren't being defined properly.
+
+----------------------------------------------------------------------------
+V0.3, 19-OCT-2004
+
+- Fix build problems in some environments and improve build configurability
+  (makefile changes).
+
+----------------------------------------------------------------------------
+V0.2, 15-OCT-2004
+
+- Fix RPC requestor address check. ippoold was testing an uninitialized
+  RPC variable, causing requests to be rejected unless -R was used.
+
+----------------------------------------------------------------------------
+V0.1, 12-SEP-2004
+
+- Initial release. 
+

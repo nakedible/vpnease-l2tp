@@ -1,0 +1,396 @@
+# -*- tcl -*-
+
+source test_procs.tcl
+
+############################################################################
+# Tests 1.* - show operations
+############################################################################
+
+test system-1.1 { Show system config } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-1.1
+	l2tpConfig system show configuration
+    } \
+    {
+
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+}
+
+test system-1.2 { Show system statistics } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-1.2
+	l2tpConfig system modify reset_statistics
+	l2tpConfig system show statistics
+    } \
+    {
+
+Modified system config
+L2TP counters:-
+  Total messages sent: 0, received: 0, retransmitted: 0
+    illegal: 0, unsupported: 0, ignored AVPs: 0, vendor AVPs: 0
+  Setup failures: tunnels: 0, sessions: 0
+  Resource failures: control frames: 0, peers: 0
+    tunnels: 0, sessions: 0, ppp: 0
+  Limit exceeded errors: tunnels: 0, sessions: 0
+  Frame errors: short frames: 0, wrong version frames: 0
+     unexpected data frames: 0, bad frames: 0
+  Internal: authentication failures: 0, message encode failures: 0
+     no matching tunnel discards: 0, mismatched tunnel ids: 0
+     no matching session_discards: 0, mismatched session ids: 0
+     total control frame send failures: 0, event queue fulls: 0
+
+  Message counters:-
+         Message          RX Good           RX Bad               TX
+         ILLEGAL                0                0                0
+           SCCRQ                0                0                0
+           SCCRP                0                0                0
+           SCCCN                0                0                0
+         STOPCCN                0                0                0
+       RESERVED1                0                0                0
+           HELLO                0                0                0
+            OCRQ                0                0                0
+            OCRP                0                0                0
+            OCCN                0                0                0
+            ICRQ                0                0                0
+            ICRP                0                0                0
+            ICCN                0                0                0
+       RESERVED2                0                0                0
+             CDN                0                0                0
+             WEN                0                0                0
+             SLI                0                0                0
+}
+
+test system-1.3 { Show system status } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-1.3
+	l2tpConfig system show status
+    } \
+    {
+
+L2TP service status:-
+  tunnels: 0, sessions: 0
+}
+
+############################################################################
+# Tests 2.* - modify operations
+############################################################################
+
+test system-2.1 { Modify system config trace_flags= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.1
+	l2tpConfig system modify trace_flags=7
+	l2tpConfig system show configuration
+	l2tpConfig system modify trace_flags=0xffffffff
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API
+Modified system config
+}
+
+test system-2.2 { Modify system config max_tunnels= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.2
+	l2tpConfig system modify max_tunnels=42
+	l2tpConfig system show configuration
+	l2tpConfig system modify max_tunnels=0
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 42, max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+test system-2.3 { Modify system config max_sessions= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.3
+	l2tpConfig system modify max_sessions=42
+	l2tpConfig system show configuration
+	l2tpConfig system modify max_sessions=0
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 42
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+test system-2.4 { Modify system config drain_tunnels= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.4
+	l2tpConfig system modify drain_tunnels=yes
+	l2tpConfig system show configuration
+	l2tpConfig system modify drain_tunnels=no
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: YES
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+test system-2.5 { Modify system config tunnel_establish_timeout= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.5
+	l2tpConfig system modify tunnel_establish_timeout=121
+	l2tpConfig system show configuration
+	l2tpConfig system modify tunnel_establish_timeout=120
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 121 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+test system-2.6 { Modify system config session_establish_timeout= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.6
+	l2tpConfig system modify session_establish_timeout=42
+	l2tpConfig system show configuration
+	l2tpConfig system modify session_establish_timeout=120
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 42 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+test system-2.7 { Modify system config deny_local_tunnel_creates= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.7
+	l2tpConfig system modify deny_local_tunnel_creates=yes
+	l2tpConfig system show configuration
+	l2tpConfig system modify deny_local_tunnel_creates=no
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: YES, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+test system-2.8 { Modify system config deny_remote_tunnel_creates= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.8
+	l2tpConfig system modify deny_remote_tunnel_creates=yes
+	l2tpConfig system show configuration
+	l2tpConfig system modify deny_remote_tunnel_creates=no
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 300 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: YES
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+test system-2.9 { Modify system tunnel_persist_pend_timeout= } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.9
+	l2tpConfig system modify tunnel_persist_pend_timeout=301
+	l2tpConfig system show configuration
+	l2tpConfig system modify tunnel_persist_pend_timeout=300
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 0 (unlimited), max sessions: 0 (unlimited)
+  drain tunnels: NO
+  tunnel establish timeout: 120 seconds
+  session establish timeout: 120 seconds
+  tunnel persist pend timeout: 301 seconds
+  deny local tunnel creation: NO, deny remote tunnel creation: NO
+  trace flags: PROTOCOL FSM API AVP AVPHIDE AVPDATA FUNC XPRT DATA PPP SYSTEM
+Modified system config
+}
+
+
+test system-2.10 { Reset system statistics } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.10
+	l2tpConfig system modify reset_statistics
+	l2tpConfig system show statistics
+    } \
+    {
+
+Modified system config
+L2TP counters:-
+  Total messages sent: 0, received: 0, retransmitted: 0
+    illegal: 0, unsupported: 0, ignored AVPs: 0, vendor AVPs: 0
+  Setup failures: tunnels: 0, sessions: 0
+  Resource failures: control frames: 0, peers: 0
+    tunnels: 0, sessions: 0, ppp: 0
+  Limit exceeded errors: tunnels: 0, sessions: 0
+  Frame errors: short frames: 0, wrong version frames: 0
+     unexpected data frames: 0, bad frames: 0
+  Internal: authentication failures: 0, message encode failures: 0
+     no matching tunnel discards: 0, mismatched tunnel ids: 0
+     no matching session_discards: 0, mismatched session ids: 0
+     total control frame send failures: 0, event queue fulls: 0
+
+  Message counters:-
+         Message          RX Good           RX Bad               TX
+         ILLEGAL                0                0                0
+           SCCRQ                0                0                0
+           SCCRP                0                0                0
+           SCCCN                0                0                0
+         STOPCCN                0                0                0
+       RESERVED1                0                0                0
+           HELLO                0                0                0
+            OCRQ                0                0                0
+            OCRP                0                0                0
+            OCCN                0                0                0
+            ICRQ                0                0                0
+            ICRP                0                0                0
+            ICCN                0                0                0
+       RESERVED2                0                0                0
+             CDN                0                0                0
+             WEN                0                0                0
+             SLI                0                0                0
+}
+
+test system-2.11 { Complex system modify with all args } \
+    { l2tpdRunning && system } \
+    { \
+	clearResult
+	l2tpConfig test log message=system-2.11
+	l2tpConfig system modify \
+	  trace_flags=7 \
+	  max_tunnels=42 \
+	  max_sessions=42 \
+	  drain_tunnels=yes \
+	  tunnel_persist_pend_timeout=301 \
+	  tunnel_establish_timeout=121 \
+	  session_establish_timeout=42 \
+	  deny_local_tunnel_creates=yes \
+	  deny_remote_tunnel_creates=yes
+	l2tpConfig system show configuration
+	l2tpConfig system modify \
+	  trace_flags=0xffffffff \
+	  max_tunnels=0 \
+	  max_sessions=0 \
+	  drain_tunnels=no \
+	  tunnel_persist_pend_timeout=300 \
+	  tunnel_establish_timeout=120 \
+	  session_establish_timeout=0 \
+	  deny_local_tunnel_creates=no \
+	  deny_remote_tunnel_creates=no
+    } \
+    {
+
+Modified system config
+L2TP configuration:
+  UDP port: 1701
+  max tunnels: 42, max sessions: 42
+  drain tunnels: YES
+  tunnel establish timeout: 121 seconds
+  session establish timeout: 42 seconds
+  tunnel persist pend timeout: 301 seconds
+  deny local tunnel creation: YES, deny remote tunnel creation: YES
+  trace flags: PROTOCOL FSM API
+Modified system config
+}
+

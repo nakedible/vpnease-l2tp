@@ -1,0 +1,16 @@
+= KVM Issues =
+
+[[PageOutline]]
+
+----
+
+== What is KVM? ==
+
+[http://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine KVM] is a free hardware virtualization platform which can be used
+to install VPNease on an existing server.
+
+----
+
+
+
+

@@ -1,0 +1,40 @@
+= Windows 2000 Client Issues =
+
+[[PageOutline]]
+
+----
+
+== Only one active VPNease profile at a time ==
+
+Windows 2000 L2TP/IPsec has a practical limitation that only one IPsec connection profile
+can be used at a time.  For VPNease connections this means that only the most recently
+autoconfigured VPNease profile can be used.  If you need to use multiple connections, you
+should run VPNease autoconfigure each time you change between profiles.
+
+----
+
+== Changing IP address ==
+
+When the IP address of your Windows 2000 client changes (e.g. you connect to a new
+network, or change from LAN to wireless LAN), it may be take up to 5 minutes for your
+VPNease connection to recover.  During this time the VPNease connection setup will time
+out because Windows 2000 is using the old IPsec connection instead of establishing a new
+one.  This is a built-in limitation of the Windows 2000 IPsec implementation.  You can
+speed up the process by rebooting the computer, after which you can reconnect immediately.
+
+----
+
+== MTU provided by VPNease server is ignored by Windows 2000 client ==
+
+VPNease server provides VPN clients a Maximum Transfer Unit (MTU) setting, which ensures
+that packets sent through the Internet are not fragmented.  It also ensures that any
+TCP connections established by a client computer use a suitable TCP Maximum Segment Size (MSS)
+which ensures that TCP segments sent through the VPN connection do not need fragmentation
+on their way to the destination host.
+
+Windows 2000 VPN client ignores the MTU setting sent by the VPNease server.  This causes
+Windows 2000 to e.g. send TCP segments larger than optimal, causing some fragmentation of
+the TCP segments.  This should not cause problems other than sub-optimal use of network
+resources.  However, if intervening routers or firewalls are configured to block ICMP
+packets, which are used to signal about too large packets, silent connectivity
+issues may arise.

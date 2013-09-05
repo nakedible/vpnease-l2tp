@@ -1,0 +1,5 @@
+Title: talk connection tracking and NAT helper
+Author: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Status: Alpha, needs porting to 2.6.x
+Repository: extra
+Requires: linux < 2.6.0

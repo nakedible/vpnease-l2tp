@@ -1,0 +1,112 @@
+diff -ru net-snmp-5.2.1.2.orig/agent/mibgroup/if-mib/data_access/interface_linux.c net-snmp-5.2.1.2/agent/mibgroup/if-mib/data_access/interface_linux.c
+--- net-snmp-5.2.1.2.orig/agent/mibgroup/if-mib/data_access/interface_linux.c	2004-10-18 06:49:50.000000000 +0300
++++ net-snmp-5.2.1.2/agent/mibgroup/if-mib/data_access/interface_linux.c	2007-08-23 14:16:55.000000000 +0300
+@@ -178,6 +178,17 @@
+          * Otherwise find an unused index value and use that.
+          */
+         *stats++ = 0; /* null terminate name */
++
++	/*
++	 * Filter out L2TP/PPP devices
++	 */
++	if (strncmp("l2tp", ifstart, strlen("l2tp")) == 0) {
++	    snmp_log(LOG_DEBUG,
++		     "ignoring interface '%s'\n",
++		     ifstart);
++	    continue;
++	}
++
+         entry = netsnmp_access_interface_entry_create(ifstart, 0);
+         if(NULL == entry) {
+             netsnmp_access_interface_container_free(container,
+diff -ru net-snmp-5.2.1.2.orig/agent/mibgroup/ip-mib/data_access/ipaddress_ioctl.c net-snmp-5.2.1.2/agent/mibgroup/ip-mib/data_access/ipaddress_ioctl.c
+--- net-snmp-5.2.1.2.orig/agent/mibgroup/ip-mib/data_access/ipaddress_ioctl.c	2004-10-19 06:23:01.000000000 +0300
++++ net-snmp-5.2.1.2/agent/mibgroup/ip-mib/data_access/ipaddress_ioctl.c	2007-08-23 14:16:55.000000000 +0300
+@@ -156,6 +156,17 @@
+ 
+         DEBUGMSGTL(("access:ipaddress:container",
+                     " interface %d, %s\n", i, ifrp->ifr_name));
++
++	/*
++	 * Filter out L2TP/PPP devices
++	 */
++	if (strncmp("l2tp", ifrp->ifr_name, strlen("l2tp")) == 0) {
++	    snmp_log(LOG_DEBUG,
++		     "ignoring interface '%s'\n",
++		     ifrp->ifr_name);
++	    continue;
++	}
++
+         /*
+          */
+         entry = netsnmp_access_ipaddress_entry_create();
+diff -ru net-snmp-5.2.1.2.orig/agent/mibgroup/ip-mib/data_access/ipaddress_linux.c net-snmp-5.2.1.2/agent/mibgroup/ip-mib/data_access/ipaddress_linux.c
+--- net-snmp-5.2.1.2.orig/agent/mibgroup/ip-mib/data_access/ipaddress_linux.c	2004-10-19 06:23:59.000000000 +0300
++++ net-snmp-5.2.1.2/agent/mibgroup/ip-mib/data_access/ipaddress_linux.c	2007-08-23 14:16:55.000000000 +0300
+@@ -220,6 +220,17 @@
+         DEBUGMSGTL(("access:ipaddress:container",
+                     "addr %s, index %d, pfx %d, scope %d, flags 0x%X, name %s\n",
+                     addr, if_index, pfx_len, scope, flags, if_name));
++
++	/*
++	 * Filter out L2TP/PPP devices
++	 */
++	if (strncmp("l2tp", if_name, strlen("l2tp")) == 0) {
++	    snmp_log(LOG_DEBUG,
++		     "ignoring interface '%8s'\n",
++		     if_name);
++	    continue;
++	}
++
+         /*
+          */
+         entry = netsnmp_access_ipaddress_entry_create();
+diff -ru net-snmp-5.2.1.2.orig/agent/mibgroup/mibII/ifTable.c net-snmp-5.2.1.2/agent/mibgroup/mibII/ifTable.c
+--- net-snmp-5.2.1.2.orig/agent/mibgroup/mibII/ifTable.c	2004-07-07 20:41:15.000000000 +0300
++++ net-snmp-5.2.1.2/agent/mibgroup/mibII/ifTable.c	2007-08-23 14:16:55.000000000 +0300
+@@ -824,6 +824,17 @@
+                      "/proc/net/dev data format error, line ==|%s|", line);
+         }
+         *stats = 0;
++
++	/*
++	 * Filter out L2TP/PPP devices
++	 */
++	if (strncmp("l2tp", ifstart, strlen("l2tp")) == 0) {
++	    setsnmp_log(LOG_DEBUG,
++			"ignoring interface '%s'\n",
++			ifstart);
++	    continue;
++	}
++
+         entry = ifTable_ifentry_get_by_name(cache, ifstart, 1);
+         *stats++ = ':';
+         while (*stats == ' ')
+diff -ru net-snmp-5.2.1.2.orig/agent/mibgroup/mibII/ipAddr.c net-snmp-5.2.1.2/agent/mibgroup/mibII/ipAddr.c
+--- net-snmp-5.2.1.2.orig/agent/mibgroup/mibII/ipAddr.c	2004-10-16 01:14:04.000000000 +0300
++++ net-snmp-5.2.1.2/agent/mibgroup/mibII/ipAddr.c	2007-08-23 14:27:14.000000000 +0300
+@@ -546,6 +546,23 @@
+ 	
+ 	ifnet_store.if_addr = ifr->ifr_addr;
+ 
++	/*
++	 * Filter out L2TP/PPP devices
++	 */
++	if (ifr->ifr_name != NULL) {
++	    if (strncmp("l2tp", ifr->ifr_name, strlen("l2tp")) == 0) {
++		DEBUGMSGTL(("snmpd", "ignoring interface '%8s'\n", ifr->ifr_name));
++
++		/* Advance to next */
++		ifr++;
++		ifr_counter+=sizeof(struct ifreq);
++		if (ifr_counter >= ifc.ifc_len)	{
++		    ifr = NULL;	/* beyond the end */
++		}
++		continue;
++	    }
++	}
++
+         if (Retifnet)
+ 	{
+ 	    Retifnet->if_addr = ifr->ifr_addr;
+Only in net-snmp-5.2.1.2/agent/mibgroup/mibII: ipAddr.c~

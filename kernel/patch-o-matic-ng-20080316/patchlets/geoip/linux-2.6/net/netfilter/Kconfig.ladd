@@ -1,0 +1,15 @@
+config NETFILTER_XT_MATCH_GEOIP
+   tristate  '"geoip" match support'
+   depends on NETFILTER_XTABLES
+   help
+          This option allows you to match a packet by its source or
+          destination country.  Basically, you need a country's
+          database containing all subnets and associated countries.
+
+          For the complete procedure and understanding, read :
+          http://people.netfilter.org/acidfu/geoip/howto/geoip-HOWTO.html
+
+          If you want to compile it as a module, say M here and read
+          <file:Documentation/modules.txt>.  The module will be
+          called `ipt_geoip'.  If unsure, say `N'.
+

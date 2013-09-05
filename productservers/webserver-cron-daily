@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# monitoring server crontab entry
+# placed in cron-daily
+
+set -e
+
+# XXX: what to do here?
+
+exit 0

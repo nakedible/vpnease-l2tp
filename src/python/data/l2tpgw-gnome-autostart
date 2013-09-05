@@ -1,0 +1,52 @@
+#!/usr/bin/python
+
+"""
+Gnome autorun.
+"""
+
+import os, sys
+
+def main():
+    ff_uri = sys.argv[1]
+
+    # write dbus info
+    try:
+        from codebay.l2tpserver import constants
+        t = os.environ['DBUS_SESSION_BUS_ADDRESS']
+        f = open(constants.DBUS_SESSION_BUS_ADDRESS_FILE, 'wb')
+        f.write('%s\n' % t)
+        f.close()
+    except:
+        print 'Cannot determine DBUS_SESSION_BUS_ADDRESS'
+
+    # launch firefox
+    os.system('/usr/bin/firefox %s &' % ff_uri)
+
+    # initial start balloon
+    try:
+        import datetime
+        from codebay.l2tpserver import constants
+        from codebay.l2tpserver import gnomehelpers
+
+        if not os.path.exists(constants.WELCOME_BALLOON_SHOWN_MARKER_FILE):
+            # for livecd this is a bit pointless but doesn't hurt
+            f = open(constants.WELCOME_BALLOON_SHOWN_MARKER_FILE, 'wb')
+            f.write('%s\n' % datetime.datetime.utcnow().isoformat())
+            f.close()
+
+            if os.path.exists(constants.LIVECD_MARKER_FILE):
+                gnomehelpers.show_notification(constants.LIVECD_WELCOME_TITLE,
+                                               constants.LIVECD_WELCOME_TEXT,
+                                               timeout=constants.LIVECD_WELCOME_TIMEOUT,
+                                               critical=False)
+            else:
+                gnomehelpers.show_notification(constants.INSTALLED_WELCOME_TITLE,
+                                               constants.INSTALLED_WELCOME_TEXT,
+                                               timeout=constants.INSTALLED_WELCOME_TIMEOUT,
+                                               critical=False)
+                
+    except:
+        print 'Cannot show initial balloons'
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,25 @@
+
+VPNease snapshot
+----------------
+
+This is a snapshot of VPNease, a Linux-based L2TP/IPsec VPN server product
+which used to reside at www.vpnease.com.  The snapshot has been taken after
+the last product release (1.2.8605) and may have minor bugs.
+
+The snapshot includes:
+
+  - Source code for the VPN server
+  - Source code for various support servers
+  - Source code for Windows client helpers
+  - Various patched Ubuntu packages
+  - Build scripts for packages and the VPN server installation Live CD
+  - Miscellaneous
+
+The VPNease build is based on Ubuntu 6.06 LTS.  However, the build of the
+snapshot is untested, so your mileage may vary.
+
+The license for VPNease specific files (components developed by VPNease
+and not covered by an existing license) is WTFPL v2, see COPYING.
+
+- The Management @ VPNease
+

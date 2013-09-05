@@ -1,0 +1,54 @@
+2006-07-28  Matt Goodall <matt@pollenation.net>
+
+	Added a workaround for the case where an IE user submits a form with a
+	single field by pressing <enter>. Formal now automatically chooses which
+	action to take when it can safely do so.
+
+2006-07-13  Matt Goodall <matt@pollenation.net>
+
+	Allow an application-specific CSS class to be assigned to a Group. The
+	class is included on the root element of the group.
+
+2006-07-04  Matt Goodall <matt@pollenation.net>
+
+	Added groups of fields. A Group of Fields can now be added to a Form using
+	the Form.add() method. Fields are added to the Group using the Group.add()
+	method. A Group can also be added to another Group using Group.add()
+	
+	A Group is reresented by a <fieldset> element and it completely contains
+	its Fields. A Group currently performs to validation of its own.
+
+	Each Group is named, just like a Field, and the name must be unique within
+	the context of the object it is added to (i.e. a Group of Form). The
+	effect of the Group's name is that an extra "segment" is added to the Form
+	data's dict keys to provide the namespace for Fields in a Group.
+	
+	For instance, if a Field, 'bar', is added to a Group, 'foo', and that
+	Group is then added to a Form the field's data key is 'foo.bar'.
+
+	This change introduces a new Form.add() method. It is intended to replace
+	Form.addField() although that method still exists. All Form.addField(...)
+	now does is forward the call to Form.add(formal.Field(...)).
+	Form.addField() will probably be deprecated sometime.
+
+	I may have slighty broken the default (and your) stylesheet with this
+	change because I had been using a <fieldset> immediately inside the <form>
+	element. That turns out to be unnecessary (any block element will do) so I
+	decided to use a <fieldset> only for Groups to keep the <fieldset> nesting
+	as shallow as possible.
+
+2005-12-21  Damian Staniforth <damian@pollenation.net>
+
+	Added a ReSTTextArea widget. The widget accepts ReST-format input and
+	includes a preview facility.
+
+2005-12-15  Matt Goodall <matt@pollenation.net>
+
+	Added a SelectOtherChoice widget. The widget is similar to the
+	SelectChoice but includes an "Other ..." option and an <input> field to
+	provide another value if the options in the list and not appropriate.
+
+2005-12-25  Matt Goodall <matt@pollenation.net>
+
+	Added ChangeLog. I should have done this a long time ago. Now I'll have to
+	revisit the commit log and try to write something sensible here.

@@ -1,0 +1,25 @@
+diff -u -r kernel-2.4.25/include/linux/netfilter_ipv4/ip_tables.h kernel-2.4.25.ipt_ACCOUNT/include/linux/netfilter_ipv4/ip_tables.h
+--- kernel-2.4.25/include/linux/netfilter_ipv4/ip_tables.h	Mon Apr 12 20:02:19 2004
++++ kernel-2.4.25.ipt_ACCOUNT/include/linux/netfilter_ipv4/ip_tables.h	Mon Apr 12 17:37:20 2004
+@@ -151,10 +151,21 @@
+ #define IPT_SO_SET_ADD_COUNTERS	(IPT_BASE_CTL + 1)
+ #define IPT_SO_SET_MAX		IPT_SO_SET_ADD_COUNTERS
+ 
++#define IPT_SO_SET_ACCOUNT_HANDLE_FREE	(IPT_BASE_CTL + 3)
++#define IPT_SO_SET_ACCOUNT_HANDLE_FREE_ALL (IPT_BASE_CTL + 4)
++#define IPT_SO_SET_ACCOUNT_MAX		IPT_SO_SET_ACCOUNT_HANDLE_FREE_ALL
++
+ #define IPT_SO_GET_INFO		(IPT_BASE_CTL)
+ #define IPT_SO_GET_ENTRIES	(IPT_BASE_CTL + 1)
+ #define IPT_SO_GET_MAX		IPT_SO_GET_ENTRIES
+ 
++#define IPT_SO_GET_ACCOUNT_PREPARE_READ (IPT_BASE_CTL + 3)
++#define IPT_SO_GET_ACCOUNT_PREPARE_READ_FLUSH (IPT_BASE_CTL + 4)
++#define IPT_SO_GET_ACCOUNT_GET_DATA (IPT_BASE_CTL + 5)
++#define IPT_SO_GET_ACCOUNT_GET_HANDLE_USAGE (IPT_BASE_CTL + 6)
++#define IPT_SO_GET_ACCOUNT_GET_TABLE_NAMES (IPT_BASE_CTL + 7)
++#define IPT_SO_GET_ACCOUNT_MAX      IPT_SO_GET_ACCOUNT_GET_TABLE_NAMES
++
+ /* CONTINUE verdict for targets */
+ #define IPT_CONTINUE 0xFFFFFFFF
+ 

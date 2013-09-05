@@ -1,0 +1,74 @@
+Index: redland-1.0.4/librdf/rdf_storage_sqlite.c
+===================================================================
+--- redland-1.0.4.orig/librdf/rdf_storage_sqlite.c	2006-07-17 20:23:12.000000000 +0300
++++ redland-1.0.4/librdf/rdf_storage_sqlite.c	2006-07-17 20:26:36.000000000 +0300
+@@ -680,7 +680,9 @@
+     librdf_log(storage->world, 0, LIBRDF_LOG_ERROR, LIBRDF_FROM_STORAGE, NULL,
+                "SQLite database %s open failed - %s", 
+                context->name, errmsg);
++#if SQLITE_API == 2
+     sqlite_FREE(errmsg);
++#endif
+ #if SQLITE_API == 3
+     sqlite_CLOSE(context->db);
+ #endif
+@@ -1243,7 +1245,9 @@
+                  0, LIBRDF_LOG_ERROR, LIBRDF_FROM_STORAGE, NULL,
+                  "SQLite database %s finalize failed - %s (%d)", 
+                  scontext->name, errmsg, status);
++#if SQLITE_API == 2
+       sqlite_FREE(errmsg);
++#endif
+     }
+     result= -1;
+   }
+@@ -1345,7 +1349,9 @@
+                  0, LIBRDF_LOG_ERROR, LIBRDF_FROM_STORAGE, NULL,
+                  "SQLite database %s finalize failed - %s (%d)", 
+                  scontext->sqlite_context->name, errmsg, status);
++#if SQLITE_API == 2
+       sqlite_FREE(errmsg);
++#endif
+     }
+   }
+ 
+@@ -1597,7 +1603,9 @@
+                  0, LIBRDF_LOG_ERROR, LIBRDF_FROM_STORAGE, NULL,
+                  "SQLite database %s finalize failed - %s (%d)", 
+                  scontext->sqlite_context->name, errmsg, status);
++#if SQLITE_API == 2
+       sqlite_FREE(errmsg);
++#endif
+     }
+   }
+ 
+@@ -1946,7 +1954,9 @@
+                  0, LIBRDF_LOG_ERROR, LIBRDF_FROM_STORAGE, NULL,
+                  "SQLite database %s finalize failed - %s (%d)", 
+                  scontext->sqlite_context->name, errmsg, status);
++#if SQLITE_API == 2
+       sqlite_FREE(errmsg);
++#endif
+     }
+   }
+ 
+@@ -2061,7 +2071,9 @@
+                  0, LIBRDF_LOG_ERROR, LIBRDF_FROM_STORAGE, NULL,
+                  "SQLite database %s finalize failed - %s (%d)", 
+                  scontext->name, errmsg, status);
++#if SQLITE_API == 2
+       sqlite_FREE(errmsg);
++#endif
+     }
+     result= -1;
+   }
+@@ -2171,7 +2183,9 @@
+                  0, LIBRDF_LOG_ERROR, LIBRDF_FROM_STORAGE, NULL,
+                  "SQLite database %s finalize failed - %s (%d)", 
+                  icontext->sqlite_context->name, errmsg, status);
++#if SQLITE_API == 2
+       sqlite_FREE(errmsg);
++#endif
+     }
+   }
+ 

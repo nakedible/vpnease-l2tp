@@ -1,0 +1,411 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Server Installation</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          <n:invisible n:macro="productname" /> server installation requires a dedicated PC.
+          You can also install <n:invisible n:macro="productname" /> server using a virtualization
+          product, which allows you to share the hardware with other software.
+        </p>
+        <p>  
+          To install the <n:invisible n:macro="productname" /> server to a dedicated PC:
+        </p>
+        <ul>
+          <li>Read and accept the <n:invisible n:macro="productname" /> legal documents.</li>
+          <li>Download <n:invisible n:macro="productname" /> Live CD ISO image and burn it to a CD or a DVD.</li>
+          <li>Boot the computer from <n:invisible n:macro="productname" /> Live CD.</li>
+          <li><n:invisible n:macro="productname" /> Live CD user interface opens automatically.
+              Select Install <n:invisible n:macro="productname" /> Server and follow the instructions.</li>
+          <li>Reboot the computer to start the <n:invisible n:macro="productname" /> server.</li>
+          <li>Log in to <n:invisible n:macro="productname" /> administrator interface, modify the
+              configuration settings according your network setup, and add user accounts.</li>
+          <li>Configure client computers and verify VPN connection functionality.</li>  
+        </ul>
+        <p>
+          Installing <n:invisible n:macro="productname" /> server on a virtualization product contains the 
+          same steps except the following:
+        </p>
+        <ul>
+          <li>You must create a virtual machine for the <n:invisible n:macro="productname" /> server.</li>
+          <li>There is no need to burn the <n:invisible n:macro="productname" /> Live CD ISO image to a CD.
+              You can configure the ISO image to be used as a medium for a virtual CD/DVD drive instead.</li>
+          <li>If you are using VMware, you can also use a prepackaged virtual appliance and bypass the
+              <n:invisible n:macro="productname" /> Live CD installation steps.  After unpacking and taking
+              the appliance into use, you can start configuring the <n:invisible n:macro="productname" /> server directly.</li>
+        </ul>  
+        <p>
+          See <a href="virtualization-products.html">Virtualization Products</a> for a list of supported
+          virtualization products.
+        </p>
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Prerequisites</h1>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">General</h1>
+       
+          <p>
+            Check the following prerequisites before starting installation:
+          </p>
+          <ul>
+            <li>
+              You must read and accept the <a href="license-agreement.html">License Agreement</a> and
+              <a href="privacy-policy.html">Privacy Policy</a> before you are allowed to use the product
+              (even for demo use).
+            </li>        
+            <li>
+              Download <n:invisible n:macro="productname" /> server ISO image or prepackaged VMware appliance
+              (if using VMware) from <a href="download-home.html"><n:invisible n:macro="productname" /> Download</a> page.
+            </li>
+            <li>
+              Check <a href="server-requirements.html">Server Requirements</a> for hardware and network
+              requirements. If you are going to install 
+              <n:invisible n:macro="productname" /> server on a virtualization product, see 
+              <a href="virtualization-products.html">Virtualization Products</a>.
+            </li>
+            <li>
+              Check computer BIOS settings. For more information, see <a href="server-bios-setup.html">Server BIOS Setup</a>.
+            </li>
+          </ul>
+        </div> <!-- general -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Network Parameters</h1>
+
+          <p>
+            You'll need the following information about your network configuration:
+          </p>
+          <ul>
+            <li>
+              Internet settings (if connecting <n:invisible n:macro="productname" /> server to the Internet):
+              <ul>
+                <li>IP address settings: DHCP, or static IP address, subnet mask, and default router.</li>
+                <li>
+                  If you have a dynamic IP address, check your dynamic DNS provider settings (recommended).
+                  See <a href="faq.html#dynamic-dns">FAQ</a> for more information. 
+                </li>
+              </ul>
+            </li>
+            <li>
+              Internal network settings:
+              <ul>
+                <li>DHCP, or static IP address and subnet mask for internal network</li>
+                <li>Additional routes within the internal network, if applicable</li>
+              </ul>
+            </li>
+            <li>
+              If you have multiple company sites, you will need individual subnet and address information
+              for every site to set up site-to-site connections.
+            </li>
+          </ul>
+        </div> <!-- network parameters -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Network Configurations</h1>
+
+          <p>
+            <n:invisible n:macro="productname" /> has two basic network configuration models: one and two network
+            interface configuration.
+          </p>
+
+          <p>  
+            In one network interface configuration the network interface is used both receiving encrypted IPsec packets from the Internet,
+            and for sending decrypted plaintext packets to the company private network.  This model is preferred because of its
+            simplicity and is suited to configurations, where the company firewall port forwards
+            the ports required by <n:invisible n:macro="productname" /> from the Internet to the server residing in the
+            internal network.
+          </p>
+
+          <p>
+            In two network interface configuration one network interface is connected to the Internet
+            and the other to the company private network.  This model is suited to following configurations:
+            <ul>
+              <li><n:invisible n:macro="productname" /> server is used as a firewall</li>
+              <li><n:invisible n:macro="productname" /> server is deployed in conjunction with an existing firewall</li>
+              <li>No port forwarding is desired</li>
+              <li>The company network is relatively large or complex</li>
+            </ul>
+          </p>
+
+          <p>
+            In addition to these two basic models, <n:invisible n:macro="productname" /> provides several smaller options
+            to make the product fit in the best possible manner to your company network:
+          </p>
+          <ul>
+            <li><strong class="cb-bold">NAT for user traffic</strong>
+                (<strong class="cb-guilabel">Configuration &rarr; Network</strong>).
+                When enabled, <n:invisible n:macro="productname" /> performs an address translation (NAT) on decrypted
+                VPN traffic.  This simplifies routing by making all user traffic seem to come to the company network from the address of the
+                <n:invisible n:macro="productname" /> server.  This setting is preferred for most
+                network setups and is the default choice.</li>
+            <li><strong class="cb-bold">Proxy ARP for user traffic</strong>
+                (<strong class="cb-guilabel">Configuration &rarr; Network</strong>).
+                In normal routing your company hosts and/or routers are configured to route all
+                traffic destined to <n:invisible n:macro="productname" /> clients and remote site-to-site networks
+                through the <n:invisible n:macro="productname" /> server.
+                Proxy ARP makes the <n:invisible n:macro="productname" /> respond to ARP queries for VPN addresses
+                (and other routable addresses) on the local network, making it appear as if clients resided directly in the network which the
+                <n:invisible n:macro="productname" /> is connected to.  This allows you to use VPN client addresses which are a 
+                part of the local IP subnet.</li>
+            <li><strong class="cb-bold">Basic firewall and routing functions</strong>
+                (<strong class="cb-guilabel">Configuration &rarr; Routing &amp; Firewall</strong>).
+                <n:invisible n:macro="productname" /> allows you to route non-client traffic through (in which case NAT
+                is applied to the traffic), configure port forwarding entries, and prevent access to certain company
+                servers from VPN users.  With <strong class="cb-guilabel">Source  Routing</strong> option all VPN traffic 
+                can be routed to a particular router with a full routing table, such as the company firewall.</li>
+          </ul>
+        </div> <!-- network configurations -->
+      </div> <!-- prerequisites -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 1: Installing <n:invisible n:macro="productname" /> server with Live CD</h1>
+
+        <p>
+          <n:invisible n:macro="productname" /> server installation is done with <n:invisible n:macro="productname" />
+          Live CD. To start the <n:invisible n:macro="productname" /> Live CD, do the following:
+        </p>
+        <ul>
+          <li>
+            Start the computer and insert the <n:invisible n:macro="productname" /> Live CD into the CD/DVD drive.
+            The <n:invisible n:macro="productname" /> Live CD should start
+            automatically.  If not, adjust your BIOS settings to prefer booting
+            from CD/DVD over other media.  Alternatively, you may be able to
+            choose a different boot device for one particular boot, depending
+            on your BIOS features.
+          </li>
+          <li>
+            In the <n:invisible n:macro="productname" /> Live CD start menu you have the following options:
+            <ul>
+              <li>
+                <strong class="cb-guilabel">Install <n:invisible n:macro="productname" /> in safe graphics mode</strong> (default) - starts the
+                <n:invisible n:macro="productname" /> Live CD in safe graphics mode.  Safe graphics mode uses computer BIOS provided video mode,
+                which minimizes display compatibility problems.
+              </li>
+              <li>
+                <strong class="cb-guilabel">Install <n:invisible n:macro="productname" /> in native graphics mode</strong> - starts the <n:invisible n:macro="productname" />
+                Live CD in native graphics mode.  Native graphics mode uses a hardware specific driver.
+                Use this option if the <n:invisible n:macro="productname" /> Live CD start fails with the default option.
+              </li>
+              <li>
+                <strong class="cb-guilabel">Check CD for defects</strong> - checks 
+                <n:invisible n:macro="productname" /> Live CD for possible transfer errors.
+              </li>
+              <li>
+                <strong class="cb-guilabel">Memory test</strong> - runs a memory test.
+              </li>            
+            </ul>
+            
+            Select <strong class="cb-guilabel">Install <n:invisible n:macro="productname" /></strong> and press 
+            <strong class="cb-keycap">Enter</strong> to start the <n:invisible n:macro="productname" /> Live CD.
+          </li>
+        </ul>
+        <p>
+          The <n:invisible n:macro="productname" /> Live CD will open the  <n:invisible n:macro="productname" />
+          Live CD user interface automatically.  <n:invisible n:macro="productname" /> server is managed
+          using a local or a remote web browser.  For installation and initial configuration a local browser is 
+          used because network settings have not yet been entered. To install <n:invisible n:macro="productname" /> 
+          server do the following:
+        </p>
+          
+        <ul>
+          <li>
+            Select <strong class="cb-guilabel">Install / Recovery</strong> from the 
+            <n:invisible n:macro="productname" /> Live CD user interface.
+          </li>
+          <li>
+            Read through the <a href="license-agreement.html">License Agreement</a> and 
+            <a href="privacy-policy.html">Privacy Policy</a> and check
+            the related checkbox (assuring that you have read and accepted the documents).
+            Click <strong class="cb-guilabel">Next</strong>.
+          </li>
+          <li>
+            The installer will show you possible installation target media
+            found on the computer.  If the installation medium (e.g. a USB
+            stick) is not yet connected, connect it now and click
+            <strong class="cb-guilabel">Rescan</strong>.
+            You can also choose to attempt recovery of configurations from
+            an existing installation, by checking the
+            <strong class="cb-guilabel">Attempt recovery</strong>
+            check box.
+            Select one of the target media and click
+            <strong class="cb-guilabel">Next</strong>.
+          </li>
+        </ul>  
+          
+        <div class="cb-note">
+          <p>
+            If you are using USB stick as an installation medium,
+            the USB stick is re-partitioned and formatted in a customized manner for
+            the product. If you want to uninstall <n:invisible n:macro="productname" /> server later,
+            the Live CD allows you re-partition and re-format the USB stick after which 
+            you can use the stick normally to exchange files.
+          </p>
+        </div>  
+            
+        <ul>
+          <li>
+            Details of the selected medium are shown.  If recovery was attempted, recovery
+            information availability is also shown.  Make sure that this
+            is the correct target for installation.
+            <strong class="cb-bold">Installation will erase all existing data
+            on the medium</strong>.
+            If satisfied, click <strong class="cb-guilabel">Start installation</strong>.
+          </li>
+          <li>
+            The installer will re-partition and format the target medium and
+            install software on the medium.  The duration of this step is dependent on the performance of the
+            target medium, but typically takes 5-30 minutes.  Installation on a USB stick
+            is typically slower than on a normal hard disk.
+          </li>
+          <li>
+            When installation is complete, click
+            <strong class="cb-guilabel">Reboot computer</strong>.
+            Remove the <n:invisible n:macro="productname" /> Live CD after the
+            CD has been ejected from the CD drive.
+          </li>
+        </ul>
+
+        <p>
+          The <n:invisible n:macro="productname" /> server starts the administrator interface
+          automatically after reboot.  If <n:invisible n:macro="productname" /> server startup fails, see
+          the <a href="faq.html#startup-issues">FAQ</a>.
+        </p>
+
+      </div> <!-- step 1: live cd installer -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 2: Configuring <n:invisible n:macro="productname" /> Server</h1>
+
+        <p>
+          After installation and rebooting, <n:invisible n:macro="productname" /> server administrator interface
+          is started automatically. Minimum configuration steps for setting up the
+          <n:invisible n:macro="productname" /> server are:
+        </p>
+        <ul>
+          <li>
+            Go to the <strong class="cb-guilabel">Configuration &rarr; License &amp; Maintenance</strong>.
+            If you want to test the product with a demo license, leave <strong class="cb-guilabel">
+            License key</strong> empty. 
+            If you have a <n:invisible n:macro="productname" /> license, type 
+            the key to the <strong class="cb-guilabel">License key</strong> field. Select the valid 
+            timezone and keyboard layout. Check <strong class="cb-guilabel">Product Maintenance</strong>
+            and <strong class="cb-guilabel">Remote management</strong> settings.  Note that automatic
+            product updates are disabled by default, enable them if you desire automatic product update (check)
+            on reboot.  Save changes. 
+          </li>
+          <li>
+            Go to the <strong class="cb-guilabel">Configuration &rarr; Network</strong> and
+            select either one or two interface network setup. Check the interface and IP address information
+            of the network(s). 
+            Go down to the <strong class="cb-guilabel">VPN Connection Settings</strong>. 
+            Set the <strong class="cb-guilabel">pre-shared key</strong> for IPsec authentication.  Write the
+            pre-shared key down temporarily for later use when configuring client(s). Check
+            that <strong class="cb-guilabel">VPN client subnet</strong> and <strong class="cb-guilabel">
+            VPN client address range</strong> don't overlap with existing subnets and address ranges used
+            inside the company intranet. If they do, choose another subnet and address range for
+            VPN clients. Save changes.  
+          </li>
+          <li>
+            Go to the <strong class="cb-guilabel">Configuration &rarr; User Accounts</strong> and give
+            <n:invisible n:macro="productname" /> username and password for each <n:invisible n:macro="productname" />
+            user.  Alternatively, configure RADIUS authentication (see <a href="authentication-options.html">Authentication Options</a>
+            for details).  Save changes when you're done.
+          </li>
+        </ul>
+          
+        <div class="cb-note">
+          <p>
+            Users can change their <n:invisible n:macro="productname" /> passwords from the
+            <n:invisible n:macro="productname" /> user web interface. A <n:invisible n:macro="productname" />
+            administrator does not have access to users' passwords. If a user does not remember his 
+            <n:invisible n:macro="productname" />
+            password, administrator can set a new <n:invisible n:macro="productname" /> password for the user.    
+          </p>
+        </div>            
+  
+        <p>
+          Depending on your network setup, you may require additional configuration steps before
+          <n:invisible n:macro="productname" /> server is ready for use. 
+
+          See <a href="administration-interface.html">Administration Interface</a> for more detailed information about
+          <n:invisible n:macro="productname" /> server configuration possibilities.
+        </p>
+          
+        <p>
+          After configuring the <n:invisible n:macro="productname" /> server, you should test the
+          VPN connection from the Internet by configuring one VPN client computer. To set up a client,
+          you (and all <n:invisible n:macro="productname" /> users) will need the following information:
+          <ul>
+            <li><n:invisible n:macro="productname" /> (or company firewall) domain name or IP address</li>
+            <li><n:invisible n:macro="productname" /> username and password</li>
+            <li><n:invisible n:macro="productname" /> server pre-shared key</li>    
+          </ul>
+        </p>
+
+        <p>
+          See <a href="client-configuration.html">Client Configuration</a> for more information.
+        </p>
+
+      </div> <!-- step 2: Configuring... -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 3: Configure External Devices</h1>
+          
+        <p>
+          If you have chosen to use port forwarding to access the <n:invisible n:macro="productname" />
+          server from the Internet, you need to configure port forwarding rules to your firewall.
+          See <a href="server-requirements.html">Server Requirements</a> for a list of required ports and protocols.
+        </p>
+
+        <p>
+          Check that IP routing configuration of other network devices (especially firewalls and
+          routers in your corporate intranet) have been configured correctly.  In particular, if you
+          are using site-to-site connections, please check <a href="site-to-site-configuration.html">Site-to-Site Configuration</a>
+          for routing requirements.
+        </p>
+      </div> <!-- step 3: configure external devices -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Step 4: Finalizing Installation</h1>
+          
+        <p>
+          If you selected not to use automatic updates, plan an upgrade check for every month or so.  
+          It is important to upgrade the product if upgrades become available.
+        </p>
+
+        <p>
+          If you installed to a normal IDE/SCSI hard disk, you should plan
+          when the hard disk is replaced.  Typical hard
+          disk lifetimes are 3-5 years. If you installed to a flash RAM (USB stick or Compact Flash
+          hard disk), no maintenance is typically required for the installation
+          medium.
+        </p>
+      </div> <!-- step 4: finalizing installation -->
+
+    </n:invisible>
+  </body>
+</html>
+
+

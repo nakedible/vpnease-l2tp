@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:n="http://nevow.com/ns/nevow/0.1">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title><n:invisible n:macro="productname" /> - <n:invisible n:render="page_title" /></title>
+<meta name="description" content="" />
+<link rel="stylesheet" href="/static/site.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/layout.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/cb.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/formal.css" type="text/css" media="screen" />  
+<link rel="stylesheet" href="/static/print-site.css" type="text/css" media="print" />  
+<link rel="stylesheet" href="/static/print-ui.css" type="text/css" media="print" />  
+<link rel="stylesheet" href="/static/print-cb.css" type="text/css" media="print" />  
+<link rel="stylesheet" href="/static/print-formal.css" type="text/css" media="print" />  
+<!--[if IE]>
+<link rel="stylesheet" href="/static/iehacks.css" type="text/css" media="screen" />
+<![endif]-->
+<link rel="stylesheet" href="/static/hacks.css" type="text/css" media="screen" />  
+
+<link rel="shortcut icon" href="/static/favicon.gif" type="image/gif" />
+<link rel="icon" href="/static/favicon.gif" type="image/gif" />
+
+<!-- default scripting language, optional -->
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+
+<script src="/static/commonutils.js" type="text/javascript" />
+<script src="/static/formalutils.js" type="text/javascript" />
+<script src="/static/ajaxutils.js" type="text/javascript" />
+<script src="/static/admin.js" type="text/javascript" />
+
+<script type="text/javascript" n:render="dynamic_javascript" />
+
+<n:invisible n:render="headextras" />
+
+</head>
+
+
+<body>
+
+<div id="header" class="clear-float">
+
+	<div class="unit span-3">	
+          &#x00a0;
+	</div>
+
+	<div id="status" class="unit span-12 last">
+		<ul class="clear-float">			
+			<li class="message"><h3>Status</h3>
+				<span id="status-text" n:render="status" /><br />
+				<span id="status-substatus-text" n:render="substatus" />&#x00a0;  <!-- nbsp required -->
+			</li>
+			<li class="last last-user"><h3>Current User</h3>
+				<span id="status-username"><n:invisible n:render="logged_in_user" /></span><br />
+				<a href="#" n:render="logout_uri">Logout</a>
+			</li>
+		</ul>
+	</div>
+		        
+<!-- /header -->
+</div>
+
+<div id="main-w">
+<div id="main">
+
+    <div class="unit span-3">        
+
+            <n:invisible n:render="customer_logo_customization_maybe" />
+
+	    <div id="nav">   			
+                <h3 id="h-configuration" n:render="nav_heading_disabled_class">Home</h3>
+                <n:invisible n:render="nav_home" />
+
+                <h3 id="h-configuration" n:render="nav_heading_disabled_class">Configuration</h3>
+                <n:invisible n:render="nav_config" />
+  	    </div>
+    <!-- /unit -->
+    </div>
+ 
+
+    <div class="unit content last">    
+        
+    <!--
+    ###################################
+    PAGE CONTENT STARTS
+    ###################################
+    -->
+    
+            <div id="current-time-heading"><span id="status-datetime"><n:invisible n:render="datetime" /></span></div>
+
+            <h1><n:invisible n:render="page_title" /></h1>
+
+        <div class="content-middle">
+          <div class="dummy">
+            <n:invisible n:macro="content" />
+          </div>
+        </div>
+
+    <!--
+    ###################################
+    PAGE CONTENT ENDS
+    ###################################
+    -->
+                    
+    <!-- /content -->
+    </div>
+ 
+    
+    <!-- old skool clearing float -->
+	<div class="cut">&#x00a0;</div>
+
+                                                                      
+<!-- /main -->
+</div> 
+</div> 
+
+
+
+
+        
+
+<div id="footer">    
+
+	<div class="unit full">
+        <p id="copyr">
+            Copyright &copy; 2006-2008 Codebay. All rights reserved. See our <a href="#" n:render="legal_notice_uri">Legal Notice</a>.
+        </p>       
+        
+        <p>Software version <span id="status-software-version"><n:invisible n:render="software_version" /></span>.
+        </p>
+        
+ 	</div>
+ 
+<!-- /footer -->
+</div>
+
+<!--
+<div id="current-time"><span id="status-datetime"><n:invisible n:render="datetime" /></span></div>
+-->
+
+<!-- automatically times out and redirects if no action -->
+<script src="/static/user_autologout.js" type="text/javascript" />
+
+</body>
+</html>

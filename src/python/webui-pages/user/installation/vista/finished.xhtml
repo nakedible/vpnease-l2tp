@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Using the VPN connection</h2>
+
+        <ul>
+          <li>
+            Go to <strong class="cb-guilabel">Network Connections</strong> through
+            <strong class="cb-guilabel">Start</strong> &rarr;
+            <strong class="cb-guilabel">Control Panel</strong> &rarr;
+            <strong class="cb-guilabel">Network and Internet</strong> &rarr;
+            <strong class="cb-guilabel">Network and Sharing Center</strong> &rarr;
+            <strong class="cb-guilabel">Manage network connections</strong>.
+            (If you use Classic view, this path will be different.)
+          </li>
+
+          <li>
+            Start the VPN connection by double-clicking your <n:invisible n:macro="productname" /> connection profile
+            (e.g. <strong class="cb-guilabel">My Company VPN</strong>).
+          </li>
+
+          <li>
+            Enter your <n:invisible n:macro="productname" /> username and password to the dialog.
+            If you want to save your <n:invisible n:macro="productname" /> username and password 
+            to this computer, check
+            <strong class="cb-guilabel">Save this user name and password for the following users</strong>
+            checkbox and select either <strong class="cb-guilabel">Me only</strong> or 
+            <strong class="cb-guilabel">Anyone who uses this computer</strong> depending on your preferences.
+            Click <strong class="cb-guilabel">Connect</strong>.
+          </li>
+
+          <li>
+            Connection window will disappear and a tray icon
+            will indicate that the connection is active.
+          </li>
+
+          <li>
+            When you connect for the first time, Windows opens a <strong class="cb-guilabel">Set Network Location</strong> dialog
+            which allows you to configure network location, which primarily affects connection security settings.
+            Because the VPN connection is a trusted one, select the <strong class="cb-guilabel">Work</strong> option.
+            Click <strong class="cb-guilabel">Close</strong> to complete network location
+            configuration.
+          </li>
+
+          <li>
+            Ensure that connectivity to your company network resources works correctly by e.g. using your
+            e-mail client or opening a web page from an intranet server.
+            <!-- You can also use the <strong class="cb-guilabel">ping</strong>
+            command in the <strong class="cb-guilabel">Command Prompt</strong> (<strong class="cb-guilabel">cmd.exe</strong>) to test reachability of some
+            intranet server. -->
+          </li>
+          <li>
+            You have several options to disconnect your VPN connection:
+            <ul>
+              <li>
+                Click right mouse button over VPN connection icon and select <strong class="cb-guilabel">Disconnect</strong>
+                from the context menu.
+              </li>
+              <li>
+                Click taskbar connection icon. Select <strong class="cb-guilabel">Connect or disconnect...</strong>
+                from the appearing menu to open Connect to a network dialog. Select VPN 
+                connection (e.g. My Company VPN) and click <strong class="cb-guilabel">Disconnect</strong>.
+              </li>
+            </ul>  
+          </li>
+        </ul>
+
+        <h2 class="step-heading">Optional: Creating a desktop shortcut</h2>
+        <p>
+          If you are using the VPN connection regularly you can create a shortcut for the
+          VPN connection to your Windows desktop:
+          <ul>
+          <li>
+            Go to <strong class="cb-guilabel">Network Connections</strong> through
+            <strong class="cb-guilabel">Start</strong> &rarr;
+            <strong class="cb-guilabel">Control Panel</strong> &rarr;
+            <strong class="cb-guilabel">Network and Internet</strong> &rarr;
+            <strong class="cb-guilabel">Network and Sharing Center</strong> &rarr;
+            <strong class="cb-guilabel">Manage network connections</strong>.
+          </li>
+          <li>
+            Drag your VPN connection icon with right mouse button on the desktop.
+          </li>
+          <li>
+            Release mouse button and select <strong class="cb-guilabel">Create Shortcuts Here</strong> from the appearing context menu.
+          </li>  
+          </ul>
+        </p>
+        
+        <h2 class="step-heading">Optional: Improving reliability</h2>
+        <p>
+          If you wish to improve the reliability of your
+          VPN connection, you can enable automatic redialing.  Click
+          <strong class="cb-guilabel">Properties</strong> from the connection dialog and select
+          <strong class="cb-guilabel">Options</strong> tab.  Alter settings as follows:
+          <ul> <!-- auto redial -->
+            <li>Redial attempts &rarr; <strong class="cb-userinput">50</strong></li>
+            <li>Time between redial attempts &rarr; <strong class="cb-userinput">10 seconds</strong></li>
+            <li>Idle time before hanging up &rarr; <strong class="cb-userinput">never</strong></li>
+            <li>Check the <strong class="cb-guilabel">Redial if line is dropped</strong> checkbox</li>
+            <!-- NOTE:
+                   "Redial if line is dropped" is enabled by default in Vista.
+                   The setting is disabled by default in Windows XP and Windows 2000.
+            -->
+          </ul> <!-- auto redial -->
+        </p>
+        <p>
+          These settings ensure that Windows automatically reconnects if the server is temporarily unavailable.
+          However, other settings may be more appropriate for your environment.
+        </p>
+        
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+    </n:invisible>
+  </body>
+</html>

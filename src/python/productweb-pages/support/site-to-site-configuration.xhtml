@@ -1,0 +1,420 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Site-to-Site Configuration</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          A site-to-site VPN connection routes traffic between two company sites by encrypting
+          and sending traffic using an IPsec-protected "tunnel".  In practice, a site-to-site
+          connection acts like an ordinary router: IP packets destined to a remote site are
+          routed to the <n:invisible n:macro="productname" /> server configured with the site-to-site
+          connection, and are then transparently routed through the Internet to the other company
+          site.
+        </p>
+
+        <p>
+          The configuration steps for a site-to-site connection are as follows (we cover these steps
+          in detail below):    
+        </p>
+        <ul>
+          <li>
+            Determine network configuration
+          </li>
+          <li>
+            Determine <n:invisible n:macro="productname" /> server addresses
+          </li>
+          <li>
+            Configure site-to-site responder endpoint
+          </li>
+          <li>
+            Configure site-to-site initiator endpoint
+          </li>
+          <li>
+            Make routing changes to your other devices
+          </li>
+          <li>
+            Verify the site-to-site connection
+          </li>
+          <li>
+            Verify site-to-site routing
+          </li>
+        </ul>
+
+        <div class="cb-note">
+          <p>
+            Setting up site-to-site VPN connections involves many devices: the <n:invisible n:macro="productname" />
+            servers, firewalls, routers, and intranet computers at each site.  Typical problems in configuring
+            site-to-site connections are routing and firewall related, so follow the configuration steps carefully.
+            Incorrect routing typically results in lack of end-to-end connectivity even though the site-to-site VPN
+            connection itself is working correctly.
+          </p>
+        </div>
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Configuration Steps</h1>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Determine Network Configuration</h1>
+
+          <p>
+            Design your desired network configuration beforehand.
+            In particular, you need to determine which IP subnets are used
+            in the site-to-site endpoints.  This information is required to configure IP routing
+            correctly, so that each site-to-site connection endpoint knows which packets to send
+            over the site-to-site VPN connection.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Determine <n:invisible n:macro="productname" /> Server Addresses</h1>
+
+          <p>
+            Determine whether <n:invisible n:macro="productname" /> servers have a public or a private address
+            (port forwarding) and if either address is dynamic and requires dynamic DNS configuration.
+            This information is required to decide which endpoint will initiate a connection, while the
+            other endpoint will only respond to connections.
+          </p>
+
+          <p>
+            A <n:invisible n:macro="productname" /> site-to-site VPN connection is always initiated by one
+            peer while the other peer is a passive responder.  This has no impact on the actual site-to-site
+            connection: the connection is fully symmetric regardless of the direction in which the connection
+            is initiated.
+          </p>
+
+          <p>
+            A peer can act as an initiator if the responding peer is reachable by the initiating peer.  This is
+            usually the case if: (1) the responding peer has a public IP address, or (2) the responding peer has
+            a private IP address but port forwarding has been configured.  In some cases operator firewalls may
+            prevent incoming connections to the responding peer even when the peer has a public IP address.
+            If the responding peer has a dynamic address, configure dynamic DNS for the peer and use the dynamic
+            DNS address when configuring the initiator.
+            Note that the initiating peer may itself be behind a NAT device or be otherwise unreachable from the
+            Internet.  Even in such cases the formed site-to-site connection is fully symmetric.
+          </p>
+
+          <p>
+            If neither peer can act as an initiator, the site-to-site connection cannot be configured.
+            If both peers can act as an initiator, it doesn't matter which one is configured as the initiator.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Configure Site-to-Site Responder Endpoint</h1>
+
+          <p>
+            Configure the responding <n:invisible n:macro="productname" /> server first, defining a username and
+            a password for this site-to-site connection.  The IP subnets of the initiating end need to be defined
+            for the responding endpoint so that traffic can be routed correctly.  If the responding server has a
+            dynamic (but public) IP address, you should configure dynamic DNS updating.
+          </p>
+
+          <p>
+            Check that your product license allows site-to-site connections.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Configure Site-to-Site Initiator Endpoint</h1>
+
+          <p>
+            Configure the initiating <n:invisible n:macro="productname" /> server, using the same username and
+            password as configured into the responding endpoint.  The pre-shared key of the responding endpoint
+            also needs to be defined, you can find this pre-shared key from the network configuration page of the
+            responding server; the pre-shared key is the same one used for normal VPN users.  The IP subnets of the
+            responding end need to be defined for the initiating endpoint so that traffic can be routed correctly.
+          </p>
+
+          <p>
+            Check that your product license allows site-to-site connections.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Make Routing Changes to Your Other Devices</h1>
+
+          <p>
+            Because the IP topology has changed, some routing changes are usually needed.  In short, you need
+            to ensure that packets sent by computers in the initiating server's network to the responding server's
+            network are routed to the initiating <n:invisible n:macro="productname" /> server and vice versa.  If this
+            is not the case, the site-to-site connection will be formed but connections will fail silently because
+            of incorrect routing.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Verify the Site-to-Site Connection</h1>
+
+          <p>
+            Ensure that both endpoints report the site-to-site connection as being up in their status overview
+            page.  If not, check site-to-site username, password, and pre-shared key settings in
+            both endpoints.  Also check that addresses have been entered correctly and your firewall does not
+            prevent the connection from being formed.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Verify Site-to-Site Routing</h1>
+
+          <p>
+            Ensure that packets are routed correctly between IP subnets of each endpoint.  For instance, you
+            may use the 'ping' command to check connectivity between pairs of computers. 
+            This is a critical step because routing configuration issues are the typical cause of
+            site-to-site connectivity problems.
+          </p>
+        </div>
+      </div> <!-- configuration steps -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Troubleshooting</h1>
+
+        <p>
+          Troubleshooting site-to-site connectivity issues can be time consuming because failures are often
+          silent in nature: the site-to-site connection appears to be up, but connectivity nevertheless fails
+          for some reason.
+        </p>
+
+        <p>
+          The quickest approach is to check settings first, and then employ a network traffic analyzer,
+          such as the free <a class="cb-external" target="_blank" href="http://www.wireshark.org/">Wireshark</a> tool
+          (formerly known as Ethereal) to quickly isolate the problem.  More detailed troubleshooting instructions
+          are given below.
+        </p>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Site-to-Site Connection Does Not Come Up</h1>
+
+          <p>
+            This problem is typically relatively easy to diagnose and fix.  First, review the configuration steps
+            above.  In particular, ensure that the site-to-site connection username, password, and pre-shared key
+            have been entered correctly.  Remember that the initiating peer uses the pre-shared key configured in the
+            responding peer's network configuration page.
+          </p>
+
+          <p>
+            If all settings look correct, something is preventing the IPsec protocol from establishing a secure
+            connection between the two sites.  Check the following:
+          </p>
+          <ul>
+            <li>Check that your firewall is not blocking IPsec traffic, in particular
+                UDP ports 500 and 4500 must be allowed (these are used by the Internet Key Exchange protocol,
+                a part of IPsec standard).</li>
+            <li>Some Internet operators block or treat IPsec packets in incompatible ways.  Please check with
+                your operator that they do not prevent IPsec connections at either end.</li>
+            <li>If you use NAT and/or port forwarding for <n:invisible n:macro="productname" /> connections,
+                check that the NAT and port forwarding settings are correct.  Note that if port forwarding is
+                used, the port forwarded site must be configured as the responding peer, otherwise the site-to-site
+                connection cannot be formed.</li>
+          </ul>
+
+          <div class="cb-note">
+            <p>
+              Note that it may take a few minutes for a site-to-site connection to be established.  The initiating
+              peer will retry a site-to-site connection roughly every two minutes.  To speed up the process, configure
+              the responding side first, and the initiating side afterwards.  This ensures that the first site-to-site
+              connection attempt is successful.
+            </p>
+          </div>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Site-to-Site Connection Comes Up But Connectivity Fails</h1>
+
+          <p>
+            This is the most common problem when configuring site-to-site connections: the site-to-site connection
+            itself is shown to be up in the <n:invisible n:macro="productname" /> web interface, but traffic still
+            cannot be sent between the sites.  The cause is very often incorrectly configured routing.
+          </p>
+
+          <p>
+            Check the following:
+          </p>
+          <ul>
+            <li>
+              Ensure that you have correctly identified the IP subnets at each site, and that the subnets have been
+              correctly configured into each site-to-site endpoint.  Remember that you need to enter the IP subnets
+              of the responding site to the initiating side's configuration, and vice versa.
+            </li>
+            <li>
+              For each site, ensure that routes for other devices (other than <n:invisible n:macro="productname" />
+              servers) are configured correctly.  You need to ensure that packets sent from one site to the IP subnets
+              of the other site are routed to the local <n:invisible n:macro="productname" /> server.  How this is done
+              depends on your network configuration.
+            </li>   
+            <li>
+              Check the firewall and access control settings on the source and destination computers, ensuring that
+              they allow communication with IP addresses involved in the attempted connection.  Sometimes servers may
+              be configured with access control allowing connections only from the local IP subnet.  In this case
+              connections from the remote site may be rejected, unless the NAT option is used in the local
+              <n:invisible n:macro="productname" /> server.
+            </li>
+            <li>
+              If you receive ICMP "time to live exceeded" packets in response to e.g. ping (ICMP echo) packets,
+              a routing loop is most likely causing connectivity problems.  The routing loop may be caused by
+              incorrect subnet specifications in site-to-site configurations.  In particular, one site-to-site
+              connection endpoint routes a packet to a remote endpoint, but the remote endpoint does not actually
+              provide routing for that subnet, and sends the packet back through the same or another site-to-site
+              connection, possibly resulting in a routing loop.
+              If this is the case, recheck subnet definitions for site-to-site connections at each
+              end of every site-to-site connection.
+            </li>
+            <li>
+              Check that your product license allows site-to-site connections at each site-to-site endpoint.
+            </li>
+          </ul>
+
+          <p>
+            If you cannot resolve the problem using the instructions above, please follow the detailed
+            instructions on how to "retrace" the site-to-site connection data flow below.  We recommend
+            that you use a network traffic analyzer, such as
+            <a class="cb-external" target="_blank" href="http://www.wireshark.org/">Wireshark</a> to
+            make diagnosis as quick as possible.
+          </p>
+        </div>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Retracing Site-to-Site Connection Data Flow</h1>
+
+          <p>
+            In case you cannot resolve the problem by the suggestions above, you can diagnose the problem further
+            by "retracing" the data flow.  To do this, decide which test connection you will use for testing first;
+            you may use ping (ICMP Echo Request) or a HTTP web server connection, for instance.  Regardless, a network connection
+            is attempted by a computer (computer A) at one site (site A) to a computer (computer B) at another site (site B).
+            A connection initiation packet is routed
+            from site A to site B (through the site-to-site connection) and a response packet is routed back from
+            site B to site A.
+          </p>
+
+          <p>
+            To diagnose a site-to-site connection problem in detail, we need to determine which
+            part of the round trip between computers A and B fails first, as follows:
+          </p>
+          <ul>
+            <li>
+              Computer A to <n:invisible n:macro="productname" /> server at site A:
+              <ul>
+                <li>
+                  The IP packet sent by computer A with destination address set to computer B should be routed to
+                  <n:invisible n:macro="productname" /> server at site A.  If the site-to-site connection is up,
+                  you can verify this step quite reliably by looking at the detailed status of the site-to-site
+                  connection in question, and ensuring that the transfer (TX) counter increases for the site-to-site
+                  connection with every connection attempt.  If so, it is quite likely that IP packets are routed
+                  from computer A to the <n:invisible n:macro="productname" /> server.
+                  Note that counters are updated with a delay of about one minute.
+                </li>
+                <li>
+                  In the simplest case the <n:invisible n:macro="productname" /> server is used as the default gateway
+                  and this step should be automatically OK.
+                </li>
+                <li>
+                  If a separate default gateway is used, that gateway should have routing configured so that every
+                  subnet of the responding site is configured with the <n:invisible n:macro="productname" /> server as the
+                  gateway.
+                </li>
+                <li>
+                  If computer A should send packets intended for remote sites directly to the
+                  <n:invisible n:macro="productname" /> server, each computer (such as computer A) in the site needs to be configured
+                  with appropriate routes.  This network configuration is not recommended because it requires
+                  many route configurations and is thus error prone.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <n:invisible n:macro="productname" /> server at site A to <n:invisible n:macro="productname" /> server at site B:
+              <ul>
+                <li>
+                  The IP packet with source address set to computer A and destination address set to computer B
+                  should be routed from one <n:invisible n:macro="productname" /> server to the other.  If the
+                  site-to-site connection is up, this is the case if the site-to-site connection has correct
+                  routing configuration.  You can verify this step by verifying that as the transfer (TX) counter
+                  of the <n:invisible n:macro="productname" /> server at site A increases, the corresponding
+                  receive (RX) counter of the <n:invisible n:macro="productname" /> server at site B also increases.
+                  Note that counters are updated with a delay of about one minute.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <n:invisible n:macro="productname" /> server at site B to computer B:
+              <ul>
+                <li>
+                  This step typically works because computer B typically has an address reachable from the
+                  <n:invisible n:macro="productname" /> server at site B.  However, there are two complications.
+                  First, the source address of the IP packet may either be computer A (if the NAT option is not used)
+                  or <n:invisible n:macro="productname" /> at site B (if the NAT option is used).  Second, computer B
+                  may have a firewall blocking access from whichever source address is present in the IP packet.
+                </li>
+              </ul>
+            </li>
+            <li>
+              Computer B to <n:invisible n:macro="productname" /> server at site B:
+              <ul>
+                <li>
+                  This is similar to routing a packet from computer A to the <n:invisible n:macro="productname" /> server at
+                  site A.  However, if the NAT option is used in the <n:invisible n:macro="productname" /> server at site B,
+                  the destination address of this response IP packet is the address of the <n:invisible n:macro="productname" />
+                  server at site B, sometimes simplifying routing.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <n:invisible n:macro="productname" /> server at site B to <n:invisible n:macro="productname" /> server at site A:
+              <ul>
+                <li>
+                  This is similar to routing a packet from the <n:invisible n:macro="productname" /> server at site A to the
+                  <n:invisible n:macro="productname" /> server at site B.  You can verify this step by ensuring that the
+                  transfer (TX) counter of the <n:invisible n:macro="productname" /> server at site B increases, and that
+                  the receive (RX) counter of the <n:invisible n:macro="productname" /> server site A also increases.
+                  Note that counters are updated with a delay of about one minute.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <n:invisible n:macro="productname" /> server at site A to computer A:
+              <ul>
+                <li>
+                  This step typically works because computer A typically has an address reachable from the
+                  <n:invisible n:macro="productname" /> server at site A.  However, check that an intervening
+                  firewall or a built-in firewall of computer A is not blocking the response.
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <p>
+            Using a network traffic analyzer, such as the free
+            <a class="cb-external" target="_blank" href="http://www.wireshark.org/">Wireshark</a> tool
+            (formerly known as Ethereal) is recommended as it makes it much quicker to isolate the problem.
+          </p>
+        </div>
+
+      </div> <!-- troubleshooting -->
+
+
+    </n:invisible>
+  </body>
+</html>

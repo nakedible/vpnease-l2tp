@@ -1,0 +1,5 @@
+
+The patch introduces an optimization in the per bucket locking
+for the conntrack-only (i.e. no NAT at all) case.
+
+The patch depends on the conntrack_locking.patch.

@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# management server crontab, placed in /etc/cron.daily
+
+/usr/bin/logger "Scheduled management server autorestart" &> /dev/null
+/usr/bin/logger "MS PID before restart: `cat /var/run/l2tp-management-server.pid`" &> /dev/null
+/etc/init.d/vpnease-management restart &> /dev/null
+/usr/bin/logger "MS PID after restart: `cat /var/run/l2tp-management-server.pid`" &> /dev/null
+

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+
+    <n:invisible n:pattern="headextras">
+    </n:invisible>
+  </head>
+  <body>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          The <n:invisible n:macro="productname" /> autoconfiguration tool automatically creates a VPN connection
+          profile and a desktop shortcut.
+          It also ensures that your system configuration is compatible with <n:invisible n:macro="productname" />.
+          The following checks are made:
+        </p>
+        <ul>
+          <li>
+            Existing VPN connection profiles for this server are replaced with the new profile.
+          </li>
+          <li>
+            A registry change is applied to support a wider variety of networks.
+            For more information, see
+            <a href="http://support.microsoft.com/kb/885407/" target="_blank" class="cb-external">Microsoft KB article #885407</a>.
+          </li>
+          <li>
+            A registry change is applied to enable remote access traffic encryption.
+            For more information, see
+            <a href="http://technet2.microsoft.com/windowsserver/en/library/0362924a-7f4f-4f10-91b9-3a7fa72284611033.mspx" target="_blank" class="cb-external">ProhibitIpsec</a>.
+          </li>
+          <li>
+            Windows services required by VPN connections are enabled.
+            The affected services are: IPSEC Services, Remote Access Connection Manager.
+          </li>
+          <li>
+            Changes may require reboot on first configuration.
+          </li>
+        </ul>
+
+        <p>
+          <strong class="cb-bold">NOTE</strong>:
+          If you have VPN client software installed, running the autoconfiguration tool may
+          disable the VPN client and require a re-install of the VPN client.
+          See <a href="http://www.vpnease.com/topic/vpn-client-compatibility" class="cb-external" target="_blank">VPN client compatibility information</a>.
+          Please ensure that you have the latest service pack installed.
+        </p>
+
+      </div>
+    </n:invisible>
+  </body>
+</html>
+

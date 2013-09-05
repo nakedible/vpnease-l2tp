@@ -1,0 +1,27 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 09-l2tpd-MSL2TP-hostname.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/control.c
++++ l2tpd-0.69/control.c
+@@ -381,7 +381,7 @@
+          c->needclose = -1;
+          return -EINVAL;
+          }  */
+-        if (!strlen (t->hostname))
++        if ((!strlen (t->hostname)) && ((t->chal_us.state) || ((t->lns->challenge))))
+         {
+             if (DEBUG)
+                 log (LOG_DEBUG,
+@@ -494,7 +494,7 @@
+          c->needclose = -1;
+          return -EINVAL;
+          } */
+-        if (!strlen (t->hostname))
++        if ((!strlen (t->hostname)) && ((t->chal_them.state) || ((t->chal_us.state))))
+         {
+             if (DEBUG)
+                 log (LOG_DEBUG,

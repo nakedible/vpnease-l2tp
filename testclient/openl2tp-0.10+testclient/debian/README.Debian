@@ -1,0 +1,11 @@
+openl2tp for Debian
+-------------------
+
+This is the packaging for Debian Sarge of Openl2tp,
+OpenL2TP is an opensource implementation of the l2tp client/server protocol.
+downloaded at : http://opensource.katalix.com/openl2tp/
+
+This package need a kernel module, please use kernel-patch-openl2tp to build
+a module for your kernel or one of our precompiled modules packages.
+
+ -- Benjamin Sonntag <benjamin@sonntag.fr>, Tue, 18 Jan 2005 19:28:07 +0100

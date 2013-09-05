@@ -1,0 +1,381 @@
+# translation of bootloader-ubuntu.po to Georgian
+# Georgian translation for gfxboot-theme-ubuntu
+# Copyright (c) (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
+# This file is distributed under the same license as the gfxboot-theme-ubuntu package.
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2006.
+# Vladimer Sichinava <alinux@siena.linux.it>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: bootloader-ubuntu\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2006-03-18 12:14:59.394968+00:00\n"
+"PO-Revision-Date: 2006-04-21 04:18+0000\n"
+"Last-Translator: Vladimer Sichinava <alinux@siena.linux.it>\n"
+"Language-Team: Georgian <geognome@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.1\n"
+
+#. ok button label
+#. txt_ok
+msgid "OK"
+msgstr "დიახ"
+
+#. cancel button label
+#. txt_cancel
+msgid "Cancel"
+msgstr "გაუქმება"
+
+#. reboot button label
+#. txt_reboot
+msgid "Reboot"
+msgstr "გადატვირთვა"
+
+#. continue button label
+#. txt_continue
+msgid "Continue"
+msgstr "გაგრძელება"
+
+#. txt_bootoptions
+msgid "Boot Options"
+msgstr "ჩატვირთვის პარამეტრები"
+
+#. window title for exit dialog
+#. txt_exit_title (see txt_exit_dialog)
+msgid "Exiting..."
+msgstr "გამოსვლა..."
+
+#. txt_exit_dialog
+msgid ""
+"You are leaving the graphical boot menu and\n"
+"starting the text mode interface."
+msgstr ""
+"თქვენ ტოვებთ გრაფიკულ მენიუს და\n"
+"გადადიხართ ტექსტურ რეჟიმში."
+
+#. txt_help
+msgid "Help"
+msgstr "დახმარება"
+
+#. window title for kernel loading (see txt_load_kernel)
+#. txt_load_kernel_title
+msgid "Starting..."
+msgstr "ვრთავ..."
+
+#. Keep the three newlines!
+#. txt_load_kernel
+msgid ""
+"Loading Linux Kernel\n"
+"\n"
+"\n"
+msgstr ""
+"იტვირთება Linux ბირთვი\n"
+"\n"
+"\n"
+
+#. Keep the three newlines!
+#. txt_load_memtest
+msgid ""
+"Loading memtest86\n"
+"\n"
+"\n"
+msgstr ""
+"იტვირთება memtest86\n"
+"\n"
+"\n"
+
+#. info box title
+#. txt_info_title
+msgid "Boot loader"
+msgstr "ჩამტვირთავი პროგრამა"
+
+#. error box title
+#. txt_error_title
+msgid "I/O error"
+msgstr "I/O შეცდომა"
+
+#. boot disk change dialog title
+#. txt_change_disk_title
+msgid "Change Boot Disk"
+msgstr "შეცვალეთ მტვირთავი დისკი"
+
+#. txt_insert_disk
+#, c-format
+msgid "Insert boot disk %u."
+msgstr "ჩადეთ მტვირთავი დისკი %u."
+
+#. txt_insert_disk2
+#, c-format
+msgid ""
+"This is boot disk %u.\n"
+"Insert boot disk %u."
+msgstr ""
+"წარმოგიდგენთ მტვირთავ დისკს %u.\n"
+"ჩადეთ მტვირთავი დისკი %u."
+
+#. txt_insert_disk3
+#, c-format
+msgid ""
+"This is not a suitable boot disk.\n"
+"Please insert boot disk %u."
+msgstr ""
+"არასწორი მტვირთავი დისკი.\n"
+"გთხოვთ ჩადოთ მტვირთავი დისკი %u."
+
+#. password dialog title
+#. txt_password_title
+msgid "Password"
+msgstr "პაროლი"
+
+#. Keep the newlines and spaces after ':'!
+#. txt_password
+msgid ""
+"Enter your password:   \n"
+"\n"
+"\n"
+msgstr ""
+"შეიყვანეთ თქვენი პაროლი:   \n"
+"\n"
+"\n"
+
+#. dvd warning title
+#. txt_dvd_warning_title
+msgid "DVD Error"
+msgstr "DVD შეცდომა"
+
+#. txt_dvd_warning2
+msgid ""
+"This is a two-sided DVD. You have booted from the second side.\n"
+"\n"
+"Turn the DVD over then continue."
+msgstr ""
+"მოცემული DVD ორ-მხრივია: თქვენ არასწორი მხრიდან ჩადეთ იგი.\n"
+"\n"
+"გთხოვთ ამოაბრუნოდ იგი."
+
+#. power off dialog title
+#. txt_power_off_title
+msgid "Power Off"
+msgstr "გამორთვა"
+
+#. txt_power_off
+msgid "Halt the system now?"
+msgstr "ახლავე გამოვრთო სისტემა?"
+
+#. dialog title for hard disk installation
+#. txt_harddisk_title
+msgid "Hard Disk Installation"
+msgstr "მყარი დისკის ჩადგმა"
+
+#. txt_hd_diskdevice
+msgid "Disk Device (scan all disks if empty)\n"
+msgstr "მყარი დისკი (ყველა დისკის სკანირება, ცარიელი შემთხვევაში)\n"
+
+#. txt_directory
+msgid "Directory\n"
+msgstr "დირექტორია\n"
+
+#. dialog title for ftp installation
+#. txt_ftp_title
+msgid "FTP Installation"
+msgstr "FTP ჩადგმა"
+
+#. txt_server
+msgid "Server\n"
+msgstr "სერვერი\n"
+
+#. txt_password
+msgid "Password\n"
+msgstr "პაროლი\n"
+
+#. label for ftp user input
+#. txt_user1
+msgid "User (anonymous login if empty)\n"
+msgstr "მომხმარებელი (ანონიმური რეგისტრაცია, სახელის არ მიცემის შემთხვევაში)\n"
+
+#. dialog title for nfs installation
+#. txt_nfs_title
+msgid "NFS Installation"
+msgstr "NFS ჩადგმა"
+
+#. label for smb user input
+#. txt_user2
+msgid "User (using \"guest\" if empty)\n"
+msgstr "მომხმარებელი (ვიყენებ \"guest\" ცარიელის შემთხვევაში)\n"
+
+#. dialog title for smb installation
+#. txt_smb_title
+msgid "SMB (Windows Share) Installation"
+msgstr "SMB (Windows-თან ზიარი) ჩადგმა"
+
+#. dialog title for http installation
+#. txt_http_title
+msgid "HTTP Installation"
+msgstr "HTTP ჩადგმა"
+
+#. as in Windows Authentication Domain
+#. txt_domain
+msgid "Domain\n"
+msgstr "დომეინი\n"
+
+#. button label for other/more options
+#. txt_other_options
+msgid "Other Options"
+msgstr "ხვა პარამეტრები"
+
+#. label for language selection
+#. txt_language
+msgid "Language"
+msgstr "ენა"
+
+#. label for keymap selection
+#. txt_keymap
+msgid "Keymap"
+msgstr "Keymap"
+
+#. label for d-i mode menu
+#. txt_normal_mode
+msgid "Normal mode"
+msgstr "ჩვეულებრივი რეჟიმი"
+
+#. label for d-i mode menu
+#. txt_expert_mode
+msgid "Expert mode"
+msgstr "ექსპერტ რეჟიმი"
+
+#. title for accessibility menu
+#. txt_access
+msgid "Accessibility"
+msgstr "დამხმარე საშუალებები"
+
+#. label for accessibility menu
+#. txt_access_none
+msgid "None"
+msgstr "არა"
+
+#. label for accessibility menu
+#. txt_access_v1
+msgid "Lesser Visual Impairment"
+msgstr "ძალიან ცუდი მხედველობა"
+
+#. label for accessibility menu
+#. txt_access_v2
+msgid "Moderate Visual Impairment"
+msgstr "ცუდი მხედველობა"
+
+#. label for accessibility menu
+#. txt_access_v3
+msgid "Blindness"
+msgstr "უსინათლობა"
+
+#. label for accessibility menu
+#. txt_access_m1
+msgid "Minor Motor Difficulties"
+msgstr "მცირე მოტორული სიძნელეები"
+
+#. label for accessibility menu
+#. txt_access_m2
+msgid "Motor Difficulties - pointing devices"
+msgstr "მოტორული სიძნელეები - მოწყობილობების მონიშვნა"
+
+#. label for accessibility menu
+#. txt_access_m3
+msgid "Motor Difficulties - switch devices"
+msgstr "მოტორული სიძნელეები - მოწყობილობების გადართვა/გადმორთვა"
+
+#. label for accessibility menu
+#. txt_access_all
+msgid "Everything"
+msgstr "ყველა სახის სიძნელე"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_ubuntu
+msgid "^Start or install Ubuntu"
+msgstr "^გაუშვი უბუნტუ"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_ubuntu_xforcevesa
+msgid "Start Ubuntu in safe ^graphics mode"
+msgstr "უბუნტუს უსაფრთხო ^გრაფიკულ რეჟიმში გაშვება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_kubuntu
+msgid "^Start or install Kubuntu"
+msgstr "^გაშვება კუბუნტუ"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_kubuntu_xforcevesa
+msgid "Start Kubuntu in safe ^graphics mode"
+msgstr "კუბუნტუს უსაფრთხო ^გრაფიკულ რეჟიმში გაშვება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_edubuntu
+msgid "^Start or install Edubuntu"
+msgstr "^გაუშვი ედუბუნტუ"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_edubuntu_xforcevesa
+msgid "Start Edubuntu in safe ^graphics mode"
+msgstr "ედუბუნტუს უსაფრთხო ^გრაფიკულ რეჟიმში გაშვება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_xubuntu
+msgid "^Start or install Xubuntu"
+msgstr "^გაუშვი ქსუბუნტუ"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_live_xubuntu_xforcevesa
+msgid "Start Xubuntu in safe ^graphics mode"
+msgstr "ქსუბუნტუს უსაფრთხო ^გრაფიკულ რეჟიმში გაშვება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_install_text
+msgid "^Install in text mode"
+msgstr "^მყარ დისკზე დაყენება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_install
+msgid "^Install to the hard disk"
+msgstr "^მყარ დისკზე დაყენება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_workstation
+msgid "Install a ^workstation"
+msgstr "^მუშა სადგურის დაყენება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_oem
+msgid "Install in ^OEM mode"
+msgstr "^OEM რეჟიმით დაჩენება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_lamp
+msgid "Install a ^LAMP server"
+msgstr "^LAMP სერვერის დაყენება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_server
+msgid "Install a ^server"
+msgstr "უბრალოდ ^სერვერის დაყენება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_check
+msgid "^Check CD for defects"
+msgstr "CD-ს დაზიანებაზე შემოწმება"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_rescue
+msgid "^Rescue a broken system"
+msgstr "^დაზიანებული სისტემის გადარჩენა"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_memtest
+msgid "^Memory test"
+msgstr "^მეხსიერების ტესტი"
+
+#. Boot menu item; a ^ prefix indicates a unique accelerator key.
+#. txt_menuitem_hd
+msgid "^Boot from first hard disk"
+msgstr "^მყარი დისკიდან ჩატვირთვა"

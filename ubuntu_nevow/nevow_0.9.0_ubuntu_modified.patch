@@ -1,0 +1,560 @@
+diff -ruN nevow-0.9.0.orig/debian/changelog nevow-0.9.0/debian/changelog
+--- nevow-0.9.0.orig/debian/changelog	2005-11-06 20:46:50.000000000 +0200
++++ nevow-0.9.0/debian/changelog	2006-07-27 19:17:05.000000000 +0300
+@@ -1,3 +1,9 @@
++nevow (0.9.0) unstable; urgency=low
++
++  * New upstream version.
++
++ -- VPNease support <support@vpnease.com>  Thu, 27 Jul 2006 19:17:05 +0300
++
+ nevow (0.6.0-1.snapshot) unstable; urgency=low
+ 
+   * SVN snapshot.
+diff -ruN nevow-0.9.0.orig/debian/changelog.orig nevow-0.9.0/debian/changelog.orig
+--- nevow-0.9.0.orig/debian/changelog.orig	1970-01-01 02:00:00.000000000 +0200
++++ nevow-0.9.0/debian/changelog.orig	2005-11-06 20:46:50.000000000 +0200
+@@ -0,0 +1,56 @@
++nevow (0.6.0-1.snapshot) unstable; urgency=low
++
++  * SVN snapshot.
++
++ -- Tommi Virtanen <tv@debian.org>  Sun,  6 Nov 2005 20:45:27 +0200
++
++nevow (0.6.0-1) unstable; urgency=low
++
++  * New upstream version. (Closes: #336027)
++  * Acknowledge NMU (Closes: #319230), but please be more careful in the
++    future; no NMU patch was sent to BTS
++  * Remove setupcommon.pyc when cleaning, or dpkg-source will see a binary
++    file content change.
++  * Run unit tests when building.
++  * Clean build tree, distutils fails to remove all of it.
++  * Change priority to extra, as twisted is extra and nevow depends on it.
++
++ -- Tommi Virtanen <tv@debian.org>  Sun,  6 Nov 2005 20:26:39 +0200
++
++nevow (0.4.1-1.1) unstable; urgency=low
++
++  * NMU
++  * Add missing build depends in python2.4-dev (Closes: #319230)
++  * lintian error: fix package description indent for list items.
++
++ -- Bastian Kleineidam <calvin@debian.org>  Sat, 13 Aug 2005 18:48:20 +0200
++
++nevow (0.4.1-1) unstable; urgency=low
++
++  * New upstream version.
++  * Python 2.4 support.
++  * Not using upstream tarball as it is too broken compared to
++    SVN tag; specifically it is missing nevow/Canvas.fla, which
++    is considered source code.
++
++ -- Tommi Virtanen <tv@debian.org>  Mon, 27 Jun 2005 15:35:57 +0200
++
++nevow (0.3.0-1) unstable; urgency=low
++
++  * New upstream version.
++
++ -- Tommi Virtanen <tv@debian.org>  Thu, 30 Sep 2004 12:12:44 +0300
++
++nevow (0.2.0-2) unstable; urgency=low
++
++  * Build-depend on both python2.3-dev and python-dev, it seems that is
++    what cdbs wants. (Closes: #257911)
++
++ -- Tommi Virtanen <tv@debian.org>  Tue, 13 Jul 2004 16:39:17 +0300
++
++nevow (0.2.0-1) unstable; urgency=low
++
++  * Initial Release.
++
++ -- Tommi Virtanen <tv@debian.org>  Tue, 29 Jun 2004 10:26:36 +0300
++
+diff -ruN nevow-0.9.0.orig/debian/changelog.rej nevow-0.9.0/debian/changelog.rej
+--- nevow-0.9.0.orig/debian/changelog.rej	1970-01-01 02:00:00.000000000 +0200
++++ nevow-0.9.0/debian/changelog.rej	2006-07-27 19:15:11.000000000 +0300
+@@ -0,0 +1,74 @@
++***************
++*** 1,8 ****
++- nevow (0.4.1-1.snapshot) unstable; urgency=low
++  
++-   * SVN snapshot.
++  
++-  -- Tommi Virtanen <tv@debian.org>  Mon, 27 Jun 2005 15:14:08 +0200
++  
++  nevow (0.4.1-1) unstable; urgency=low
++  
++--- 1,63 ----
+++ nevow (0.6.0-2ubuntu3) dapper; urgency=low
++  
+++   * Change trial --bwverbose to --reporter=bwverbose and remove -R to
+++     accomodate the changes in Twisted 2.2.0, resolving the FTBFS.
+++   * Run the testsuite, but ignore it, since it fails on 1/486 tests, which
+++     seems better than the previous behaviour of not running it at all.
++  
+++  -- Adam Conrad <adconrad@ubuntu.com>  Wed, 22 Mar 2006 15:13:40 +1100
+++ 
+++ nevow (0.6.0-2ubuntu2) dapper; urgency=low
+++ 
+++   * Drop python2.3 package.
+++ 
+++  -- Matthias Klose <doko@ubuntu.com>  Tue, 14 Feb 2006 15:58:37 +0000
+++ 
+++ nevow (0.6.0-2ubuntu1) dapper; urgency=low
+++ 
+++   * Resynchronise with Debian.
+++  
+++  -- Andrew Mitchell <ajmitch@ubuntu.com>  Sat, 31 Dec 2005 18:54:27 +1300
+++ 
+++ nevow (0.6.0-2) unstable; urgency=low
+++ 
+++   * Fix build-depends, make sure to run the clean build as the _last_
+++     step. Grr. (Closes: #340052)
+++ 
+++  -- Tommi Virtanen <tv@debian.org>  Mon, 21 Nov 2005 14:36:54 +0200
+++ 
+++ nevow (0.6.0-1ubuntu1) dapper; urgency=low
+++ 
+++   * Resynchronise with Debian.
+++ 
+++  -- Scott James Remnant <scott@ubuntu.com>  Mon, 07 Nov 2005 19:25:28 +0000
+++ 	
+++ nevow (0.6.0-1) unstable; urgency=low
+++ 
+++   * New upstream version. (Closes: #336027)
+++   * Acknowledge NMU (Closes: #319230), but please be more careful in the
+++     future; no NMU patch was sent to BTS
+++   * Remove setupcommon.pyc when cleaning, or dpkg-source will see a binary
+++     file content change.
+++   * Run unit tests when building.
+++   * Clean build tree, distutils fails to remove all of it.
+++   * Change priority to extra, as twisted is extra and nevow depends on it.
+++ 
+++  -- Tommi Virtanen <tv@debian.org>  Sun,  6 Nov 2005 20:26:39 +0200
+++ 
+++ nevow (0.4.1-1.1ubuntu1) breezy; urgency=low
+++ 
+++   * Use python 2.4 as default version
+++ 
+++  -- Andrew Mitchell <ajmitch@ubuntu.com>  Sun, 11 Sep 2005 13:25:25 +1200
+++ 
+++ nevow (0.4.1-1.1) unstable; urgency=low
+++ 
+++   * NMU
+++   * Add missing build depends in python2.4-dev (Closes: #319230)
+++   * lintian error: fix package description indent for list items.
+++ 
+++  -- Bastian Kleineidam <calvin@debian.org>  Sat, 13 Aug 2005 18:48:20 +0200
++  
++  nevow (0.4.1-1) unstable; urgency=low
++  
+diff -ruN nevow-0.9.0.orig/debian/control nevow-0.9.0/debian/control
+--- nevow-0.9.0.orig/debian/control	2005-11-06 20:46:50.000000000 +0200
++++ nevow-0.9.0/debian/control	2006-07-27 19:21:18.000000000 +0300
+@@ -3,39 +3,13 @@
+ Priority: extra
+ Maintainer: Tommi Virtanen <tv@debian.org>
+ Standards-Version: 3.6.2
+-Build-Depends-Indep: python-dev, python2.3-dev, python2.4-dev, cdbs, debhelper (>= 4.1.68)
++Build-Depends-Indep: python-dev, python2.4-dev, cdbs, debhelper (>= 4.1.68)
+ 
+ Package: python-nevow
+ Architecture: all
+-Depends: python (>= 2.3), python (<< 2.4), python2.3-nevow
++Depends: python (>= 2.4), python2.4-nevow
+ Description: Web application templating system for Python and Twisted
+- This is a dummy package that only depends on python2.3-nevow.
+-
+-Package: python2.3-nevow
+-Architecture: all
+-Depends: python2.3, python2.3-twisted
+-Description: Web application templating system for Python and Twisted
+- Nevow's main focus is on separating the HTML template from both the
+- business logic and the display logic, while allowing the programmer
+- to write pure Python code as much as possible. It separates your code
+- into 'data' and 'render' functions, a simplified implementation of
+- traditional MVC. It has various parts which can be used individually
+- or as a whole, integrated web solution:
+- .
+-  - XHTML templates: contain no programming logic, only nodes tagged
+-    with nevow attributes
+-  - data/render methods: simplified MVC
+-  - stan: An s-expression-like syntax for expressing xml in pure python
+-  - formless: For describing the types of objects which may be passed
+-    to methods of your classes, validating and coercing string input from
+-    either web or command-line sources, and calling your methods
+-    automatically once validation passes
+-  - freeform: For rendering web forms based on formless type
+-    descriptions, accepting form posts and passing them to formless
+-    validators, and rendering error forms in the event validation fails
+-  - livepage: Cross-browser JavaScript glue for sending client side
+-    events to the server and server side events to the client after the
+-    page has loaded, without causing the entire page to refresh
++ This is a dummy package that only depends on python2.4-nevow.
+ 
+ Package: python2.4-nevow
+ Architecture: all
+diff -ruN nevow-0.9.0.orig/debian/control.orig nevow-0.9.0/debian/control.orig
+--- nevow-0.9.0.orig/debian/control.orig	1970-01-01 02:00:00.000000000 +0200
++++ nevow-0.9.0/debian/control.orig	2005-11-06 20:46:50.000000000 +0200
+@@ -0,0 +1,64 @@
++Source: nevow
++Section: devel
++Priority: extra
++Maintainer: Tommi Virtanen <tv@debian.org>
++Standards-Version: 3.6.2
++Build-Depends-Indep: python-dev, python2.3-dev, python2.4-dev, cdbs, debhelper (>= 4.1.68)
++
++Package: python-nevow
++Architecture: all
++Depends: python (>= 2.3), python (<< 2.4), python2.3-nevow
++Description: Web application templating system for Python and Twisted
++ This is a dummy package that only depends on python2.3-nevow.
++
++Package: python2.3-nevow
++Architecture: all
++Depends: python2.3, python2.3-twisted
++Description: Web application templating system for Python and Twisted
++ Nevow's main focus is on separating the HTML template from both the
++ business logic and the display logic, while allowing the programmer
++ to write pure Python code as much as possible. It separates your code
++ into 'data' and 'render' functions, a simplified implementation of
++ traditional MVC. It has various parts which can be used individually
++ or as a whole, integrated web solution:
++ .
++  - XHTML templates: contain no programming logic, only nodes tagged
++    with nevow attributes
++  - data/render methods: simplified MVC
++  - stan: An s-expression-like syntax for expressing xml in pure python
++  - formless: For describing the types of objects which may be passed
++    to methods of your classes, validating and coercing string input from
++    either web or command-line sources, and calling your methods
++    automatically once validation passes
++  - freeform: For rendering web forms based on formless type
++    descriptions, accepting form posts and passing them to formless
++    validators, and rendering error forms in the event validation fails
++  - livepage: Cross-browser JavaScript glue for sending client side
++    events to the server and server side events to the client after the
++    page has loaded, without causing the entire page to refresh
++
++Package: python2.4-nevow
++Architecture: all
++Depends: python2.4, python2.4-twisted
++Description: Web application templating system for Python and Twisted
++ Nevow's main focus is on separating the HTML template from both the
++ business logic and the display logic, while allowing the programmer
++ to write pure Python code as much as possible. It separates your code
++ into 'data' and 'render' functions, a simplified implementation of
++ traditional MVC. It has various parts which can be used individually
++ or as a whole, integrated web solution:
++ .
++  - XHTML templates: contain no programming logic, only nodes tagged
++    with nevow attributes
++  - data/render methods: simplified MVC
++  - stan: An s-expression-like syntax for expressing xml in pure python
++  - formless: For describing the types of objects which may be passed
++    to methods of your classes, validating and coercing string input from
++    either web or command-line sources, and calling your methods
++    automatically once validation passes
++  - freeform: For rendering web forms based on formless type
++    descriptions, accepting form posts and passing them to formless
++    validators, and rendering error forms in the event validation fails
++  - livepage: Cross-browser JavaScript glue for sending client side
++    events to the server and server side events to the client after the
++    page has loaded, without causing the entire page to refresh
+diff -ruN nevow-0.9.0.orig/debian/control.rej nevow-0.9.0/debian/control.rej
+--- nevow-0.9.0.orig/debian/control.rej	1970-01-01 02:00:00.000000000 +0200
++++ nevow-0.9.0/debian/control.rej	2006-07-27 19:15:11.000000000 +0300
+@@ -0,0 +1,106 @@
++***************
++*** 1,46 ****
++  Source: nevow
++  Section: devel
++- Priority: optional
++  Maintainer: Tommi Virtanen <tv@debian.org>
++- Standards-Version: 3.5.6
++- Build-Depends-Indep: python-dev, python2.3-dev, cdbs, debhelper (>= 4.1.68)
++  
++  Package: python-nevow
++  Architecture: all
++- Depends: python (>= 2.3), python (<< 2.4), python2.3-nevow
++  Description: Web application templating system for Python and Twisted
++-  This is a dummy package that only depends on python2.3-nevow.
++- 
++- Package: python2.3-nevow
++- Architecture: all
++- Depends: python2.3, python2.3-twisted
++- Description: Web application templating system for Python and Twisted
++-  Nevow's main focus is on separating the HTML template from both the
++-  business logic and the display logic, while allowing the programmer
++-  to write pure Python code as much as possible. It separates your code
++-  into 'data' and 'render' functions, a simplified implementation of
++-  traditional MVC. It has various parts which can be used individually
++-  or as a whole, integrated web solution:
++-  .
++-  - XHTML templates: contain no programming logic, only nodes tagged
++-  with nevow attributes
++-  .
++-  - data/render methods: simplified MVC
++-  .
++-  - stan: An s-expression-like syntax for expressing xml in pure python
++-  .
++-  - formless: For describing the types of objects which may be passed
++-  to methods of your classes, validating and coercing string input from
++-  either web or command-line sources, and calling your methods
++-  automatically once validation passes
++-  .
++-  - freeform: For rendering web forms based on formless type
++-  descriptions, accepting form posts and passing them to formless
++-  validators, and rendering error forms in the event validation fails
++-  .
++-  - livepage: Cross-browser JavaScript glue for sending client side
++-  events to the server and server side events to the client after the
++-  page has loaded, without causing the entire page to refresh
++  
++  Package: python2.4-nevow
++  Architecture: all
++--- 1,15 ----
++  Source: nevow
++  Section: devel
+++ Priority: extra
++  Maintainer: Tommi Virtanen <tv@debian.org>
+++ Standards-Version: 3.6.2
+++ Build-Depends-Indep: python-dev, python2.4-dev, python2.4-twisted, cdbs, debhelper (>= 4.1.68)
++  
++  Package: python-nevow
++  Architecture: all
+++ Depends: python (>= 2.4), python (<< 2.5), python2.4-nevow
++  Description: Web application templating system for Python and Twisted
+++  This is a dummy package that only depends on python2.4-nevow.
++  
++  Package: python2.4-nevow
++  Architecture: all
++***************
++*** 53,74 ****
++   traditional MVC. It has various parts which can be used individually
++   or as a whole, integrated web solution:
++   .
++-  - XHTML templates: contain no programming logic, only nodes tagged
++-  with nevow attributes
++-  .
++-  - data/render methods: simplified MVC
++-  .
++-  - stan: An s-expression-like syntax for expressing xml in pure python
++-  .
++-  - formless: For describing the types of objects which may be passed
++-  to methods of your classes, validating and coercing string input from
++-  either web or command-line sources, and calling your methods
++-  automatically once validation passes
++-  .
++-  - freeform: For rendering web forms based on formless type
++-  descriptions, accepting form posts and passing them to formless
++-  validators, and rendering error forms in the event validation fails
++-  .
++-  - livepage: Cross-browser JavaScript glue for sending client side
++-  events to the server and server side events to the client after the
++-  page has loaded, without causing the entire page to refresh
++--- 22,38 ----
++   traditional MVC. It has various parts which can be used individually
++   or as a whole, integrated web solution:
++   .
+++   - XHTML templates: contain no programming logic, only nodes tagged
+++     with nevow attributes
+++   - data/render methods: simplified MVC
+++   - stan: An s-expression-like syntax for expressing xml in pure python
+++   - formless: For describing the types of objects which may be passed
+++     to methods of your classes, validating and coercing string input from
+++     either web or command-line sources, and calling your methods
+++     automatically once validation passes
+++   - freeform: For rendering web forms based on formless type
+++     descriptions, accepting form posts and passing them to formless
+++     validators, and rendering error forms in the event validation fails
+++   - livepage: Cross-browser JavaScript glue for sending client side
+++     events to the server and server side events to the client after the
+++     page has loaded, without causing the entire page to refresh
+diff -ruN nevow-0.9.0.orig/debian/rules nevow-0.9.0/debian/rules
+--- nevow-0.9.0.orig/debian/rules	2005-11-06 20:46:50.000000000 +0200
++++ nevow-0.9.0/debian/rules	2006-07-27 20:59:29.000000000 +0300
+@@ -5,8 +5,8 @@
+ include /usr/share/cdbs/1/rules/debhelper.mk
+ include /usr/share/cdbs/1/class/python-distutils.mk
+ 
+-DEB_INSTALL_DOCS_python2.3-nevow := doc/*
+-DEB_INSTALL_EXAMPLES_python2.3-nevow := examples/*
++#DEB_INSTALL_DOCS_python2.3-nevow := doc/*
++#DEB_INSTALL_EXAMPLES_python2.3-nevow := examples/*
+ DEB_INSTALL_DOCS_python2.4-nevow := doc/*
+ DEB_INSTALL_EXAMPLES_python2.4-nevow := examples/*
+ DEB_DH_ALWAYS_EXCLUDE := .svn
+@@ -22,45 +22,9 @@
+ 		'$(call docdir,$*)/copyright.tmp' \
+ 		'$(call docdir,$*)/copyright'
+ 
+-# see http://bugs.debian.org/295906
+-cdbs_python_ver = $(filter-out -%,$(subst -, -,$(patsubst python%,%,$(cdbs_curpkg))))
+-
+-$(patsubst %,binary-post-install/%,$(DEB_PYTHON_REAL_LIB_PACKAGES)):: binary-post-install/%:
+-	set -e; for file in debian/$(cdbs_curpkg)/usr/bin/*; do \
+-		sed '1s|.*|#!/usr/bin/python$(cdbs_python_ver)|' $$file >\
+-			"$${file}$(cdbs_python_ver)";\
+-		rm -- "$$file";\
+-		chmod 755 "$${file}$(cdbs_python_ver)";\
+-		mv "debian/$(cdbs_curpkg)/usr/share/man/man1/$$(basename "$$file").1" \
+-			"debian/$(cdbs_curpkg)/usr/share/man/man1/$$(basename "$$file")$(cdbs_python_ver).1";\
+-	done
+-
+-binary-post-install/python2.3-nevow::
+-	set -e; for file in debian/$(cdbs_curpkg)/usr/bin/*;\
+-		do target="$$(echo "$$file" | sed 's/$(cdbs_python_ver)$$//')";\
+-		ln -s "$$(basename "$$file")" "$$target";\
+-		manname="$$(basename "$$target").1.gz";\
+-		ln -s "$$(basename "$$file").1.gz" \
+-			"debian/$(cdbs_curpkg)/usr/share/man/man1/$$manname";\
+-	done
+-
+ clean::
+ 	rm -f setupcommon.pyc
+ 
+-
+-ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+-TRIAL=trial$(cdbs_python_ver)
+-TOPMODULES:=nevow formless
+-$(patsubst %,binary-post-install/%,$(DEB_PYTHON_REAL_LIB_PACKAGES)):: binary-post-install/%:
+-	PYTHONPATH='debian/$(cdbs_curpkg)/usr/lib/python$(cdbs_python_ver)/site-packages/' \
+-		'$(TRIAL)' --bwverbose -R $(TOPMODULES)
+-
+-	# Importing the modules generates .pyc files, and dh_python (which
+-	# normally cleans them) has already been run. Remove them manually.
+-	find 'debian/$(cdbs_curpkg)' -name '*.py[co]' -print0 \
+-	| xargs -0 rm -f --
+-endif
+-
+ clean::
+ 	rm -rf _trial_temp
+ 
+@@ -69,3 +33,10 @@
+ # leaving all the other stuff still in build
+ clean::
+ 	rm -rf build
++
++# files that are in version control but not in upstream tarball,
++# remove in clean so build from version control won't pollute
++# .diff.gz; loss of these files from the working directory is
++# insignificant
++clean::
++	rm -f MANIFEST.in ez_setup.py runtests
+diff -ruN nevow-0.9.0.orig/debian/rules.orig nevow-0.9.0/debian/rules.orig
+--- nevow-0.9.0.orig/debian/rules.orig	1970-01-01 02:00:00.000000000 +0200
++++ nevow-0.9.0/debian/rules.orig	2005-11-06 20:46:50.000000000 +0200
+@@ -0,0 +1,71 @@
++#!/usr/bin/make -f
++# -*- mode: makefile; coding: utf-8 -*-
++# Copyright © 2002,2003 Colin Walters <walters@debian.org>
++
++include /usr/share/cdbs/1/rules/debhelper.mk
++include /usr/share/cdbs/1/class/python-distutils.mk
++
++DEB_INSTALL_DOCS_python2.3-nevow := doc/*
++DEB_INSTALL_EXAMPLES_python2.3-nevow := examples/*
++DEB_INSTALL_DOCS_python2.4-nevow := doc/*
++DEB_INSTALL_EXAMPLES_python2.4-nevow := examples/*
++DEB_DH_ALWAYS_EXCLUDE := .svn
++
++docdir = debian/$(1)/usr/share/doc/$(1)
++binary-post-install/%::
++	grep -v '^# See the file LICENSE' \
++		'$(call docdir,$*)/copyright' \
++		>'$(call docdir,$*)/copyright.tmp'
++	cat LICENSE \
++		>>'$(call docdir,$*)/copyright.tmp'
++	mv \
++		'$(call docdir,$*)/copyright.tmp' \
++		'$(call docdir,$*)/copyright'
++
++# see http://bugs.debian.org/295906
++cdbs_python_ver = $(filter-out -%,$(subst -, -,$(patsubst python%,%,$(cdbs_curpkg))))
++
++$(patsubst %,binary-post-install/%,$(DEB_PYTHON_REAL_LIB_PACKAGES)):: binary-post-install/%:
++	set -e; for file in debian/$(cdbs_curpkg)/usr/bin/*; do \
++		sed '1s|.*|#!/usr/bin/python$(cdbs_python_ver)|' $$file >\
++			"$${file}$(cdbs_python_ver)";\
++		rm -- "$$file";\
++		chmod 755 "$${file}$(cdbs_python_ver)";\
++		mv "debian/$(cdbs_curpkg)/usr/share/man/man1/$$(basename "$$file").1" \
++			"debian/$(cdbs_curpkg)/usr/share/man/man1/$$(basename "$$file")$(cdbs_python_ver).1";\
++	done
++
++binary-post-install/python2.3-nevow::
++	set -e; for file in debian/$(cdbs_curpkg)/usr/bin/*;\
++		do target="$$(echo "$$file" | sed 's/$(cdbs_python_ver)$$//')";\
++		ln -s "$$(basename "$$file")" "$$target";\
++		manname="$$(basename "$$target").1.gz";\
++		ln -s "$$(basename "$$file").1.gz" \
++			"debian/$(cdbs_curpkg)/usr/share/man/man1/$$manname";\
++	done
++
++clean::
++	rm -f setupcommon.pyc
++
++
++ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
++TRIAL=trial$(cdbs_python_ver)
++TOPMODULES:=nevow formless
++$(patsubst %,binary-post-install/%,$(DEB_PYTHON_REAL_LIB_PACKAGES)):: binary-post-install/%:
++	PYTHONPATH='debian/$(cdbs_curpkg)/usr/lib/python$(cdbs_python_ver)/site-packages/' \
++		'$(TRIAL)' --bwverbose -R $(TOPMODULES)
++
++	# Importing the modules generates .pyc files, and dh_python (which
++	# normally cleans them) has already been run. Remove them manually.
++	find 'debian/$(cdbs_curpkg)' -name '*.py[co]' -print0 \
++	| xargs -0 rm -f --
++endif
++
++clean::
++	rm -rf _trial_temp
++
++
++# distutils is sloppy and only cleans with the default python version,
++# leaving all the other stuff still in build
++clean::
++	rm -rf build
+diff -ruN nevow-0.9.0.orig/debian/rules.rej nevow-0.9.0/debian/rules.rej
+--- nevow-0.9.0.orig/debian/rules.rej	1970-01-01 02:00:00.000000000 +0200
++++ nevow-0.9.0/debian/rules.rej	2006-07-27 19:15:11.000000000 +0300
+@@ -0,0 +1,35 @@
++***************
++*** 43,45 ****
++  		ln -s "$$(basename "$$file").1.gz" \
++  			"debian/$(cdbs_curpkg)/usr/share/man/man1/$$manname";\
++  	done
++--- 43,71 ----
++  		ln -s "$$(basename "$$file").1.gz" \
++  			"debian/$(cdbs_curpkg)/usr/share/man/man1/$$manname";\
++  	done
+++ 
+++ clean::
+++ 	rm -f setupcommon.pyc
+++ 
+++ 
+++ ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+++ TRIAL=trial$(cdbs_python_ver)
+++ TOPMODULES:=nevow formless
+++ $(patsubst %,binary-post-install/%,$(DEB_PYTHON_REAL_LIB_PACKAGES)):: binary-post-install/%:
+++ 	PYTHONPATH='debian/$(cdbs_curpkg)/usr/lib/python$(cdbs_python_ver)/site-packages/' \
+++ 		'$(TRIAL)' --reporter=bwverbose $(TOPMODULES) || true
+++ 
+++ 	# Importing the modules generates .pyc files, and dh_python (which
+++ 	# normally cleans them) has already been run. Remove them manually.
+++ 	find 'debian/$(cdbs_curpkg)' -name '*.py[co]' -print0 \
+++ 	| xargs -0 rm -f --
+++ endif
+++ 
+++ clean::
+++ 	rm -rf _trial_temp
+++ 
+++ 
+++ # distutils is sloppy and only cleans with the default python version,
+++ # leaving all the other stuff still in build
+++ clean::
+++ 	rm -rf build

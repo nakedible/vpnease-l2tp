@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Multi-Customer Configuration</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          When deploying <n:invisible n:macro="productname" /> into operator premises, it is often
+          desirable to terminate VPN connections from multiple customers in the same
+          <n:invisible n:macro="productname" /> server, but forward unencrypted traffic to different
+          destinations for each customer.
+        </p>
+
+        <p>
+          This scenario is common with operator software and equipment.  For VPNs, the following
+          basic issues need to be addresses:
+        </p>
+        <ul>
+          <li>
+            VPN connections must be associated with a specific customer during authentication
+            (e.g. using a name suffix, such as test.user@company1.com).
+          </li>
+          <li>
+            VPN traffic for each customer must be routable separately (with separate routing rules).
+          </li>
+          <li>
+            If traffic is forwarded into customer premises (e.g. using a site-to-site connection),
+            overlapping address spaces of customer networks must be dealt with.  In particular,
+            a certain address, such as 10.0.0.1, is routed to a different network depending on
+            which customer's VPN connection is sending the packet.
+          </li>
+          <li>
+            Clients must be isolated from one another, so that customers cannot route packets
+            to other customers' clients.
+          </li>
+        </ul>
+
+        <p>
+          <n:invisible n:macro="productname" /> addresses these issues in the following manner.
+          <n:invisible n:macro="productname" /> servers are configured with RADIUS authentication, and
+          the RADIUS Framed-IP-Address attribute is used to assign addresses to VPN connections, with
+          VPN connections from different customers getting VPN addresses from different subnets.
+          Decrypted VPN traffic is routed to an operator router, which can use source routing
+          (routing based on source address rather than destination address) to route the traffic
+          to customer networks and/or servers without problems caused by destination address
+          overlapping.
+        </p>
+
+        <p>
+          This solution is described below with detailed configuration instructions.  Finally,
+          guidelines for testing a deployed solution are given.
+        </p>
+
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Configuration</h1>
+
+        <p>
+          Detailed instructions for configuring <n:invisible n:macro="productname" /> servers
+          into a multiple customer (shared server) model are given below.
+        </p>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">RADIUS Authentication</h1>
+
+          <p>
+            <n:invisible n:macro="productname" /> servers are configured to use RADIUS authentication.
+            Both primary and secondary RADIUS servers should be configured to maximize availability.
+          </p>
+
+          <p>
+            RADIUS usernames of the form <strong class="cb-bold">username@company</strong> (e.g.
+            test.user@company1.com) should be used; however, any RADIUS username convention which
+            links a username uniquely to a customer can be used.
+          </p>
+
+          <p>
+            The Framed-IP-Address RADIUS attribute is used to assign VPN addresses to all VPN
+            connections.  The VPN address assigned is based on a pool of customer specific
+            addresses.  The easiest solution is to assign each VPN user of each customer a
+            specific address.
+          </p>
+
+          <p>
+            Example: *@company1.com VPN addresses are assigned from 10.0.0.0/24,
+            and *@company2.com VPN addresses assigned from 10.0.1.0/24.  By looking at
+            a specific IP address (e.g. 10.0.1.7) the customer can be identified in a router.
+          </p>
+        </div> <!-- radius authentication -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading"><n:invisible n:macro="productname" /> Routing</h1>
+
+          <p>
+            <n:invisible n:macro="productname" /> supports multiple alternative methods
+            for handling decrypted VPN traffic: direct, proxy ARP, and NAT.  In this
+            solution either the direct or proxy ARP handling should be used, because
+            the VPN address assigned through RADIUS must not be changed or masked (by NAT).
+          </p>
+
+          <p>
+            Further, to centralize control over routing, <n:invisible n:macro="productname" />
+            server should be configured to use so-called forced routing.  When forced routing is enabled,
+            traffic from VPN connections is routed to a specified router, bypassing the normal
+            routing table entirely.  Routing control can then be applied fully in the specified
+            router.
+          </p>
+
+          <p>
+            Forced routing is enabled from the <n:invisible n:macro="productname" />
+            administrator interface, page 
+            <strong class="cb-guilabel">Routing &amp; Firewall</strong> &rarr;
+            <strong class="cb-guilabel">Forced Routing</strong>.
+          </p>
+
+          <p>
+            Note that remote access users are prevented from sending traffic to
+            one another; any such packets are dropped when forced routing is enabled,
+            unless the external router routes the packets back to the
+            <n:invisible n:macro="productname" /> server.
+          </p>
+        </div> <!-- source routing -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Operator Router</h1>
+
+          <p>
+            Forced routing target is a router device containing the actual routing tables.
+            This device must be capable of routing traffic based on the
+            <strong class="cb-bold">source address</strong> of incoming packets, so that
+            it can differentiate between packets from different customers.  In particular,
+            the destination address of individual packets does not define routing uniquely
+          </p>
+
+          <p>
+            Firewall rules of the router must be configured carefully.  In particular, the
+            routing rules must ensure that traffic from a certain VPN client address can only
+            be forwarded to the corresponding customer network and vice versa.
+          </p>
+
+          <p>
+            A stateful firewall is preferred, but a stateless can also be configured for this purpose.
+          </p>
+
+        </div> <!-- operator router -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Other Issues</h1>
+
+          <p>
+            It is possible to arrange inbound connections to VPN clients in this scenario,
+            i.e. allow hosts from a customer network to initiate connections to a VPN client.
+            If this is desired, firewall rules in the operator router must prevent packets
+            from going to VPN addresses of other customers.
+          </p>
+
+        </div> <!-- other issues -->
+      </div> <!-- configuration -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Testing</h1>
+
+        <p>
+          Because this configuration is relatively complex, at least the following tests should
+          be performed after deployment to minimize the risk of incorrect configuration:
+        </p>
+        <ul>
+          <li>
+            Check that the RADIUS server(s) correctly assign Framed-IP-Address attributes to
+            authenticated users.  If assigned addresses are incorrect, security may be
+            compromised.
+          </li>
+          <li>
+            Check that the operator router receives packets correctly from the <n:invisible n:macro="productname" />
+            when a client is connected.
+          </li>
+          <li>
+            Check that the operator router correctly forwards packets to each customer, based on the VPN client
+            address (subnet).  In particular, test that overlapping destination addresses in a customer network
+            are handled correctly.  For instance, if two customer networks contain the private address 10.0.0.1,
+            check that ping packets to the address from two different clients with usernames from the two
+            customer domains are routed correctly, each to its own customer network.
+          </li>
+          <li>
+            Check that return packets from the customer network reach the VPN client correctly.  This can be
+            easily tested by pinging a host in a customer network.
+          </li>
+          <li>
+            Check that a VPN client cannot reach other customer networks.  Also check that hosts in a certain
+            customer network cannot route packets to VPN clients of another customer (i.e., incorrect VPN address
+            subnet).
+          </li>
+        </ul>
+      </div> <!-- testing -->
+
+    </n:invisible>
+  </body>
+</html>

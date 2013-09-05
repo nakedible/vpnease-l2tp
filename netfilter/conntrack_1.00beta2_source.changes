@@ -1,0 +1,20 @@
+Format: 1.7
+Date: Sat,  7 Oct 2006 19:44:45 +0300
+Source: conntrack
+Binary: libconntrack-extensions conntrack
+Architecture: source
+Version: 1.00beta2
+Distribution: unstable
+Urgency: low
+Maintainer: Max Kellermann <max@duempel.org>
+Changed-By: root <root@dapper-builder-2>
+Description: 
+ conntrack  - Program to modify the conntrack tables
+ libconntrack-extensions - Program to modify the conntrack tables
+Changes: 
+ conntrack (1.00beta2) unstable; urgency=low
+ .
+   * new upstream release
+Files: 
+ 39c09e1a5f3a8c5e0a44bc63d6562746 389 net optional conntrack_1.00beta2.dsc
+ d7f83f8c7522a033620d996b192d6721 331139 net optional conntrack_1.00beta2.tar.gz

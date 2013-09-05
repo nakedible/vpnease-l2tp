@@ -1,0 +1,84 @@
+diff -Nru base-files-3.1.9ubuntu7.2.old/debian/conffiles base-files-3.1.9ubuntu7.2/debian/conffiles
+--- base-files-3.1.9ubuntu7.2.old/debian/conffiles	2005-11-09 22:43:18.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/debian/conffiles	2008-04-02 13:24:47.000000000 +0300
+@@ -1,6 +1,6 @@
+ /etc/debian_version
+ /etc/host.conf
+-/etc/issue
+-/etc/issue.net
++/etc/issue.dist
++/etc/issue.net.dist
+ /etc/lsb-release
+ /etc/nsswitch.conf
+diff -Nru base-files-3.1.9ubuntu7.2.old/debian/postinst base-files-3.1.9ubuntu7.2/debian/postinst
+--- base-files-3.1.9ubuntu7.2.old/debian/postinst	2006-01-18 12:04:26.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/debian/postinst	2008-04-02 13:24:33.000000000 +0300
+@@ -148,3 +148,11 @@
+   echo -n "Press <Return> to continue "
+   read dummy
+ fi
++
++if [ ! -e /etc/issue ]; then
++  cp -f /etc/issue.dist /etc/issue
++fi
++if [ ! -e /etc/issue.net ]; then
++  cp -f /etc/issue.net.dist /etc/issue.net
++fi
++
+diff -Nru base-files-3.1.9ubuntu7.2.old/debian/rules base-files-3.1.9ubuntu7.2/debian/rules
+--- base-files-3.1.9ubuntu7.2.old/debian/rules	2006-01-18 12:38:49.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/debian/rules	2008-04-02 14:20:16.000000000 +0300
+@@ -16,6 +16,7 @@
+ DEBVERSION := $(shell dpkg-parsechangelog | grep ^Version: | cut -d' ' -f2)
+ 
+ build:
++	rm -f etc/issue etc/issue.net
+ 	$(checkdir)
+ 	cd debian && sed -e "s&#VERSION#&$(VERSION)&" preinst.in > preinst
+ 	touch build
+@@ -62,10 +63,10 @@
+ 		> debian/tmp/usr/share/base-files/motd
+ 	sed -e "s&#OSNAME#&$(OSNAME)&g" share/info.dir \
+ 		> debian/tmp/usr/share/base-files/info.dir
+-	sed -e "s&#OSNAME#&$(OSNAME)&g" etc/issue \
+-		> debian/tmp/etc/issue
+-	sed -e "s&#OSNAME#&$(OSNAME)&g" etc/issue.net \
+-		> debian/tmp/etc/issue.net
++#	sed -e "s&#OSNAME#&$(OSNAME)&g" etc/issue \
++#		> debian/tmp/etc/issue
++#	sed -e "s&#OSNAME#&$(OSNAME)&g" etc/issue.net \
++#		> debian/tmp/etc/issue.net
+ 	gzip -9 $(docdir)/changelog
+ 	chown -R root:root debian/tmp
+ 	cd debian/tmp && chown root:src     usr/src
+diff -Nru base-files-3.1.9ubuntu7.2.old/etc/issue base-files-3.1.9ubuntu7.2/etc/issue
+--- base-files-3.1.9ubuntu7.2.old/etc/issue	2007-10-29 22:26:56.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/etc/issue	1970-01-01 02:00:00.000000000 +0200
+@@ -1,2 +0,0 @@
+-Ubuntu 6.06.2 LTS \n \l
+-
+diff -Nru base-files-3.1.9ubuntu7.2.old/etc/issue.dist base-files-3.1.9ubuntu7.2/etc/issue.dist
+--- base-files-3.1.9ubuntu7.2.old/etc/issue.dist	1970-01-01 02:00:00.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/etc/issue.dist	2008-04-02 12:30:10.000000000 +0300
+@@ -0,0 +1,2 @@
++Ubuntu 6.06 LTS \n \l
++
+diff -Nru base-files-3.1.9ubuntu7.2.old/etc/issue.net base-files-3.1.9ubuntu7.2/etc/issue.net
+--- base-files-3.1.9ubuntu7.2.old/etc/issue.net	2007-10-29 22:27:03.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/etc/issue.net	1970-01-01 02:00:00.000000000 +0200
+@@ -1 +0,0 @@
+-Ubuntu 6.06.2 LTS
+diff -Nru base-files-3.1.9ubuntu7.2.old/etc/issue.net.dist base-files-3.1.9ubuntu7.2/etc/issue.net.dist
+--- base-files-3.1.9ubuntu7.2.old/etc/issue.net.dist	1970-01-01 02:00:00.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/etc/issue.net.dist	2008-04-02 12:30:18.000000000 +0300
+@@ -0,0 +1 @@
++Ubuntu 6.06 LTS
+diff -Nru base-files-3.1.9ubuntu7.2.old/etc/lsb-release base-files-3.1.9ubuntu7.2/etc/lsb-release
+--- base-files-3.1.9ubuntu7.2.old/etc/lsb-release	2007-10-29 22:26:47.000000000 +0200
++++ base-files-3.1.9ubuntu7.2/etc/lsb-release	2008-04-02 12:29:56.000000000 +0300
+@@ -1,4 +1,4 @@
+ DISTRIB_ID=Ubuntu
+ DISTRIB_RELEASE=6.06
+ DISTRIB_CODENAME=dapper
+-DISTRIB_DESCRIPTION="Ubuntu 6.06.2 LTS"
++DISTRIB_DESCRIPTION="Ubuntu 6.06 LTS"

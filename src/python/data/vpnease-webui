@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+#  VPNease WebUI start/stop.
+#
+
+PATH=/sbin/:/bin/:/usr/sbin/:/usr/bin
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        log_begin_msg "VPNease Web UI start..."
+        l2tpgw-init-wrapper webuistart
+        log_end_msg $?
+        ;;
+    stop)
+        log_begin_msg "VPNease Web UI stop..."
+        l2tpgw-init-wrapper webuistop
+        log_end_msg $?
+        ;;
+    restart)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        log_success_msg "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

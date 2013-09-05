@@ -1,0 +1,14 @@
+obj-$(CONFIG_IP_NF_MATCH_MARK) += ipt_mark.o
+obj-$(CONFIG_IP_NF_MATCH_SET) += ipt_set.o
+obj-$(CONFIG_IP_NF_TARGET_SET) += ipt_SET.o
+ifdef CONFIG_IP_NF_SET
+	obj-$(CONFIG_IP_NF_SET) += ip_set.o
+	export-objs += ip_set.o
+endif
+obj-$(CONFIG_IP_NF_SET_IPMAP) += ip_set_ipmap.o
+obj-$(CONFIG_IP_NF_SET_PORTMAP) += ip_set_portmap.o
+obj-$(CONFIG_IP_NF_SET_MACIPMAP) += ip_set_macipmap.o
+obj-$(CONFIG_IP_NF_SET_IPHASH) += ip_set_iphash.o
+obj-$(CONFIG_IP_NF_SET_NETHASH) += ip_set_nethash.o
+obj-$(CONFIG_IP_NF_SET_IPPORTHASH) += ip_set_ipporthash.o
+obj-$(CONFIG_IP_NF_SET_IPTREE) += ip_set_iptree.o

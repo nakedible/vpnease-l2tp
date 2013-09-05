@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+echo "Unloading module..."
+rmmod pppol2tp
+#modprobe -r pppox

@@ -1,0 +1,16 @@
+CONFIG_IP_NF_TARGET_MARK
+IPMARK target support
+CONFIG_IP_NF_TARGET_IPMARK
+  This option adds a `IPMARK' target, which allows you to create rules
+  in the `mangle' table which alter the netfilter mark field basing
+  on the source or destination ip address of the packet.
+  This is very useful for very fast massive shaping - using only one rule
+  you can direct packets to houndreds different queues.
+  You will probably find it helpful only if your linux machine acts as
+  a shaper for many others computers.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>. The module will be called
+  ipt_IPMARK.o.  If unsure, say `N'.
+
+

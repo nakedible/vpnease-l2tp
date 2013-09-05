@@ -1,0 +1,321 @@
+2004-05-05  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.18 released.
+
+2004-05-05  Daniel Jacobowitz  <dan@debian.org>
+
+	From Colin Watson <cjwatson@debian.org>:
+	* bterm.c (get_ptytty): Support Unix98 PTYs.
+	(main): Handle errors from get_ptytty.
+
+2004-05-05  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-bterm.c (bogl_vga16_reinit): New function.
+	(cached_color, cached_sr_mask, cached_op, cached_write_mask)
+	(cached_plane, cached_mode): Move to file scope.
+	(set_color, set_enable_sr, set_op, set_write_planes)
+	(set_read_plane, set_mode): Update.
+	* bogl-bterm.h (bogl_vga16_reinit): Add prototype.
+	* bogl.c (draw_enable): Set bogl_reinit.
+	(draw_disable): Likewise.
+	(vt_switch): Call bogl_reinit.
+	* bogl.h (bogl_reinit): Declare.
+	* bterm.c (main): Call bogl_set_palette after VT switch.
+
+2004-03-07  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.17 released.
+
+2004-03-07  Daniel Jacobowitz  <dan@debian.org>
+
+	* bdftobogl.c (bogl_write_font): Fix a typo in last change.
+
+2004-02-24  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.16 released.
+
+2004-02-24  Daniel Jacobowitz  <dan@debian.org>
+
+	* bdftobogl.c (zero_buf): New.
+	(bogl_write_font): Pad name to sizeof(long).
+
+2004-01-20  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.15 released.
+
+2004-01-20  Matt Kraai  <kraai@ftbfs.org>
+
+	* bterm.c (font_name, term): Make global.
+	(reload_font): New function.
+	(main): Set reload_font as the SIGHUP handler.
+
+2003-11-04  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.14 released.
+
+2003-11-04  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (term_clear_one): New function.
+	(bogl_term_out): Fix "\33[J" support.
+
+2003-11-04  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (dirty_scroll, dirty_backscroll): Fix and enable
+	logic.
+	(cursor_down, bogl_term_out): Adjust yorig after calling
+	dirty_scroll and dirty_backscroll.
+
+2003-11-04  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_dirty): New function.
+	* bogl-term.h (bogl_term_dirty): Add prototype.
+	* bogl.c (vt_switch): Set bogl_refresh = 2 for VT switches.
+	* bterm.c (main): Call bogl_term_dirty after a VT switch.
+
+2003-10-05  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.13 released.
+
+2003-10-05  Daniel Jacobowitz  <dan@debian.org>
+
+	Import some changes from Red Hat, Inc. (Alan Cox):
+	* bogl-term.c (bogl_term_new): Initialize "dirty".
+	(term_match, term_is_clear, dirty_scroll, dirty_backscroll): New.
+	(cursor_down, show_cursor, clear_left, clear_right)
+	(bogl_term_out, bogl_term_redraw): Use them.  Use dirty member.
+	Remove some immediate refreshes.
+	(bogl_vga16_put): Fix a typo.
+	* bogl-term.h (struct bogl_term): Add dirty member.
+	* bterm.c (main): Delayed refresh.
+
+	* bogl-vga16.c (set_color, set_enable_sr, set_op, set_write_planes)
+	(set_read_plane, set_mode): Cache last value, update lazily.
+	(bogl_vga16_hline, bogl_vga16_clear): Write word-sized pieces.
+	(bogl_vga16_text): Optimize plot.
+
+2003-10-05  Daniel Jacobowitz  <dan@debian.org>
+
+	Import some changes from the Red Hat packaging of BOGL.
+	* Makefile: Build vga16 support for ia64 and x86_64 also.
+	* bogl-term.c (bogl_term_new): Use calloc.
+
+2003-04-15  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.12 released.
+
+2003-04-15  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-vga16.c (bogl_vga16_init): Add a workaround for
+	x86-64, from Matt Wilson <msw@redhat.com>.
+
+2003-03-23  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.11 released.
+
+2003-03-23  Daniel Jacobowitz  <dan@debian.org>
+
+	* Makefile: Enable vga16 mode for ARM.
+
+2003-03-23  Daniel Jacobowitz  <dan@debian.org>
+
+	From Martin Sjögren <md9ms@mdstud.chalmers.se>:
+	* bogl.c (bogl_init): Check fb/0 and vc/0.
+	* bterm.c (get_ptytty): Check /dev/pty/.
+
+2002-08-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.10 released.
+
+2002-08-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bdftobogl.1: New file.
+
+2002-08-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl.c (bogl_init): Provide a default for line length if the
+	framebuffer doesn't tell us.
+
+2002-08-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_out): Update comment to reflect incomplete
+	character handling.
+
+2002-08-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_out): Handle mbrtowc errors more
+	gracefully.
+
+2002-03-31  Daniel Jacobowitz  <dan@debian.org>
+
+	* bterm.1: New file.
+
+2002-03-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.9 released.
+
+2002-03-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_out): Add support for `ri' (scroll up).
+	Remember to hide the cursor before moving it.
+	* bterm.ti: Add `ri'.
+
+2002-03-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_out): Add support for `ed' (clear to end of
+	screen).
+	* bterm.ti: Add `ed'.
+
+2002-03-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_out): Handle non-UTF-8 locales with acsc
+	a little better.
+
+2002-03-17  Daniel Jacobowitz  <dan@debian.org>
+
+	Patch from Philip Blundell.
+	* bterm.ti: Add acsc, smacs, and rmacs.
+	* bogl-term.h (struct bogl_term): Add acs flag.
+	* bogl-term.c (bogl_term_out): Support acsc, smacs, and
+	rmacs.
+
+2002-03-17  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl.c: Include <asm/page.h>.  New variable bogl_frame_mapped.
+	(bogl_init): Handle non-page-aligned framebuffers.
+
+2002-01-27  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_out): Handle bad wide characters
+	more robustly.
+
+2001-12-01  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.8 released.
+
+2001-12-01  Daniel Jacobowitz  <dan@debian.org>
+
+	* bterm.ti: Copy key capabalities from the ``linux'' terminfo entry,
+	since we run on a Linux console.
+
+2001-12-01  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (bogl_term_out): Reset xpos after receiving
+	a Home (\e[H) sequence.
+
+2001-12-01  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-term.c (put_char): Use arguments instead of term-> state,
+	reported by Philip Blundell.
+	(show_cursor): Pass properly inverted colors to put_char.
+
+2001-12-01  Daniel Jacobowitz  <dan@debian.org>
+
+	* bdftobogl.c, bogl-cfb8.c, bogl-font.c, bogl-pcfb.c, bogl-tcfb.c,
+	bogl-vga16.c, bogl.c, bogl.h, symbol.c: Use u_int32_t instead of
+	unsigned long.
+
+2001-12-01  Daniel Jacobowitz  <dan@debian.org>
+
+	* bterm.c (spawn_shell): Uncomment TIOCSTTY ioctl,
+	from Philip Blundell.
+
+2001-11-11  Daniel Jacobowitz  <dan@debian.org>
+
+	* Version 0.1.7 released.
+
+2001-11-11  Daniel Jacobowitz  <dan@debian.org>
+
+	* reduce-font.c (main):  Better error checking, from
+	Philip Blundell.
+
+2001-11-11  Daniel Jacobowitz  <dan@debian.org>
+
+	* bogl-cfb.h (bits4): Add __attribute__ ((packed)).
+	(bits24): Likewise.
+
+Sun May 27 18:25:58 PDT 2001  Daniel Jacobowitz  (dan@debian.org)
+	* Version 0.1.6 released.
+	* Stop building, referencing, and including libutf8_plug.
+	* Build and install reduce-font.
+
+Sun May 27 18:14:41 PDT 2001  Daniel Jacobowitz  (dan@debian.org)
+	* bowl-boxes.c: Include <stdarg.h> for va_* macros.
+
+Sun May 27 17:43:22 PDT 2001  Daniel Jacobowitz  (dan@debian.org)
+	* Version 0.1.5 released.
+	* bogl.c (init_fb): Accept DIRECTCOLOR visuals as if they
+	were TRUECOLOR.  Seems to work.
+	(draw_enable): Likewise.
+
+Sun May 27 17:41:50 PDT 2001  Daniel Jacobowitz  (dan@debian.org)
+	* bterm.ti: Fix my bterm.ti typo from reverse video patch.
+	* Makefile: Install compiled bterm.ti.
+
+Sun May 27 17:15:10 PDT 2001  Daniel Jacobowitz  (dan@debian.org)
+	* bogl-term.c (bogl_term_out): Correct bterm fix, from Edmund
+	GRIMLEY EVANS <edmundo@rano.org>.
+
+Sun Mar 11 19:30:41 EST 2001  Daniel Jacobowitz  (dan@debian.org)
+	* bogl-term.c (bogl_term_out): Make wide character handling
+	work with glibc 2.2.
+
+Sun Mar 11 18:55:12 EST 2001  Daniel Jacobowitz  (dan@debian.org)
+	* Makefile: Allow CFLAGS to be safely overridden.
+
+Sat Feb 24 16:20:43 EST 2001  Daniel Jacobowitz  (dan@debian.org)
+	* Version 0.1.4 released.
+	* Makefile: Install libbogl.so symlink to link to the shared
+	library.
+
+Sat Feb 24 16:13:40 EST 2001  Daniel Jacobowitz  (dan@debian.org)
+	* boml.c: Include <time.h> for time().
+	* boml.c: Fix compilation without M_SERIAL.
+
+Sat Feb 24 15:47:19 EST 2001  Daniel Jacobowitz  (dan@debian.org)
+	* bogl-term.h (struct bogl_term): Add reverse video flag.
+	* bogl-term.c (bogl_term_new): Initialize it.
+	(put_char): Respect reverse video.
+	(bogl_term_out): Likewise.
+	* bterm.ti: Advertise reverse video, along with standout
+	and sgr capabilities.
+
+Sat Feb 24 14:31:16 EST 2001  Daniel Jacobowitz  (dan@debian.org)
+	* bogl-cfb.c (memset_var): Modified fix from ha shao
+	for 32 bpp.
+
+Tue Dec 26 23:25:35 EST 2000  Daniel Jacobowitz  (dan@debian.org)
+	* Version 0.1.3 released.
+
+Tue Dec 26 23:11:49 EST 2000  Daniel Jacobowitz  (dan@debian.org)
+	* symbol.c: Internationalization made bogl no longer display
+	"\0" when told to, so bump the character numbers in font_symbol.
+	* bowl.c: Change SYM_* likewise.
+
+Tue Dec 26 16:00:44 EST 2000  Daniel Jacobowitz  (dan@debian.org)
+	* bowl.c (bowl_init): Reshow the mouse if we are reinitialized.
+
+Mon Dec 25 22:20:05 EST 2000  Daniel Jacobowitz  (dan@debian.org)
+	* Version 0.1.2 released.
+	* tux75.png: Make the background actually transparent.
+
+Mon Dec 25 21:41:41 EST 2000  Daniel Jacobowitz  (dan@debian.org)
+	* ChangeLog: Reformat.
+	* boml.c: Add M_GPM and M_INPUT.
+	(detect_gpm): New function.
+	(detect_input): New function.
+	* boml.c (boml_quick_init): Quick initialization function
+	which may find "enough" mice to skip detection - gpm
+	and 2.4's unified input layer.
+	* boml.h: Prototype boml_quick_init ().
+	* bowl.c (bowl_init): Use boml_quick_init () before putting up
+	a detection dialog box.
+
+Sun Dec 24 22:01:20 EST 2000  Daniel Jacobowitz  (dan@debian.org)
+	* Version 0.1.1 released.
+	* boml.c (detect_ps2): Open /dev/psaux O_RDWR instead of O_RDONLY,
+	since we then write to it.
+	* bowl.c: Use the colors provided in PNGs instead of guessing.
+	(bowl_init): Likewise.
+	(bowl_refresh): Likewise.
+	* bogl-cfb.c (memset_var): Fix assertion failure in 24bit CFBs (the
+	framebuffer itself is rarely 3-byte-aligned, and does not need to be).

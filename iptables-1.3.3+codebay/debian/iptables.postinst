@@ -1,0 +1,27 @@
+#!/bin/sh
+set -e
+
+#clean-up 1.2.6-a{1,2} posinst error
+foo="/etc/init.d/iptables exists"
+if test -f /1; then
+  if grep -q "$foo" /1; then
+    rm -f /1
+  fi
+fi
+
+# iptables 1.2.7-8 dumped debconf
+if [ -e /usr/share/debconf/confmodule ]; then
+        . /usr/share/debconf/confmodule
+        db_purge
+fi
+
+# remove ugly alternatives hack for owner match
+
+if [ -x /usr/sbin/update-alternatives ]; then
+  update-alternatives --remove \
+    libipt_owner.so /lib/iptables/libipt_owner.so+pre-2.4.20
+  update-alternatives --remove \
+    libipt_owner.so /lib/iptables/libipt_owner.so+post-2.4.20
+fi
+
+#DEBHELPER#

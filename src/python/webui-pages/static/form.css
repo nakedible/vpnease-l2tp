@@ -1,0 +1,71 @@
+/*
+ *  VPNease form CSS
+ *
+ *  (C) Copyright Codebay Oy, 2006-2008.  All Rights Reserved.
+ *
+ */
+
+form {
+}
+
+fieldset {
+	padding: 0;
+	margin-bottom: .75em;    
+	border: none;
+}
+
+legend {
+}
+
+label {
+	display: block; 
+	margin: 0;
+	margin-top: .75em; 
+	margin-bottom: .325em; 
+	cursor: pointer;
+	_cursor: default;
+}
+
+label span {
+	font-size: 11px;
+	color: #666;
+}
+
+input, select, textarea {        
+ 	padding: 3px 3px;   
+	margin: 0;    
+	font: inherit; 
+	background: #fff;   
+}
+
+input[type='text'], input[type='password'], select, textarea {    
+ 	border: 1px solid #999;
+}
+
+textarea {    
+	line-height: 1.5;
+	width: 95%;
+}
+
+input:focus, 
+select:focus,
+textarea:focus {    
+	background: #ffffcc;	
+	border-color: #d9d982;   
+}
+
+input.button {
+	font-weight: bold;	
+	padding: 3px 5px;
+	/* IE */
+	_padding: 3px 0;
+	line-height: 1.0;	
+	margin: 0;
+	margin-right: .75em; /* space between the next button */
+	color: #0b4f70;	
+	border: 1px solid #afd0db;
+	border-bottom: 1px solid #286073;
+	border-right: 1px solid #286073;
+	cursor: pointer;
+	background: #d0ebf5 url(bg-button.gif) bottom left repeat-x;
+}

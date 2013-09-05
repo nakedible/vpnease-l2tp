@@ -1,0 +1,27 @@
+This option adds an iptables 'ipv4options' match, which allows you to
+match on IPv4 header options like source routing, record route, timestamp and
+router-alert.
+
+Suppported options are:
+--ssrr
+  To match packets with the flag strict source routing.
+--lsrr
+  To match packets with the flag loose source routing.
+--no-srr
+  To match packets with no flag for source routing.
+[!] --rr
+  To match packets with the RR flag.
+[!] --ts
+  To match packets with the TS flag.
+[!] --ra
+  To match packets with the router-alert option.
+[!] --any-opt
+  To match a packet with at least one IP option, or no IP option
+  at all if ! is chosen.
+
+Example:
+  $ iptables -A input -m ipv4options --rr -j DROP
+  will drop packets with the record-route flag.
+
+  $ iptables -A input -m ipv4options --ts -j DROP
+  will drop packets with the timestamp flag.

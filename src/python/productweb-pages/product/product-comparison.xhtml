@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">L2TP Product Web</n:invisible></title>
+    <link rel="stylesheet" type="text/css" href="static/common.css" />
+    <n:invisible n:pattern="head" />
+  </head>
+
+  <body>
+    <n:invisible n:pattern="pagetitle">Product Comparison</n:invisible>
+
+    <n:invisible n:pattern="content">
+    
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Virtual Private Network (VPN) Overview</h1>
+
+        <p>
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Virtual_private_network">Virtual Private Network (VPN)</a>
+          products connect computers securely through insecure networks (such as the Internet), using
+          encryption and other cryptographic techniques to secure data in transit.  As a result, remote
+          workers, customers, partners, and various company sites can be linked together securely, as if a
+          secure "private network" existed between the parties.  VPNs provide an extremely cost effective
+          means of achieving secure connectivity, and have thus become popular in recent years.
+        </p>
+
+        <p>
+          VPN products typically provide two basic services:
+        </p>
+        <ul>
+          <li>Connecting remote workers and other
+              individual users to a company network, which is often called "remote access VPN"</li>
+          <li>Connecting company or partner sites (networks) using a secure tunnel, which is often
+              called "site-to-site VPN"</li>
+        </ul>
+
+        <p>
+          From a user perspective, remote access VPNs typically work like a modem connection: the remote
+          access connection is opened, the user is authenticated using a username and a password, and
+          a secure connection is created.  User data traffic (in the form of IP data packets) can then
+          be exchanged with the company network.
+        </p>
+
+        <p>
+          Site-to-site VPNs perform a similar function, but are
+          autonomous.  From user perspective they work similarly to a network router: data packets are
+          sent to one site-to-site VPN device, which delivers them to the other site-to-site VPN device
+          securely over the Internet, and the packets are then routed onwards.
+          Many products provide one of these functions, while some products, like
+          <n:invisible n:macro="productname" />, provide both functions.
+        </p>
+
+        <p>
+          There are many VPN technologies in use, ranging from fully standard protocols (such as
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/IPsec">IPsec</a>)
+          to fully proprietary vendor-specific solutions (such as SSL VPNs).  <n:invisible n:macro="productname" />
+          uses existing, reliable standards, and is based on the
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/L2TP">L2TP/IPsec</a> VPN technology.
+        </p>
+
+        <p>
+          IPsec-based VPNs are the ideal technology for VPN connectivity, because they provide very high
+          quality security (relied upon by banks and even military organizations), and they are
+          <strong class="cb-bold">packet based</strong>, which means that individual IP data packets are secured
+          and transferred through the IPsec connection.
+          This means that IPsec-based VPNs are fully transparent
+          and are completely application independent. All the applications are protected automatically and
+          can be used over the VPN connection.
+          In particular, network services like Windows file sharing and Voice over IP (VoIP) are available without limitations.
+        </p>
+
+        <p>
+          Some other VPN technologies, like proprietary and SSL-based VPNs, are often
+          application dependent. Many applications may not work without explicit support 
+          for the particular VPN solution.
+        </p>
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading"><n:invisible n:macro="productname" /> &#x2014; for Small and Medium Sized Businesses</h1>
+
+        <p>
+          <n:invisible n:macro="productname" /> has been designed to deliver the best available IPsec-based
+          remote access and site-to-site VPN connectivity to small and medium sized businesses.  The product
+          has been designed with ease-of-use in mind: it is managed through a web-based interface,
+          and built-in VPN client software provided by the operating system vendor is used without extra
+          client software installation.
+        </p>
+
+        <p>
+          <n:invisible n:macro="productname" /> even provides fully automatic VPN
+          client configuration for Windows XP and Windows Vista computers, which allows non-technical users to
+          activate their VPN connection without administrative help.
+        </p>
+
+        <p>
+          The pricing model also suits small and medium sized businesses well. There is no fixed startup cost, but
+          instead cost is capacity based (number of simultaneous remote access or site-to-site VPN connections).
+          Finally, testing is free and requires no registration. 
+          Simply <a href="download-home.html">download and test</a>.
+        </p>
+      </div> <!-- product - for small and medium sized businesses -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Compare VPN Solutions</h1>
+
+        <table border="0" cellpadding="0" cellspacing="0" id="vpn-comparison-table">
+          <tr>
+            <th>Feature</th>
+            <th>IPsec VPNs</th>
+            <th>SSL VPNs</th>
+            <th>Proprietary VPNs</th>
+            <th><n:invisible n:macro="productname" /></th>
+          </tr>
+
+          <tr>
+            <td>Security</td>
+            <td>IPsec and extensions</td>
+            <td>SSL and/or proprietary</td>
+            <td>Proprietary</td>
+            <td><strong class="cb-bold">L2TP/IPsec</strong></td>
+          </tr>
+
+          <tr>
+            <td class="cb-alt">Windows 2000 Client</td>
+            <td class="cb-alt">Third party client</td>
+            <td class="cb-alt">Third party client (1)</td>
+            <td class="cb-alt">Third party client</td>
+            <td class="cb-alt"><strong class="cb-bold">Built-in<br />(Autoconf)</strong></td>
+          </tr>
+
+          <tr>
+            <td class="cb-alt">Windows XP Client</td>
+            <td class="cb-alt">Third party client</td>
+            <td class="cb-alt">Third party client (1)</td>
+            <td class="cb-alt">Third party client</td>
+            <td class="cb-alt"><strong class="cb-bold">Built-in<br />(Autoconf)</strong></td>
+          </tr>
+
+          <tr>
+            <td>Windows Vista Client</td>
+            <td>Third party client</td>
+            <td>Third party client (1)</td>
+            <td>Third party client</td>
+            <td><strong class="cb-bold">Built-in<br />(Autoconf)</strong></td>
+          </tr>
+
+          <tr>
+            <td class="cb-alt">Mac OS X Client</td>
+            <td class="cb-alt">Third party client</td>
+            <td class="cb-alt">Third party client (1)</td>
+            <td class="cb-alt">Third party client</td>
+            <td class="cb-alt"><strong class="cb-bold">Built-in</strong></td>
+          </tr>
+
+          <tr>
+            <td>Pocket PC / Windows Mobile Client</td>
+            <td>Typically no</td>
+            <td>Typically no (1)</td>
+            <td>Typically no</td>
+            <td><strong class="cb-bold">Built-in</strong></td>
+          </tr>
+
+          <tr>
+            <td class="cb-alt">Linux Client</td>
+            <td class="cb-alt">Some</td>
+            <td class="cb-alt">Typically no (1)</td>
+            <td class="cb-alt">Some</td>
+            <td class="cb-alt"><strong class="cb-bold">Packaged client</strong></td>
+          </tr>
+
+          <tr>
+            <td>Nokia Internet Tablet Client</td>
+            <td>Typically no</td>
+            <td>Typically no (1)</td>
+            <td>Typically no</td>
+            <td><strong class="cb-bold">Packaged client</strong></td>
+          </tr>
+
+          <tr>
+            <td class="cb-alt">Coexists with other VPN clients</td>
+            <td class="cb-alt">Typically no</td>
+            <td class="cb-alt">Typically no (1)</td>
+            <td class="cb-alt">Typically no</td>
+            <td class="cb-alt"><strong class="cb-bold">Typically yes</strong></td>
+          </tr>
+        </table>
+
+        <p>
+          (1) Third party client is needed for application neutral connections.
+              Plain web access to company resources works with most browsers.
+        </p>
+
+      </div> <!-- compare -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Security and Standards</h1>
+
+        <p>
+          Like most VPN products, <n:invisible n:macro="productname" /> authenticates
+          the remote user by username and password, and protects all user data sent
+          between the client and the server computers.  This effectively prevents
+          attackers from gaining access to data in transit, and allows an employee to
+          access company resources even from untrusted networks.  A VPN solution
+          should be deployed in conjunction with supporting security measures, such as
+          client firewall, anti-virus and anti-spam scanning, and hard disk encryption.
+          Together, VPN and other security measures allow flexible access to your
+          data, while protecting against external threats.
+        </p>
+
+        <p>
+          <n:invisible n:macro="productname" /> protects user data by
+          <strong class="cb-bold">encrypting</strong> data exchanged between the client
+          and the server computers.
+          <n:invisible n:macro="productname" /> uses the
+          <strong class="cb-bold">IPsec security protocol</strong> to ensure the highest
+          possible security for encrypted user data.  IPsec is a standard developed by
+          the <a class="cb-external" target="_blank" href="http://www.ietf.org/">Internet Engineering Task Force (IETF)</a>
+          and has been deployed commercially for almost 10 years.
+          <n:invisible n:macro="productname" /> uses IPsec in conjunction with the L2TP
+          protocol in a combination commonly referred to as
+          <strong class="cb-bold">L2TP/IPsec</strong>.
+          See <a href="encryption-and-standards.html">Encryption and Standards</a> for details about cryptographic and compression
+          algorithms.
+        </p>
+
+        <p>
+          <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Network_address_translation">Network Address Translation (NAT)</a>
+          is often a problem with many VPN solutions.  <n:invisible n:macro="productname" /> supports the IPsec
+          NAT traversal standard, allowing the product to work fully with all NAT and port forwarding devices.  In particular,
+          <n:invisible n:macro="productname" /> works correctly even when multiple client computers reside behind the same NAT device,
+          a scenario which typically causes problems.
+        </p>
+      </div> <!-- security and standards -->
+
+    </n:invisible>
+  </body>
+</html>

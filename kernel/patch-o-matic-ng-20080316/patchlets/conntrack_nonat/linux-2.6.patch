@@ -1,0 +1,420 @@
+diff -urN --exclude-from=/usr/src/diff.exclude linux-2.6.6-locking/include/linux/netfilter_ipv4/ip_conntrack.h linux-2.6.6-nonat/include/linux/netfilter_ipv4/ip_conntrack.h
+--- linux-2.6.6-locking/include/linux/netfilter_ipv4/ip_conntrack.h	2004-05-27 16:38:05.000000000 +0200
++++ linux-2.6.6-nonat/include/linux/netfilter_ipv4/ip_conntrack.h	2004-05-28 11:51:02.000000000 +0200
+@@ -168,7 +168,11 @@
+ 	struct ip_conntrack_tuple_hash tuplehash[IP_CT_DIR_MAX];
+ 
+ 	/* Hash keys to avoid recalculations */
++#ifdef CONFIG_IP_NF_NAT_NEEDED
+ 	u_int32_t key[IP_CT_DIR_MAX];
++#else
++	u_int32_t key[IP_CT_DIR_REPLY];
++#endif
+ 	
+ 	/* Have we seen traffic both ways yet? (bitset) */
+ 	unsigned long status;
+@@ -212,6 +216,24 @@
+ 
+ };
+ 
++#ifdef CONFIG_IP_NF_NAT_NEEDED
++/* If we're the first tuple, it's the original dir. */
++static inline enum ip_conntrack_dir
++ip_ct_direction(const struct ip_conntrack_tuple_hash *h,
++		const struct ip_conntrack_tuple *t)
++{
++	return (enum ip_conntrack_dir)(&(h)->ctrack->tuplehash[1] == h);
++}
++#else
++static inline enum ip_conntrack_dir
++ip_ct_direction(const struct ip_conntrack_tuple_hash *h,
++		const struct ip_conntrack_tuple *t)
++{
++	return (enum ip_conntrack_dir)
++	       (!ip_ct_tuple_src_proto_equal(&(h)->tuple, t));
++}
++#endif
++
+ /* get master conntrack via master expectation */
+ #define master_ct(conntr) (conntr->master ? conntr->master->expectant : NULL)
+ 
+diff -urN --exclude-from=/usr/src/diff.exclude linux-2.6.6-locking/include/linux/netfilter_ipv4/ip_conntrack_core.h linux-2.6.6-nonat/include/linux/netfilter_ipv4/ip_conntrack_core.h
+--- linux-2.6.6-locking/include/linux/netfilter_ipv4/ip_conntrack_core.h	2004-05-27 16:39:22.000000000 +0200
++++ linux-2.6.6-nonat/include/linux/netfilter_ipv4/ip_conntrack_core.h	2004-05-28 17:49:55.000000000 +0200
+@@ -55,8 +55,9 @@
+ extern struct list_head ip_conntrack_expect_list;
+ DECLARE_RWLOCK_EXTERN(ip_conntrack_lock);
+ DECLARE_RWLOCK_EXTERN(ip_conntrack_expect_lock);
+-DECLARE_RWLOCK_EXTERN(ip_conntrack_expect_tuple_lock);
++DECLARE_RWLOCK_EXTERN_NAT(ip_conntrack_expect_tuple_lock);
+ 
++#ifdef CONFIG_IP_NF_NAT_NEEDED
+ static inline void write_lock_key(u_int32_t hash_a, u_int32_t hash_b)
+ {
+ 	if (hash_a < hash_b) {
+@@ -112,4 +113,47 @@
+ {
+ 	read_unlock_key(ct->key[IP_CT_DIR_ORIGINAL]);
+ }
++#else
++static inline void write_lock_key(u_int32_t hash_a, u_int32_t hash_b)
++{
++	WRITE_LOCK(&ip_conntrack_hash[hash_a].lock);
++}
++
++static inline void write_unlock_key(u_int32_t hash_a, u_int32_t hash_b)
++{
++	WRITE_UNLOCK(&ip_conntrack_hash[hash_a].lock);
++}
++
++static inline void write_lock_ct(struct ip_conntrack *ct)
++{
++	write_lock_key(ct->key[IP_CT_DIR_ORIGINAL],
++		       ct->key[IP_CT_DIR_ORIGINAL]);
++}
++
++static inline void write_unlock_ct(struct ip_conntrack *ct)
++{
++	write_unlock_key(ct->key[IP_CT_DIR_ORIGINAL],
++		         ct->key[IP_CT_DIR_ORIGINAL]);
++}
++
++static inline void read_lock_key(u_int32_t hash_a)
++{
++	READ_LOCK(&ip_conntrack_hash[hash_a].lock);
++}
++
++static inline void read_unlock_key(u_int32_t hash_a)
++{
++	READ_UNLOCK(&ip_conntrack_hash[hash_a].lock);
++}
++
++static inline void read_lock_ct(const struct ip_conntrack *ct)
++{
++	read_lock_key(ct->key[IP_CT_DIR_ORIGINAL]);
++}
++
++static inline void read_unlock_ct(const struct ip_conntrack *ct)
++{
++	read_unlock_key(ct->key[IP_CT_DIR_ORIGINAL]);
++}
++#endif /* CONFIG_IP_NF_NAT_NEEDED */
+ #endif /* _IP_CONNTRACK_CORE_H */
+diff -urN --exclude-from=/usr/src/diff.exclude linux-2.6.6-locking/include/linux/netfilter_ipv4/ip_conntrack_tuple.h linux-2.6.6-nonat/include/linux/netfilter_ipv4/ip_conntrack_tuple.h
+--- linux-2.6.6-locking/include/linux/netfilter_ipv4/ip_conntrack_tuple.h	2004-05-10 04:32:54.000000000 +0200
++++ linux-2.6.6-nonat/include/linux/netfilter_ipv4/ip_conntrack_tuple.h	2004-05-28 12:14:33.000000000 +0200
+@@ -87,10 +87,10 @@
+ 
+ #define CTINFO2DIR(ctinfo) ((ctinfo) >= IP_CT_IS_REPLY ? IP_CT_DIR_REPLY : IP_CT_DIR_ORIGINAL)
+ 
+-/* If we're the first tuple, it's the original dir. */
+-#define DIRECTION(h) ((enum ip_conntrack_dir)(&(h)->ctrack->tuplehash[1] == (h)))
+-
+-/* Connections have two entries in the hash table: one for each way */
++/* When NAT is enabled, connections have two entries in the hash table: 
++ * one for each way. In the non-NAT case we keep one entry in the hash
++ * table only, regardless of the direction. Therefore we have two
++ * versions of ip_ct_direction. */
+ struct ip_conntrack_tuple_hash
+ {
+ 	struct list_head list;
+@@ -118,6 +118,28 @@
+ 		&& t1->dst.protonum == t2->dst.protonum;
+ }
+ 
++static inline int ip_ct_tuple_src_proto_equal(const struct ip_conntrack_tuple *t1,
++				              const struct ip_conntrack_tuple *t2)
++{
++	return t1->src.ip == t2->src.ip
++		&& t1->src.u.all == t2->src.u.all
++		&& t1->dst.protonum == t1->dst.protonum;
++}
++
++static inline int ip_ct_tuple_equal_nonat(const struct ip_conntrack_tuple *t1,
++				         const struct ip_conntrack_tuple *t2)
++{
++	return ((t1->src.ip == t2->src.ip
++		 && t1->src.u.all == t2->src.u.all
++		 && t1->dst.ip == t2->dst.ip
++		 && t1->dst.u.all == t2->dst.u.all)
++	     || (t1->src.ip == t2->dst.ip
++		 && t1->src.u.all == t2->dst.u.all
++		 && t1->dst.ip == t2->src.ip
++		 && t1->dst.u.all == t2->src.u.all))
++		&& t1->dst.protonum == t2->dst.protonum;
++}
++
+ static inline int ip_ct_tuple_equal(const struct ip_conntrack_tuple *t1,
+ 				    const struct ip_conntrack_tuple *t2)
+ {
+diff -urN --exclude-from=/usr/src/diff.exclude linux-2.6.6-locking/include/linux/netfilter_ipv4/lockhelp.h linux-2.6.6-nonat/include/linux/netfilter_ipv4/lockhelp.h
+--- linux-2.6.6-locking/include/linux/netfilter_ipv4/lockhelp.h	2004-05-10 04:32:00.000000000 +0200
++++ linux-2.6.6-nonat/include/linux/netfilter_ipv4/lockhelp.h	2004-05-28 17:49:03.000000000 +0200
+@@ -126,4 +126,21 @@
+ #define WRITE_UNLOCK(l) write_unlock_bh(l)
+ #endif /*CONFIG_NETFILTER_DEBUG*/
+ 
++/* For rwlocks which exist only when NAT is enabled */
++#ifdef CONFIG_IP_NF_NAT_NEEDED
++#define DECLARE_RWLOCK_NAT(l)		DECLARE_RWLOCK(l)
++#define DECLARE_RWLOCK_EXTERN_NAT(l)	DECLARE_RWLOCK_EXTERN(l)
++#define WRITE_LOCK_NAT(l)		WRITE_LOCK(l)
++#define WRITE_UNLOCK_NAT(l)		WRITE_UNLOCK(l)
++#define READ_LOCK_NAT(l)		READ_LOCK(l)
++#define READ_UNLOCK_NAT(l)		READ_UNLOCK(l)
++#else
++#define DECLARE_RWLOCK_NAT(l)
++#define DECLARE_RWLOCK_EXTERN_NAT(l)
++#define WRITE_LOCK_NAT(l)
++#define WRITE_UNLOCK_NAT(l)
++#define READ_LOCK_NAT(l)
++#define READ_UNLOCK_NAT(l)
++#endif /* CONFIG_IP_NF_NAT_NEEDED */
++
+ #endif /* _LOCKHELP_H */
+diff -urN --exclude-from=/usr/src/diff.exclude linux-2.6.6-locking/net/ipv4/netfilter/ip_conntrack_core.c linux-2.6.6-nonat/net/ipv4/netfilter/ip_conntrack_core.c
+--- linux-2.6.6-locking/net/ipv4/netfilter/ip_conntrack_core.c	2004-06-01 10:02:56.000000000 +0200
++++ linux-2.6.6-nonat/net/ipv4/netfilter/ip_conntrack_core.c	2004-06-01 10:05:00.000000000 +0200
+@@ -64,7 +64,7 @@
+ DECLARE_RWLOCK(ip_conntrack_expect_lock);
+ /* This rwlock protects the tuples in the expectation entries when 
+    ip_conntrack_expect_lock is read-locked (NAT may change the tuples) */
+-DECLARE_RWLOCK(ip_conntrack_expect_tuple_lock);
++DECLARE_RWLOCK_NAT(ip_conntrack_expect_tuple_lock);
+ 
+ void (*ip_conntrack_destroyed)(struct ip_conntrack *conntrack) = NULL;
+ LIST_HEAD(ip_conntrack_expect_list);
+@@ -118,10 +118,35 @@
+ #if 0
+ 	dump_tuple(tuple);
+ #endif
++#ifdef CONFIG_IP_NF_NAT_NEEDED
+ 	return (jhash_3words(tuple->src.ip,
+ 	                     (tuple->dst.ip ^ tuple->dst.protonum),
+ 	                     (tuple->src.u.all | (tuple->dst.u.all << 16)),
+ 	                     ip_conntrack_hash_rnd) % ip_conntrack_htable_size);
++#else
++	/* Non-NAT symmetry optizimation. */
++	if (tuple->src.ip < tuple->dst.ip) {
++		/* Fine, just call jhash_3words */
++		return (jhash_3words(tuple->src.ip,
++	                     (tuple->dst.ip ^ tuple->dst.protonum),
++	                     (tuple->src.u.all | (tuple->dst.u.all << 16)),
++	                     ip_conntrack_hash_rnd) % ip_conntrack_htable_size);
++	} else if (tuple->src.ip > tuple->dst.ip 
++		   || tuple->src.u.all > tuple->dst.u.all) {
++		/* Swap *both* addresses and ports */
++		return (jhash_3words(tuple->dst.ip,
++	                     (tuple->src.ip ^ tuple->dst.protonum),
++	                     (tuple->dst.u.all | (tuple->src.u.all << 16)),
++	                     ip_conntrack_hash_rnd) % ip_conntrack_htable_size);
++	} else {
++		/* tuple->src.ip == tuple->dst.ip
++		   && tuple->src.u.all <= tuple->dst.u.all */
++		return (jhash_3words(tuple->src.ip,
++	                     (tuple->dst.ip ^ tuple->dst.protonum),
++	                     (tuple->src.u.all | (tuple->dst.u.all << 16)),
++	                     ip_conntrack_hash_rnd) % ip_conntrack_htable_size);
++	}
++#endif
+ }
+ 
+ int
+@@ -164,7 +189,6 @@
+ static inline int expect_cmp(const struct ip_conntrack_expect *i,
+ 			     const struct ip_conntrack_tuple *tuple)
+ {
+-	MUST_BE_READ_LOCKED(&ip_conntrack_expect_tuple_lock);
+ 	return ip_ct_tuple_mask_cmp(tuple, &i->tuple, &i->mask);
+ }
+ 
+@@ -200,11 +224,11 @@
+ 
+ 	MUST_BE_READ_LOCKED(&ip_conntrack_expect_lock);
+ 
+-	READ_LOCK(&ip_conntrack_expect_tuple_lock);
++	READ_LOCK_NAT(&ip_conntrack_expect_tuple_lock);
+ 	exp = LIST_FIND(&ip_conntrack_expect_list, expect_cmp, 
+ 			struct ip_conntrack_expect *, tuple);
+-	READ_UNLOCK(&ip_conntrack_expect_tuple_lock);
+-	
++	READ_UNLOCK_NAT(&ip_conntrack_expect_tuple_lock);
++
+ 	return exp;
+ }
+ 
+@@ -299,8 +323,10 @@
+ 
+ 	LIST_DELETE(&ip_conntrack_hash[ct->key[IP_CT_DIR_ORIGINAL]].list,
+ 		    &ct->tuplehash[IP_CT_DIR_ORIGINAL]);
++#ifdef CONFIG_IP_NF_NAT_NEEDED
+ 	LIST_DELETE(&ip_conntrack_hash[ct->key[IP_CT_DIR_REPLY]].list,
+ 		    &ct->tuplehash[IP_CT_DIR_REPLY]);
++#endif
+ }
+ 
+ static void
+@@ -338,7 +364,7 @@
+ 	/* To make sure we don't get any weird locking issues here:
+ 	 * destroy_conntrack() MUST NOT be called with a write lock
+ 	 * to ip_conntrack_lock!!! -HW */
+-	proto = ip_ct_find_proto(ct->tuplehash[IP_CT_DIR_REPLY].tuple.dst.protonum);
++	proto = ip_ct_find_proto(ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.protonum);
+ 	if (proto && proto->destroy)
+ 		proto->destroy(ct);
+ 
+@@ -366,8 +392,13 @@
+ 		    const struct ip_conntrack_tuple *tuple,
+ 		    const struct ip_conntrack *ignored_conntrack)
+ {
++#ifdef CONFIG_IP_NF_NAT_NEEDED
+ 	return i->ctrack != ignored_conntrack
+ 		&& ip_ct_tuple_equal(tuple, &i->tuple);
++#else
++	return i->ctrack != ignored_conntrack
++		&& ip_ct_tuple_equal_nonat(tuple, &i->tuple);
++#endif
+ }
+ 
+ static struct ip_conntrack_tuple_hash *
+@@ -453,6 +484,7 @@
+ 	/* See if there's one in the list already, including reverse:
+            NAT could have grabbed it without realizing, since we're
+            not in the hash.  If there is, we lost race. */
++#ifdef CONFIG_IP_NF_NAT_NEEDED
+ 	if (!LIST_FIND(&ip_conntrack_hash[ct->key[IP_CT_DIR_ORIGINAL]].list,
+ 		       conntrack_tuple_cmp,
+ 		       struct ip_conntrack_tuple_hash *,
+@@ -465,6 +497,14 @@
+ 			     &ct->tuplehash[IP_CT_DIR_ORIGINAL]);
+ 		list_prepend(&ip_conntrack_hash[ct->key[IP_CT_DIR_REPLY]].list,
+ 			     &ct->tuplehash[IP_CT_DIR_REPLY]);
++#else
++	if (!LIST_FIND(&ip_conntrack_hash[ct->key[IP_CT_DIR_ORIGINAL]].list,
++		       conntrack_tuple_cmp,
++		       struct ip_conntrack_tuple_hash *,
++		       &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple, NULL)) {
++		list_prepend(&ip_conntrack_hash[ct->key[IP_CT_DIR_ORIGINAL]].list,
++			     &ct->tuplehash[IP_CT_DIR_ORIGINAL]);
++#endif
+ 		/* Timer relative to confirmation time, not original
+ 		   setting time, otherwise we'd get timer wrap in
+ 		   weird delay cases. */
+@@ -566,10 +606,10 @@
+ 			return NULL;
+ 		}
+ 		/* Reverse direction from that found */
+-		if (DIRECTION(h) != IP_CT_DIR_REPLY)
++		if (ip_ct_direction(h, &origtuple) != IP_CT_DIR_REPLY)
+ 			*ctinfo += IP_CT_IS_REPLY;
+ 	} else {
+-		if (DIRECTION(h) == IP_CT_DIR_REPLY)
++		if (ip_ct_direction(h, &innertuple) == IP_CT_DIR_REPLY)
+ 			*ctinfo += IP_CT_IS_REPLY;
+ 	}
+ 
+@@ -682,10 +722,14 @@
+ 	conntrack->ct_general.destroy = destroy_conntrack;
+ 	conntrack->tuplehash[IP_CT_DIR_ORIGINAL].tuple = *tuple;
+ 	conntrack->tuplehash[IP_CT_DIR_ORIGINAL].ctrack = conntrack;
++	/* We can't get rid of tuplehash in reply direction in the 
++	 * nonat case easily at all because of the conntrack helpers */
+ 	conntrack->tuplehash[IP_CT_DIR_REPLY].tuple = repl_tuple;
+ 	conntrack->tuplehash[IP_CT_DIR_REPLY].ctrack = conntrack;
+ 	conntrack->key[IP_CT_DIR_ORIGINAL] = hash;
++#ifdef CONFIG_IP_NF_NAT_NEEDED
+ 	conntrack->key[IP_CT_DIR_REPLY] = hash_conntrack(&repl_tuple);
++#endif
+ 	for (i=0; i < IP_CT_NUMBER; i++)
+ 		conntrack->infos[i].master = &conntrack->ct_general;
+ 
+@@ -768,7 +812,7 @@
+ 	}
+ 
+ 	/* It exists; we have (non-exclusive) reference. */
+-	if (DIRECTION(h) == IP_CT_DIR_REPLY) {
++	if (ip_ct_direction(h, &tuple) == IP_CT_DIR_REPLY) {
+ 		*ctinfo = IP_CT_ESTABLISHED + IP_CT_IS_REPLY;
+ 		/* Please set reply bit if this packet OK */
+ 		*set_reply = 1;
+@@ -1082,10 +1126,10 @@
+ int ip_conntrack_change_expect(struct ip_conntrack_expect *expect,
+ 			       struct ip_conntrack_tuple *newtuple)
+ {
+-	int ret;
++	int ret = 0;
+ 
+ 	MUST_BE_READ_LOCKED(&ip_conntrack_expect_lock);
+-	WRITE_LOCK(&ip_conntrack_expect_tuple_lock);
++	WRITE_LOCK_NAT(&ip_conntrack_expect_tuple_lock);
+ 
+ 	DEBUGP("change_expect:\n");
+ 	DEBUGP("exp tuple: "); DUMP_TUPLE(&expect->tuple);
+@@ -1114,7 +1158,7 @@
+ 			ret = -1;
+ 		}
+ 	}
+-	WRITE_UNLOCK(&ip_conntrack_expect_tuple_lock);
++	WRITE_UNLOCK_NAT(&ip_conntrack_expect_tuple_lock);
+ 	
+ 	return ret;
+ }
+@@ -1147,6 +1191,7 @@
+ 		conntrack->helper = LIST_FIND(&helpers, helper_cmp,
+ 					      struct ip_conntrack_helper *,
+ 					      newreply);
++
+ 	return 1;
+ }
+ 
+diff -urN --exclude-from=/usr/src/diff.exclude linux-2.6.6-locking/net/ipv4/netfilter/ip_conntrack_standalone.c linux-2.6.6-nonat/net/ipv4/netfilter/ip_conntrack_standalone.c
+--- linux-2.6.6-locking/net/ipv4/netfilter/ip_conntrack_standalone.c	2004-05-28 07:44:43.000000000 +0200
++++ linux-2.6.6-nonat/net/ipv4/netfilter/ip_conntrack_standalone.c	2004-05-28 17:45:15.000000000 +0200
+@@ -125,7 +125,7 @@
+ 	IP_NF_ASSERT(hash->ctrack);
+ 
+ 	/* Only count originals */
+-	if (DIRECTION(hash))
++	if (ip_ct_direction(hash, &hash->tuple))
+ 		return 0;
+ 
+ 	if ((*upto)++ < offset)
+@@ -161,7 +161,7 @@
+ 
+ 	/* Now iterate through expecteds. */
+ 	READ_LOCK(&ip_conntrack_expect_lock);
+-	READ_LOCK(&ip_conntrack_expect_tuple_lock);
++	READ_LOCK_NAT(&ip_conntrack_expect_tuple_lock);
+ 	list_for_each(e, &ip_conntrack_expect_list) {
+ 		unsigned int last_len;
+ 		struct ip_conntrack_expect *expect
+@@ -177,7 +177,7 @@
+ 	}
+ 
+  finished_expects:
+-	READ_UNLOCK(&ip_conntrack_expect_tuple_lock);
++	READ_UNLOCK_NAT(&ip_conntrack_expect_tuple_lock);
+ 	READ_UNLOCK(&ip_conntrack_expect_lock);
+  finished:
+ 
+diff -urN --exclude-from=/usr/src/diff.exclude linux-2.6.6-locking/net/ipv4/netfilter/ip_fw_compat_masq.c linux-2.6.6-nonat/net/ipv4/netfilter/ip_fw_compat_masq.c
+--- linux-2.6.6-locking/net/ipv4/netfilter/ip_fw_compat_masq.c	2004-05-27 17:33:48.000000000 +0200
++++ linux-2.6.6-nonat/net/ipv4/netfilter/ip_fw_compat_masq.c	2004-05-28 07:36:36.000000000 +0200
+@@ -178,7 +178,7 @@
+ 	h = ip_conntrack_find_get(&tuple, NULL);
+ 
+ 	/* MUST be found, and MUST be reply. */
+-	if (h && DIRECTION(h) == 1) {
++	if (h && ip_ct_direction(h, &tuple) == 1) {
+ 		ret = ip_conntrack_in(NF_IP_PRE_ROUTING, pskb,
+ 				      NULL, NULL, NULL);
+ 
+@@ -258,7 +258,7 @@
+ 	IP_NF_ASSERT(hash->ctrack);
+ 
+ 	/* Only count originals */
+-	if (DIRECTION(hash))
++	if (ip_ct_direction(hash, &hash->tuple))
+ 		return 0;
+ 
+ 	if ((*upto)++ < offset)

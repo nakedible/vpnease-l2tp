@@ -1,0 +1,11 @@
+void TestInit( int verbose );
+int TestPrintf( const char *fmt, ... ) __attribute__ ((format (printf,1,2)));
+int OpenUDPSocket( int port );
+int OpenPPPoL2TPSocket();
+int ConnectSock( int sock, int serversock, int port, int t1, int s1, int t2, int s2 );
+int SendRawPacket( int fd, int port, void *data, int len );
+void CheckPipe( int fd );
+void SendTestPacket( int fd, int port );
+void SendTestDataPacket( int fd );
+void StartPPPDaemon( int fd, int server );
+void StartLoopingFunction( int fd, int port, int id );

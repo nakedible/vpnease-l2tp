@@ -1,0 +1,39 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 10-l2tpd-MSL2TP-StopCNN.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/control.c
++++ l2tpd-0.69/control.c
+@@ -641,12 +641,12 @@
+                      __FUNCTION__);
+             return -EINVAL;
+         }
+-        if ((t->qtid != t->tid) && (t->tid > 0))
++        if ((t->qtid != t->ourtid) && (t->ourtid > 0))
+         {
+             if (DEBUG)
+                 log (LOG_DEBUG,
+                      "%s: Peer tried to disconnect with invalid TID (%d != %d)\n",
+-                     __FUNCTION__, t->qtid, t->tid);
++                     __FUNCTION__, t->qtid, t->ourtid);
+             return -EINVAL;
+         }
+         /* In case they're disconnecting immediately after SCCN */
+@@ -1040,12 +1040,12 @@
+         }
+         else
+             p = c;
+-        if ((c->qcid != p->cid) && p->cid > 0)
++        if ((c->qcid != p->ourcid) && p->ourcid > 0)
+         {
+             if (DEBUG)
+                 log (LOG_DEBUG,
+                      "%s: Peer tried to disconnect with invalid CID (%d != %d)\n",
+-                     __FUNCTION__, c->qcid, c->cid);
++                     __FUNCTION__, c->qcid, p->ourcid);
+             return -EINVAL;
+         }
+         c->qcid = -1;

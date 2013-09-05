@@ -1,0 +1,110 @@
+
+/*
+See: "Gridding the 960"
+http://cameronmoll.com/archives/2006/12/gridding_the_960/
+*/
+
+/* ---------------------------------------------------
+=layout
+------------------------------------------------------ */
+
+
+.unit {
+	float: left;	
+	/* = lineheight */
+	margin-right: 1.5em;		
+	width: 102px;
+}
+
+.quarterunit {
+	float: left;	
+	/* = lineheight */
+	margin-right: 1.5em;		
+	width: 25px;
+}
+
+.span-3 {
+	width: 162px;
+}
+
+
+.span-3-half {
+	width: 192px;
+}
+
+.span-4 {
+	width: 222px;
+}
+
+.span-5 {
+	width: 282px;
+}
+
+.span-6 {
+	width: 342px;
+}
+
+.span-7 {
+	width: 402px;
+}
+
+.span-8 {
+	width: 462px;
+}
+
+.span-9 {
+	width: 522px;
+}
+
+
+.span-10 {
+	width: 582px;
+}
+
+
+.span-12 {
+	width: 702px;
+}
+
+
+.append-1 {
+	/* = unit/2 + lineheight */
+	margin-right: 78px;		
+}
+
+.full {
+	/* span across full page width 
+	*/
+	width: 942px;
+	float: none;
+	
+	margin-right: 0;	
+}
+
+
+div.last {
+	margin-right: 0;	
+}
+
+
+.round {
+	border-radius: 1em;
+	
+	-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;
+}
+
+
+/* specific hollyfixes, e.g. for creep bug */
+/* See: http://www.positioniseverything.net/explorer/creep.html */
+/* \*/
+* html .cb-note,
+* html .cb-tip,
+* html .cb-warning,
+* html .cb-error,
+* html .cb-fixme,
+{ height: 1%; }
+/* */
+
+
+

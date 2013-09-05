@@ -1,0 +1,42 @@
+  
+  This option adds a `ROUTE' target, which enables you to setup unusual
+  routes. For example, the ROUTE lets you route a received packet through 
+  an interface or towards a host, even if the regular destination of the 
+  packet is the router itself. The ROUTE target is also able to change the 
+  incoming interface of a packet.
+
+  The target can be or not a final target. It has to be used inside the 
+  mangle table.
+
+  ROUTE target options:
+  --oif   ifname    Send the packet out using `ifname' network interface.
+  --iif   ifname    Change the packet's incoming interface to `ifname'.
+  --gw    ip        Route the packet via this gateway.
+  --continue        Route the packet and continue traversing the rules.
+  --tee             Route a copy of the packet, but continue traversing
+                    the rules with the original packet, undisturbed.
+
+  Note that --iif, --continue, and --tee, are mutually exclusive.
+
+  Examples :
+
+  # To force all outgoing icmp packet to go through the eth1 interface 
+  # (final target) :
+  iptables -A POSTROUTING -t mangle -p icmp -j ROUTE --oif eth1
+ 
+  # To tunnel outgoing http packets and continue traversing the rules :
+  iptables -A POSTROUTING -t mangle -p tcp --dport 80 -j ROUTE --oif tunl1 --continue
+ 
+  # To forward all ssh packets to gateway w.x.y.z, and continue traversing
+  # the rules :
+  iptables -A POSTROUTING -t mangle -p tcp --dport 22 -j ROUTE --gw w.x.y.z --continue
+ 
+  # To change the incoming network interface from eth0 to eth1 for all icmp
+  # packets (final target) :
+  iptables -A PREROUTING -t mangle -p icmp -i eth0 -j ROUTE --iif eth1
+
+  # To copy (duplicate) all traffic from and to a local ECHO server
+  # to a second box (nonfinal target)
+  iptables -A PREROUTING -t mangle -p tcp --dport 7 -j ROUTE --gw 1.2.3.4 --tee
+  iptables -A POSTROUTING -t mangle -p tcp --sport 7 -j ROUTE --gw 1.2.3.4 --tee
+

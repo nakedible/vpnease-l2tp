@@ -1,0 +1,164 @@
+F1¡Bienvenido a Ubuntu!Este es un Live CD-ROM para Ubuntu
+6.06, creado en 20060806.1.
+
+INDICE DE LA AYUDA
+
+CLAVE  TÓPICO
+
+<F1F1>   Ésta página, el índice de la ayuda.
+<F2F2>   Prerrequisitos para ejecutar Ubuntu.
+<F3F3>   Métodos de arranque para formas especiales de usar este CD-ROM.
+<F4F4>   Métodos de arranque adicionales; modo rescate.
+<F5F5>   Parámetros especiales de arranque; visión general.
+<F6F6>   Parámetros especiales de arranque para máquinas especiales.
+<F7F7>   Parámetros especiales de arranque para controladoras de disco específicas.
+<F8F8>   Parámetros especiales de arranque para el sistema de bootstrap.
+<F9F9>   Cómo conseguir ayuda.
+<F10F10>  Copyrights y garantías.
+
+Pulse de F2 a F10 para detalles, o Esc para salir de la ayuda.F2REQUISITOS PREVIOS PARA INSTALAR UBUNTUDebe tener al menos 128 Megabytes de RAM para usar este sistema Ubuntu Live.
+
+El sistema Live no requiere espacio en su disco duro. No obstante, se usarán
+las particiones de intercambio que haya en el disco si están disponibles.
+
+Vea las FAQ para más información; este documento está disponible en la web
+de Ubuntu, http://www.ubuntu.com/
+
+¡Gracias por elegir Ubuntu!
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F3MÉTODOS DE ARRANQUEMétodos de arranque disponibles:
+
+live
+  Comenzar el sistema Live.
+memtest
+  Realizar un chequeo de la memoria.
+
+Para usar uno de esos métodos de arranque, tecléelo en boot:, seguido
+opcionalmente por cualquiera de los parámetros de arranque. Por ejemplo:
+
+  boot: live acpi=off
+
+Si no está seguro, debería usar el método de arranque predeterminado, sin
+parámetros especiales, simplemente pulsando Intro en boot:
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F4MODO DE RESCATEUse uno de los métodos de arranque para rescatar una instalación existente
+
+rescue
+  Arrancar en modo de rescate.
+
+Para usar uno de esos métodos de arranque, tecléelo en boot:, seguido
+opcionalmente por cualquiera de los parámetros de arranque. Por ejemplo:
+
+  boot: rescue acpi=off
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F5PARÁMETROS ESPECIALES DE ARRANQUE - VISIÓN GENERALEn algunos sistemas, necesitará especificar un parámetro en boot: para
+poder arrancar el sistema. Por ejemplo, puede que Linux no sea capaz de
+autodetectar su hardware, y puede que necesite especificarle explícitamente
+su ubicación o su tipo para que lo pueda reconocer.
+
+Para más información sobre los parámetros de arranque que puede usar, pulse:
+
+<F6F6>   parámetros de arranque para máquinas especiales
+<F7F7>   parámetros de arranque para varias controladoras de disco
+<F8F8>   parámetros de arranque que entiende el sistema de bootstrap
+
+El instalador carga dinámicamente muchos módulos del núcleo, y los
+parámetros para esos módulos no se pueden especificar en la línea de
+órdenes. Para que se le soliciten los parámetros cuando se carguen los
+módulos, arranque en modo experto (vea <F3F3>).
+
+El sistema de bootstrap carga dinámicamente muchos módulos del núcleo, y los
+parámetros para esos módulos no se pueden especificar en la línea de
+órdenes.
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F6PARÁMETROS ESPECIALES DE ARRANQUE - HARDWARE VARIADOPuede usar los siguientes parámetros de arranque en boot: , en combinación
+con el método de arranque (vea <F3F3>>). Si usa números hexadecimales,
+tiene que usar el prefijo 0x (p.ej., 0x300).
+
+HARDWARE                               PARÁMETRO A ESPECIFICAR
+
+IBM PS/1 o ValuePoint (disco IDE)      hd=cilindros,cabezas,sectores
+Algunos IBM ThinkPads                  floppy=thinkpad
+IBM Pentium Microchannel               mca-pentium no-hlt
+Proteger rangos de puertos de E/S      reserve=iobase,extent[,...]
+Pasar por alto FPUs defectuosas (máquinas antiguas)
+                                       no387
+Portátiles con problemas de pantalla   vga=771
+Si su sistema se cuelga durante el arranque, y el último mensaje que ve es
+"aec671x-detect..", pruebe             gdth=disable:y
+Si experimenta cuelgues u otros fallos de hardware, desactive el
+encaminamiento defectuoso de interrupciones del APIC
+                                       noapic nolapic
+
+Por ejemplo:
+
+  boot: live vga=771 noapic nolapic
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F7PARÁMETROS ESPECIALES DE ARRANQUE - UNIDADES DE DISCO VARIADASPuede usar los siguientes parámetros de arranque en boot: , en combinación
+con el método de arranque (vea <F3F3>).
+
+HARDWARE                     PARÁMETRO A ESPECIFICAR
+
+Adaptec 151x, 152x           aha152x=iobase[,irq[,scsi-id[,reconnect]]]
+Adaptec 1542                 aha1542=iobase[,buson,busoff[,velocidad_dma]]
+Adaptec 274x, 284x           aic7xxx=no_reset (se activa si no es cero)
+Hosts BusLogic SCSI          buslogic=iobase
+Algunas máquinas DELL        aic7xxx=no_probe
+Future Domain TMC-8xx/950    tmc8xx=base_mem,irq
+Controladora SCSI basada en NCR
+                             sym53c8xx=safe:y
+Pro Audio Spectrum           pas16=iobase,irq
+PS/2 ESDI (MCA)              ed=cilindros,cabezas,sectores
+Seagate ST-0x                st0x=base_mem,irq
+Trantor T128                 t128=base_mem,irq
+
+Por ejemplo:
+
+  boot: live sym53c8xx=safe
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F8PARÁMETROS ESPECIALES DE ARRANQUE - SISTEMA DE INSTALACIÓNPuede usar los siguientes parámetros de arranque en boot: , en combinación
+con el método de arranque (vea <F3F3>). Estos parámetros controlan cómo
+trabaja el sistema de bootstrap.
+
+RESULTADO                               PARÁMETRO
+
+Depuración detallada                    DEBCONF_DEBUG=5
+Depuración de la secuencia de arranque  BOOT_DEBUG=2|3
+Desactivar el framebuffer               debian-installer/framebuffer=false
+No explorar el USB                      debian-installer/probe/usb=false
+No arrancar el PCMCIA                   hw-detect/start_pcmcia=false
+Forzar la configuración estática de la red
+                                        netcfg/disable_dhcp=true
+Establecer el mapa de teclado           bootkbd=es
+Desactivar el ACPI para los mapeos PCI (de utilidad para algunos servidores
+HP y máquinas basadas en Via)           pci=noacpi
+
+Por ejemplo:
+
+  boot: live debian-installer/framebuffer=false
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F9OBTENER AYUDASi no puede arrancar Ubuntu, ¡no desespere! El equipo de Ubuntu está listo
+para ayudarle. Estamos especialmente interesados en recibir avisos de
+problemas de arranque, porque normalmente no suelen ocurrirle a una única
+persona. También escuchamos su problema particular y podemos distribuirle
+una solución rápida, o bien podemos estudiar su problema y trabajar con
+usted en su resolución, de manera que el próximo usuario que venga con el
+mismo problema se beneficie de su experiencia.
+
+Vea las FAQ para más información; este documento está disponible en la web
+de Ubuntu, http://www.ubuntu.com/
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda.F10COPYRIGHTS Y GARANTÍASUbuntu es Copyright (c) 2004-2006 Canonical Ltd., e incorpora el trabajo de
+muchos otros autores y contribuyentes originales.
+
+El sistema Ubuntu se distribuye libremente de forma gratuita. Tras el
+arranque, los términos exactos de distribución de cada paquete se describen
+en el correspondiente archivo usr/share/doc/nombredelpaquete/copyright.
+
+Ubuntu se proporciona ABSOLUTAMENTE SIN NINGUNA GARANTÍA, con las
+extensiones permitidas por las leyes aplicables.
+
+Este sistema está basado en Debian. Visite http://www.debian.org/ para más
+detalles e información sobre el proyecto Debian.
+
+Pulse F1 para ir al índice de la ayuda, o Esc para salir de la ayuda. 

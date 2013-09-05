@@ -1,0 +1,1435 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle"><n:invisible n:macro="productname" /> Administration Interface</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Administration Model</h1>
+
+          <p>
+            After installation, a <n:invisible n:macro="productname" /> server is administered entirely using
+            a web-based administrator interface which requires Javascript support (see browser requirements below).
+            <n:invisible n:macro="productname" /> server administration is very straightforward: log into the
+            administrator interface, make configuration changes, and click <strong class="cb-userinput">Save changes</strong>.
+          </p>
+         <p>
+            The administrator web interface has been divided into the following pages:
+          </p>
+          <ul>
+            <li>Status pages, showing useful, dynamically updated status information</li>
+            <li>Configuration pages, containing configuration settings for all relevant aspects of the product</li>
+            <li>Management pages, providing various management functions such as configuration import and export, and product
+                update management</li>
+          </ul>
+
+          <p>
+            In addition, every administrator interface page shows a summary of status information in the header of
+            the page.  This status information includes current service status (service running, license status, etc),
+            remote access and site-to-site connection counts and limits, and currently logged in user.  The status
+            overview page, opened when you log in, contains a "dashboard" of all basic status information, updated
+            dynamically (without the need to refresh the page).
+          </p>
+        </div> <!-- administration model -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Making Configuration Changes</h1>
+          <p>
+            Whenever configuration changes are made, the VPN service is restarted which takes a few seconds and
+            drops existing user and site-to-site VPN connections.  A notable exception is changing
+            user authentication settings: changes to user authentication settings has immediate effect but does not disrupt
+            existing VPN connections.
+          </p>
+
+          <p>
+            In case you accidentally lose connectivity to the <n:invisible n:macro="productname" /> server due to
+            configuration changes, you always have the fallback of using the locally available Firefox browser to
+            fix any configuration problems.  The local Firefox browser is automatically started when the server
+            starts up, but it can also be started by double clicking the <n:invisible n:macro="productname" /> icon
+            on the desktop.
+          </p>
+
+          <p>
+            The <n:invisible n:macro="productname" /> server has an internal configuration and status database
+            which acts as a central repository for system related configuration and status information.  Any
+            changes you make to the server's system configuration files will only have temporary effect, and will
+            be overwritten by the product next time the VPN service is restarted.  Please do not modify system
+            configuration files unless you are certain it is necessary and done correctly.
+          </p>
+        </div> <!-- configuration changes -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Browser Requirements</h1>
+        
+          <p>
+            <n:invisible n:macro="productname" /> web administration interface requires Javascript support.
+            <n:invisible n:macro="productname" /> server can be configured with the local Firefox browser
+            automatically installed on the <n:invisible n:macro="productname" /> server, or you can use 
+            <n:invisible n:macro="productname" /> administration interface from another computer with one
+             of the following supported browsers:  
+          </p>
+          <ul>
+            <li>Firefox (1.5 or newer)</li>
+            <li>Internet Explorer (6.0 or newer)</li>
+            <li>Safari (2.0 or newer)</li>
+          </ul>      
+          <p>
+            A local Firefox browser is started automatically during <n:invisible n:macro="productname" /> server start-up. 
+            If you want to use another computer, open the browser
+            and enter your <n:invisible n:macro="productname" /> server IP address or domain name to your browser address field.
+            Note that remote access to the <n:invisible n:macro="productname" /> administration interface can be restricted
+            through configuration.
+          </p>
+          <p>
+            By default <n:invisible n:macro="productname" /> uses a self-signed SSL certificate.
+            This is a common practice, but causes a browser certificate warning whenever an
+            administrator or user connects to the web UI.  You can configure <n:invisible n:macro="productname" />
+            to use an external SSL certificate from any commercial certificate provider which removes the
+            certificate warnings; see below for details.
+          </p>
+        </div> <!-- browser requirements -->
+
+        
+      </div> <!-- Overview -->
+      
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Contents</h1>
+
+        <p>
+          <a href="#header-status">Header Status Information</a>
+        </p>
+        <p>
+          <a href="#status">Status</a>
+          <ul>
+            <li><a href="#status-overview">Overview</a></li>
+            <li><a href="#status-user-connections">User Connections</a></li>
+            <li><a href="#status-sts-connections">Site-to-Site Connections</a></li>
+          </ul>
+        </p>
+        <p>
+          <a href="#configuration">Configuration</a>
+        </p>
+        <ul>
+          <li><a href="#configuration-network">Network</a></li>
+          <li><a href="#configuration-routing-and-firewall">Routing &amp; Firewall</a></li>
+          <li><a href="#configuration-user-accounts">User Accounts</a></li>
+          <li><a href="#configuration-sitetosite-connections">Site-to-Site Connections</a></li>
+          <li><a href="#configuration-license-and-maintenance">License &amp; Maintenance</a></li>
+        </ul>
+        <p>
+          <a href="#management">Management</a>
+        </p>   
+        <ul>
+          <li><a href="#management-reboot">Reboot</a></li>
+          <li><a href="#management-shut-down">Shut Down</a></li>
+          <li><a href="#management-product-updates">Product Updates</a></li>
+          <li><a href="#management-import-configuration">Import Configuration</a></li>
+          <li><a href="#management-export-configuration">Export Configuration</a></li>
+          <li><a href="#management-export-diagnostics">Export Diagnostics</a></li>
+        </ul>
+      </div> <!-- Content -->
+      
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <a name="header-status" />
+        <h1 class="cb-heading">Header Status Information</h1>
+        
+        <p>
+          Header status information is shown in top of the <n:invisible n:macro="productname" /> administration
+          user interface. Header status information contains the following elements.
+        </p>   
+        <p>
+          <strong class="cb-guilabel">Status</strong> indicates the current status of the <n:invisible n:macro="productname" /> server:
+        </p>
+        <ul>
+          <li>
+            <strong class="cb-guilabel">Active</strong>
+            <ul>
+              <li>
+                <n:invisible n:macro="productname" /> server is running normally.
+                If you are using a demo license, status also indicates remaining demo license time.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong class="cb-guilabel">Active with errors, Invalid license</strong>
+            <ul>
+              <li>
+                <n:invisible n:macro="productname" /> server license key is invalid or has been terminated.
+                If you have problems with your <n:invisible n:macro="productname" /> server license, please
+                <a href="support-request.html">contact support</a>. <n:invisible n:macro="productname" />
+                server cannot be used without a valid license. 
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong class="cb-guilabel">Active with errors, Demo license (expired)</strong>
+            <ul>
+              <li>
+                Demo license has expired. If you want to continue using <n:invisible n:macro="productname" />
+                you need to <a href="buy-license.html">buy a <n:invisible n:macro="productname" /> server license</a>.
+                <n:invisible n:macro="productname" /> server cannot be used without a valid license. 
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong class="cb-guilabel">Active with errors, Server(s) not responding</strong>
+            <ul>
+              <li>
+                At least one of configured network servers (DNS, WINS, RADIUS, or router) is not available,
+                or at least one site-to-site connection is down. <n:invisible n:macro="productname" />
+                server itself is working normally. To determine the source of the problem, see 
+                <strong class="cb-guilabel">Status &rarr; Overview &rarr; Network Status</strong>. 
+              </li>
+            </ul>
+          </li>  
+          <li>
+            <strong class="cb-guilabel">Inactive</strong>
+            <ul>
+              <li>
+                <n:invisible n:macro="productname" /> service is stopped.
+                This is a temporary state.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong class="cb-guilabel">Starting</strong>
+            <ul>
+              <li>
+                <n:invisible n:macro="productname" /> service is starting
+                after saving new configuration settings.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong class="cb-guilabel">Stopping</strong>
+            <ul>
+              <li>
+                <n:invisible n:macro="productname" /> service is stopping.
+                <n:invisible n:macro="productname" /> service restarts when applying new configuration settings.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong class="cb-guilabel">Internal error, Reboot pending...</strong>
+            <ul>
+              <li>
+                An internal error has occurred.
+                <n:invisible n:macro="productname" /> server reboots automatically in order to fix the problem. If reboot
+                does not help, you might need to reinstall <n:invisible n:macro="productname" /> server, see
+                <a href="server-installation.html">Server Installation</a>.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong class="cb-guilabel">Maintenance reboot, Reboot pending...</strong>
+            <ul>
+              <li>
+                <n:invisible n:macro="productname" />
+                server is rebooting for maintenance reasons. To adjust maintenance reboot time and date, see
+                <a href="#configuration-license-and-maintenance">License &amp; Maintenance</a> page. 
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <p>
+          <strong class="cb-guilabel">User Connections</strong> - The number of active VPN user connections and the maximum number
+          of simultaneous VPN user connections allowed by the <n:invisible n:macro="productname" /> server license.
+        </p>
+
+        <p>
+          <strong class="cb-guilabel">Site-to-Site Connections</strong> - The number of active site-to-site connections and the
+          maximum number of simultaneous site-to-site connections allowed by the <n:invisible n:macro="productname" /> server license.
+        </p>
+
+        <p>
+          <strong class="cb-guilabel">Current User</strong> - <n:invisible n:macro="productname" /> administration interface
+          login username.
+        </p>
+
+        <p>
+          <strong class="cb-guilabel">Logout</strong> - Click link to log off from the <n:invisible n:macro="productname" /> 
+          administration interface.
+        </p>
+      </div> <!-- Header Status Information -->
+      
+      <a name="status" />
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Status</h1>
+
+        <p>
+          Status page provides detailed information of your <n:invisible n:macro="productname" /> server's
+          current status:  
+        </p>
+        <ul>
+          <li>
+            <a href="#status-overview">Overview</a> contains an overview of server status.
+          </li>
+          <li>
+            <a href="#status-user-connections">User Connections</a> contains detailed information of current
+            and previously active user VPN connections.  
+          </li>
+          <li>
+            <a href="#status-sts-connections">Site-to-Site Connections</a> contains detailed information of
+            current and previously active site-to-site connections.
+          </li>
+        </ul>
+        <p>
+          You can also use SNMP to monitor server status. For more information,
+          see <a href="snmp-monitoring.html">SNMP Monitoring</a>. You can download the <n:invisible n:macro="productname" />
+          MIB from the link provided in the Overview status page or directly from <a href="latest-version.html">downloads</a>.
+        </p>
+        
+        <a name="status-overview" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Overview</h1>  
+          <p>
+            The status overview page summarizes <n:invisible n:macro="productname" /> server status conveniently in
+            a single page.  The overview page is updated dynamically (using Ajax updates), which makes it convenient
+            for diagnosing errors.  If the status of a certain field is not yet available, <strong class="cb-guilabel">...</strong>
+            (three dots) is shown instead of status text; the field will be updated automatically when the status becomes available.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Service Status</strong> contains the following fields: 
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Status</strong> - See <strong class="cb-guilabel">Status</strong>
+              description from <a href="#header-status">Header Status Information</a>.
+            </li>
+            <li>
+              <strong class="cb-guilabel">User connections</strong> - Number of active VPN user connections.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Site-to-site conns</strong> - Status of configured site-to-site connections.
+              Status text shows site-to-site username, and the other endpoint IP address if the connection is 
+              <strong class="cb-guilabel">Up</strong>. The arrow between the site-to-site username and the other
+              endpoint IP address indicates the initiator of the connection: a right arrow indicates that this
+              <n:invisible n:macro="productname" /> server is the connection initiator, a left arrow indicates that this
+              server is the responder.  Status may be either <strong class="cb-guilabel">Up</strong>
+              or <strong class="cb-guilabel">Down</strong>.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Service uptime</strong> - The time for which <n:invisible n:macro="productname" /> service
+              has been continuously running. Saving new configuration and reboot causes <n:invisible n:macro="productname" />
+              service restart and resets the service uptime.  
+            </li>
+            <li>
+              <strong class="cb-guilabel">Last maint. reboot</strong> - Date and time of the last maintenance reboot.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Next maint. reboot</strong> - Date and time of the next maintenance reboot.
+              To adjust maintenance reboot date and time, see <a href="#configuration-license-and-maintenance">License &amp; Maintenance</a> page.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Last update</strong> - Date and time of the last product update.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Software version</strong> - Current <n:invisible n:macro="productname" /> server 
+              software version. If there is a product update available, the text 
+              <strong class="cb-guilabel">(update available)</strong> is shown following the version number. 
+              To get the product update immediately, see <a href="#management-product-updates">Product Updates</a> page.  
+            </li>
+          </ul>
+            
+          <p> 
+            <strong class="cb-guilabel">Network Status</strong> contains the following fields:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Internet</strong> - Current address and subnet of the Internet Connection,
+              network device MAC address, total traffic received / send through the network device, and traffic limit
+              (if configured).
+              If dynamic DNS has been configured, also shows the dynamic DNS name and the IP address it currently
+              resolves to (with about 5 minute delay).
+            </li>
+            <li>
+              <strong class="cb-guilabel">Private network</strong> - Same information for the private network connection (if configured).
+            </li>
+            <li>
+              <strong class="cb-guilabel">DNS/WINS/RADIUS</strong> - Status of configured network servers.
+              Status may be either <strong class="cb-guilabel">OK</strong> or <strong class="cb-guilabel">Not responding</strong>.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Routers</strong> - Status of routers configured into network settings or routing.
+              Status may be either <strong class="cb-guilabel">OK</strong> or <strong class="cb-guilabel">Not responding</strong>. 
+            </li>
+          </ul>
+          
+          <p>
+            <strong class="cb-guilabel">Hardware Status</strong> contains the following fields:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">CPU usage</strong> - Current processor usage. If the processor usage is 
+              continuously near or over 95%, you should consider upgrading the hardware in order to secure 
+              <n:invisible n:macro="productname" /> performance with heavy VPN usage. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Memory usage</strong> - Current memory usage. If the memory usage is continously
+              near 100%, you should consider increasing system memory in order to secure <n:invisible n:macro="productname" />
+              performance with heavy VPN usage.  
+            </li>
+            <li>
+              <strong class="cb-guilabel">Virtual memory usage</strong> - Current virtual memory usage. When the
+              <n:invisible n:macro="productname" /> server runs out of physical memory, it uses virtual memory
+              stored on the hard disk instead.  If virtual memory is continuously used, your <n:invisible n:macro="productname" />
+              server performance suffers slightly.  The more virtual memory in use, the more performance will drop.
+              Ideally virtual memory is not needed or only needed temporarily.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Uptime</strong> - Time since last computer reboot.
+            </li>
+          </ul>
+            
+          <p>
+            <strong class="cb-guilabel">License Status</strong> contains the following fields:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">License key</strong> - <n:invisible n:macro="productname" /> server license key.
+              Empty when demo license is used. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Name</strong> - <n:invisible n:macro="productname" /> server license name.
+              If demo license is used, the duration left of the demo license is also shown. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Users</strong> - The maximum number of simultaneous user VPN connections allowed
+              by the <n:invisible n:macro="productname" /> server license.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Site-to-site</strong> - The maximum number of simultaneous site-to-site VPN
+              connections allowed by the <n:invisible n:macro="productname" /> server license.
+            </li>
+            <li>
+              <strong class="cb-guilabel">License Server</strong> - Indicates whether the <n:invisible n:macro="productname" />
+              server is connected to the <n:invisible n:macro="productname" /> license and update management server.
+              Status may be either <strong class="cb-guilabel">Connected</strong> or <strong class="cb-guilabel">Not Connected</strong>.
+              If the <n:invisible n:macro="productname" /> cannot establish a connection to the license and update management server
+              at least once a week, the <n:invisible n:macro="productname" /> server will consider its license to be expired.
+            </li>
+          </ul>
+            
+          <p>
+            <strong class="cb-guilabel">Download VPNEASE-MIB.txt</strong> link allows you to download <n:invisible n:macro="productname" />
+            MIB file for SNMP monitoring. For more information, see <a href="snmp-monitoring.html">SNMP Monitoring</a>.
+          </p>
+        </div> <!-- Status overview -->
+        
+        <a name="status-user-connections" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">User Connections</h1>  
+          <p>
+            User connection graph shows the VPN user connection history of the last 7 days. The red horizontal line
+            in the graph shows the maximum number of simultaneous VPN user connections allowed by the
+            <n:invisible n:macro="productname" /> server license.
+          </p>
+          <p>
+            Below the graph is a list of active VPN user connections containing the following columns:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Username</strong> - <n:invisible n:macro="productname" /> username
+              for the connection. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Connection time</strong> - Duration of the VPN connection, and for
+              closed connections (if history is active), the time when the connection was closed.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Notes</strong> - Notes may contain one or more of the following messages:
+              <ul>
+                <li>
+                  <strong class="cb-guilabel">Secondary pre-shared key</strong> - Connection was established using
+                  secondary pre-shared key. 
+                </li>
+                <li>
+                  <strong class="cb-guilabel">No NAT-T support</strong> - Client operating system does not have
+                  NAT-T support (e.g. Windows 2000 without NAT traversal update). This prevents VPN usage from the
+                  networks where NAT is used.  
+                </li>
+                <li>
+                  <strong class="cb-guilabel">Restricted by license</strong> - VPN connection was successfully
+                  established, but the maximum number of simultaneous VPN user connections was already active. 
+                  User is not able to use VPN connection. 
+                </li>
+              </ul>
+            </li>
+            <li>
+              <strong class="cb-guilabel">Details</strong> - Click the link to open VPN connection details. 
+              See Details for Selected User below.  
+            </li>
+          </ul>
+            
+          <p>
+            <strong class="cb-guilabel">Details for Selected User</strong> contains following fields:
+          </p>
+            
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Username</strong> - <n:invisible n:macro="productname" /> username
+              for the connection.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Connection start time</strong> - VPN connection start date and time
+              in <n:invisible n:macro="productname" /> server time zone.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Connection end time</strong> - VPN connection end date and time
+              in <n:invisible n:macro="productname" /> server time zone.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Connection duration</strong> - VPN connection duration (if connection closed).
+            </li>
+            <li>
+              <strong class="cb-guilabel">Remote address</strong> - Outer IP address of the VPN client. Domain name
+              is shown below the IP address, if domain name can be resolved. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">VPN address</strong> - VPN IP address of the VPN client. The VPN IP address is reserved
+              for this connection from the VPN client address range, unless a fixed IP has been configured or forced by a 
+              RADIUS Framed-IP-Address attribute. For more information about the VPN Client address range, see
+              <a href="#configuration-network">Network</a> page.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Linux PPP device</strong> - Linux PPP device name for this VPN connection.
+              If you wish to inspect information related to the VPN connection using Linux tools (for
+              instance, through an SSH connection), use this device name to identify the connection.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Linux PPP MTU</strong> - Maximum transfer unit set to the Linux PPP device.
+              The PPP connection will fragment any IP packets larger than this amount of bytes. The fragmented packets
+              are sent inside the VPN connection as individual packets, ensuring that the encrypted packets visible
+              to the network are not fragmented and do not exceed the configured size.  Note that this MTU is intentionally
+              smaller than the MTU configured in Network settings, because the L2TP/IPsec tunnel adds overhead when data
+              is encapsulated into the tunnel.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Total bytes transferred</strong> - Total number of bytes transferred during
+              the VPN connection.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Total packets transferred</strong> - Total number of packets transferred
+              during the VPN connection. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Current transfer rate</strong> - Current incoming and outgoing transfer 
+              rates of the VPN connection. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Maximum transfer rate</strong> - Highest incoming and outgoing transfer
+              rates during the VPN connection.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Pre-shared key</strong> - Pre-shared key used to establish the VPN connection.
+              This can be either <strong class="cb-guilabel">Primary</strong> or <strong class="cb-guilabel">Secondary</strong>.  
+            </li>
+            <li>
+              <strong class="cb-guilabel">NAT traversal (NAT-T) support</strong> - Status 
+              can be either <strong class="cb-guilabel">Yes</strong> or <strong class="cb-guilabel">No</strong>. 
+              Clients without NAT-T support (e.g. Windows 2000 without NAT traversal update) cannot establish a VPN 
+              connection from networks where NAT is used, or if the <n:invisible n:macro="productname" /> server
+              resides behind a port forwarding firewall.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Connection restricted by license</strong> - Status 
+              can be either <strong class="cb-guilabel">Yes</strong> or <strong class="cb-guilabel">No</strong>.
+              If the connection is restricted, the maximum number of VPN user connections is already active and
+              the user cannot use the VPN connection.  
+            </li>
+          </ul>
+            
+          <p>
+            By default only active VPN connections are shown in the status table.  Click
+            <strong class="cb-guilabel">Show history</strong> to also show closed connections, or if history
+            is already active, click <strong class="cb-guilabel">Hide history</strong>.
+            <n:invisible n:macro="productname" /> server keeps track of all connections in the last 30 days
+            across reboots.
+          </p>
+
+          <div class="cb-note">
+            <p>
+              Details are not updated automatically on the detailed status pages.
+              You need to click the refresh button of your browser to update
+              connection details.
+            </p>
+          </div>
+            
+        </div> <!-- User connections -->
+          
+        <a name="status-sts-connections" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Site-to-Site Connections</h1>  
+
+          <p>
+            Site-to-site connections status page is similar to the user connections status page described above. Details for
+            selected connection contains additional field <strong class="cb-guilabel">Connection mode</strong>.
+            This can be either <strong class="cb-guilabel">Initiate connection</strong> or
+            <strong class="cb-guilabel">Respond to a connection</strong> depending on site-to-site configuration.
+            For more information about site-to-site configuration, see <a href="site-to-site-configuration.html">Site-to-Site Configuration</a>.
+          </p>
+        </div> <!-- Site-to-Site Connections -->
+
+      </div> <!-- Status -->
+      
+      <a name="configuration" />
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Configuration</h1>
+        
+        <p>
+          <n:invisible n:macro="productname" /> server configuration settings contains following configuration pages:
+        </p>
+        
+        <ul>
+          <li><a href="#configuration-network">Network</a></li>
+          <li><a href="#configuration-routing-and-firewall">Routing &amp; Firewall</a></li>
+          <li><a href="#configuration-user-accounts">User Accounts</a></li>
+          <li><a href="#configuration-sitetosite-connections">Site-to-Site Connections</a></li>
+          <li><a href="#configuration-license-and-maintenance">License &amp; Maintenance</a></li>
+        </ul>
+        
+        <p>
+          After saving configuration, an <strong class="cb-guilabel">Activating Configuration</strong> page is shown.
+          Applying new configuration restarts the <n:invisible n:macro="productname" /> service, disconnecting
+          all active VPN connections. After <n:invisible n:macro="productname" /> service restart, 
+          the <strong class="cb-guilabel">Status/Overview</strong> page is shown.
+        </p>
+        
+        <div class="cb-note">
+          <p>
+            If you have changed your <n:invisible n:macro="productname" /> server IP address, or the 
+            <n:invisible n:macro="productname" /> server has received a new IP address from a DHCP server,
+            your browser will not be able to reconnect to the <n:invisible n:macro="productname" /> server.
+            In this case <strong class="cb-guilabel">Activating Configuration</strong> page will be displayed
+            indefinitely. Type the new address to your browser address bar and relogin into 
+            <n:invisible n:macro="productname" /> administration interface to continue.
+          </p>
+        </div>
+        
+        <div class="cb-note">
+          <p>
+            Each configuration page contains <strong class="cb-guilabel">Save changes</strong> button.
+            If you leave the configuration page without pressing <strong class="cb-guilabel">Save changes</strong> button,
+            all configuration modifications are discarded.
+          </p>
+        </div>   
+        
+        <a name="configuration-network" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Network</h1>  
+
+          <p>
+            The network configuration page provides control over network interfaces, addressing, dynamic DNS, and
+            various other basic networking features.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Network Setup</strong> defines the configuration type used with
+            <n:invisible n:macro="productname" /> server. In <strong class="cb-guilabel">One network interface</strong> 
+            configuration one network interface is used for both receiving encrypted IPsec packets from the Internet
+            and for sending decrypted plaintext packets to the company private network. In 
+            <strong class="cb-guilabel">Two network interfaces</strong> configuration one network 
+            interface is connected to the Internet and the other to the company private network.
+          </p>
+            
+          <p>
+            <strong class="cb-guilabel">Internet Connection</strong> contains configuration settings for the Internet connection:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Network interface</strong> - Network interface used for Internet connection. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">IP address selection</strong> - Network interface IP address may be configured
+              automatically (<strong class="cb-guilabel">Automatic (DHCP)</strong>) or set manually
+              (<strong class="cb-guilabel">Set IP address</strong>). 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Static IP address</strong> - Static IP address for the network interface.
+              You may enter an IP address and a subnet mask into the separate
+              <strong class="cb-guilabel">Subnet mask</strong> field, or enter an address and a mask in the
+              <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">CIDR</a>
+              format to this field (for instance, <strong class="cb-userinput">10.0.0.1/8</strong> is equivalent to
+              IP address 10.0.0.1 and subnet mask 255.0.0.0).  When using the CIDR format, you do not need
+              to enter the subnet mask separately.
+              Available only if <strong class="cb-guilabel">Set IP Address</strong> is selected.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Subnet mask</strong> - Subnet mask for the network interface.
+              If IP address contains subnet mask (CIDR), the value of this field is ignored. 
+              Available only if <strong class="cb-guilabel">Set IP Address</strong> is selected.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Default gateway IP address</strong> - Default gateway for the
+              network interface.  When using a static IP address, this setting is mandatory.  When using
+              DHCP, <n:invisible n:macro="productname" /> will use the DHCP-assigned default router
+              automatically, but you may override that setting by defining an IP address here.
+            </li>
+            <li>
+              <strong class="cb-guilabel">MTU</strong> - Maximum transfer unit for the network connection.
+              <n:invisible n:macro="productname" /> server ensures that encrypted L2TP/IPsec packets
+              containing user data never exceed MTU bytes in size.  As a result, the VPN connection never
+              requires packet fragmentation and can be configured to limit packet size to suit even
+              demanding networks.  Packets exceeding a certain size will be fragmented, but fragmentation
+              occurs inside the L2TP/IPsec tunneling, and is not visible to the network.  The Linux PPP
+              device MTU, which you can see from VPN connection details, is derived from this value by
+              subtracting the amount of overhead imposed by the L2TP/IPsec tunneling.  This smaller MTU
+              is the packet size limit for user data packets before they are fragmented inside the
+              VPN connection.  The default value for MTU is usually suitable for all networks.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Uplink speed (Mbps)</strong> - You may reduce the maximum bandwith
+              available for VPN usage by setting uplink speed.  If left empty, no uplink speed limit will be
+              applied.  This value is set in megabits (one million bits per second), which is the typical
+              unit for cable and ADSL connections.  If you set this value higher than your actual network
+              uplink bandwidth, the setting will be ineffective.  You should set this value slightly lower
+              than your actual bandwidth; for instance, if your uplink speed is 2 Mbps, you could set this
+              value to <strong class="cb-userinput">1.9</strong>.  Note that many network connections are asymmetric.
+              In particular, ADSL connections are often sold, for instance, as "8/1" which means an 8 Mbps
+              downlink and 1 Mbps uplink.  This setting relates to the uplink of your Internet connection.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Client traffic handling</strong> - Defines how outgoing remote access
+              and site-to-site VPN traffic is handled (when routing packets from a VPN connection through this
+              network interface):
+              <ul>
+                <li>
+                  <strong class="cb-guilabel">Use NAT</strong> -
+                  <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Network_address_translation">Network Address Translation</a>
+                  (NAT) is applied to the traffic.  This means that the source address field of every outgoing
+                  packet is changed from the VPN IP address to the address of the <n:invisible n:macro="productname" /> server.
+                  This simplifies routing, because the recipient sees the traffic as coming from the
+                  <n:invisible n:macro="productname" /> server instead of the VPN connection.  However, with this
+                  setting you cannot easily initiate connections towards remote access VPN clients or hosts behind
+                  a site-to-site connection; they have to initiate connections instead.
+                  This is the default setting.
+                </li> 
+                <li>
+                  <strong class="cb-guilabel">Use Proxy ARP</strong> -
+                  Network interface responds to ARP requests targeted to the VPN clients. For more information, see 
+                  <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Proxy_arp">Proxy ARP</a>.
+                  This makes it appear as if the VPN clients were directly connected to the network instead of being
+                  accessible by routing through the <n:invisible n:macro="productname" /> server.
+                </li>
+                <li>
+                  <strong class="cb-guilabel">Don't use NAT or Proxy ARP</strong> -
+                  Neither NAT nor proxy ARP is applied to the traffic.  The traffic is routed without changes.
+                  This is the most transparent option.  Traffic sent back to remote access and site-to-site VPN
+                  connections must be "routed through" the <n:invisible n:macro="productname" /> server, which
+                  requires routing table changes to other network devices.  However, this setting makes connections
+                  fully bidirectional, i.e., you can also access network services exposed by VPN clients or initiate
+                  connections to a remote subnet of a site-to-site connection.
+                </li>
+              </ul>
+            </li>
+          </ul>
+            
+          <p>
+            <strong class="cb-guilabel">Private Network Connection</strong> contains configuration settings for the private
+            network connection.  The configuration settings are identical to the Internet Connection.
+          </p>
+          
+          <p>
+            <strong class="cb-guilabel">DNS Servers</strong> configuration allows you to configure DNS servers
+            for <n:invisible n:macro="productname" /> server manually, or use DNS servers received from DHCP.
+            DHCP option for a network is available only if network connection IP address is received automatically using
+            DHCP.  Configuring a working DNS server is mandatory.
+          </p>
+            
+          <p>
+            <strong class="cb-guilabel">Dynamic DNS</strong> allows you to use <n:invisible n:macro="productname" /> server
+            with changing public IP address. At the moment <n:invisible n:macro="productname" /> server supports the following
+            dynamic DNS service providers:
+            <a class="cb-external" target="_blank" href="http://www.dyndns.com/">DynDNS</a>,
+            <a class="cb-external" target="_blank" href="http://www.dhs.org/">DHS International</a>,
+            <a class="cb-external" target="_blank" href="http://www.ods.org/">Open Domain Server</a>,
+            and
+            <a class="cb-external" target="_blank" href="http://www.dyns.cx/">DyNS</a>.
+            You need to have an account for your dynamic DNS provider in order to configure a dynamic DNS name update.
+            <strong class="cb-guilabel">Dynamic DNS</strong> configuration has following configuration fields:    
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Provider</strong> - Dynamic DNS provider name. Empty name means that 
+              dynamic DNS is not in use. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Username</strong> - Your dynamic DNS account username.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Password</strong> - Your dynamic DNS account password.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Full hostname</strong> - Your dynamic DNS account full hostname. E.g.
+              <strong class="cb-userinput">example-vpn.dyndns.org</strong>.
+            </li>
+            <li>
+              <strong class="cb-guilabel">IP address to update</strong> - What IP address to update for the dynamic DNS hostname.
+              <strong class="cb-guilabel">Use Internet connection IP address</strong> means that the address of the Internet
+              connection network interface is used directly (regardless of whether the address is public or private).
+              <strong class="cb-guilabel">Use NATted Internet connection IP address</strong> means that the address of the
+              Internet connection network interface is used after any NATting has been applied.  For public addresses this
+              is the same as the first alternative; this option is useful when private addresses and a NAT is used.
+              <n:invisible n:macro="productname" /> obtains the public (NATted) address to be updated from the <n:invisible n:macro="productname" />
+              license server.
+              Finally, <strong class="cb-guilabel">Use the following IP address</strong> means that a specific manually configured
+              IP address is used.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Static IP address</strong> - The IP address to update to the dynamic DNS provider.  Only
+              required if <strong class="cb-guilabel">Use the following IP address</strong> is selected above.
+            </li>
+          </ul>
+            
+          <p>
+            <strong class="cb-guilabel">VPN Connection Settings</strong> contains configuration settings for 
+            VPN clients, consisting of the following fields:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Primary pre-shared key</strong> - Pre-shared key used for VPN connections.
+              Either primary, or secondary pre-shared key can be used to establish VPN connection.  
+            </li>
+            <li>
+              <strong class="cb-guilabel">Secondary pre-shared key</strong> - Pre-shared key used for VPN connection.
+              If secondary pre-shared key has been defined, either primary or secondary pre-shared key can be used
+              to establish VPN connection. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">VPN client DNS servers</strong> - VPN clients may use either 
+              DNS servers defined into <strong class="cb-guilabel">DNS Servers</strong> configuration above
+              (<strong class="cb-guilabel">Use network connection DNS servers</strong>),
+              or DNS servers may be defined for VPN clients separately (<strong class="cb-guilabel">Set DNS servers</strong>).  
+            </li>
+            <li>
+              <strong class="cb-guilabel">Primary DNS server IP address</strong> - Primary DNS server for VPN clients. 
+              Available only if <strong class="cb-guilabel">Set DNS servers</strong> is selected. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Secondary DNS server IP address</strong> - Secondary DNS server for VPN clients. 
+              Available only if <strong class="cb-guilabel">Set DNS servers</strong> is selected. 
+            </li>
+            <li>
+              <strong class="cb-guilabel">Primary WINS server IP address</strong> - Primary WINS server for VPN clients, optional.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Secondary WINS server IP address</strong> -  Secondary WINS server for VPN clients, optional.
+            </li>
+            <li>
+              <strong class="cb-guilabel">VPN client subnet</strong> - IP address subnet used for VPN client IP addresses.
+              The VPN client address range must be contained inside this subnet.  The lowest and two highest addresses
+              of the VPN client subnet are reserved and must not be used for any other purpose.
+            </li>
+            <li>
+              <strong class="cb-guilabel">VPN client address range</strong> - IP address range used for VPN client IP 
+              addresses. VPN client address range must be in the VPN client subnet. Fixed IP addresses, either manually
+              configured or assigned through RADIUS Framed-IP-Address attribute, must not be inside the client address
+              range (but may be out of VPN client subnet).
+            </li>
+            <li>
+              <strong class="cb-guilabel">VPN client traffic compression</strong> - Compression for VPN client traffic.   
+              If disabled, the <n:invisible n:macro="productname" /> server will reject attempts to enable data compression
+              for VPN connections regardless of VPN client settings.  If enabled, <n:invisible n:macro="productname" />
+              server will attempt to enable data compression for VPN connections, but if a VPN client rejects compression
+              it will allow the connection to be negotiated without compression.  In essence, when enabled, the VPN client
+              controls whether compression is enabled or not (see <a href="encryption-and-standards.html">Encryption and Standards</a>
+              for a list of compression algorithms supported by different VPN clients).  If compression is enabled, it may increase
+              effective throughput of uncompressed data by up to 100%, but increases CPU usage considerably.  The default
+              and suggested setting is to enable compression.
+            </li>
+          </ul>
+            
+          <div class="cb-note">
+            <p>
+              With a help of secondary pre-shared key, you can change your pre-shared key without an instant
+              need to deliver the new pre-shared key to all users. You may use both pre-shared keys and delete
+              the old key after you have verified that all users have the new key.
+            </p>
+          </div>
+        </div> <!-- Configuration - Network -->
+        
+        <a name="configuration-routing-and-firewall" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Routing &amp; Firewall</h1>  
+
+          <p>
+            <strong class="cb-guilabel">Default Route</strong> defines the default route for IP routing.
+            You can select which network to use for default gateway, and you can either use the default gateway
+            configured on <strong class="cb-guilabel">Networking</strong> page or enter a router IP address manually.
+            If forced routing is enabled (see below), this setting only applies to non-VPN traffic (such
+            as RADIUS, SNMP, SSH, and web traffic).
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Additional Routes</strong> allows you to define routes in addition to
+            the default route.  Typically these are useful when <n:invisible n:macro="productname" /> needs to
+            route traffic to multiple subnets comprising a company intranet.  The network and router can be
+            selected for each route separately.  Routes apply in order of subnet scope: a stricter (smaller)
+            subnet applies with higher priority than a looser (larger) subnet, despite the ordering in the web UI.
+            If forced routing is enabled (see below), the additional routes only apply to non-VPN traffic (such
+            as RADIUS, SNMP, SSH, and web traffic).
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Forced Routing</strong>.  If enabled, allows you to define a default
+            route used for (and only for) remote access and site-to-site VPN traffic.  Traffic received from
+            VPN connections is always routed through the router specified.  Note that the router specified for
+            forced routing must be from the same subnet as <n:invisible n:macro="productname" /> server's own
+            IP address.  This setting is only needed in special configurations.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">VPN Traffic Firewall Rules</strong> contains an ordered list of firewall
+            rules applied to both remote access and site-to-site VPN connections.  The rules apply to traffic
+            received from a VPN connection before it is routed onwards.  Rules are applied in top-down order,
+            with the first matching rule specifying the action for a data packet being filtered.  If no rule matches
+            (or if the firewall rule list is empty), the default rule is to allow traffic.  Individual packets can
+            be selected using their destination address, protocol, and port.
+            The VPN traffic firewall is stateful: once an outbound packet has been accepted, response packets
+            for that traffic "flow" are automatically also accepted.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Firewall</strong>.
+            If <strong class="cb-guilabel">Enable simple firewall (routing through)</strong> is enabled (which
+            is the default), causes <n:invisible n:macro="productname" /> to act as a simple router with automatic
+            network address translation (NAT) for routed traffic:
+          </p>
+          <ul>
+            <li>
+              In the one interface setup, allows <n:invisible n:macro="productname" /> to receive traffic from
+              the Internet connection interface and route the traffic onwards through the same interface.  The
+              source address of routed packets is network address translated (NAT) to the address of the Internet
+              connection network interface.
+            </li>
+            <li>
+              In the two interface setup, allows <n:invisible n:macro="productname" /> to receive and route traffic
+              from both the Internet connection and private network connection interfaces.  Traffic is routed in
+              all combinations except from Internet to private network (port forwarding can be used instead):
+              Internet &rarr; Internet, private network &rarr; private network, private network &rarr; Internet.
+              The source address of routed packets is network address translated (NAT) to the address of the
+              interface through which the packets are routed (Internet or private network connection).
+            </li>
+          </ul>
+
+          <p>
+            When configuring firewall rules we suggest you first add a "block all" rule
+            (subnet <strong class="cb-userinput">0.0.0.0/0</strong>, action <strong class="cb-userinput">Deny</strong>)
+            as the last rule, and then add exceptions to the list before the "block all" rule.
+          </p>
+
+          <div class="cb-note">
+            <p>
+              The VPN Traffic Firewall Rules settings apply to both remote access and site-to-site VPN connections.
+              The firewall rules are applied when traffic is received from a VPN connection and routed onwards
+              to external network hosts.  Separate rules for remote access and site-to-site traffic cannot be currently defined.
+            </p>
+
+            <p>
+              If you wish to apply different firewall rules for remote access traffic and site-to-site traffic, or
+              wish to apply different firewall rules for individual users or user groups, we suggest you use an external
+              firewall device and use the default configuration (accept all) for your <n:invisible n:macro="productname" /> server.
+            </p>
+          </div>
+
+          <p>
+            <strong class="cb-guilabel">Port Forwarding</strong> allows you to define port forwarding rules, which
+            apply to traffic received on the Internet connection interface.  Each rule specifies an incoming protocol
+            (TCP or UDP) and a port whose traffic is forwarded to a specified address and port.  For instance, you can specify that
+            traffic received for TCP port 80 on the Internet connection is forwarded to port 8080 of a host with the IP address
+            10.0.0.1.  The forwarded connection is routed using routes specified in the default route and additional routes sections.
+            Port forwarding rules are typically only relevant when <n:invisible n:macro="productname" /> is used as a
+            simple router (see <strong class="cb-guilabel">Firewall</strong> above).
+          </p>
+        </div> <!-- Configuration - Routing&Firewall -->
+        
+        <a name="configuration-user-accounts" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">User Accounts</h1>  
+
+          <p>
+            This page contains settings for user authentication: you can configure external
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/RADIUS">RADIUS</a> server(s) and/or
+            locally authenticated users.  If both are configured, local configuration is checked first, and if the
+            username being authenticated is not locally configured, RADIUS servers are queried next.  RADIUS servers
+            are not required, local users can be configured instead.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">RADIUS Servers</strong>
+            allows you to configure RADIUS servers used for both VPN and web authentication.  You can configure
+            either only the primary RADIUS server, or both primary and secondary RADIUS servers.  If the primary
+            server fails to respond, the secondary server is tried instead.  Each RADIUS server needs the following
+            settings:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">(Primary/Secondary) RADIUS server address</strong> -
+              IP address of the RADIUS server.  A domain name cannot be used for the server.
+            </li>
+            <li>
+              <strong class="cb-guilabel">(Primary/Secondary) RADIUS server port</strong> -
+              UDP port of the RADIUS server.  Default is 1812, the standard RADIUS port.
+            </li>
+            <li>
+              <strong class="cb-guilabel">(Primary/Secondary) RADIUS shared secret</strong> -
+              RADIUS authentication secret in string (ASCII) format.  You should configure the same
+              authentication secret to your RADIUS server.
+            </li>
+          </ul>
+
+          <p>
+            <strong class="cb-guilabel">NAS Identifier</strong> allows you to define a RADIUS NAS-Identifier
+            attribute for the requests sent by the
+            <n:invisible n:macro="productname" /> server, which allows better identification in your
+            RADIUS server.
+          </p>
+
+          <p>
+            See <a href="authentication-options.html">Authentication Options</a> for more details about
+            RADIUS authentication possibilities, and how to configure <n:invisible n:macro="productname" /> server
+            to be used with Windows Active Directory (AD).
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Users</strong> allows you to configure users into the local user
+            database for both VPN and web authentication.  Use the small plus, minus, up, and down
+            icons to add, remove, and organize users (the order of user entries does not matter, so you can organize
+            the list in any order you wish).  The following fields are present for each user:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Username</strong> -
+              Username for VPN and web authentication, case sensitive.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Set password</strong> -
+              Resets the user password to the value entered here.  If no value is entered, the existing password
+              is retained.  This allows users to set their own passwords, while an administrator can reset
+              the password if the user forgets his password.  If the user has been newly added, an initial password
+              is mandatory.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Fixed IP address</strong> -
+              If empty, the user will get a dynamically allocated address from the VPN client address range for
+              each VPN connection.  If an IP address is configured here, the user can only have one VPN connection
+              at a time, and the connection will always use this address as the VPN IP address.  The fixed IP
+              address cannot be from the VPN client address range, or be any of the reserved addresses (lowest and
+              two highest addresses of the VPN client subnet).
+            </li>
+            <li>
+              <strong class="cb-guilabel">Allow VPNease administration</strong> -
+              If set, allows accessing the administrator web interface using this username and password.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Allow VPN access</strong> -
+              If set, allows VPN access (default).
+            </li>
+          </ul>
+
+          <p>
+            Note that all locally configured users always have access to the user web interface.
+          </p>
+        </div> <!-- Configuration - User Accounts -->
+        
+        <a name="configuration-sitetosite-connections" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Site-to-Site Connections</h1>  
+
+          <p>
+            <strong class="cb-guilabel">Site-to-Site Connections</strong>
+            allows you to configure site-to-site connections.  Each connection is either initiated by or
+            responded to by this server (see <a href="site-to-site-configuration.html">Site-to-Site Configuration</a>
+            for details).  Use the small plus, minus, up, and down icons to add, remove, and organize
+            site-to-site connection entries (the order of entries does not matter, so you can organize
+            the list in any order you wish).  Each entry has the following fields:
+          </p>
+          <ul>
+            <li>
+              <strong class="cb-guilabel">Username</strong> -
+              Username for this site-to-site connection.
+              Must match the setting in the remote <n:invisible n:macro="productname" /> server involved in this site-to-site connection.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Password</strong> -
+              Password for this site-to-site connection.
+              Must match the setting in the remote <n:invisible n:macro="productname" /> server involved in this site-to-site connection.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Remote subnets</strong> -
+              A list of IP subnets of the remote network.  Traffic destined to addresses inside these
+              subnets will be routed through the site-to-site connection if the connection is available; if the
+              connection is not available, the traffic is blocked.
+              Enter subnets with as a comma separated list, for instance,
+              <strong class="cb-userinput">10.10.0.0/16, 192.168.10.0/24</strong>.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Connection mode</strong> -
+              Defines whether this <n:invisible n:macro="productname" /> server initiates the site-to-site
+              connection (<strong class="cb-guilabel">Initiate connection to a remote server</strong>) or
+              responds to a connection (<strong class="cb-guilabel">Respond to a connection from a remote
+              server</strong>).  See <a href="site-to-site-configuration.html">Site-to-Site Configuration</a>
+              for details.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Remote server address</strong> -
+              IP address or domain name of the remote <n:invisible n:macro="productname" /> server.
+              Enter only when connection mode is set to <strong class="cb-guilabel">Initiate connection to a remote server</strong>.
+            </li>
+            <li>
+              <strong class="cb-guilabel">Remote server pre-shared key</strong> -
+              Pre-shared key of the remote <n:invisible n:macro="productname" /> server, configured from
+              the <strong class="cb-guilabel">Network</strong> page of the remote server.
+              Enter only when connection mode is set to <strong class="cb-guilabel">Initiate connection to a remote server</strong>.
+            </li>
+          </ul>
+
+          <p>
+            See <a href="site-to-site-configuration.html">Site-to-Site Configuration</a> for
+            more information about configuring and troubleshooting site-to-site connections.
+          </p>
+        </div> <!-- Configuration - Site-to-Site Connections -->
+        
+        <a name="configuration-license-and-maintenance" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">License &amp; Maintenance</h1>  
+
+          <p>
+            This page contains various product maintenance settings.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Product License</strong> allows you enter a product license key
+            to activate your product subscription.  Without a license key the product will use an automatic
+            demo license which will expire automatically.  Enter the license key into the
+            <strong class="cb-guilabel">License key</strong> field.  License keys have the form:
+            <strong class="cb-userinput">XXXXX-XXXXX-XXXXX-XXXXX-XXXXX</strong>.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Locale Settings</strong> allows you to control presentation of
+            timestamps (<strong class="cb-guilabel">Timezone</strong>) in the web UI, as well as configure
+            the local (Linux) keyboard layout (<strong class="cb-guilabel">Keyboard layout</strong>).
+            Note that the timezone only affects representation of dates and times in the web UI; the Linux
+            system timezone is always set to GMT so system log entries are also always in GMT.  Also note that
+            the keyboard layout setting only affects the Linux graphical desktop keyboard layout and has no
+            visible effect when used remotely.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Product Maintenance</strong> controls when maintenance reboots occur
+            (<strong class="cb-guilabel">Maintenance reboot weekday</strong> and
+            <strong class="cb-guilabel">Maintenance reboot time</strong>, in timezone configured above)
+            and whether product updates are applied when the product reboots
+            (<strong class="cb-guilabel">Check for updates when rebooting</strong>).  Note that the update
+            check will be done on maintenance reboots but also on any other reboot for any reason.
+            If you disable automatic update checks here, you can still check for and apply product updates
+            manually from the <a href="#management-product-updates">Product Updates</a> page.
+          </p>
+
+          <p>
+            Product maintenance reboots are mandatory as they ensure that the system remains functional
+            over long periods of time.  <n:invisible n:macro="productname" /> avoids disrupting VPN
+            connections when performing a maintenance reboot: when the weekday and time is reached, the
+            product will reboot unless there are active remote access VPN connections.  If VPN connections
+            are active, the product will recheck every 24 hours for an opportunity to reboot, but will
+            forcibly reboot severing VPN connections if there is no opportunity within 7 days.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">SNMP Monitoring</strong> controls (read-only) remote
+            <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Simple_Network_Management_Protocol">SNMP</a>
+            monitoring of the server.  The <strong class="cb-guilabel">SNMP read-only access</strong>
+            defines the network interfaces through which SNMP should be allowed (Internet and/or
+            private connection, or neither).  <strong class="cb-guilabel">SNMP community string (password)</strong>
+            defines the so-called SNMP community string which authenticates SNMP connections.  For read-only
+            monitoring a typical community string is <strong class="cb-userinput">public</strong>, which is
+            the default.  Note that SNMP access is disabled from all network interfaces in the default configuration.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">Remote Management</strong> controls remote management access rights.
+            <strong class="cb-guilabel">Web administration</strong> defines the network interfaces through which
+            the administrator web interface is accessible (the user web interface is always accessible from all
+            network interfaces).  <strong class="cb-guilabel">SSH connection</strong> defines the network interfaces
+            through which <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/Secure_Shell">SSH</a>
+            access is allowed.  Finally, you can set the Linux root password (which is required for remote SSH
+            access) by setting the same password to the <strong class="cb-guilabel">Set root password</strong> and
+            <strong class="cb-guilabel">Re-enter root password</strong> fields.  If these fields are left empty,
+            the Linux root password is not changed.  The default setting after installation is a disabled root password.
+          </p>
+
+          <p>
+            <strong class="cb-guilabel">SSL Certificate</strong> controls <n:invisible n:macro="productname" /> server
+            SSL certificate.  By default, <n:invisible n:macro="productname" /> uses a self-signed SSL certificate,
+            which requires browser users to accept the certificate before proceeding.  You can remove these browser
+            warnings by obtaining a proper SSL certificate as follows (the process may vary slightly depending on your
+            certificate provider):
+          </p>
+          <ul>
+            <li>
+              Generate a new 1024-bit RSA key pair and a so called Certificate Signing Request (CSR).  The 1024-bit
+              RSA key pair will be used by the <n:invisible n:macro="productname" /> server for SSL authentication.
+              The Certificate Signing Request is needed to obtain an SSL certificate from an SSL provider.  Save
+              both the private key and the CSR in the
+              <a href="http://en.wikipedia.org/wiki/X.509#Certificate_filename_extensions" class="cb-external" target="_blank">PEM</a> format.
+              You can use several different tools to create these files, see e.g.
+              <a href="http://sial.org/howto/openssl/csr/" class="cb-external" target="_blank">Generating Certificate Signing Requests</a> for
+              <a href="http://www.openssl.org/" class="cb-external" target="_blank">OpenSSL</a> instructions.
+            </li>
+            <ul>
+              <li>
+                A correctly generated private key should look something like this:
+<pre>
+-----BEGIN RSA PRIVATE KEY-----
+<i>...
+[several lines of ASCII encoded data]
+...</i>
+-----END RSA PRIVATE KEY-----
+</pre>
+              </li>
+              <li>
+                A correctly generated Certificate Signing Request should look something like this:
+<pre>
+-----BEGIN CERTIFICATE REQUEST-----
+<i>...
+[several lines of ASCII encoded data]
+...</i>
+-----END CERTIFICATE REQUEST-----
+</pre>
+              </li>
+              <li>
+                NOTE: when you generate the Certificate Signing Request, make sure you set the requested
+                Common Name field to match the intended <n:invisible n:macro="productname" /> server
+                domain name.  For instance, if the <n:invisible n:macro="productname" /> will be accessed
+                by users using the URI http://vpnease.example.com/, set the Common Name to vpnease.example.com.
+                Getting a certificate for an IP address does not work as expected; most browsers will
+                warn about the certificate even if the IP address is correct.
+              </li>
+              <li>
+                NOTE: please don't use RSA key pairs larger than 1024 bits, as large keys may cause
+                problems with some browsers.
+              </li>
+            </ul>
+
+            <li>
+              Contact an SSL certificate provider, such as
+              <a href="http://www.verisign.com/" class="cb-external" target="_blank">VeriSign</a> or
+              <a href="http://www.thawte.com/" class="cb-external" target="_blank">Thawte</a>
+              to get an SSL certificate.
+              The providers typically require you to register and then provide them with a
+              Certificate Signing Request in PEM format.  The certificate file you obtain
+              is typically in PEM format and looks something like this:
+<pre>
+-----BEGIN CERTIFICATE-----
+<i>...
+[several lines of ASCII encoded data]
+...</i>
+-----END CERTIFICATE-----
+</pre>
+            </li>
+
+            <li>
+              For a certificate to actually make sense for a browser, you need a certificate for the
+              <n:invisible n:macro="productname" /> server (often called the "end entity" certificate),
+              and any intermediate certificates used by the SSL certificate provider.  Certificates
+              form a chain from a trusted root certificate (built into your browser) to the end entity
+              certificate; you need the whole chain.  Individual certificates in the chain should be
+              separate PEM encoded files (see above).  SSL certificate providers often provide a link
+              to required intermediate certificates when they deliver your end entity certificate.
+            </li>
+
+            <li>
+              To enable use of an externally generated SSL certificate in a <n:invisible n:macro="productname" />
+              server, paste the PEM file contents into the
+              <strong class="cb-guilabel">SSL Certificate Chain (PEM format, server certificate first)</strong> and
+              <strong class="cb-guilabel">SSL Private Key (PEM format)</strong> fields.
+            </li>
+            <ul>
+              <li>
+                The certificate chain field should contain one or more PEM encoded certificates
+                in sequence.  The first certificate in the field must be the end entity certificate,
+                followed by any intermediate certificates in a "bottom up" order.
+                <strong class="cb-bold">The order of the certificates is very important.</strong>
+                For instance:
+<pre>
+-----BEGIN CERTIFICATE-----
+<i>...
+[several lines of ASCII encoded data]
+...</i>
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+<i>...
+[several lines of ASCII encoded data]
+...</i>
+-----END CERTIFICATE-----
+</pre>
+              </li>
+              <li>
+                The private key field should contain the RSA private key in a PEM encoded form.
+                For instance:
+<pre>
+-----BEGIN RSA PRIVATE KEY-----
+<i>...
+[several lines of ASCII encoded data]
+...</i>
+-----END RSA PRIVATE KEY-----
+</pre>
+              </li>
+            </ul>
+
+            <li>
+              Once you have entered the private key and certificate chain into the user interface,
+              save changes to activate the new certificate.  You can test the certificate by
+              connecting to the <n:invisible n:macro="productname" /> server from a remote computer
+              using the intended domain name (embedded in the certificate Common Name field).
+              You shouldn't get a certificate warning.  You can inspect the certificate chain in
+              most browsers to ensure the chain is correct.  If you get unexpected errors, please
+              verify that you filled in the fields as described above.  In particular, ensure that
+              the order of certificates in the certificate chain is correct.
+            </li>
+          </ul>
+        </div> <!-- Configuration - License & Maintenance -->
+        
+      </div> <!-- Configuration -->
+      
+      <a name="management" />
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Management</h1>
+        
+        <p>
+          <n:invisible n:macro="productname" /> server management contains the following pages:
+        </p>
+        
+        <ul>
+          <li><a href="#management-reboot">Reboot</a></li>
+          <li><a href="#management-shut-down">Shut Down</a></li>
+          <li><a href="#management-product-updates">Product Updates</a></li>
+          <li><a href="#management-import-configuration">Import Configuration</a></li>
+          <li><a href="#management-export-configuration">Export Configuration</a></li>
+          <li><a href="#management-export-diagnostics">Export Diagnostics</a></li>
+        </ul>
+
+        <a name="management-reboot" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Reboot</h1>
+            <p>
+              Reboots the <n:invisible n:macro="productname" /> server.  If automatic updates
+              have been enabled and an update is available, the product update will be applied
+              during the reboot.
+            </p>
+        </div> <!-- Management - Reboot -->
+
+        <a name="management-shut-down" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Shut Down</h1>
+            <p>
+              Shuts down the <n:invisible n:macro="productname" /> server.  You should use this
+              feature to shut down the server cleanly, although you can also use normal Linux
+              commands to shut down the server.
+            </p>
+        </div> <!-- Management - Shut Down -->
+
+        <a name="management-product-updates" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Product Updates</h1>
+            <p>
+              Shows a list of product versions, including past versions, the current version,
+              and possibly new version(s).  For each version, a short list of features or
+              changes is shown.  If a newer version is available, you can force a product
+              update by clicking the <strong class="cb-guilabel">Update product (causes reboot)</strong> button.
+              Note, however, that product update check requires a reboot, and that the server
+              will be rebooted for a second time after a successful update.
+            </p>
+        </div> <!-- Management - Product Updates -->
+
+        <a name="management-import-configuration" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Import Configuration</h1>
+            <p>
+              Import a previously exported configuration file.  This feature reboots the
+              server and restores the system to a previous configuration.  Note that all
+              existing configuration settings will be lost as a result.
+            </p>
+        </div> <!-- Management - Import Configuration -->
+
+        <a name="management-export-configuration" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Export Configuration</h1>
+            <p>
+              Export the current <n:invisible n:macro="productname" /> configuration data
+              in a single file suitable for backup purposes.  The file contains all
+              configuration settings, including pre-shared keys and user passwords, so
+              store the exported configuration file safely.  The file does not contain
+              history information, in particular, it does not contain graph history shown
+              in status pages.
+            </p>
+        </div> <!-- Management - Export Configuration -->
+
+        <a name="management-export-diagnostics" />
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Export Diagnostics</h1>
+            <p>
+              Export system information required for diagnostics by <n:invisible n:macro="productname" />
+              support.  The exported diagnostics file essentially contains Linux system logs, which allow
+              us to determine the cause of a problem more accurately.  The logs do not contains user
+              password or server pre-shared key(s), but may contain other configuration information (such
+              as IP addresses) and usernames.
+            </p>
+            <p>
+              The diagnostics file is a ZIP file with some product specific metadata and the actual
+              system log files.  You can easily inspect the file to ensure that the data is acceptable
+              before you submit the file to support.  Note that system log entry timestamps are always
+              in GMT timezone regardless of what timezone is configured from the administrator interface.
+            </p>
+        </div> <!-- Management - Export Diagnostics -->
+
+        <!-- this is to make anchors work better -->
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div> <!-- Management -->
+
+    </n:invisible>
+  </body>
+</html>
+
+

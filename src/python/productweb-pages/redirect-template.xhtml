@@ -1,0 +1,27 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:n="http://nevow.com/ns/nevow/0.1">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>VPNease - redirect</title>
+<meta name="description" content="VPNease" />
+</head>
+
+<body>
+
+<h1 style="color: #cccccc; font-size: 12px; font-style: italic;">Redirection</h1>
+
+<p style="color: #cccccc; font-size: 9px; font-style: italic;">
+Redirecting to
+<a><n:invisible n:render="redirect_target" /><n:attr name="href"><n:invisible n:render="redirect_target" /></n:attr><n:attr name="alt"><n:invisible n:render="redirect_target" /></n:attr></a>.
+</p>
+
+<script type="text/javascript">
+setTimeout(function() {
+	window.location = "<n:invisible n:render="redirect_target" />";
+}, 1);
+</script>
+
+</body>
+</html>

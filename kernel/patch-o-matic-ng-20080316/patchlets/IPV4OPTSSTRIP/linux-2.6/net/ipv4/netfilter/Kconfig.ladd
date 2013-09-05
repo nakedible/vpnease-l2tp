@@ -1,0 +1,9 @@
+config IP_NF_TARGET_IPV4OPTSSTRIP
+	tristate  'IPV4OPTSSTRIP target support'
+	depends on IP_NF_MANGLE
+	help
+	  This option adds an IPV4OPTSSTRIP target.
+	  This target allows you to strip all IP options in a packet.
+	 
+	  If you want to compile it as a module, say M here and read
+	  Documentation/modules.txt.  If unsure, say `N'.

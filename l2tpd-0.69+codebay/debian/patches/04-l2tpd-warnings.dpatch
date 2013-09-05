@@ -1,0 +1,76 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 07-l2tpd-warnings.dpatch, by Unknown
+##
+## All lines beginning with `## DP:' are a description of the patch.
+
+@DPATCH@
+
+--- l2tpd-0.69.orig/Makefile
++++ l2tpd-0.69/Makefile
+@@ -31,7 +31,8 @@
+ #
+ # Uncomment the next line for Linux
+ #
+-OSFLAGS= -DLINUX -I/usr/include
++OSFLAGS= -DLINUX 
++#OSFLAGS= -DLINUX -I/usr/include
+ #
+ # Uncomment the following to use the kernel interface under Linux
+ #
+--- l2tpd-0.69.orig/network.c
++++ l2tpd-0.69/network.c
+@@ -363,8 +363,8 @@
+                 extract (buf->start, &tunnel, &call);
+                 if (debug_network)
+                 {
+-                    log (LOG_DEBUG, "%s: recv packet from %s, size = %d,
+-tunnel = %d, call = %d\n", __FUNCTION__, inet_ntoa (from.sin_addr), recvsize, tunnel, call);
++                    log (LOG_DEBUG, "%s: recv packet from %s, size = %d," \
++"tunnel = %d, call = %d\n", __FUNCTION__, inet_ntoa (from.sin_addr), recvsize, tunnel, call);
+                 }
+                 if (packet_dump)
+                 {
+--- l2tpd-0.69.orig/call.c
++++ l2tpd-0.69/call.c
+@@ -193,8 +193,8 @@
+         }
+     }
+     /* I should never get here */
+-    log (LOG_WARN, "%s: You should not see this message.  If you do, please
+-		       enter a bug report at http://sourceforge.net/projects/l2tpd", __FUNCTION__);
++    log (LOG_WARN, "%s: You should not see this message.  If you do, please " \
++		       "enter a bug report at http://www.l2tpd.org", __FUNCTION__);
+     return -EINVAL;
+ }
+ 
+--- l2tpd-0.69.orig/avp.c
++++ l2tpd-0.69/avp.c
+@@ -1593,7 +1593,7 @@
+     struct avp_hdr *avp;
+     int len = buf->len - sizeof (struct control_hdr);
+     int firstavp = -1;
+-    int hidlen;
++    int hidlen=0;
+     char *data = buf->start + sizeof (struct control_hdr);
+     avp = (struct avp_hdr *) data;
+     if (debug_avp)
+@@ -1608,7 +1608,7 @@
+             if (AMBIT (avp->length))
+             {
+                 log (LOG_WARN,
+-                     "%s:  dont know how to handle mandatory attribute %d.  Closing %s.\n"
++                     "%s:  dont know how to handle mandatory attribute %d.  Closing %s.\n",
+                      __FUNCTION__, avp->attr,
+                      (c != t->self) ? "call" : "tunnel");
+                 set_error (c, VENDOR_ERROR,
+--- l2tpd-0.69.orig/control.c
++++ l2tpd-0.69/control.c
+@@ -1671,6 +1671,8 @@
+ {
+     int res;
+     struct timeval tv;
++
++    memset(&tv, 0, sizeof(tv));
+     if (CTBIT (*((_u16 *) buf->start)))
+     {
+         /* We have a control packet */

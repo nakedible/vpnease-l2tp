@@ -1,0 +1,71 @@
+#!/usr/bin/python
+#
+#  VPNease syslog wrapper
+#
+
+import os, sys, datetime, traceback, signal
+
+from codebay.l2tpserver import syslogdaemon
+from codebay.l2tpserver import constants
+logfile = constants.SYSLOG_EXCEPTION_LOG
+
+daemon = None
+
+def _sigterm_handler(signum, stackframe):
+    if daemon is not None:
+        daemon.cleanup()
+    sys.exit(0)
+
+def _sighup_handler(signum, stackframe):
+    if daemon is not None:
+        daemon.flush()
+
+signal.signal(signal.SIGTERM, _sigterm_handler)
+signal.signal(signal.SIGHUP, _sighup_handler)
+signal.signal(signal.SIGALRM, _sigterm_handler) # same action as with term
+
+def _log_exception():
+    try:
+        errormsg = traceback.format_exc()
+        f = open(logfile, 'w')
+        f.write('%sZ\n' % datetime.datetime.utcnow())
+        f.write(errormsg)
+        f.close()
+    except:
+        pass
+
+def _read_exception():
+    msg = None
+    f = None
+    try:
+        if os.path.exists(logfile):
+            f = open(logfile, 'r')
+            msg = 'VPNease syslog daemon encountered an error in last run and had to be restarted: '
+            msg += f.read()
+    except:
+        pass
+
+    if f is not None:
+        f.close()
+
+    try:
+        if os.path.exists(logfile):
+            os.unlink(logfile)
+    except:
+        pass
+
+    return msg
+
+try:
+    daemon = syslogdaemon.Logger()
+    daemon.start(errormsg=_read_exception())
+except:
+    try:
+        if daemon is not None:
+            daemon.cleanup()
+    except:
+        pass
+    daemon = None
+
+    _log_exception()
+    raise

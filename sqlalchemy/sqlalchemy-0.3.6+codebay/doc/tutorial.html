@@ -1,0 +1,1243 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - Tutorial</title>
+	
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+<A name=""></a>
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+
+
+            
+            Next: <a href="dbengine.html">Database Engines</a>
+    </div>
+
+        <h2>Tutorial</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="tutorial.html#tutorial_installation">Installation</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="tutorial.html#tutorial_installation_sqlalchemy">Installing SQLAlchemy</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_installation_dbms">Installing a Database API</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_gettingstarted">Getting Started</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="tutorial.html#tutorial_gettingstarted_imports">Imports</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_gettingstarted_connecting">Connecting to the Database</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_twoinone">SQLAlchemy is Two Libraries in One</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_schemasql">Working with Database Objects</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="tutorial.html#tutorial_schemasql_metadata">Defining Metadata, Binding to Engines</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_schemasql_table_creating">Creating a Table</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_schemasql_inserting">Inserting Rows</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_schemasql_selecting">Selecting</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_schemasql_working">Working with Rows</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_schemasql_table_relationships">Table Relationships</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_orm">Working with Object Mappers</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="tutorial.html#tutorial_orm_mapper">Creating a Mapper</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_orm_session">Obtaining a Session</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_orm_query">The Query Object</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_orm_changes">Making Changes</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_orm_saving">Saving</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_orm_relationships">Relationships</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_orm_transactions">Transactions</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="tutorial.html#tutorial_next">Next Steps</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+    
+    <A name="tutorial"></a>
+    
+    <div class="section">
+
+    
+    
+
+<p>This tutorial provides a relatively simple walking tour through the basic concepts of SQLAlchemy.  You may wish to skip it and dive into the <a href="metadata.html">main manual</a> which is more reference-oriented.  The examples in this tutorial comprise a fully working interactive Python session, and are guaranteed to be functioning courtesy of <a href='http://www.python.org/doc/lib/module-doctest.html'>doctest</a>.
+</p>
+
+
+    
+    <A name="tutorial_installation"></a>
+    
+    <div class="subsection">
+
+    <h3>Installation</h3>
+    
+    
+
+
+
+    
+    <A name="tutorial_installation_sqlalchemy"></a>
+    
+    <div class="subsection">
+
+    <h3>Installing SQLAlchemy</h3>
+    
+    
+
+<p>Installing SQLAlchemy from scratch is most easily achieved with <a href='http://peak.telecommunity.com/DevCenter/setuptools'>setuptools</a>.  (<a href='http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions'>setuptools installation</a>). Just run this from the command-line:
+</p>
+<pre><code># easy_install SQLAlchemy
+</code></pre><p>This command will download the latest version of SQLAlchemy from the <a href='http://cheeseshop.python.org/pypi/SQLAlchemy'>Python Cheese Shop</a> and install it to your system.
+</p>
+<p>Otherwise, you can install from the distribution using the <code>setup.py</code> script:
+</p>
+<pre><code># python setup.py install
+</code></pre>
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_installation_dbms"></a>
+    
+    <div class="subsection">
+
+    <h3>Installing a Database API</h3>
+    
+    
+
+<p>SQLAlchemy is designed to operate with a <a href='http://www.python.org/doc/peps/pep-0249/'>DBAPI</a> implementation built for a particular database, and includes support for the most popular databases. If you have one of the <a href="dbengine.html#dbengine_supported">supported DBAPI implementations</a>, you can proceed to the following section. Otherwise <a href='http://sqlite.org/'>SQLite</a> is an easy-to-use database to get started with, which works with plain files or in-memory databases.
+</p>
+<p>SQLite is included with Python 2.5 and greater.
+</p>
+<p>If you are working with Python 2.3 or 2.4, SQLite and the Python API for SQLite can be installed from the following packages:
+</p>
+<ul>
+ <li>
+     <a href='http://pysqlite.org/'>pysqlite</a> - Python interface for SQLite
+ </li>
+
+ <li>
+     <a href='http://sqlite.org'>SQLite library</a>
+ </li>
+</ul>
+<p>Note that the SQLite library download is not required with Windows, as the Windows Pysqlite library already includes it linked in.  Pysqlite and SQLite can also be installed on Linux or FreeBSD via pre-made <a href='http://initd.org/tracker/pysqlite/wiki/PysqlitePackages'>packages</a> or <a href='http://pysqlite.org/'>from sources</a>.
+</p>
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_gettingstarted"></a>
+    
+    <div class="subsection">
+
+    <h3>Getting Started</h3>
+    
+    
+
+
+
+    
+    <A name="tutorial_gettingstarted_imports"></a>
+    
+    <div class="subsection">
+
+    <h3>Imports</h3>
+    
+    
+
+<p>To start connecting to databases and begin issuing queries, we want to import the base of SQLAlchemy's functionality, which is provided under the module name of <code>sqlalchemy</code>.  For the purposes of this tutorial, we will import its full list of symbols into our own local namespace.  <br></br>
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_keyword">from </span><span class="python_name">sqlalchemy </span><span class="python_keyword">import </span><span class="python_operator">*</span></pre>
+    </div>
+<p>Note that importing using the <code>*</code> operator pulls all the names from <code>sqlalchemy</code> into the local module namespace, which in a real application can produce name conflicts.  Therefore its recommended in practice to either import the individual symbols desired (i.e. <code>from sqlalchemy import Table, Column</code>) or to import under a distinct namespace (i.e. <code>import sqlalchemy as sa</code>).
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_gettingstarted_connecting"></a>
+    
+    <div class="subsection">
+
+    <h3>Connecting to the Database</h3>
+    
+    
+
+<p>After our imports, the next thing we need is a handle to the desired database, represented by an <code>Engine</code> object.  This object handles the business of managing connections and dealing with the specifics of a particular database.  Below, we will make a SQLite connection to a file-based database called "tutorial.db".
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">db </span><span class="python_operator">= </span><span class="python_name">create_engine</span><span class="python_enclosure">(</span><span class="python_literal">'sqlite:///tutorial.db'</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Technically, the above statement did not make an actual connection to the sqlite database just yet.  As soon as we begine working with the engine, it will start creating connections.  In the case of SQLite, the <code>tutorial.db</code> file will actually be created at the moment it is first used, if the file does not exist already.
+</p>
+<p>For full information on creating database engines, including those for SQLite and others, see <a href="dbengine.html">Database Engines</a>.
+</p>
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_twoinone"></a>
+    
+    <div class="subsection">
+
+    <h3>SQLAlchemy is Two Libraries in One</h3>
+    
+    
+
+<p>Now that the basics of installing SQLAlchemy and connecting to our database are established, we can start getting in to actually doing something.  But first, a little bit of explanation is required.
+</p>
+<p>A central concept of SQLAlchemy is that it actually contains two distinct areas of functionality, one of which builds upon the other.  One is a <strong>SQL Construction Language</strong> and the other is an <strong>Object Relational Mapper</strong> ("ORM" for short).  The SQL construction language allows you to construct objects called <code>ClauseElements</code> which represent SQL expressions.  These ClauseElements can then be executed against any database, where they are <strong>compiled</strong> into strings that are appropriate for the target database, and return an object called a <code>ResultProxy</code>, which is essentially a result set object that acts very much like a deluxe version of the dbapi <code>cursor</code> object.
+</p>
+<p>The Object Relational Mapper (ORM) is a set of tools completely distinct from the SQL Construction Language which serve the purpose of mapping Python object instances into database rows, providing a rich selection interface with which to retrieve instances from tables as well as a comprehensive solution to persisting changes on those instances back into the database.  When working with the ORM, its underlying workings as well as its public API make extensive use of the SQL Construction Language, however the general theory of operation is slightly different.  Instead of working with database rows directly, you work with your own user-defined classes and object instances.  Additionally, the method of issuing queries to the database is different, as the ORM handles the job of generating most of the SQL required, and instead requires more information about what kind of class instances you'd like to load and where you'd like to put them.
+</p>
+<p>Where SA is somewhat unique, more powerful, and slightly more complicated is that the two areas of functionality can be mixed together in many ways.  A key strategy to working with SA effectively is to have a solid awareness of these two distinct toolsets, and which concepts of SA belong to each - even some publications have confused the SQL Construction Language with the ORM.  The key difference between the two is that when you're working with cursor-like result sets its the SQL Construction Language, and when working with collections of your own class instances its the Object Relational Mapper.
+</p>
+<p>This tutorial will first focus on the basic configuration that is common to using both the SQL Construction Language as well as the ORM, which is to declare information about your database called <strong>table metadata</strong>.  This will be followed by some constructed SQL examples, and then into usage of the ORM utilizing the same data we established in the SQL construction examples.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_schemasql"></a>
+    
+    <div class="subsection">
+
+    <h3>Working with Database Objects</h3>
+    
+    
+
+
+
+    
+    <A name="tutorial_schemasql_metadata"></a>
+    
+    <div class="subsection">
+
+    <h3>Defining Metadata, Binding to Engines</h3>
+    
+    
+
+<p>Configuring SQLAlchemy for your database consists of creating objects called <code>Tables</code>, each of which represent an actual table in the database.  A collection of <code>Table</code> objects resides in a <code>MetaData</code> object which is essentially a table collection.  We will create a handy form of <code>MetaData</code> that automatically connects to our <code>Engine</code> (connecting a schema object to an Engine is called <em>binding</em>):
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">metadata </span><span class="python_operator">= </span><span class="python_name">BoundMetaData</span><span class="python_enclosure">(</span><span class="python_name">db</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>An equivalent operation is to create the <code>BoundMetaData</code> object directly with an Engine URL, which calls the <code>create_engine</code> call for us:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">metadata </span><span class="python_operator">= </span><span class="python_name">BoundMetaData</span><span class="python_enclosure">(</span><span class="python_literal">'sqlite:///tutorial.db'</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Now, when we tell "metadata" about the tables in our database, we can issue CREATE statements for those tables, as well as execute SQL statements derived from them, without needing to open or close any connections; that will be all done automatically.
+</p>
+<p>Note that SQLALchemy fully supports the usage of explicit Connection objects for all SQL operations, which may be in conjunction with plain <code>MetaData</code> objects that are entirely unbound to any Engine, providing a more decoupled pattern that allows finer-grained control of connections than the "bound" approach this tutorial will present.  For the purposes of this tutorial, we will stick with "bound" objects, as it allows us to focus more on SA's general concepts, leaving explicit connection management as a more advanced topic.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_schemasql_table_creating"></a>
+    
+    <div class="subsection">
+
+    <h3>Creating a Table</h3>
+    
+    
+
+<p>With <code>metadata</code> as our established home for tables, lets make a Table for it:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">users_table </span><span class="python_operator">= </span><span class="python_name">Table</span><span class="python_enclosure">(</span><span class="python_literal">'users'</span><span class="python_operator">, </span><span class="python_name">metadata</span><span class="python_operator">,</span>
+<span class="python_operator">...     </span><span class="python_name">Column</span><span class="python_enclosure">(</span><span class="python_literal">'user_id'</span><span class="python_operator">, </span><span class="python_name">Integer</span><span class="python_operator">, </span><span class="python_name">primary_key</span><span class="python_operator">=</span><span class="python_name">True</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+<span class="python_operator">...     </span><span class="python_name">Column</span><span class="python_enclosure">(</span><span class="python_literal">'user_name'</span><span class="python_operator">, </span><span class="python_name">String</span><span class="python_enclosure">(</span><span class="python_number">40</span><span class="python_enclosure">))</span><span class="python_operator">,</span>
+<span class="python_operator">...     </span><span class="python_name">Column</span><span class="python_enclosure">(</span><span class="python_literal">'password'</span><span class="python_operator">, </span><span class="python_name">String</span><span class="python_enclosure">(</span><span class="python_number">10</span><span class="python_enclosure">))</span>
+<span class="python_operator">... </span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>As you might have guessed, we have just defined a table named <code>users</code> which has three columns: <code>user_id</code> (which is a primary key column), <code>user_name</code> and <code>password</code>. Currently it is just an object that doesn't necessarily correspond to an existing table in our database.  To actually create the table, we use the <code>create()</code> method.  To make it interesting, we will have SQLAlchemy echo the SQL statements it sends to the database, by setting the <code>echo</code> flag on the <code>Engine</code> associated with our <code>BoundMetaData</code>:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">metadata</span><span class="python_operator">.</span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">echo </span><span class="python_operator">= </span><span class="python_name">True</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">create</span><span class="python_enclosure">() </span><span class="python_operator">
+</span><span class="python_name">CREATE TABLE users </span><span class="python_enclosure">(</span>
+    <span class="python_name">user_id INTEGER NOT NULL</span><span class="python_operator">,</span>
+    <span class="python_name">user_name VARCHAR</span><span class="python_enclosure">(</span><span class="python_number">40</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+    <span class="python_name">password VARCHAR</span><span class="python_enclosure">(</span><span class="python_number">10</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+    <span class="python_name">PRIMARY KEY </span><span class="python_enclosure">(</span><span class="python_name">user_id</span><span class="python_enclosure">)</span>
+<span class="python_enclosure">)</span><span class="python_operator">
+...</span></pre>
+    </div>
+<p>Alternatively, the <code>users</code> table might already exist (such as, if you're running examples from this tutorial for the second time), in which case you can just skip the <code>create()</code> method call. You can even skip defining the individual columns in the <code>users</code> table and ask SQLAlchemy to load its definition from the database:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">users_table </span><span class="python_operator">= </span><span class="python_name">Table</span><span class="python_enclosure">(</span><span class="python_literal">'users'</span><span class="python_operator">, </span><span class="python_name">metadata</span><span class="python_operator">, </span><span class="python_name">autoload</span><span class="python_operator">=</span><span class="python_name">True</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">list</span><span class="python_enclosure">(</span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">columns</span><span class="python_enclosure">)[</span><span class="python_number">0</span><span class="python_enclosure">]</span><span class="python_operator">.</span><span class="python_name">name</span><span class="python_operator">
+</span><span class="python_literal">'user_id'</span><span class="python_operator"></span></pre>
+    </div>
+<p>Loading a table's columns from the database is called <strong>reflection</strong>.  Documentation on table metadata, including reflection, is available in <a href="metadata.html">Database Meta Data</a>.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_schemasql_inserting"></a>
+    
+    <div class="subsection">
+
+    <h3>Inserting Rows</h3>
+    
+    
+
+<p>Inserting is achieved via the <code>insert()</code> method, which defines a <em>clause object</em> (known as a <code>ClauseElement</code>) representing an INSERT statement:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">i </span><span class="python_operator">= </span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">insert</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">i </span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">sql</span><span class="python_operator">.</span><span class="python_name">_Insert object at </span><span class="python_number">0x</span><span class="python_operator">...>
+</span><span class="python_literal">>>> </span><span class="python_comment"># the string form of the Insert object is a generic SQL representation</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">i</span><span class="python_operator">
+</span><span class="python_name">INSERT INTO users </span><span class="python_enclosure">(</span><span class="python_name">user_id</span><span class="python_operator">, </span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">password</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?, ?</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Since we created this insert statement object from the <code>users</code> table which is bound to our <code>Engine</code>, the statement itself is also bound to the <code>Engine</code>, and supports executing itself.  The <code>execute()</code> method of the clause object will <em>compile</em> the object into a string according to the underlying <em>dialect</em> of the Engine to which the statement is bound, and will then execute the resulting statement.  <br></br>
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_comment"># insert a single row</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">i</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Mary'</span><span class="python_operator">, </span><span class="python_name">password</span><span class="python_operator">=</span><span class="python_literal">'secure'</span><span class="python_enclosure">) </span><span class="python_operator">
+</span><span class="python_name">INSERT INTO users </span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">password</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'Mary'</span><span class="python_operator">, </span><span class="python_literal">'secure'</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">COMMIT</span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">base</span><span class="python_operator">.</span><span class="python_name">ResultProxy object at </span><span class="python_number">0x</span><span class="python_operator">...>
+</span>
+<span class="python_literal">>>> </span><span class="python_comment"># insert multiple rows simultaneously</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">i</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">({</span><span class="python_literal">'user_name'</span><span class="python_operator">:</span><span class="python_literal">'Tom'</span><span class="python_enclosure">}</span><span class="python_operator">, </span><span class="python_enclosure">{</span><span class="python_literal">'user_name'</span><span class="python_operator">:</span><span class="python_literal">'Fred'</span><span class="python_enclosure">}</span><span class="python_operator">, </span><span class="python_enclosure">{</span><span class="python_literal">'user_name'</span><span class="python_operator">:</span><span class="python_literal">'Harry'</span><span class="python_enclosure">}) </span><span class="python_operator">
+</span><span class="python_name">INSERT INTO users </span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[[</span><span class="python_literal">'Tom'</span><span class="python_enclosure">]</span><span class="python_operator">, </span><span class="python_enclosure">[</span><span class="python_literal">'Fred'</span><span class="python_enclosure">]</span><span class="python_operator">, </span><span class="python_enclosure">[</span><span class="python_literal">'Harry'</span><span class="python_enclosure">]]</span><span class="python_operator">
+</span><span class="python_name">COMMIT</span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">base</span><span class="python_operator">.</span><span class="python_name">ResultProxy object at </span><span class="python_number">0x</span><span class="python_operator">...></span></pre>
+    </div>
+<p>Note that the <code>VALUES</code> clause of each <code>INSERT</code> statement was automatically adjusted to correspond to the parameters sent to the <code>execute()</code> method.  This is because the compilation step of a <code>ClauseElement</code> takes into account not just the constructed SQL object and the specifics of the type of database being used, but the execution parameters sent along as well.
+</p>
+<p>When constructing clause objects, SQLAlchemy will bind all literal values into bind parameters.  On the construction side, bind parameters are always treated as named parameters.  At compilation time, SQLAlchemy will convert them into their proper format, based on the paramstyle of the underlying DBAPI.  This works equally well for all named and positional bind parameter formats described in the DBAPI specification.
+</p>
+<p>Documentation on inserting: <a href="sqlconstruction.html#sql_insert">Inserts</a>.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_schemasql_selecting"></a>
+    
+    <div class="subsection">
+
+    <h3>Selecting</h3>
+    
+    
+
+<p>Let's check that the data we have put into <code>users</code> table is actually there. The procedure is analogous to the insert example above, except you now call the <code>select()</code> method off the <code>users</code> table:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">s </span><span class="python_operator">= </span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">select</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">s</span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">password </span><span class="python_operator">
+</span><span class="python_name">FROM users</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">r </span><span class="python_operator">= </span><span class="python_name">s</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">password </span><span class="python_operator">
+</span><span class="python_name">FROM users</span><span class="python_operator">
+</span><span class="python_enclosure">[]</span><span class="python_operator"></span></pre>
+    </div>
+<p>This time, we won't ignore the return value of <code>execute()</code>.  Its an instance of <code>ResultProxy</code>, which is a result-holding object that behaves very similarly to the <code>cursor</code> object one deals with directly with a database API:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">r </span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">base</span><span class="python_operator">.</span><span class="python_name">ResultProxy object at </span><span class="python_number">0x</span><span class="python_operator">...>
+</span><span class="python_literal">>>> </span><span class="python_name">r</span><span class="python_operator">.</span><span class="python_name">fetchone</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_number">1</span><span class="python_operator">, </span><span class="python_literal">u'Mary'</span><span class="python_operator">, </span><span class="python_literal">u'secure'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">r</span><span class="python_operator">.</span><span class="python_name">fetchall</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_enclosure">[(</span><span class="python_number">2</span><span class="python_operator">, </span><span class="python_literal">u'Tom'</span><span class="python_operator">, </span><span class="python_name">None</span><span class="python_enclosure">)</span><span class="python_operator">, </span><span class="python_enclosure">(</span><span class="python_number">3</span><span class="python_operator">, </span><span class="python_literal">u'Fred'</span><span class="python_operator">, </span><span class="python_name">None</span><span class="python_enclosure">)</span><span class="python_operator">, </span><span class="python_enclosure">(</span><span class="python_number">4</span><span class="python_operator">, </span><span class="python_literal">u'Harry'</span><span class="python_operator">, </span><span class="python_name">None</span><span class="python_enclosure">)]</span><span class="python_operator"></span></pre>
+    </div>
+<p>Query criterion for the select is specified using Python expressions, using the <code>Column</code> objects in the <code>Table</code> as a base.  All expressions constructed from <code>Column</code> objects are themselves instances of <code>ClauseElements</code>, just like the <code>Select</code>, <code>Insert</code>, and <code>Table</code> objects themselves.
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">r </span><span class="python_operator">= </span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">select</span><span class="python_enclosure">(</span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">==</span><span class="python_literal">'Harry'</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">password </span><span class="python_operator">
+</span><span class="python_name">FROM users </span><span class="python_operator">
+</span><span class="python_name">WHERE users</span><span class="python_operator">.</span><span class="python_name">user_name </span><span class="python_operator">= ?
+</span><span class="python_enclosure">[</span><span class="python_literal">'Harry'</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">row </span><span class="python_operator">= </span><span class="python_name">r</span><span class="python_operator">.</span><span class="python_name">fetchone</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">row</span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_number">4</span><span class="python_operator">, </span><span class="python_literal">u'Harry'</span><span class="python_operator">, </span><span class="python_name">None</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Pretty much the full range of standard SQL operations are supported as constructed Python expressions, including joins, ordering, grouping, functions, correlated subqueries, unions, etc. Documentation on selecting: <a href="sqlconstruction.html#sql_select">Simple Select</a>.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_schemasql_working"></a>
+    
+    <div class="subsection">
+
+    <h3>Working with Rows</h3>
+    
+    
+
+<p>You can see that when we print out the rows returned by an execution result, it prints the rows as tuples.  These rows in fact support both the list and dictionary interfaces.  The dictionary interface allows the addressing of columns by string column name, or even the original <code>Column</code> object:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">row</span><span class="python_operator">.</span><span class="python_name">keys</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'user_id'</span><span class="python_operator">, </span><span class="python_literal">'user_name'</span><span class="python_operator">, </span><span class="python_literal">'password'</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">row</span><span class="python_enclosure">[</span><span class="python_literal">'user_id'</span><span class="python_enclosure">]</span><span class="python_operator">, </span><span class="python_name">row</span><span class="python_enclosure">[</span><span class="python_number">1</span><span class="python_enclosure">]</span><span class="python_operator">, </span><span class="python_name">row</span><span class="python_enclosure">[</span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">password</span><span class="python_enclosure">] </span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_number">4</span><span class="python_operator">, </span><span class="python_literal">u'Harry'</span><span class="python_operator">, </span><span class="python_name">None</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Addressing the columns in a row based on the original <code>Column</code> object is especially handy, as it eliminates the need to work with literal column names altogether.
+</p>
+<p>Result sets also support iteration.  We'll show this with a slightly different form of <code>select</code> that allows you to specify the specific columns to be selected:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_keyword">for </span><span class="python_name">row </span><span class="python_keyword">in </span><span class="python_name">select</span><span class="python_enclosure">([</span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">, </span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_enclosure">])</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">()</span><span class="python_operator">: 
+...     </span><span class="python_keyword">print </span><span class="python_name">row</span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">
+</span><span class="python_name">FROM users</span><span class="python_operator">
+</span><span class="python_enclosure">[]</span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_number">1</span><span class="python_operator">, </span><span class="python_literal">u'Mary'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_number">2</span><span class="python_operator">, </span><span class="python_literal">u'Tom'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_number">3</span><span class="python_operator">, </span><span class="python_literal">u'Fred'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_number">4</span><span class="python_operator">, </span><span class="python_literal">u'Harry'</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_schemasql_table_relationships"></a>
+    
+    <div class="subsection">
+
+    <h3>Table Relationships</h3>
+    
+    
+
+<p>Lets create a second table, <code>email_addresses</code>, which references the <code>users</code> table.  To define the relationship between the two tables, we will use the <code>ForeignKey</code> construct.  We will also issue the <code>CREATE</code> statement for the table:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">email_addresses_table </span><span class="python_operator">= </span><span class="python_name">Table</span><span class="python_enclosure">(</span><span class="python_literal">'email_addresses'</span><span class="python_operator">, </span><span class="python_name">metadata</span><span class="python_operator">,</span>
+<span class="python_operator">...     </span><span class="python_name">Column</span><span class="python_enclosure">(</span><span class="python_literal">'address_id'</span><span class="python_operator">, </span><span class="python_name">Integer</span><span class="python_operator">, </span><span class="python_name">primary_key</span><span class="python_operator">=</span><span class="python_name">True</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+<span class="python_operator">...     </span><span class="python_name">Column</span><span class="python_enclosure">(</span><span class="python_literal">'email_address'</span><span class="python_operator">, </span><span class="python_name">String</span><span class="python_enclosure">(</span><span class="python_number">100</span><span class="python_enclosure">)</span><span class="python_operator">, </span><span class="python_name">nullable</span><span class="python_operator">=</span><span class="python_name">False</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+<span class="python_operator">...     </span><span class="python_name">Column</span><span class="python_enclosure">(</span><span class="python_literal">'user_id'</span><span class="python_operator">, </span><span class="python_name">Integer</span><span class="python_operator">, </span><span class="python_name">ForeignKey</span><span class="python_enclosure">(</span><span class="python_literal">'users.user_id'</span><span class="python_enclosure">)))</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">email_addresses_table</span><span class="python_operator">.</span><span class="python_name">create</span><span class="python_enclosure">() </span><span class="python_operator">
+</span><span class="python_name">CREATE TABLE email_addresses </span><span class="python_enclosure">(</span>
+    <span class="python_name">address_id INTEGER NOT NULL</span><span class="python_operator">,</span>
+    <span class="python_name">email_address VARCHAR</span><span class="python_enclosure">(</span><span class="python_number">100</span><span class="python_enclosure">) </span><span class="python_name">NOT NULL</span><span class="python_operator">,</span>
+    <span class="python_name">user_id INTEGER</span><span class="python_operator">,</span>
+    <span class="python_name">PRIMARY KEY </span><span class="python_enclosure">(</span><span class="python_name">address_id</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+    <span class="python_name">FOREIGN KEY</span><span class="python_enclosure">(</span><span class="python_name">user_id</span><span class="python_enclosure">) </span><span class="python_name">REFERENCES users </span><span class="python_enclosure">(</span><span class="python_name">user_id</span><span class="python_enclosure">)</span>
+<span class="python_enclosure">)</span><span class="python_operator">
+...</span></pre>
+    </div>
+<p>Above, the <code>email_addresses</code> table is related to the <code>users</code> table via the <code>ForeignKey('users.user_id')</code>.  The <code>ForeignKey</code> constructor can take a <code>Column</code> object or a string representing the table and column name.  When using the string argument, the referenced table must exist within the same <code>MetaData</code> object; thats where it looks for the other table!
+</p>
+<p>Next, lets put a few rows in:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">email_addresses_table</span><span class="python_operator">.</span><span class="python_name">insert</span><span class="python_enclosure">()</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">(</span>
+<span class="python_operator">...     </span><span class="python_enclosure">{</span><span class="python_literal">'email_address'</span><span class="python_operator">:</span><span class="python_literal">'tom@tom.com'</span><span class="python_operator">, </span><span class="python_literal">'user_id'</span><span class="python_operator">:</span><span class="python_number">2</span><span class="python_enclosure">}</span><span class="python_operator">,</span>
+<span class="python_operator">...     </span><span class="python_enclosure">{</span><span class="python_literal">'email_address'</span><span class="python_operator">:</span><span class="python_literal">'mary@mary.com'</span><span class="python_operator">, </span><span class="python_literal">'user_id'</span><span class="python_operator">:</span><span class="python_number">1</span><span class="python_enclosure">}) </span><span class="python_operator">
+</span><span class="python_name">INSERT INTO email_addresses </span><span class="python_enclosure">(</span><span class="python_name">email_address</span><span class="python_operator">, </span><span class="python_name">user_id</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[[</span><span class="python_literal">'tom@tom.com'</span><span class="python_operator">, </span><span class="python_number">2</span><span class="python_enclosure">]</span><span class="python_operator">, </span><span class="python_enclosure">[</span><span class="python_literal">'mary@mary.com'</span><span class="python_operator">, </span><span class="python_number">1</span><span class="python_enclosure">]]</span><span class="python_operator">
+</span><span class="python_name">COMMIT</span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">base</span><span class="python_operator">.</span><span class="python_name">ResultProxy object at </span><span class="python_number">0x</span><span class="python_operator">...></span></pre>
+    </div>
+<p>With two related tables, we can now construct a join amongst them using the <code>join</code> method:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">r </span><span class="python_operator">= </span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">join</span><span class="python_enclosure">(</span><span class="python_name">email_addresses_table</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">select</span><span class="python_enclosure">()</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">password</span><span class="python_operator">, </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">address_id</span><span class="python_operator">, </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">email_address</span><span class="python_operator">, </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">user_id </span><span class="python_operator">
+</span><span class="python_name">FROM users JOIN email_addresses ON users</span><span class="python_operator">.</span><span class="python_name">user_id </span><span class="python_operator">= </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">
+</span><span class="python_enclosure">[]</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_enclosure">[</span><span class="python_name">row </span><span class="python_keyword">for </span><span class="python_name">row </span><span class="python_keyword">in </span><span class="python_name">r</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_enclosure">[(</span><span class="python_number">1</span><span class="python_operator">, </span><span class="python_literal">u'Mary'</span><span class="python_operator">, </span><span class="python_literal">u'secure'</span><span class="python_operator">, </span><span class="python_number">2</span><span class="python_operator">, </span><span class="python_literal">u'mary@mary.com'</span><span class="python_operator">, </span><span class="python_number">1</span><span class="python_enclosure">)</span><span class="python_operator">, </span><span class="python_enclosure">(</span><span class="python_number">2</span><span class="python_operator">, </span><span class="python_literal">u'Tom'</span><span class="python_operator">, </span><span class="python_name">None</span><span class="python_operator">, </span><span class="python_number">1</span><span class="python_operator">, </span><span class="python_literal">u'tom@tom.com'</span><span class="python_operator">, </span><span class="python_number">2</span><span class="python_enclosure">)]</span><span class="python_operator"></span></pre>
+    </div>
+<p>The <code>join</code> method is also a standalone function in the <code>sqlalchemy</code> namespace.  The join condition is figured out from the foreign keys of the Table objects given.  The condition (also called the "ON clause") can be specified explicitly, such as in this example where we locate all users that used their email address as their password:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">join</span><span class="python_enclosure">(</span><span class="python_name">users_table</span><span class="python_operator">, </span><span class="python_name">email_addresses_table</span><span class="python_operator">, </span>
+<span class="python_operator">...     </span><span class="python_name">and_</span><span class="python_enclosure">(</span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">==</span><span class="python_name">email_addresses_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">, </span>
+<span class="python_operator">...     </span><span class="python_name">users_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">password</span><span class="python_operator">==</span><span class="python_name">email_addresses_table</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">email_address</span><span class="python_enclosure">)</span>
+<span class="python_operator">...     </span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">users JOIN email_addresses ON users</span><span class="python_operator">.</span><span class="python_name">user_id </span><span class="python_operator">= </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">user_id AND users</span><span class="python_operator">.</span><span class="python_name">password </span><span class="python_operator">= </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">email_address</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_orm"></a>
+    
+    <div class="subsection">
+
+    <h3>Working with Object Mappers</h3>
+    
+    
+
+<p>Now that we have a little bit of Table and SQL operations covered, lets look into SQLAlchemy's ORM (object relational mapper).  With the ORM, you associate Tables (and other <em>Selectable</em> units, like queries and table aliases) with Python classes, into units called <strong>Mappers</strong>.  Then you can execute queries that return lists of object instances, instead of result sets.  The object instances themselves are associated with an object called a <strong>Session</strong>, which automatically tracks changes on each object and supports a "save all at once" operation called a <strong>flush</strong>.
+</p>
+<p>To start, we will import the names necessary to use SQLAlchemy's ORM, again using <code>import *</code> for simplicities sake, even though we all know that in real life we should be importing individual names via "<code>from sqlalchemy.orm import symbol1, symbol2, ...</code>" or "<code>import sqlalchemy.orm as orm</code>":
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_keyword">from </span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">orm </span><span class="python_keyword">import </span><span class="python_operator">*</span></pre>
+    </div>
+<p>It should be noted that the above step is technically not needed when working with the 0.3 series of SQLAlchemy; all symbols from the <code>orm</code> package are also included in the <code>sqlalchemy</code> package.  However, a future release (most likely the 0.4 series) will make the separate <code>orm</code> import required in order to use the object relational mapper, so its a good practice for now.
+</p>
+
+
+    
+    <A name="tutorial_orm_mapper"></a>
+    
+    <div class="subsection">
+
+    <h3>Creating a Mapper</h3>
+    
+    
+
+<p>A Mapper is usually created once per Python class, and at its core primarily means to say, "objects of this class are to be stored as rows in this table".  Lets create a class called <code>User</code>, which will represent a user object that is stored in our <code>users</code> table:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_keyword">class </span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_name">object</span><span class="python_enclosure">)</span><span class="python_operator">:
+...     </span><span class="python_keyword">def </span><span class="python_name">__repr__</span><span class="python_enclosure">(</span><span class="python_name">self</span><span class="python_enclosure">)</span><span class="python_operator">:
+...        </span><span class="python_keyword">return </span><span class="python_literal">"%s(%r,%r)" </span><span class="python_operator">% </span><span class="python_enclosure">(</span>
+<span class="python_operator">...            </span><span class="python_name">self</span><span class="python_operator">.</span><span class="python_name">__class__</span><span class="python_operator">.</span><span class="python_name">__name__</span><span class="python_operator">, </span><span class="python_name">self</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">self</span><span class="python_operator">.</span><span class="python_name">password</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>The class is a new style class (i.e. it extends <code>object</code>) and does not require a constructor (although one may be provided if desired).  We just have one <code>__repr__</code> method on it which will display basic information about the User.  Note that the <code>__repr__</code> method references the instance variables <code>user_name</code> and <code>password</code> which otherwise aren't defined.  While we are free to explicitly define these attributes and treat them normally, this is optional; as SQLAlchemy's <code>Mapper</code> construct will manage them for us, since their names correspond to the names of columns in the <code>users</code> table.  Lets create a mapper, and observe that these attributes are now defined:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">mapper</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_operator">, </span><span class="python_name">users_table</span><span class="python_enclosure">) </span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">orm</span><span class="python_operator">.</span><span class="python_name">mapper</span><span class="python_operator">.</span><span class="python_name">Mapper object at </span><span class="python_number">0x</span><span class="python_operator">...>
+</span><span class="python_literal">>>> </span><span class="python_name">u1 </span><span class="python_operator">= </span><span class="python_name">User</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">u1</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">
+</span><span class="python_name">None</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">u1</span><span class="python_operator">.</span><span class="python_name">password</span><span class="python_operator">
+</span><span class="python_name">None</span><span class="python_operator"></span></pre>
+    </div>
+<p>The <code>mapper</code> function returns a new instance of <code>Mapper</code>.  As it is the first Mapper we have created for the <code>User</code> class, it is known as the classes' <em>primary mapper</em>.  We generally don't need to hold onto the return value of the <code>mapper</code> function; SA can automatically locate this Mapper as needed when it deals with the <code>User</code> class.  <br></br>
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_orm_session"></a>
+    
+    <div class="subsection">
+
+    <h3>Obtaining a Session</h3>
+    
+    
+
+<p>After you create a Mapper, all operations with that Mapper require the usage of an important object called a <code>Session</code>.  All objects loaded or saved by the Mapper must be <em>attached</em> to a <code>Session</code> object, which represents a kind of "workspace" of objects that are loaded into memory.  A particular object instance can only be attached to one <code>Session</code> at a time (but of course can be moved around or detached altogether).
+</p>
+<p>By default, you have to create a <code>Session</code> object explicitly before you can load or save objects.  Theres several ways to manage sessions, but the most straightforward is to just create one, which we will do by saying, <code>create_session()</code>:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">session </span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">orm</span><span class="python_operator">.</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">Session object at </span><span class="python_number">0x</span><span class="python_operator">...></span></pre>
+    </div>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_orm_query"></a>
+    
+    <div class="subsection">
+
+    <h3>The Query Object</h3>
+    
+    
+
+<p>The Session has all kinds of methods on it to manage and inspect its collection of objects.  The Session also provides an easy interface which can be used to query the database, by giving you an instance to a <code>Query</code> object corresponding to a particular Python class:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">query </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">select_by</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Harry'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_name AS users_user_name</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">password AS users_password</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_id AS users_user_id </span><span class="python_operator">
+</span><span class="python_name">FROM users </span><span class="python_operator">
+</span><span class="python_name">WHERE users</span><span class="python_operator">.</span><span class="python_name">user_name </span><span class="python_operator">= ? </span><span class="python_name">ORDER BY users</span><span class="python_operator">.</span><span class="python_name">oid</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'Harry'</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_literal">u'Harry'</span><span class="python_operator">,</span><span class="python_name">None</span><span class="python_enclosure">)]</span><span class="python_operator"></span></pre>
+    </div>
+<p>All querying for objects is performed via an instance of <code>Query</code>.  The various <code>select</code> methods on an instance of <code>Mapper</code> also use an underlying <code>Query</code> object to perform the operation.  A <code>Query</code> is always bound to a specific <code>Session</code>.
+</p>
+<p>Lets turn off the database echoing for a moment, and try out a few methods on <code>Query</code>.  Methods that end with the suffix <code>_by</code> primarily take keyword arguments which correspond to properties on the object.  Other methods take <code>ClauseElement</code> objects, which are constructed by using <code>Column</code> objects inside of Python expressions, in the same way as we did with our SQL select example in the previous section of this tutorial.  Using <code>ClauseElement</code> structures to query objects is more verbose but more flexible:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">metadata</span><span class="python_operator">.</span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">echo </span><span class="python_operator">= </span><span class="python_name">False</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">select</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_id</span><span class="python_operator">==</span><span class="python_number">3</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_literal">u'Fred'</span><span class="python_operator">,</span><span class="python_name">None</span><span class="python_enclosure">)]</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_number">2</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_literal">u'Tom'</span><span class="python_operator">,</span><span class="python_name">None</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get_by</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Mary'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_literal">u'Mary'</span><span class="python_operator">,</span><span class="python_literal">u'secure'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">selectfirst</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">password</span><span class="python_operator">==</span><span class="python_name">None</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_literal">u'Tom'</span><span class="python_operator">,</span><span class="python_name">None</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">count</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_number">4</span><span class="python_operator"></span></pre>
+    </div>
+<p>Notice that our <code>User</code> class has a special attribute <code>c</code> attached to it.  This 'c' represents the columns on the User's mapper's Table object.  Saying <code>User.c.user_name</code> is synonymous with saying <code>users_table.c.user_name</code>, recalling that <code>User</code> is the Python class and <code>users</code> is our <code>Table</code> object.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_orm_changes"></a>
+    
+    <div class="subsection">
+
+    <h3>Making Changes</h3>
+    
+    
+
+<p>With a little experience in loading objects, lets see what its like to make changes.  First, lets create a new user "Ed".  We do this by just constructing the new object.  Then, we just add it to the session:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">ed </span><span class="python_operator">= </span><span class="python_name">User</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">ed</span><span class="python_operator">.</span><span class="python_name">user_name </span><span class="python_operator">= </span><span class="python_literal">'Ed'</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">ed</span><span class="python_operator">.</span><span class="python_name">password </span><span class="python_operator">= </span><span class="python_literal">'edspassword'</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">save</span><span class="python_enclosure">(</span><span class="python_name">ed</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">ed </span><span class="python_keyword">in </span><span class="python_name">session</span><span class="python_operator">
+</span><span class="python_name">True</span><span class="python_operator"></span></pre>
+    </div>
+<p>Lets also make a few changes on some of the objects in the database.  We will load them with our <code>Query</code> object, and then change some things.
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">mary </span><span class="python_operator">= </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get_by</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Mary'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">harry </span><span class="python_operator">= </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get_by</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Harry'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">mary</span><span class="python_operator">.</span><span class="python_name">password </span><span class="python_operator">= </span><span class="python_literal">'marysnewpassword'</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">harry</span><span class="python_operator">.</span><span class="python_name">password </span><span class="python_operator">= </span><span class="python_literal">'harrysnewpassword'</span><span class="python_operator"></span></pre>
+    </div>
+<p>At the moment, nothing has been saved to the database; all of our changes are in memory only.  What happens if some other part of the application also tries to load 'Mary' from the database and make some changes before we had a chance to save it ?  Assuming that the same <code>Session</code> is used, loading 'Mary' from the database a second time will issue a second query in order locate the primary key of 'Mary', but will <em>return the same object instance as the one already loaded</em>.  This behavior is due to an important property of the <code>Session</code> known as the <strong>identity map</strong>:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">mary2 </span><span class="python_operator">= </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get_by</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Mary'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">mary </span><span class="python_keyword">is </span><span class="python_name">mary2</span><span class="python_operator">
+</span><span class="python_name">True</span><span class="python_operator"></span></pre>
+    </div>
+<p>With the identity map, a single <code>Session</code> can be relied upon to keep all loaded instances straight.
+</p>
+<p>As far as the issue of the same object being modified in two different Sessions, that's an issue of concurrency detection; SQLAlchemy does some basic concurrency checks when saving objects, with the option for a stronger check using version ids.  See <b>advdatamapping_arguments</b> for more details.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_orm_saving"></a>
+    
+    <div class="subsection">
+
+    <h3>Saving</h3>
+    
+    
+
+<p>With a new user "ed" and some changes made on "Mary" and "Harry", lets also mark "Fred" as deleted:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">fred </span><span class="python_operator">= </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get_by</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Fred'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">delete</span><span class="python_enclosure">(</span><span class="python_name">fred</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Then to send all of our changes to the database, we <code>flush()</code> the Session.  Lets turn echo back on to see this happen!:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">metadata</span><span class="python_operator">.</span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">echo </span><span class="python_operator">= </span><span class="python_name">True</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">BEGIN</span><span class="python_operator">
+</span><span class="python_name">UPDATE users SET password</span><span class="python_operator">=? </span><span class="python_name">WHERE users</span><span class="python_operator">.</span><span class="python_name">user_id </span><span class="python_operator">= ?
+</span><span class="python_enclosure">[</span><span class="python_literal">'marysnewpassword'</span><span class="python_operator">, </span><span class="python_number">1</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">UPDATE users SET password</span><span class="python_operator">=? </span><span class="python_name">WHERE users</span><span class="python_operator">.</span><span class="python_name">user_id </span><span class="python_operator">= ?
+</span><span class="python_enclosure">[</span><span class="python_literal">'harrysnewpassword'</span><span class="python_operator">, </span><span class="python_number">4</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">INSERT INTO users </span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">password</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'Ed'</span><span class="python_operator">, </span><span class="python_literal">'edspassword'</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">DELETE FROM users WHERE users</span><span class="python_operator">.</span><span class="python_name">user_id </span><span class="python_operator">= ?
+</span><span class="python_enclosure">[</span><span class="python_number">3</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">COMMIT</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_orm_relationships"></a>
+    
+    <div class="subsection">
+
+    <h3>Relationships</h3>
+    
+    
+
+<p>When our User object contains relationships to other kinds of information, such as a list of email addresses, we can indicate this by using a function when creating the <code>Mapper</code> called <code>relation()</code>.  While there is a lot you can do with relations, we'll cover a simple one here.  First, recall that our <code>users</code> table has a foreign key relationship to another table called <code>email_addresses</code>.  A single row in <code>email_addresses</code> has a column <code>user_id</code> that references a row in the <code>users</code> table; since many rows in the <code>email_addresses</code> table can reference a single row in <code>users</code>, this is called a <em>one to many</em> relationship.
+</p>
+<p>To illustrate this relationship, we will start with a new mapper configuration.  Since our <code>User</code> class has a mapper assigned to it, we want to discard it and start over again.  So we issue the <code>clear_mappers()</code> function first, which removes all mapping associations from classes:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">clear_mappers</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>When removing mappers, it is usually best to remove all mappings at the same time, since mappers usually have relationships to each other which will become invalid if only part of the mapper collection is removed.  In practice, a particular mapping setup will usually remain throughout the lifetime of an application.  Clearing out the mappers and making new ones is a practice that is generally limited to writing mapper unit tests and experimenting from the console.
+</p>
+<p>Next, we want to create a class/mapping that corresponds to the <code>email_addresses</code> table.  We will create a new class <code>Address</code> which represents a single row in the <code>email_addresses</code> table, and a corresponding <code>Mapper</code> which will associate the <code>Address</code> class with the <code>email_addresses</code> table:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_keyword">class </span><span class="python_name">Address</span><span class="python_enclosure">(</span><span class="python_name">object</span><span class="python_enclosure">)</span><span class="python_operator">:
+...     </span><span class="python_keyword">def </span><span class="python_name">__init__</span><span class="python_enclosure">(</span><span class="python_name">self</span><span class="python_operator">, </span><span class="python_name">email_address</span><span class="python_enclosure">)</span><span class="python_operator">:
+...         </span><span class="python_name">self</span><span class="python_operator">.</span><span class="python_name">email_address </span><span class="python_operator">= </span><span class="python_name">email_address</span><span class="python_operator">
+...     </span><span class="python_keyword">def </span><span class="python_name">__repr__</span><span class="python_enclosure">(</span><span class="python_name">self</span><span class="python_enclosure">)</span><span class="python_operator">:
+...         </span><span class="python_keyword">return </span><span class="python_literal">"%s(%r)" </span><span class="python_operator">% </span><span class="python_enclosure">(</span>
+<span class="python_operator">...            </span><span class="python_name">self</span><span class="python_operator">.</span><span class="python_name">__class__</span><span class="python_operator">.</span><span class="python_name">__name__</span><span class="python_operator">, </span><span class="python_name">self</span><span class="python_operator">.</span><span class="python_name">email_address</span><span class="python_enclosure">)    </span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">mapper</span><span class="python_enclosure">(</span><span class="python_name">Address</span><span class="python_operator">, </span><span class="python_name">email_addresses_table</span><span class="python_enclosure">) </span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">orm</span><span class="python_operator">.</span><span class="python_name">mapper</span><span class="python_operator">.</span><span class="python_name">Mapper object at </span><span class="python_number">0x</span><span class="python_operator">...></span></pre>
+    </div>
+<p>We then create a mapper for the <code>User</code> class which contains a relationship to the <code>Address</code> class using the <code>relation()</code> function:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">mapper</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_operator">, </span><span class="python_name">users_table</span><span class="python_operator">, </span><span class="python_name">properties</span><span class="python_operator">=</span><span class="python_enclosure">{ </span>
+<span class="python_operator">...    </span><span class="python_literal">'addresses'</span><span class="python_operator">:</span><span class="python_name">relation</span><span class="python_enclosure">(</span><span class="python_name">Address</span><span class="python_enclosure">)</span>
+<span class="python_operator">... </span><span class="python_enclosure">})</span><span class="python_operator">
+<</span><span class="python_name">sqlalchemy</span><span class="python_operator">.</span><span class="python_name">orm</span><span class="python_operator">.</span><span class="python_name">mapper</span><span class="python_operator">.</span><span class="python_name">Mapper object at </span><span class="python_number">0x</span><span class="python_operator">...></span></pre>
+    </div>
+<p>The <code>relation()</code> function takes either a class or a Mapper as its first argument, and has many options to further control its behavior.  When this mapping relationship is used, each new <code>User</code> instance will contain an attribute called <code>addresses</code>.  SQLAlchemy will automatically determine that this relationship is a one-to-many relationship, and will subsequently create <code>addresses</code> as a list.  When a new <code>User</code> is created, this list will begin as empty.
+</p>
+<p>The order in which the mapping definitions for <code>User</code> and <code>Address</code> is created is <em>not significant</em>.  When the <code>mapper()</code> function is called, it creates an <em>uncompiled</em> mapping record corresponding to the given class/table combination.  When the mappers are first used, the entire collection of mappers created up until that point will be compiled, which involves the establishment of class instrumentation as well as the resolution of all mapping relationships.  <br></br>
+</p>
+<p>Lets try out this new mapping configuration, and see what we get for the email addresses already in the database.  Since we have made a new mapping configuration, its best that we clear out our <code>Session</code>, which is currently holding onto every <code>User</code> object we have already loaded:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">clear</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>We can then treat the <code>addresses</code> attribute on each <code>User</code> object like a regular list:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">mary </span><span class="python_operator">= </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get_by</span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">=</span><span class="python_literal">'Mary'</span><span class="python_enclosure">) </span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_name AS users_user_name</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">password AS users_password</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_id AS users_user_id </span><span class="python_operator">
+</span><span class="python_name">FROM users </span><span class="python_operator">
+</span><span class="python_name">WHERE users</span><span class="python_operator">.</span><span class="python_name">user_name </span><span class="python_operator">= ? </span><span class="python_name">ORDER BY users</span><span class="python_operator">.</span><span class="python_name">oid </span><span class="python_operator">
+</span><span class="python_name">LIMIT </span><span class="python_number">1 </span><span class="python_name">OFFSET </span><span class="python_number">0</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'Mary'</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">print </span><span class="python_enclosure">[</span><span class="python_name">a </span><span class="python_keyword">for </span><span class="python_name">a </span><span class="python_keyword">in </span><span class="python_name">mary</span><span class="python_operator">.</span><span class="python_name">addresses</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">SELECT email_addresses</span><span class="python_operator">.</span><span class="python_name">user_id AS email_addresses_user_id</span><span class="python_operator">, </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">address_id AS email_addresses_address_id</span><span class="python_operator">, </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">email_address AS email_addresses_email_address </span><span class="python_operator">
+</span><span class="python_name">FROM email_addresses </span><span class="python_operator">
+</span><span class="python_name">WHERE</span><span class="python_operator"> ? = </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">user_id ORDER BY email_addresses</span><span class="python_operator">.</span><span class="python_name">oid</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_number">1</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_name">Address</span><span class="python_enclosure">(</span><span class="python_literal">u'mary@mary.com'</span><span class="python_enclosure">)]</span><span class="python_operator"></span></pre>
+    </div>
+<p>Adding to the list is just as easy.  New <code>Address</code> objects will be detected and saved when we <code>flush</code> the Session:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">mary</span><span class="python_operator">.</span><span class="python_name">addresses</span><span class="python_operator">.</span><span class="python_name">append</span><span class="python_enclosure">(</span><span class="python_name">Address</span><span class="python_enclosure">(</span><span class="python_literal">'mary2@gmail.com'</span><span class="python_enclosure">))</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">() </span><span class="python_operator">
+</span><span class="python_name">BEGIN</span><span class="python_operator">
+</span><span class="python_name">INSERT INTO email_addresses </span><span class="python_enclosure">(</span><span class="python_name">email_address</span><span class="python_operator">, </span><span class="python_name">user_id</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'mary2@gmail.com'</span><span class="python_operator">, </span><span class="python_number">1</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">COMMIT</span><span class="python_operator"></span></pre>
+    </div>
+<p>Main documentation for using mappers:  <a href="datamapping.html">Data Mapping</a>
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_orm_transactions"></a>
+    
+    <div class="subsection">
+
+    <h3>Transactions</h3>
+    
+    
+
+<p>You may have noticed from the example above that when we say <code>session.flush()</code>, SQLAlchemy indicates the names <code>BEGIN</code> and <code>COMMIT</code> to indicate a transaction with the database.  The <code>flush()</code> method, since it may execute many statements in a row, will automatically use a transaction in order to execute these instructions.  But what if we want to use <code>flush()</code> inside of a larger transaction?  This is performed via the <code>SessionTransaction</code> object, which we can establish using <code>session.create_transaction()</code>.  Below, we will perform a more complicated <code>SELECT</code> statement, make several changes to our collection of users and email addresess, and then create a new user with two email addresses, within the context of a transaction.  We will perform a <code>flush()</code> in the middle of it to write the changes we have so far, and then allow the remaining changes to be written when we finally <code>commit()</code> the transaction.  We enclose our operations within a <code>try/except</code> block to ensure that resources are properly freed:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">transaction </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">create_transaction</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_literal">>>> </span><span class="python_keyword">try</span><span class="python_operator">: 
+...     </span><span class="python_enclosure">(</span><span class="python_name">ed</span><span class="python_operator">, </span><span class="python_name">harry</span><span class="python_operator">, </span><span class="python_name">mary</span><span class="python_enclosure">) </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">select</span><span class="python_enclosure">(</span>
+<span class="python_operator">...         </span><span class="python_name">User</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">.</span><span class="python_name">in_</span><span class="python_enclosure">(</span><span class="python_literal">'Ed'</span><span class="python_operator">, </span><span class="python_literal">'Harry'</span><span class="python_operator">, </span><span class="python_literal">'Mary'</span><span class="python_enclosure">)</span><span class="python_operator">, </span><span class="python_name">order_by</span><span class="python_operator">=</span><span class="python_name">User</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">user_name</span>
+<span class="python_operator">...     </span><span class="python_enclosure">)</span><span class="python_operator">
+...     </span><span class="python_keyword">del </span><span class="python_name">mary</span><span class="python_operator">.</span><span class="python_name">addresses</span><span class="python_enclosure">[</span><span class="python_number">1</span><span class="python_enclosure">]</span><span class="python_operator">
+...     </span><span class="python_name">harry</span><span class="python_operator">.</span><span class="python_name">addresses</span><span class="python_operator">.</span><span class="python_name">append</span><span class="python_enclosure">(</span><span class="python_name">Address</span><span class="python_enclosure">(</span><span class="python_literal">'harry2@gmail.com'</span><span class="python_enclosure">))</span><span class="python_operator">
+...     </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">()</span><span class="python_operator">
+...     </span><span class="python_keyword">print </span><span class="python_literal">"***flushed the session***"</span><span class="python_operator">
+...     </span><span class="python_name">fred </span><span class="python_operator">= </span><span class="python_name">User</span><span class="python_enclosure">()</span><span class="python_operator">
+...     </span><span class="python_name">fred</span><span class="python_operator">.</span><span class="python_name">user_name </span><span class="python_operator">= </span><span class="python_literal">'fred_again'</span><span class="python_operator">
+...     </span><span class="python_name">fred</span><span class="python_operator">.</span><span class="python_name">addresses</span><span class="python_operator">.</span><span class="python_name">append</span><span class="python_enclosure">(</span><span class="python_name">Address</span><span class="python_enclosure">(</span><span class="python_literal">'fred@fred.com'</span><span class="python_enclosure">))</span><span class="python_operator">
+...     </span><span class="python_name">fred</span><span class="python_operator">.</span><span class="python_name">addresses</span><span class="python_operator">.</span><span class="python_name">append</span><span class="python_enclosure">(</span><span class="python_name">Address</span><span class="python_enclosure">(</span><span class="python_literal">'fredsnewemail@fred.com'</span><span class="python_enclosure">))</span><span class="python_operator">
+...     </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">save</span><span class="python_enclosure">(</span><span class="python_name">fred</span><span class="python_enclosure">)</span><span class="python_operator">
+...     </span><span class="python_name">transaction</span><span class="python_operator">.</span><span class="python_name">commit</span><span class="python_enclosure">()</span><span class="python_operator">
+... </span><span class="python_keyword">except</span><span class="python_operator">:
+...     </span><span class="python_name">transaction</span><span class="python_operator">.</span><span class="python_name">rollback</span><span class="python_enclosure">()</span><span class="python_operator">
+...     </span><span class="python_keyword">raise</span><span class="python_operator">
+</span><span class="python_name">BEGIN</span><span class="python_operator">
+</span><span class="python_name">SELECT users</span><span class="python_operator">.</span><span class="python_name">user_name AS users_user_name</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">password AS users_password</span><span class="python_operator">, </span><span class="python_name">users</span><span class="python_operator">.</span><span class="python_name">user_id AS users_user_id </span><span class="python_operator">
+</span><span class="python_name">FROM users </span><span class="python_operator">
+</span><span class="python_name">WHERE users</span><span class="python_operator">.</span><span class="python_name">user_name IN </span><span class="python_enclosure">(</span><span class="python_operator">?, ?, ?</span><span class="python_enclosure">) </span><span class="python_name">ORDER BY users</span><span class="python_operator">.</span><span class="python_name">user_name</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'Ed'</span><span class="python_operator">, </span><span class="python_literal">'Harry'</span><span class="python_operator">, </span><span class="python_literal">'Mary'</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">SELECT email_addresses</span><span class="python_operator">.</span><span class="python_name">user_id AS email_addresses_user_id</span><span class="python_operator">, </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">address_id AS email_addresses_address_id</span><span class="python_operator">, </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">email_address AS email_addresses_email_address </span><span class="python_operator">
+</span><span class="python_name">FROM email_addresses </span><span class="python_operator">
+</span><span class="python_name">WHERE</span><span class="python_operator"> ? = </span><span class="python_name">email_addresses</span><span class="python_operator">.</span><span class="python_name">user_id ORDER BY email_addresses</span><span class="python_operator">.</span><span class="python_name">oid</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_number">4</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">UPDATE email_addresses SET user_id</span><span class="python_operator">=? </span><span class="python_name">WHERE email_addresses</span><span class="python_operator">.</span><span class="python_name">address_id </span><span class="python_operator">= ?
+</span><span class="python_enclosure">[</span><span class="python_name">None</span><span class="python_operator">, </span><span class="python_number">3</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">INSERT INTO email_addresses </span><span class="python_enclosure">(</span><span class="python_name">email_address</span><span class="python_operator">, </span><span class="python_name">user_id</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'harry2@gmail.com'</span><span class="python_operator">, </span><span class="python_number">4</span><span class="python_enclosure">]</span><span class="python_operator">
+***</span><span class="python_name">flushed the session</span><span class="python_operator">***    
+</span><span class="python_name">INSERT INTO users </span><span class="python_enclosure">(</span><span class="python_name">user_name</span><span class="python_operator">, </span><span class="python_name">password</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'fred_again'</span><span class="python_operator">, </span><span class="python_name">None</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">INSERT INTO email_addresses </span><span class="python_enclosure">(</span><span class="python_name">email_address</span><span class="python_operator">, </span><span class="python_name">user_id</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'fred@fred.com'</span><span class="python_operator">, </span><span class="python_number">6</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">INSERT INTO email_addresses </span><span class="python_enclosure">(</span><span class="python_name">email_address</span><span class="python_operator">, </span><span class="python_name">user_id</span><span class="python_enclosure">) </span><span class="python_name">VALUES </span><span class="python_enclosure">(</span><span class="python_operator">?, ?</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_literal">'fredsnewemail@fred.com'</span><span class="python_operator">, </span><span class="python_number">6</span><span class="python_enclosure">]</span><span class="python_operator">
+</span><span class="python_name">COMMIT</span><span class="python_operator"></span></pre>
+    </div>
+<p>Main documentation:  <a href="unitofwork.html">Session / Unit of Work</a>
+</p>
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="tutorial_next"></a>
+    
+    <div class="subsection">
+
+    <h3>Next Steps</h3>
+    
+    
+
+<p>That covers a quick tour through the basic idea of SQLAlchemy, in its simplest form.  Beyond that, one should familiarize oneself with the basics of Sessions, the various patterns that can be used to define different kinds of Mappers and relations among them, the rudimentary SQL types that are available when constructing Tables, and the basics of Engines, SQL statements, and database Connections.
+</p>
+
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+</html>
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+
+
+            
+            Next: <a href="dbengine.html">Database Engines</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

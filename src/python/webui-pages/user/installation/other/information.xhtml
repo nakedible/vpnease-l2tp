@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <p>
+          <n:invisible n:macro="productname" /> can be used with several platforms in addition to
+          those listed on the <strong class="cb-guilabel">Configuration</strong> menu.
+          Please request detailed installation and configuration information from 
+          <a href="mailto:support@vpnease.com">support@vpnease.com</a>.
+        </p>
+
+        <dl id="user-other-platform-list">
+          <dt>Linux</dt>
+          <dd>
+            Linux remote access requires a free, open source remote access client available from
+            <a href="http://www.vpnease.com/topic/linux-client" class="cb-external" target="_blank">www.vpnease.com</a>.
+          </dd>
+          <dt>Nokia Internet Tablet</dt>
+          <dd>
+            Nokia Internet Tablet (Nokia N770, Nokia N800) is Linux-based and can interoperate with
+            <n:invisible n:macro="productname" />.
+          </dd>
+          <dt>Other UNIX Systems</dt>
+          <dd>
+            L2TP/IPsec protocol is based on open standards (IPsec, L2TP, PPP).
+            Most open source client software can interoperate with <n:invisible n:macro="productname" />.
+          </dd>
+          <dt>Windows 95/98/ME</dt>
+          <dd>
+            Not supported by <n:invisible n:macro="productname" />.  Although
+            the Microsoft L2TP/IPsec VPN Client ("MSL2TP") supports L2TP/IPsec remote access connections,
+            it is no longer supported by Microsoft.
+          </dd>
+        </dl>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+
+    </n:invisible>
+  </body>
+</html>
+

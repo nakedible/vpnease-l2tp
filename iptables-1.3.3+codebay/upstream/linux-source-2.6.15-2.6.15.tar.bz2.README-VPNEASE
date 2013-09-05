@@ -1,0 +1,4 @@
+
+This source package was manually created to enable building of
+the ROUTE target.  The entire compilation solution is way too
+hacky and deserves a fresh start.

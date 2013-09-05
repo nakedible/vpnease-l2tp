@@ -1,0 +1,17 @@
+Source: openl2tp
+Section: net
+Priority: optional
+Maintainer: Benjamin Sonntag <benjamin@sonntag.fr>
+Build-Depends: debhelper (>= 4.0.0), ppp-dev, libreadline5-dev, libncurses5-dev
+Standards-Version: 3.6.1
+
+Package: openl2tp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Katalix implementation of l2tp tunneling protocol
+ Openl2tp is an opensource implementation of the l2tp tunneling protocol.
+ .
+ It requires a kernel module to work. Please install kernel-patch-openl2tp.
+ .
+ For more information: http://opensource.katalix.com/openl2tp/
+

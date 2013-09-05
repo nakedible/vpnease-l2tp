@@ -1,0 +1,76 @@
+iptables v1.2.6a (== fixed 1.2.6) Changelog
+======================================================================
+This version requires kernel >= 2.4.4
+This version recommends kernel >= 2.4.18
+
+Bugs Fixed from 1.2.5:
+
+- Fix iptables segfault problem when using `!' without argument
+	[ Dionis Papavramidis, Harald Welte ]
+- Fix PSD match for psd-delay-threshold > 100
+	[ Steven Coenen, Dennis Koslowski ]
+- ip6tables alignment fixes 
+	[ Andreas Herrmann ]
+- patch-o-matic:
+	- Fix NAT-related bug in TCP window tracking code
+		[ Jozsef Kadlecsik ]
+	- Fix support for DNAT of locally-originated connections (NAT in
+	  LOCAL_OUT) 
+	  	[ Henrik Nordstrom, Harald Welte ]
+	- Fix string match (is now SMP safe)
+		[ Gianni Tedesco ]
+	- Fix TFTP conntrack/nat helper (now also catches first packet)
+		[ Magnus Boden ]
+
+Changes from 1.2.5:
+
+- Added global PREFIX makefile variable for all paths
+	[ Harald Welte ]
+- If compiled without any COPT_FLAGS, debugging is disabled.  To enable
+  debugging, use -DIPTC_DEBUG
+  	[ Harald Welte ]
+- New ip6tables-restore and ip6tables-save manpage
+	[ Andras Kis-Szabo ] 
+- Sync ip6tables-restore and ip6tables-save with iptables-restore
+	[ Andras Kis-Szabo ]
+- Sync ip6tables with iptables
+	[ Andras Kis-Szabo ]
+- mangle table attaches now to all five netfilter hooks
+	[ Brad Chapman, Harald Welte ]
+- iptables and ip6tables manpage updates
+	[ Herve Eychenne ]
+- patch-o-matic program now supports removal of already-applied patches
+	[ Bob Hockney ]
+- patch-o-matic program now supports patches to the userspace extensions
+	[ Fabrice Marie ]
+- patch-o-matic:
+	- Extend recent match to support multiple recent lists
+		[ Stephen Frost ]
+	- New GRE and PPTP connection tracking and NAT helper
+		[ Harald Welte ]
+	- New CONNMARK target for marking all packets within one connection
+		[ Henrik Nordstrom ]
+	- New conntrack match, enables matching on more conntrack informatin
+	  than state
+	  	[ Marc Boucher ]
+	- New DSCP match and target (DSCP header field obsoletes TOS)
+		[ Harald Welte ]
+	- New owner match extension: Match on process name
+		[ Marc Boucher ]
+	- Add support for bitwise AND / OR manipulation on nfmark
+		[ Fabrice Marie ]
+	- New experimental patch for disabling TCP connection tracking pickup
+		[ Harald Welte ]
+	- Add support for SACK in all NAT helpers
+		[ Harald Welte ]
+	- Make eggdrop botnet connection tracking support work with eggdrop
+	  v1.6.x 
+	  	[ Magnus Sandin ]
+	- Add support to REJECT for sending icmp-unreachable messages
+	  from a fake source address
+  		[ Fabrice Marie ]
+	- Add support for ntalk2 to talk NAT helper
+		[ Jozsef Kadlecsik ]
+	- Big update to newnat patch
+		[ Jozsef Kadlecsik, Paul P Komkoff ]
+

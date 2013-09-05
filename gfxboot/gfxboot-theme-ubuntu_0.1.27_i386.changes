@@ -1,0 +1,24 @@
+Format: 1.7
+Date: Sat,  5 Aug 2006 11:24:27 +0100
+Source: gfxboot-theme-ubuntu
+Binary: gfxboot-theme-ubuntu
+Architecture: i386
+Version: 0.1.27
+Distribution: dapper-updates
+Urgency: low
+Maintainer: Colin Watson <cjwatson@ubuntu.com>
+Changed-By: Colin Watson <cjwatson@ubuntu.com>
+Description: 
+ gfxboot-theme-ubuntu - Ubuntu theme for gfxboot-compliant boot loaders
+Changes: 
+ gfxboot-theme-ubuntu (0.1.27) dapper-updates; urgency=low
+ .
+   * Add/update translations from Rosetta: Afrikaans, Arabic, Belarusian,
+     Bengali, Catalan, Kashubian, Danish, Esperanto, Spanish, Estonian,
+     Basque, Persian, Filipino, Galician, Hindi, Croatian, Hungarian,
+     Indonesian, Icelandic, Italian, Japanese, Kannada, Korean, Kurdish,
+     Lithuanian, Latvian, Mongolian, Malay, Low German, Occitan, Polish,
+     Portuguese, Romanian, Russian, Slovak, Slovenian, Somali, Swedish,
+     Tamil, Thai, Urdu, Chinese (Taiwan).
+Files: 
+ b7b202d064e020966ab796d33d21aa2a 166536 utils optional gfxboot-theme-ubuntu_0.1.27_i386.deb

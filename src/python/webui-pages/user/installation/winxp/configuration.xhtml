@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Step 1: Prerequisites</h2>
+          <ul>
+            <li>
+              Ensure that you have administrator privileges to your computer.
+              The VPN connection cannot be configured without administrator privileges.
+            </li>
+            <li>
+              Ensure that you have Windows XP Service Pack 2 (SP2) installed. 
+              You can check your Windows Service Pack version from
+              <strong class="cb-guilabel">Start</strong> &rarr;
+              <strong class="cb-guilabel">Control Panel</strong> &rarr;
+              <strong class="cb-guilabel">System</strong>. Service Pack 2 enables
+              wider support for different kinds of networks (NAT-T support) and
+              includes several security updates.
+              When using a VPN connection without a Service Pack or with Service Pack 1 (SP1/SP1a),
+              NAT traversal (VPN use through a network address translation device) is not supported.
+            </li>
+         </ul>
+
+        <h2 class="step-heading">Step 2: Modify Windows registry</h2>
+        <ul>
+          <li>
+            In order to enable wider support for different kinds of networks, run the following registry
+            file: <a href="winxp-sp2-natt-enable.reg">winxp-sp2-natt-enable.reg</a>. For more information, see
+            <a href="http://support.microsoft.com/kb/885407/" target="_blank" class="cb-external">Microsoft KB article #885407</a>.
+            If you want to stop using <n:invisible n:macro="productname" /> later, 
+            you can undo the registry change by running the following registry file: 
+            <a href="winxp-sp2-natt-disable.reg">winxp-sp2-natt-disable.reg</a>.
+          </li>
+          <li>
+            Reboot the computer after running the registry file for the change to take effect.  
+          </li>  
+        </ul>
+        
+        <h2 class="step-heading">Step 3: Create VPN connection</h2>
+        <ul>
+          <li>
+            Open <strong class="cb-guilabel">Start</strong> &rarr;
+            <strong class="cb-guilabel">Control Panel</strong> &rarr; 
+            <strong class="cb-guilabel">Network and Internet Connections</strong>
+            and click <strong class="cb-guilabel">Create a connection to the network at your workplace</strong>
+            to open the Network Connection Wizard.
+          </li>  
+        </ul>
+        
+        <div class="cb-note">
+          <p>
+            If you are using Classic View in Control Panel, click <strong class="cb-guilabel">Network Connections</strong>
+            in the Control Panel and select <strong class="cb-guilabel">Create a new connection</strong> to open
+            Network Connection Wizard. Start the wizard by clicking <strong class="cb-guilabel">Next</strong>.    
+            Select <strong class="cb-guilabel">Connect to the network at my workplace</strong> and click <strong class="cb-guilabel">Next</strong>. 
+          </p>
+        </div>
+        
+        <ul>  
+          <li>
+            You may be prompted for dialing information if you haven't configured it before.
+            If you are not using a dialup connection, you can enter any information
+            accepted by Windows. These settings have no effect on the VPN connection.
+            You can enter the following information, for instance:
+            <ul>
+              <li>What country/region are you in now? &rarr; <strong class="cb-userinput">United States</strong></li>
+              <li>What area code (or city code) are you in now? &rarr; <strong class="cb-userinput">123</strong></li>
+              <li>If you need to specify a carrier code, what is it? &rarr; <strong class="cb-userinput">123</strong></li>
+              <li>If you dial a number to access an outside line, what is it? &rarr; <strong class="cb-userinput">123</strong></li>
+              <li>The phone system at this location uses &rarr; <strong class="cb-userinput">Tone dialing</strong></li>
+            </ul>
+          </li>
+          <li>Select <strong class="cb-guilabel">Virtual Private Network connection</strong> and click <strong class="cb-guilabel">Next</strong>.</li>
+          <li>
+            Enter <strong class="cb-guilabel">Company Name</strong> (e.g. <strong class="cb-userinput">My Company VPN</strong>) and click 
+            <strong class="cb-guilabel">Next</strong>.  The company name will become the name of your connection profile.
+          </li>
+          <li>
+            You may be asked about initial connection dialing.  If so, select <strong class="cb-guilabel">Do not dial the initial connection</strong> 
+            and click <strong class="cb-guilabel">Next</strong>.  (If you are using GPRS or other dialup as a transport for your VPN connection, make the appropriate choice here.)
+          </li>
+          <li>
+            Enter the <n:invisible n:macro="productname" /> server DNS name or IP address into the 
+            <strong class="cb-guilabel">Host name or IP address...</strong> field
+            (e.g. <strong class="cb-userinput">vpn.company.com</strong> or 
+            <strong class="cb-userinput">123.123.123.123</strong>) and click <strong class="cb-guilabel">Next</strong>. 
+          </li>
+          <li>
+            Select <strong class="cb-guilabel">Add a shortcut to this connection to my desktop</strong>, and click <strong class="cb-guilabel">Finish</strong>
+            to close connection creation wizard.
+          </li>   
+        </ul>
+
+        <h2 class="step-heading">Step 4: Configure VPN settings</h2>
+        <ul>
+          <li>
+            Double click the connection icon (e.g. <strong class="cb-guilabel">My Company VPN</strong>) on your desktop, or use 
+            <strong class="cb-guilabel">Control panel</strong> &rarr; 
+            <strong class="cb-guilabel">Network connections</strong> to open Connection dialog.
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">Properties</strong>.
+          </li>
+          <li>
+            Select <strong class="cb-guilabel">Security</strong> tab and click
+            <strong class="cb-guilabel">IPsec settings...</strong> to open IPsec Settings dialog.  
+          </li>
+          <li>
+            Check <strong class="cb-guilabel">Use pre-shared key for authentication</strong>
+            and enter the pre-shared key of the <n:invisible n:macro="productname" /> server:
+            <img src="/static/hidden.gif" class="print-only" /><span class="screen-only"><strong class="cb-userinput"><n:invisible n:render="primary_psk" /></strong></span>.
+            Click <strong class="cb-guilabel">OK</strong> to close the IPsec Settings dialog.
+          </li>
+          <li>
+            Select <strong class="cb-guilabel">Networking</strong> tab and change
+            <strong class="cb-guilabel">Type of VPN</strong> to <strong class="cb-guilabel">L2TP IPSec VPN</strong>.
+            <!-- XXX: How to show additional information?
+            This step is optional for Windows XP SP2, but required for other Windows versions.  If left to default
+            setting <strong class="cb-guilabel">Automatic</strong>, first connection will take about 30 seconds to
+            form while Windows autodetects the VPN connection type, but later connections will work normally.
+            -->
+          </li>
+          <li>
+            Select <strong class="cb-guilabel">Internet Protocol (TCP/IP)</strong> from the connection component list and click
+            <strong class="cb-guilabel">Properties</strong> to open Internet Protocol (TCP/IP) Properties dialog.  
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">Advanced...</strong> to open Advanced TCP/IP Settings dialog and ensure that 
+            <strong class="cb-guilabel">Use default gateway on remote network</strong> is selected.
+            <!--
+            This setting ensures that all traffic will be sent to the remote access connection when the connection is active,
+            which is typically the desired behavior.  
+            -->
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">OK</strong> to close the Advanced TCP/IP
+            Settings dialog, then click <strong class="cb-guilabel">OK</strong> to close the Internet Protocol (TCP/IP) Properties dialog.
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">OK</strong> to close the connection Properties dialog.
+          </li>
+          <li>
+            <n:invisible n:macro="productname" /> configuration is completed.
+          </li>
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+    </n:invisible>
+  </body>
+</html>
+

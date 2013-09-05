@@ -1,0 +1,73 @@
+<html>
+<head><title>The Netfilter HomePage: iptables 1.2.4</title></head>
+<body bgcolor="#ffffff" text="#101010">
+<center><h1>The Netfilter HomePage: iptables 1.2.4</h1></center>
+
+This version requires kernel &gt;= 2.4.4
+This version recommends kernel &gt; 2.4.9
+
+<p>
+<strong>Bugs Fixed from 1.2.3:</strong>
+<ul>
+<li> make iptables-restore print error message instead of segfault when
+     processing broken / wrong input.<br>
+	[ ]
+<li> string_to_number fix in LOG, IPv6 LOG, TOS and FTOS target<br>
+	[ ]
+<li> fix iptables-save problems when saving MIRROR rules<br>
+	[ Harald Welte ]
+<li> fix IPv6 ICMP problems 
+	[ ]
+<li> fix TTL increment in TTL target
+	[ ]
+
+<li> Kernel bugfixes in patch-o-matic:
+  <ul>
+	<li> Fix printing of inner-packet in ICMP error messages (LOG target)
+		[ ]
+	<li> Decrement TTL when using MIRROR target at PRE_ROUTING
+		[ ]
+	<li> fix undiscovered REJECT checkentry() bug (alignment)
+		[ Bert Hubert ]
+  </ul>
+</ul>
+
+<strong>Changes from 1.2.3:</strong>
+<ul>
+<li> New "make most-of-pom" feature for application of non-confliction
+     patches.  This should be used instead of "make patch-o-matic" by most
+     users.<br>
+	[ Harald Welte ]
+<li> iptables-save and iptables-restore now included in the default install;
+     They are no longer experimental for quite some time.<br>
+	[ Harald Welte ]
+<li> synchronize ip6tables-save/restore with iptables-save/restore<br>
+	[ Harald Welte ]
+<li> more precise save() function for ipt_limit rates<br>
+	[ ]
+<li> new improved version of nth-match. Added support for multiple counters,
+     added support for matching on individual packets in the counter cycle<br>
+	[ Richard Wagner ]
+<li> added manpage for ip6tables<br>
+	[ ]
+<li> updated libipq documentation<br>
+	[ ]
+<li> added timeout to libipq recv function<br>
+	[ ]
+
+<li> New patch-o-matic patches:
+  <ul>
+<li> New random match<br>
+	[ ]
+<li> New ftp-fxp patch, imposes security risk but some people need it *sigh*<br>
+	[ Magnus Sandin ]
+<li> New H323 conntrack + nat modules<br>
+	[ Jozsef Kadlecsik ]
+<li> New version of tcp-window tracking patch, includes sysctl() changeable
+     timeouts<br>
+	[ Jozsef Kadlecsik ]
+  </ul>
+
+</ul>
+
+</body></html>

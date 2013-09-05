@@ -1,0 +1,20 @@
+This patch makes possible to match a packet
+by its source or destination country.
+
+GeoIP options:
+        [!]   --src-cc, --source-country country[,country,country,...]
+
+                        Match packet coming from (one of)
+                        the specified country(ies)
+
+
+        [!]   --dst-cc, --destination-country country[,country,country,...]
+                                              
+                        Match packet going to (one of)
+                        the specified country(ies)
+
+           NOTE: The country is inputed by its ISO3166 code.
+
+The only extra files you need is a binary db (geoipdb.bin) & its index file (geoipdb.idx).
+Take a look at http://people.netfilter.org/acidfu/geoip/howto/geoip-HOWTO.html
+for a quick HOWTO.

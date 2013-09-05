@@ -1,0 +1,4 @@
+- unpack and apply patch
+- make-kpkg --rootcmd fakeroot clean
+- make-kpkg --rootcmd fakeroot --append-to-version -l2tp-gw --revision 1 binary-arch
+

@@ -1,0 +1,1280 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SQLAlchemy 0.3 Documentation - Session / Unit of Work</title>
+	
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="stylesheet" href="docs.css"></link>
+    <link href="syntaxhighlight.css" rel="stylesheet" type="text/css"></link>
+    <script src="scripts.js"></script>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+<div id="topanchor"><a name="top">&nbsp;</a></div>
+
+
+<h1>SQLAlchemy 0.3 Documentation</h1>
+
+<div id="pagecontrol"><a href="index.html">Multiple Pages</a> | <a href="documentation.html">One Page</a></div>
+
+<div class="versionheader">Version: 0.3.6   Last Updated: 03/23/07 17:45:02</div>
+
+
+
+
+
+
+
+<A name=""></a>
+
+
+    <div class="topnav">
+
+    
+    <div class="navbanner">
+        <a href="index.html">Table of Contents</a>
+        
+    <div class="prevnext">
+
+            
+            Previous: <a href="datamapping.html">Data Mapping</a>
+
+               |   
+            Next: <a href="adv_datamapping.html">Advanced Data Mapping</a>
+    </div>
+
+        <h2>Session / Unit of Work</h2>
+    </div>
+
+	
+	
+    <ul>
+        
+        <li><A style="" href="unitofwork.html#unitofwork_overview">Overview</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_states">Object States</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_getting">Acquiring a Session</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_identitymap">Introduction to the Identity Map</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_changed">Whats Changed ?</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api">The Session API</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_query">query()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_get">get()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_load">load()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_save">save()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_flush">flush()</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_flush_whatis">Notes on Flush</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_close">close()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_delete">delete()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_clear">clear()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_refreshexpire">refresh() / expire()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_expunge">expunge()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_bind">bind_mapper() / bind_table()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_update">update()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_saveorupdate">save_or_update()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_api_merge">merge()</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_cascade">Cascade rules</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_transaction">SessionTransaction</a></li>
+        
+            
+    <ul>
+        
+        <li><A style="" href="unitofwork.html#unitofwork_transaction_sql">Using SQL with SessionTransaction</a></li>
+        
+            
+    <ul>
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_transaction_using">Using Engine-level Transactions with Sessions</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+        
+        <li><A style="" href="unitofwork.html#unitofwork_logging">Analyzing Object Flushes</a></li>
+        
+            
+    <ul>
+    </ul>
+
+    </ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+    
+    <A name="unitofwork"></a>
+    
+    <div class="section">
+
+    
+    
+
+
+
+    
+    <A name="unitofwork_overview"></a>
+    
+    <div class="subsection">
+
+    <h3>Overview</h3>
+    
+    
+
+<p>The concept behind Unit of Work is to track modifications to a field of objects, and then be able to flush those changes to the database in a single operation.  Theres a lot of advantages to this, including that your application doesn't need to worry about individual save operations on objects, nor about the required order for those operations, nor about excessive repeated calls to save operations that would be more efficiently aggregated into one step.  It also simplifies database transactions, providing a neat package with which to insert into the traditional database begin/commit phase.
+</p>
+<p>SQLAlchemy's unit of work includes these functions:
+</p>
+<ul>
+ <li>
+     The ability to monitor scalar and list attributes on object instances, as well as object creates.  This is handled via the attributes package.
+ </li>
+
+ <li>
+     The ability to maintain and process a list of modified objects, and based on the relationships set up by the mappers for those objects as well as the foreign key relationships of the underlying tables, figure out the proper order of operations so that referential integrity is maintained, and also so that on-the-fly values such as newly created primary keys can be propigated to dependent objects that need them before they are saved.  The central algorithm for this is the <em>topological sort</em>.
+ </li>
+
+ <li>
+     The ability to define custom functionality that occurs within the unit-of-work flush phase, such as "before insert", "after insert", etc.  This is accomplished via MapperExtension.
+ </li>
+
+ <li>
+     an Identity Map, which is a dictionary storing the one and only instance of an object for a particular table/primary key combination.  This allows many parts of an application to get a handle to a particular object without any chance of modifications going to two different places.
+ </li>
+
+ <li>
+     The sole interface to the unit of work is provided via the <code>Session</code> object.  Transactional capability, which rides on top of the transactions provided by <code>Engine</code> objects, is provided by the <code>SessionTransaction</code> object.
+ </li>
+
+ <li>
+     Thread-locally scoped Session behavior is available as an option, which allows new objects to be automatically added to the Session corresponding to by the <em>default Session context</em>.  Without a default Session context, an application must explicitly create a Session manually as well as add new objects to it.  The default Session context, disabled by default, can also be plugged in with other user-defined schemes, which may also take into account the specific class being dealt with for a particular operation.
+ </li>
+
+ <li>
+     The Session object borrows conceptually from that of <a href='http://www.hibernate.org'>Hibernate</a>, a leading ORM for Java that was a great influence on the creation of the <a href='http://jcp.org/aboutJava/communityprocess/pfd/jsr220/index.html'>JSR-220</a> specification.  SQLAlchemy, under no obligation to conform to EJB specifications, is in general very different from Hibernate, providing a different paradigm for producing queries, a SQL API that is useable independently of the ORM, and of course Pythonic configuration as opposed to XML; however, JSR-220/Hibernate makes some pretty good suggestions with regards to the mechanisms of persistence.
+ </li>
+</ul>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_states"></a>
+    
+    <div class="subsection">
+
+    <h3>Object States</h3>
+    
+    
+
+<p>When dealing with mapped instances with regards to Sessions, an instance may be <em>attached</em> or <em>unattached</em> to a particular Session.  An instance also may or may not correspond to an actual row in the database.  The product of these two binary conditions yields us four general states a particular instance can have within the perspective of the Session:
+</p>
+<ul>
+ <li><p><em>Transient</em> - a transient instance exists within memory only and is not associated with any Session.  It also has no database identity and does not have a corresponding record in the database.  When a new instance of a class is constructed, and no default session context exists with which to automatically attach the new instance, it is a transient instance.  The instance can then be saved to a particular session in which case it becomes a <em>pending</em> instance.  If a default session context exists, new instances are added to that Session by default and therefore become <em>pending</em> instances immediately.
+</p>
+
+ </li>
+
+ <li><p><em>Pending</em> - a pending instance is a Session-attached object that has not yet been assigned a database identity.  When the Session is flushed (i.e. changes are persisted to the database), a pending instance becomes persistent.
+</p>
+
+ </li>
+
+ <li><p><em>Persistent</em> - a persistent instance has a database identity and a corresponding record in the database, and is also associated with a particular Session.   By "database identity" we mean the object is associated with a table or relational concept in the database combined with a particular primary key in that table.  Objects that are loaded by SQLAlchemy in the context of a particular session are automatically considered persistent, as are formerly pending instances which have been subject to a session <code>flush()</code>.
+</p>
+
+ </li>
+
+ <li><p><em>Detached</em> - a detached instance is an instance which has a database identity and corresponding row in the database, but is not attached to any Session.  This occurs when an instance has been removed from a Session, either because the session itself was cleared or closed, or the instance was explicitly removed from the Session.  The object can be re-attached to a session in which case it becomes Persistent again; any un-persisted changes that exist on the instance, whether they occurred during its previous persistent state or during its detached state will be detected and maintained by the new session.  Detached instances are useful when an application needs to represent a long-running operation across multiple Sessions, needs to store an object in a serialized state and then restore it later (such as within an HTTP "session" object), or in some cases where code needs to load instances locally which will later be associated with some other Session.
+</p>
+
+ </li>
+</ul>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_getting"></a>
+    
+    <div class="subsection">
+
+    <h3>Acquiring a Session</h3>
+    
+    
+
+<p>A new Session object is constructed via the <code>create_session()</code> function:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>A common option used with <code>create_session()</code> is to specify a specific <code>Engine</code> or <code>Connection</code> to be used for all operations performed by this Session:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># create an engine
+</span><span class="python_name">e </span><span class="python_operator">= </span><span class="python_name">create_engine</span><span class="python_enclosure">(</span><span class="python_literal">'postgres://some/url'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># create a Session that will use this engine for all operations.
+# it will open and close Connections as needed.
+</span><span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">(</span><span class="python_name">bind_to</span><span class="python_operator">=</span><span class="python_name">e</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># open a Connection
+</span><span class="python_name">conn </span><span class="python_operator">= </span><span class="python_name">e</span><span class="python_operator">.</span><span class="python_name">connect</span><span class="python_enclosure">()</span><span class="python_operator">
+</span>
+<span class="python_comment"># create a Session that will use this specific Connection for all operations
+</span><span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">(</span><span class="python_name">bind_to</span><span class="python_operator">=</span><span class="python_name">conn</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>The session to which an object is attached can be acquired via the <code>object_session()</code> function, which returns the appropriate <code>Session</code> if the object is pending or persistent, or <code>None</code> if the object is transient or detached:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">object_session</span><span class="python_enclosure">(</span><span class="python_name">obj</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Session Facts:
+</p>
+<ul>
+ <li>
+     the Session object is <strong>not threadsafe</strong>.  For thread-local management of Sessions, the recommended approch is to use the <a href="plugins.html#plugins_sessioncontext">SessionContext</a> extension module.
+ </li>
+</ul>
+<p>We will now cover some of the key concepts used by Sessions and its underlying Unit of Work.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_identitymap"></a>
+    
+    <div class="subsection">
+
+    <h3>Introduction to the Identity Map</h3>
+    
+    
+
+<p>A primary concept of the Session's underlying Unit of Work is that it is keeps track of all persistent instances; recall that a persistent instance has a database identity and is attached to a Session.  In particular, the Unit of Work must ensure that only <em>one</em> copy of a particular persistent instance exists within the Session at any given time.   The UOW accomplishes this task using a dictionary known as an <em>Identity Map</em>.
+</p>
+<p>When a <code>Query</code> is used to issue <code>select</code> or <code>get</code> requests to the database, it will in nearly all cases result in an actual SQL execution to the database, and a corresponding traversal of rows received from that execution.  However, when the underlying mapper actually <em>creates</em> objects corresponding to the result set rows it receives, it will check the session's identity map first before instantating a new object, and return the same instance already present in the identity map if it already exists, essentially <em>ignoring</em> the object state represented by that row.  There are several ways to override this behavior and truly refresh an already-loaded instance which are described later, but the main idea is that once your instance is loaded into a particular Session, it will <em>never change</em> its state without your explicit approval, regardless of what the database says about it.
+</p>
+<p>For example; below, two separate calls to load an instance with database identity "15" are issued, and the results assigned to two separate variables.   However, since the same <code>Session</code> was used, the two instances are the same instance:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">mymapper </span><span class="python_operator">= </span><span class="python_name">mapper</span><span class="python_enclosure">(</span><span class="python_name">MyClass</span><span class="python_operator">, </span><span class="python_name">mytable</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">obj1 </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">MyClass</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">selectfirst</span><span class="python_enclosure">(</span><span class="python_name">mytable</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">id</span><span class="python_operator">==</span><span class="python_number">15</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">obj2 </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">MyClass</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">selectfirst</span><span class="python_enclosure">(</span><span class="python_name">mytable</span><span class="python_operator">.</span><span class="python_name">c</span><span class="python_operator">.</span><span class="python_name">id</span><span class="python_operator">==</span><span class="python_number">15</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_literal">>>> </span><span class="python_name">obj1 </span><span class="python_keyword">is </span><span class="python_name">obj2</span><span class="python_operator">
+</span><span class="python_name">True</span><span class="python_operator"></span></pre>
+    </div>
+<p>The Identity Map is an instance of <code>dict</code> by default.  (This is new as of version 0.3.2).  As an option, you can specify the flag <code>weak_identity_map=True</code> to the <code>create_session</code> function so that it will use a <code>weakref.WeakValueDictionary</code>, so that when an in-memory object falls out of scope, it will be removed automatically, thereby providing some automatic management of memory.   However, this may not be instant if there are circular references upon the object.  To guarantee that an instance is removed from the identity map before removing references to it, use the <code>expunge()</code> method, described later, to remove it.  Additionally, note that an object that has changes marked on it (i.e. "dirty") can still fall out of scope when using <code>weak_identity_map</code>.
+</p>
+<p>The Session supports an iterator interface in order to see all objects in the identity map:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_keyword">for </span><span class="python_name">obj </span><span class="python_keyword">in </span><span class="python_name">session</span><span class="python_operator">:
+    </span><span class="python_keyword">print </span><span class="python_name">obj</span><span class="python_operator"></span></pre>
+    </div>
+<p>As well as <code>__contains__()</code>:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_keyword">if </span><span class="python_name">obj </span><span class="python_keyword">in </span><span class="python_name">session</span><span class="python_operator">:
+    </span><span class="python_keyword">print </span><span class="python_literal">"Object is present"</span><span class="python_operator"></span></pre>
+    </div>
+<p>The identity map itself is accessible via the <code>identity_map</code> accessor:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">identity_map</span><span class="python_operator">.</span><span class="python_name">values</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_enclosure">[</span><span class="python_operator"><</span><span class="python_name">__main__</span><span class="python_operator">.</span><span class="python_name">User object at </span><span class="python_number">0x712630</span><span class="python_operator">>, <</span><span class="python_name">__main__</span><span class="python_operator">.</span><span class="python_name">Address object at </span><span class="python_number">0x712a70</span><span class="python_operator">></span><span class="python_enclosure">]</span><span class="python_operator"></span></pre>
+    </div>
+<p>The identity of each object instance is available via the <code>_instance_key</code> property attached to each object instance, and is a tuple consisting of the object's class and an additional tuple of primary key values, in the order that they appear within the table definition:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_literal">>>> </span><span class="python_name">obj</span><span class="python_operator">.</span><span class="python_name">_instance_key </span><span class="python_operator">
+</span><span class="python_enclosure">(</span><span class="python_operator"><</span><span class="python_keyword">class </span><span class="python_literal">'test.tables.User'</span><span class="python_operator">>, </span><span class="python_enclosure">(</span><span class="python_number">7</span><span class="python_operator">,</span><span class="python_enclosure">))</span><span class="python_operator"></span></pre>
+    </div>
+<p>At the moment that an object is assigned this key within a <code>flush()</code> operation, it is also added to the session's identity map.
+</p>
+<p>The <code>get()</code> method on <code>Query</code>, which retrieves an object based on primary key identity, also checks in the Session's identity map first to save a database round-trip if possible.  In the case of an object lazy-loading a single child object, the <code>get()</code> method is used as well, so scalar-based lazy loads may in some cases not query the database; this is particularly important for backreference relationships as it can save a lot of queries.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_changed"></a>
+    
+    <div class="subsection">
+
+    <h3>Whats Changed ?</h3>
+    
+    
+
+<p>The next concept is that in addition to the <code>Session</code> storing a record of all objects loaded or saved, it also stores lists of all <em>newly created</em> (i.e. pending) objects and lists of all persistent objects that have been marked as <em>deleted</em>.  These lists are used when a <code>flush()</code> call is issued to save all changes.  During a flush operation, it also scans its list of persistent instances for changes which are marked as dirty.
+</p>
+<p>These records are all tracked by collection functions that are also viewable off the <code>Session</code> as properties:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># pending objects recently added to the Session
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">new</span><span class="python_operator">
+</span>
+<span class="python_comment"># persistent objects which currently have changes detected
+# (this collection is now created on the fly each time the property is called)
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">dirty</span><span class="python_operator">
+</span>
+<span class="python_comment"># persistent objects that have been marked as deleted via session.delete(obj)
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">deleted</span><span class="python_operator"></span></pre>
+    </div>
+<p>Note that if a session is created with the <code>weak_identity_map</code> flag, an item which is marked as "dirty" will be silently removed from the session if the item falls out of scope in the user application.  This is because the unit of work does not look for "dirty" changes except for within a flush operation (or any time the session.dirty collection is accessed). 
+</p>
+<p>As for objects inside of <code>new</code> and <code>deleted</code>, if you abandon all references to new or modified objects within a session, <em>they are still present</em> in either of those two lists, and will be saved on the next flush operation, unless they are removed from the Session explicitly (more on that later).  <br></br>
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api"></a>
+    
+    <div class="subsection">
+
+    <h3>The Session API</h3>
+    
+    
+
+
+
+    
+    <A name="unitofwork_api_query"></a>
+    
+    <div class="subsection">
+
+    <h3>query()</h3>
+    
+    
+
+<p>The <code>query()</code> function takes a class or <code>Mapper</code> as an argument, along with an optional <code>entity_name</code> parameter, and returns a new <code>Query</code> object which will issue mapper queries within the context of this Session.  If a Mapper is passed, then the Query uses that mapper.  Otherwise, if a class is sent, it will locate the primary mapper for that class which is used to construct the Query.  <br></br>
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># query from a class
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">select_by</span><span class="python_enclosure">(</span><span class="python_name">name</span><span class="python_operator">=</span><span class="python_literal">'ed'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># query from a mapper
+</span><span class="python_name">query </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">usermapper</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">x </span><span class="python_operator">= </span><span class="python_name">query</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_number">1</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># query from a class mapped with entity name 'alt_users'
+</span><span class="python_name">q </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_operator">, </span><span class="python_name">entity_name</span><span class="python_operator">=</span><span class="python_literal">'alt_users'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">y </span><span class="python_operator">= </span><span class="python_name">q</span><span class="python_operator">.</span><span class="python_name">options</span><span class="python_enclosure">(</span><span class="python_name">eagerload</span><span class="python_enclosure">(</span><span class="python_literal">'orders'</span><span class="python_enclosure">))</span><span class="python_operator">.</span><span class="python_name">select</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p><code>entity_name</code> is an optional keyword argument sent with a class object, in order to further qualify which primary mapper to be used; this only applies if there was a <code>Mapper</code> created with that particular class/entity name combination, else an exception is raised.  All of the methods on Session which take a class or mapper argument also take the <code>entity_name</code> argument, so that a given class can be properly matched to the desired primary mapper.
+</p>
+<p>All instances retrieved by the returned <code>Query</code> object will be stored as persistent instances within the originating <code>Session</code>.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_get"></a>
+    
+    <div class="subsection">
+
+    <h3>get()</h3>
+    
+    
+
+<p>Given a class or mapper, a scalar or tuple-based identity, and an optional <code>entity_name</code> keyword argument, creates a <code>Query</code> corresponding to the given mapper or class/entity_name combination, and calls the <code>get()</code> method with the given identity value.  If the object already exists within this Session, it is simply returned, else it is queried from the database.  If the instance is not found, the method returns <code>None</code>.
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># get Employer primary key 5
+</span><span class="python_name">employer </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_name">Employer</span><span class="python_operator">, </span><span class="python_number">5</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># get Report composite primary key 7,12, using mapper 'report_mapper_b'
+</span><span class="python_name">report </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_name">Report</span><span class="python_operator">, </span><span class="python_enclosure">(</span><span class="python_number">7</span><span class="python_operator">,</span><span class="python_number">12</span><span class="python_enclosure">)</span><span class="python_operator">, </span><span class="python_name">entity_name</span><span class="python_operator">=</span><span class="python_literal">'report_mapper_b'</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_load"></a>
+    
+    <div class="subsection">
+
+    <h3>load()</h3>
+    
+    
+
+<p>load() is similar to get() except it will raise an exception if the instance does not exist in the database.  It will also load the object's data from the database in all cases, and <strong>overwrite</strong> all changes on the object if it already exists in the session with the latest data from the database.
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># load Employer primary key 5
+</span><span class="python_name">employer </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">load</span><span class="python_enclosure">(</span><span class="python_name">Employer</span><span class="python_operator">, </span><span class="python_number">5</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># load Report composite primary key 7,12, using mapper 'report_mapper_b'
+</span><span class="python_name">report </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">load</span><span class="python_enclosure">(</span><span class="python_name">Report</span><span class="python_operator">, </span><span class="python_enclosure">(</span><span class="python_number">7</span><span class="python_operator">,</span><span class="python_number">12</span><span class="python_enclosure">)</span><span class="python_operator">, </span><span class="python_name">entity_name</span><span class="python_operator">=</span><span class="python_literal">'report_mapper_b'</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_save"></a>
+    
+    <div class="subsection">
+
+    <h3>save()</h3>
+    
+    
+
+<p>save() is called with a single transient (unsaved, unattached) instance as an argument, which is then added to the Session and becomes pending.  When the session is next <code>flush</code>ed, the instance will be saved to the database uponwhich it becomes persistent (saved, attached).  If the given instance is not transient, meaning it is either attached to an existing Session or it has a database identity, an exception is raised.
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">user1 </span><span class="python_operator">= </span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_name">name</span><span class="python_operator">=</span><span class="python_literal">'user1'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">user2 </span><span class="python_operator">= </span><span class="python_name">User</span><span class="python_enclosure">(</span><span class="python_name">name</span><span class="python_operator">=</span><span class="python_literal">'user2'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">save</span><span class="python_enclosure">(</span><span class="python_name">user1</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">save</span><span class="python_enclosure">(</span><span class="python_name">user2</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">()     </span><span class="python_comment"># write changes to the database</span><span class="python_operator"></span></pre>
+    </div>
+<p>save() is called automatically for new instances by the classes' associated mapper, if a default Session context is in effect (such as a thread-local session), which means that newly created instances automatically become pending.  If there is no default session available, then the instance remains transient (unattached) until it is explicitly added to a Session via the save() method.
+</p>
+<p>A transient instance also can be automatically <code>save</code>ed if it is associated with a parent object which specifies <code>save-update</code> within its <code>cascade</code> rules, and that parent is already attached or becomes attached to a Session.  For more information on <code>cascade</code>, see the next section.
+</p>
+<p>The <code>save_or_update()</code> method, covered later, is a convenience method which will call the <code>save()</code> or <code>update()</code> methods appropriately dependening on whether or not the instance has a database identity (but the instance still must be unattached).
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_flush"></a>
+    
+    <div class="subsection">
+
+    <h3>flush()</h3>
+    
+    
+
+<p>This is the main gateway to what the Unit of Work does best, which is save everything !  It should be clear by now what a flush looks like:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>It also can be called with a list of objects; in this form, the flush operation will be limited only to the objects specified in the list, as well as any child objects within <code>private</code> relationships for a delete operation:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># saves only user1 and address2.  all other modified
+# objects remain present in the session.
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">([</span><span class="python_name">user1</span><span class="python_operator">, </span><span class="python_name">address2</span><span class="python_enclosure">])</span><span class="python_operator"></span></pre>
+    </div>
+<p>This second form of flush should be used carefully as it will not necessarily locate other dependent objects within the session, whose database representation may have foreign constraint relationships with the objects being operated upon.
+</p>
+
+    
+    <A name="unitofwork_api_flush_whatis"></a>
+    
+    <div class="subsection">
+
+    <h3>Notes on Flush</h3>
+    
+    
+<p>A common misconception about the <code>flush()</code> operation is that once performed, the newly persisted instances will automatically have related objects attached to them, based on the values of primary key identities that have been assigned to the instances before they were persisted.  An example would be, you create a new <code>Address</code> object, set <code>address.user_id</code> to 5, and then <code>flush()</code> the session.  The erroneous assumption would be that there is now a <code>User</code> object of identity "5" attached to the <code>Address</code> object, but in fact this is not the case.  If you were to <code>refresh()</code> the <code>Address</code>, invalidating its current state and re-loading, <em>then</em> it would have the appropriate <code>User</code> object present.
+</p>
+<p>This misunderstanding is related to the observed behavior of backreferences (<a href="datamapping.html#datamapping_relations_backreferences">Backreferences</a>), which automatically associates an instance "A" with another instance "B", in response to the manual association of instance "B" to instance "A" by the user.  The backreference operation occurs completely externally to the <code>flush()</code> operation, and is pretty much the only example of a SQLAlchemy feature that manipulates the relationships of persistent objects.
+</p>
+<p>The primary guideline for dealing with <code>flush()</code> is, the developer is responsible for maintaining in-memory objects and their relationships to each other, the unit of work is responsible for maintaining the database representation of the in-memory objects.  The typical pattern is that the manipulation of objects <em>is</em> the way that changes get communicated to the unit of work, so that when the flush occurs, the objects are already in their correct in-memory representation and problems dont arise.  The manipulation of identifier attributes like integer key values as well as deletes in particular are a frequent source of confusion.
+</p>
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_close"></a>
+    
+    <div class="subsection">
+
+    <h3>close()</h3>
+    
+    
+
+<p>This method first calls <code>clear()</code>, removing all objects from this <code>Session</code>, and then ensures that any transactional resources are closed.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_delete"></a>
+    
+    <div class="subsection">
+
+    <h3>delete()</h3>
+    
+    
+
+<p>The <code>delete</code> method places an instance into the Unit of Work's list of objects to be marked as deleted:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># mark two objects to be deleted
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">delete</span><span class="python_enclosure">(</span><span class="python_name">obj1</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">delete</span><span class="python_enclosure">(</span><span class="python_name">obj2</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># flush
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>The delete operation will have an effect on instances that are attached to the deleted instance according to the <code>cascade</code> style of the relationship; cascade rules are described further in the following section.  By default, associated instances may need to be updated in the database to reflect that they no longer are associated with the parent object, before the parent is deleted.  If the relationship specifies <code>cascade=&quot;delete&quot;</code>, then the associated instance will also be deleted upon flush, assuming it is still attached to the parent.  If the relationship additionally includes the <code>delete-orphan</code> cascade style, the associated instance will be deleted if it is still attached to the parent, or is unattached to any other parent. 
+</p>
+<p>The <code>delete()</code> operation has no relationship to the in-memory status of the instance, including usage of the <code>del</code> Python statement.  An instance marked as deleted and flushed will still exist within memory until references to it are freed; similarly, removing an instance from memory via the <code>del</code> statement will have no effect, since the persistent instance will still be referenced by its Session.  Obviously, if the instance is removed from the Session and then totally dereferenced, it will no longer exist in memory, but also won't exist in any Session and is therefore not deleted from the database.
+</p>
+<p>Note that the "in-memory status" of an instance also refers to its presence in any other collection.  SQLAlchemy does not track the collections to which an instance is a member, and will not remove an instance from its parent collections that were not directly involved in a deletion operation.  The operational and memory overhead implied by this would be too great (such as, if an object belonged to hundreds of collections).  This means if an object <code>A</code> is attached to both an object <code>B</code> and an object <code>C</code>, if you <code>delete()</code> <code>A</code> and flush, <code>A</code> still remains attached to both <code>B</code> and <code>C</code> in a deleted state and must be removed by the application.  Similarly, if a delete on <code>B</code> cascades to <code>A</code>, this <strong>does not</strong> affect <code>A</code> still being present on <code>C</code> - again it must be manually removed.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_clear"></a>
+    
+    <div class="subsection">
+
+    <h3>clear()</h3>
+    
+    
+
+<p>This method detaches all instances from the Session, sending them to the detached or transient state as applicable, and replaces the underlying UnitOfWork with a new one.
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">clear</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>The <code>clear()</code> method is particularly useful with a "default context" session such as a thread-local session, which can stay attached to the current thread to handle a new field of objects without having to re-attach a new Session.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_refreshexpire"></a>
+    
+    <div class="subsection">
+
+    <h3>refresh() / expire()</h3>
+    
+    
+
+<p>To assist with the Unit of Work's "sticky" behavior, individual objects can have all of their attributes immediately re-loaded from the database, or marked as "expired" which will cause a re-load to occur upon the next access of any of the object's mapped attributes.  This includes all relationships, so lazy-loaders will be re-initialized, eager relationships will be repopulated.  Any changes marked on the object are discarded:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># immediately re-load attributes on obj1, obj2
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">refresh</span><span class="python_enclosure">(</span><span class="python_name">obj1</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">refresh</span><span class="python_enclosure">(</span><span class="python_name">obj2</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># expire objects obj1, obj2, attributes will be reloaded
+# on the next access:
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">expire</span><span class="python_enclosure">(</span><span class="python_name">obj1</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">expire</span><span class="python_enclosure">(</span><span class="python_name">obj2</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_expunge"></a>
+    
+    <div class="subsection">
+
+    <h3>expunge()</h3>
+    
+    
+
+<p>Expunge removes an object from the Session, sending persistent instances to the detached state, and pending instances to the transient state:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">expunge</span><span class="python_enclosure">(</span><span class="python_name">obj1</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Use <code>expunge</code> when youd like to remove an object altogether from memory, such as before calling <code>del</code> on it, which will prevent any "ghost" operations occuring when the session is flushed.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_bind"></a>
+    
+    <div class="subsection">
+
+    <h3>bind_mapper() / bind_table()</h3>
+    
+    
+
+<p>Both of these methods receive two arguments; in the case of <code>bind_mapper()</code>, it is a <code>Mapper</code> and an <code>Engine</code> or <code>Connection</code> instance; in the case of <code>bind_table()</code>, it is a <code>Table</code> instance or other <code>Selectable</code> (such as an <code>Alias</code>, <code>Select</code>, etc.), and an <code>Engine</code> or <code>Connection</code> instance.
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">engine1 </span><span class="python_operator">= </span><span class="python_name">create_engine</span><span class="python_enclosure">(</span><span class="python_literal">'sqlite:///file1.db'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span><span class="python_name">engine2 </span><span class="python_operator">= </span><span class="python_name">create_engine</span><span class="python_enclosure">(</span><span class="python_literal">'mysql://localhost'</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_name">sqlite_conneciton </span><span class="python_operator">= </span><span class="python_name">engine1</span><span class="python_operator">.</span><span class="python_name">connect</span><span class="python_enclosure">()</span><span class="python_operator">
+</span>
+<span class="python_name">sess </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">()</span><span class="python_operator">
+</span>
+<span class="python_name">sess</span><span class="python_operator">.</span><span class="python_name">bind_mapper</span><span class="python_enclosure">(</span><span class="python_name">mymapper</span><span class="python_operator">, </span><span class="python_name">sqlite_connection</span><span class="python_enclosure">)  </span><span class="python_comment"># bind mymapper operations to a single SQLite connection</span><span class="python_operator">
+</span><span class="python_name">sess</span><span class="python_operator">.</span><span class="python_name">bind_table</span><span class="python_enclosure">(</span><span class="python_name">email_addresses_table</span><span class="python_operator">, </span><span class="python_name">engine2</span><span class="python_enclosure">) </span><span class="python_comment"># bind operations with the email_addresses_table to mysql</span><span class="python_operator"></span></pre>
+    </div>
+<p>Normally, when a <code>Session</code> is created via <code>create_session()</code> with no arguments, the Session has no awareness of individual <code>Engines</code>, and when mappers use the <code>Session</code> to retrieve connections, the underlying <code>MetaData</code> each <code>Table</code> is associated with is expected to be "bound" to an <code>Engine</code>, else no engine can be located and an exception is raised.  A second form of <code>create_session()</code> takes the argument <code>bind_to=engine_or_connection</code>, where all SQL operations performed by this <code>Session</code> use the single <code>Engine</code> or <code>Connection</code> (collectively known as a <code>Connectable</code>) passed to the constructor.  With <code>bind_mapper()</code> and <code>bind_table()</code>,  the operations of individual mapper and/or tables are bound to distinct engines or connections, thereby overriding not only the engine which may be "bound" to the underlying <code>MetaData</code>, but also the <code>Engine</code> or <code>Connection</code> which may have been passed to the <code>create_session()</code> function.  Configurations which interact with multiple explicit database connections at one time must use either or both of these methods in order to associate <code>Session</code> operations with the appropriate connection resource.  <br></br>
+</p>
+<p>Binding a <code>Mapper</code> to a resource takes precedence over a <code>Table</code> bind, meaning if mapper A is associated with table B, and the Session binds mapper A to connection X and table B to connection Y, an operation with mapper A will use connection X, not connection Y.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_update"></a>
+    
+    <div class="subsection">
+
+    <h3>update()</h3>
+    
+    
+
+<p>The update() method is used <em>only</em> with detached instances.  A detached instance only exists if its <code>Session</code> was cleared or closed, or the instance was <code>expunge()</code>d from its session.  <code>update()</code> will re-attach the detached instance with this Session, bringing it back to the persistent state, and allowing any changes on the instance to be saved when the <code>Session</code> is next <code>flush</code>ed.  If the instance is already attached to an existing <code>Session</code>, an exception is raised.
+</p>
+<p>A detached instance also can be automatically <code>update</code>ed if it is associated with a parent object which specifies <code>save-update</code> within its <code>cascade</code> rules, and that parent is already attached or becomes attached to a Session.  For more information on <code>cascade</code>, see the next section.
+</p>
+<p>The <code>save_or_update()</code> method is a convenience method which will call the <code>save()</code> or <code>update()</code> methods appropriately dependening on whether or not the instance has a database identity (but the instance still must be unattached).
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_saveorupdate"></a>
+    
+    <div class="subsection">
+
+    <h3>save_or_update()</h3>
+    
+    
+
+<p>This method is a combination of the <code>save()</code> and <code>update()</code> methods, which will examine the given instance for a database identity (i.e. if it is transient or detached), and will call the implementation of <code>save()</code> or <code>update()</code> as appropriate.  Use <code>save_or_update()</code> to add unattached instances to a session when you're not sure if they were newly created or not.  Like <code>save()</code> and <code>update()</code>, <code>save_or_update()</code> cascades along the <code>save-update</code> cascade indicator, described in the <code>cascade</code> section below.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_api_merge"></a>
+    
+    <div class="subsection">
+
+    <h3>merge()</h3>
+    
+    
+
+<p>Feature Status: <a href='javascript:alphaImplementation()'>Alpha Implementation</a> 
+</p>
+<p><code>merge()</code> is used to return the persistent version of an instance that is not attached to this Session.  When passed an instance, if an instance with its database identity already exists within this Session, it is returned.  If the instance does not exist in this Session, it is loaded from the database and then returned.  <br></br>
+</p>
+<p>A future version of <code>merge()</code> will also update the Session's instance with the state of the given instance (hence the name "merge").
+</p>
+<p>This method is useful for bringing in objects which may have been restored from a serialization, such as those stored in an HTTP session:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># deserialize an object
+</span><span class="python_name">myobj </span><span class="python_operator">= </span><span class="python_name">pickle</span><span class="python_operator">.</span><span class="python_name">loads</span><span class="python_enclosure">(</span><span class="python_name">mystring</span><span class="python_enclosure">)</span><span class="python_operator">
+</span>
+<span class="python_comment"># "merge" it.  if the session already had this object in the 
+# identity map, then you get back the one from the current session.
+</span><span class="python_name">myobj </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">merge</span><span class="python_enclosure">(</span><span class="python_name">myobj</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>Note that <code>merge()</code> <em>does not</em> associate the given instance with the Session; it remains detached (or attached to whatever Session it was already attached to).
+</p>
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_cascade"></a>
+    
+    <div class="subsection">
+
+    <h3>Cascade rules</h3>
+    
+    
+
+<p>Feature Status: <a href='javascript:alphaImplementation()'>Alpha Implementation</a> 
+</p>
+<p>Mappers support the concept of configurable <em>cascade</em> behavior on <code>relation()</code>s.  This behavior controls how the Session should treat the instances that have a parent-child relationship with another instance that is operated upon by the Session.  Cascade is indicated as a comma-separated list of string keywords, with the possible values <code>all</code>, <code>delete</code>, <code>save-update</code>, <code>refresh-expire</code>, <code>merge</code>, <code>expunge</code>, and <code>delete-orphan</code>.
+</p>
+<p>Cascading is configured by setting the <code>cascade</code> keyword argument on a <code>relation()</code>:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">mapper</span><span class="python_enclosure">(</span><span class="python_name">Order</span><span class="python_operator">, </span><span class="python_name">order_table</span><span class="python_operator">, </span><span class="python_name">properties</span><span class="python_operator">=</span><span class="python_enclosure">{</span>
+    <span class="python_literal">'items' </span><span class="python_operator">: </span><span class="python_name">relation</span><span class="python_enclosure">(</span><span class="python_name">Item</span><span class="python_operator">, </span><span class="python_name">items_table</span><span class="python_operator">, </span><span class="python_name">cascade</span><span class="python_operator">=</span><span class="python_literal">"all, delete-orphan"</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+    <span class="python_literal">'customer' </span><span class="python_operator">: </span><span class="python_name">relation</span><span class="python_enclosure">(</span><span class="python_name">User</span><span class="python_operator">, </span><span class="python_name">users_table</span><span class="python_operator">, </span><span class="python_name">user_orders_table</span><span class="python_operator">, </span><span class="python_name">cascade</span><span class="python_operator">=</span><span class="python_literal">"save-update"</span><span class="python_enclosure">)</span><span class="python_operator">,</span>
+<span class="python_enclosure">})</span><span class="python_operator"></span></pre>
+    </div>
+<p>The above mapper specifies two relations, <code>items</code> and <code>customer</code>.  The <code>items</code> relationship specifies "all, delete-orphan" as its <code>cascade</code> value, indicating that all  <code>save</code>, <code>update</code>, <code>merge</code>, <code>expunge</code>, <code>refresh</code> <code>delete</code> and <code>expire</code> operations performed on a parent <code>Order</code> instance should also be performed on the child <code>Item</code> instances attached to it (<code>save</code> and <code>update</code> are cascaded using the <code>save_or_update()</code> method, so that the database identity of the instance doesn't matter).  The <code>delete-orphan</code> cascade value additionally indicates that if an <code>Item</code> instance is no longer associated with an <code>Order</code>, it should also be deleted.  The "all, delete-orphan" cascade argument allows a so-called <em>lifecycle</em> relationship between an <code>Order</code> and an <code>Item</code> object.
+</p>
+<p>The <code>customer</code> relationship specifies only the "save-update" cascade value, indicating most operations will not be cascaded from a parent <code>Order</code> instance to a child <code>User</code> instance, except for if the <code>Order</code> is attached with a particular session, either via the <code>save()</code>, <code>update()</code>, or <code>save-update()</code> method.
+</p>
+<p>Additionally, when a child item is attached to a parent item that specifies the "save-update" cascade value on the relationship, the child is automatically passed to <code>save_or_update()</code> (and the operation is further cascaded to the child item).
+</p>
+<p>Note that cascading doesn't do anything that isn't possible by manually calling Session methods on individual instances within a hierarchy, it merely automates common operations on a group of associated instances.
+</p>
+<p>The default value for <code>cascade</code> on <code>relation()</code>s is <code>save-update</code>, and the <code>private=True</code> keyword argument is a synonym for <code>cascade=&quot;all, delete-orphan&quot;</code>.
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_transaction"></a>
+    
+    <div class="subsection">
+
+    <h3>SessionTransaction</h3>
+    
+    
+
+<p>SessionTransaction is a multi-engine transaction manager, which aggregates one or more Engine/Connection pairs and keeps track of a Transaction object for each one.  As the Session receives requests to execute SQL statements, it uses the Connection that is referenced by the SessionTransaction.  At commit time, the underyling Session is flushed, and each Transaction is the committed.
+</p>
+<p>Example usage is as follows:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">sess </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">trans </span><span class="python_operator">= </span><span class="python_name">sess</span><span class="python_operator">.</span><span class="python_name">create_transaction</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_keyword">try</span><span class="python_operator">:
+    </span><span class="python_name">item1 </span><span class="python_operator">= </span><span class="python_name">sess</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">Item</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_number">1</span><span class="python_enclosure">)</span><span class="python_operator">
+    </span><span class="python_name">item2 </span><span class="python_operator">= </span><span class="python_name">sess</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">Item</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_number">2</span><span class="python_enclosure">)</span><span class="python_operator">
+    </span><span class="python_name">item1</span><span class="python_operator">.</span><span class="python_name">foo </span><span class="python_operator">= </span><span class="python_literal">'bar'</span><span class="python_operator">
+    </span><span class="python_name">item2</span><span class="python_operator">.</span><span class="python_name">bar </span><span class="python_operator">= </span><span class="python_literal">'foo'</span><span class="python_operator">
+</span><span class="python_keyword">except</span><span class="python_operator">:
+    </span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">rollback</span><span class="python_enclosure">()</span><span class="python_operator">
+    </span><span class="python_keyword">raise</span><span class="python_operator">
+</span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">commit</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>The SessionTransaction object supports Python 2.5's with statement so that the example above can be written as:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_name">sess </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">with sess</span><span class="python_operator">.</span><span class="python_name">create_transaction</span><span class="python_enclosure">()</span><span class="python_operator">:
+    </span><span class="python_name">item1 </span><span class="python_operator">= </span><span class="python_name">sess</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">Item</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_number">1</span><span class="python_enclosure">)</span><span class="python_operator">
+    </span><span class="python_name">item2 </span><span class="python_operator">= </span><span class="python_name">sess</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">Item</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">get</span><span class="python_enclosure">(</span><span class="python_number">2</span><span class="python_enclosure">)</span><span class="python_operator">
+    </span><span class="python_name">item1</span><span class="python_operator">.</span><span class="python_name">foo </span><span class="python_operator">= </span><span class="python_literal">'bar'</span><span class="python_operator">
+    </span><span class="python_name">item2</span><span class="python_operator">.</span><span class="python_name">bar </span><span class="python_operator">= </span><span class="python_literal">'foo'</span><span class="python_operator"></span></pre>
+    </div>
+<p>The <code>create_transaction()</code> method creates a new SessionTransaction object but does not declare any connection/transaction resources.  At the point of the first <code>get()</code> call, a connection resource is opened off the engine that corresponds to the Item classes' mapper and is stored within the <code>SessionTransaction</code> with an open <code>Transaction</code>.  When <code>trans.commit()</code> is called, the <code>flush()</code> method is called on the <code>Session</code> and the corresponding update statements are issued to the database within the scope of the transaction already opened; afterwards, the underying Transaction is committed, and connection resources are freed.
+</p>
+<p><code>SessionTransaction</code>, like the <code>Transaction</code> off of <code>Connection</code> also supports "nested" behavior, and is safe to pass to other functions which then issue their own <code>begin()</code>/<code>commit()</code> pair; only the outermost <code>begin()</code>/<code>commit()</code> pair actually affects the transaction, and any call to <code>rollback()</code> within a particular call stack will issue a rollback.
+</p>
+<p>Note that while SessionTransaction is capable of tracking multiple transactions across multiple databases, it currently is in no way a fully functioning two-phase commit engine; generally, when dealing with multiple databases simultaneously, there is the distinct possibility that a transaction can succeed on the first database and fail on the second, which for some applications may be an invalid state.  If this is an issue, its best to either refrain from spanning transactions across databases, or to look into some of the available technologies in this area, such as <a href='http://www.zope.org'>Zope</a> which offers a two-phase commit engine; some users have already created their own SQLAlchemy/Zope hybrid implementations to deal with scenarios like these.
+</p>
+<p>SessionTransaction Facts:
+</p>
+<ul>
+ <li>
+     SessionTransaction, like its parent Session object, is <strong>not threadsafe</strong>.
+ </li>
+</ul>
+
+
+    
+    <A name="unitofwork_transaction_sql"></a>
+    
+    <div class="subsection">
+
+    <h3>Using SQL with SessionTransaction</h3>
+    
+    
+
+<p>The SessionTransaction can interact with direct SQL queries in two general ways.  Either specific <code>Connection</code> objects can be associated with the <code>SessionTransaction</code>, which are then useable both for direct SQL as well as within <code>flush()</code> operations performed by the <code>SessionTransaction</code>, or via accessing the <code>Connection</code> object automatically referenced within the <code>SessionTransaction</code>.
+</p>
+<p>To associate a specific <code>Connection</code> with the <code>SessionTransaction</code>, use the <code>add()</code> method:
+</p>
+
+    
+
+    <div class="sliding_code">
+            <div class="codetitle">Associate a Connection with the SessionTransaction</div>
+        <pre><span class="python_name">connection </span><span class="python_operator">= </span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">connect</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_name">trans </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">create_transaction</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_keyword">try</span><span class="python_operator">:
+    </span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">add</span><span class="python_enclosure">(</span><span class="python_name">connection</span><span class="python_enclosure">)</span><span class="python_operator">
+    </span><span class="python_name">connection</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">(</span><span class="python_name">mytable</span><span class="python_operator">.</span><span class="python_name">update</span><span class="python_enclosure">()</span><span class="python_operator">, </span><span class="python_enclosure">{</span><span class="python_literal">'col1'</span><span class="python_operator">:</span><span class="python_number">4</span><span class="python_operator">, </span><span class="python_literal">'col2'</span><span class="python_operator">:</span><span class="python_number">17</span><span class="python_enclosure">})</span><span class="python_operator">
+    </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">() </span><span class="python_comment"># flush() operation will use the same connection</span><span class="python_operator">
+</span><span class="python_keyword">except</span><span class="python_operator">:
+    </span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">rollback</span><span class="python_enclosure">()</span><span class="python_operator">
+    </span><span class="python_keyword">raise</span><span class="python_operator">
+</span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">commit</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>The <code>add()</code> method will key the <code>Connection</code>'s underlying <code>Engine</code> to this <code>SessionTransaction</code>.  When mapper operations are performed against this <code>Engine</code>, the <code>Connection</code> explicitly added will be used.  This <strong>overrides</strong> any other <code>Connection</code> objects that the underlying Session was associated with, corresponding to the underlying <code>Engine</code> of that <code>Connection</code>.  However, if the <code>SessionTransaction</code> itself is already associated with a <code>Connection</code>, then an exception is thrown.
+</p>
+<p>The other way is just to use the <code>Connection</code> referenced by the <code>SessionTransaction</code>.  This is performed via the <code>connection()</code> method, and requires passing in a class or <code>Mapper</code> which indicates which underlying <code>Connection</code> should be returned (recall that different <code>Mappers</code> may use different underlying <code>Engines</code>).  If the <code>class_or_mapper</code> argument is <code>None</code>, then the <code>Session</code> must be globally bound to a specific <code>Engine</code> when it was constructed, else the method returns <code>None</code>.
+</p>
+
+    
+
+    <div class="sliding_code">
+            <div class="codetitle">Get a Connection from the SessionTransaction</div>
+        <pre><span class="python_name">trans </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">create_transaction</span><span class="python_enclosure">()</span><span class="python_operator">
+</span><span class="python_keyword">try</span><span class="python_operator">:
+    </span><span class="python_name">connection </span><span class="python_operator">= </span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">connection</span><span class="python_enclosure">(</span><span class="python_name">UserClass</span><span class="python_enclosure">)   </span><span class="python_comment"># get the Connection used by the UserClass' Mapper</span><span class="python_operator">
+    </span><span class="python_name">connection</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">(</span><span class="python_name">mytable</span><span class="python_operator">.</span><span class="python_name">update</span><span class="python_enclosure">()</span><span class="python_operator">, </span><span class="python_enclosure">{</span><span class="python_literal">'col1'</span><span class="python_operator">:</span><span class="python_number">4</span><span class="python_operator">, </span><span class="python_literal">'col2'</span><span class="python_operator">:</span><span class="python_number">17</span><span class="python_enclosure">})</span><span class="python_operator">
+</span><span class="python_keyword">except</span><span class="python_operator">:
+    </span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">rollback</span><span class="python_enclosure">()</span><span class="python_operator">
+    </span><span class="python_keyword">raise</span><span class="python_operator">
+</span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">commit</span><span class="python_enclosure">()</span><span class="python_operator"></span></pre>
+    </div>
+<p>The <code>connection()</code> method also exists on the <code>Session</code> object itself, and can be called regardless of whether or not a <code>SessionTransaction</code> is in progress.  If a <code>SessionTransaction</code> is in progress, it will return the connection referenced by the transaction.  If an <code>Engine</code> is being used with <code>threadlocal</code> strategy, the <code>Connection</code> returned will correspond to the connection resources that are bound to the current thread, if any (i.e. it is obtained by calling <code>contextual_connect()</code>).
+</p>
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_transaction_using"></a>
+    
+    <div class="subsection">
+
+    <h3>Using Engine-level Transactions with Sessions</h3>
+    
+    
+
+<p>The transactions issued by <code>SessionTransaction</code> as well as internally by the <code>Session</code>'s <code>flush()</code> operation use the same <code>Transaction</code> object off of <code>Connection</code> that is publically available.  Recall that this object supports "nestable" behavior, meaning any number of actors can call <code>begin()</code> off a particular <code>Connection</code> object, and they will all be managed within the scope of a single transaction.  Therefore, the <code>flush()</code> operation can similarly take place within the scope of a regular <code>Transaction</code>:
+</p>
+
+    
+
+    <div class="sliding_code">
+            <div class="codetitle">Transactions with Sessions</div>
+        <pre><span class="python_name">connection </span><span class="python_operator">= </span><span class="python_name">engine</span><span class="python_operator">.</span><span class="python_name">connect</span><span class="python_enclosure">()   </span><span class="python_comment"># Connection</span><span class="python_operator">
+</span><span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">(</span><span class="python_name">bind_to</span><span class="python_operator">=</span><span class="python_name">connection</span><span class="python_enclosure">) </span><span class="python_comment"># Session bound to the Connection</span><span class="python_operator">
+</span><span class="python_name">trans </span><span class="python_operator">= </span><span class="python_name">connection</span><span class="python_operator">.</span><span class="python_name">begin</span><span class="python_enclosure">()      </span><span class="python_comment"># start transaction</span><span class="python_operator">
+</span><span class="python_keyword">try</span><span class="python_operator">:
+    </span><span class="python_name">stuff </span><span class="python_operator">= </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">query</span><span class="python_enclosure">(</span><span class="python_name">MyClass</span><span class="python_enclosure">)</span><span class="python_operator">.</span><span class="python_name">select</span><span class="python_enclosure">()     </span><span class="python_comment"># Session operation uses connection</span><span class="python_operator">
+    </span><span class="python_name">stuff</span><span class="python_enclosure">[</span><span class="python_number">2</span><span class="python_enclosure">]</span><span class="python_operator">.</span><span class="python_name">foo </span><span class="python_operator">= </span><span class="python_literal">'bar'</span><span class="python_operator">
+    </span><span class="python_name">connection</span><span class="python_operator">.</span><span class="python_name">execute</span><span class="python_enclosure">(</span><span class="python_name">mytable</span><span class="python_operator">.</span><span class="python_name">insert</span><span class="python_enclosure">()</span><span class="python_operator">, </span><span class="python_name">dict</span><span class="python_enclosure">(</span><span class="python_name">id</span><span class="python_operator">=</span><span class="python_number">12</span><span class="python_operator">, </span><span class="python_name">value</span><span class="python_operator">=</span><span class="python_literal">"bar"</span><span class="python_enclosure">))    </span><span class="python_comment"># use connection explicitly</span><span class="python_operator">
+    </span><span class="python_name">session</span><span class="python_operator">.</span><span class="python_name">flush</span><span class="python_enclosure">()     </span><span class="python_comment"># Session flushes with "connection", using transaction "trans"</span><span class="python_operator">
+</span><span class="python_keyword">except</span><span class="python_operator">:
+    </span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">rollback</span><span class="python_enclosure">()    </span><span class="python_comment"># or rollback</span><span class="python_operator">
+    </span><span class="python_keyword">raise</span><span class="python_operator">
+</span><span class="python_name">trans</span><span class="python_operator">.</span><span class="python_name">commit</span><span class="python_enclosure">()      </span><span class="python_comment"># commit</span><span class="python_operator"></span></pre>
+    </div>
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+
+    
+    <A name="unitofwork_logging"></a>
+    
+    <div class="subsection">
+
+    <h3>Analyzing Object Flushes</h3>
+    
+    
+
+<p>The session module can log an extensive display of its "flush plans", which is a graph of its internal representation of objects before they are written to the database.  To turn this logging on:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre><span class="python_comment"># make an Session with echo_uow
+</span><span class="python_name">session </span><span class="python_operator">= </span><span class="python_name">create_session</span><span class="python_enclosure">(</span><span class="python_name">echo_uow</span><span class="python_operator">=</span><span class="python_name">True</span><span class="python_enclosure">)</span><span class="python_operator"></span></pre>
+    </div>
+<p>The <code>flush()</code> operation will then dump to the standard output displays like the following:
+</p>
+
+    
+
+    <div class="sliding_code">
+        <pre>Task dump:
+
+ UOWTask(6034768, 'User/users/None')
+  |
+  |- Save User(6016624)
+  |       |-Process User(6016624).addresses
+  |
+  |- UOWTask(6034832, 'Address/email_addresses/None')
+  |   |- Save Address(6034384)
+  |   |- Save Address(6034256)
+  |   |----
+  | 
+  |----</pre>
+    </div>
+<p>The above graph can be read straight downwards to determine the order of operations.  It indicates "save User 6016624, process each element in the 'addresses' list on User 6016624, save Address 6034384, Address 6034256".
+</p>
+<p>Of course, one can also get a good idea of the order of operations just by logging the actual SQL statements executed.
+</p>
+
+
+
+
+    </div>
+
+
+
+
+            <a href="#top">back to section top</a>
+    </div>
+
+
+</html>
+
+
+    <div class="bottomnav">
+        
+    <div class="prevnext">
+
+            
+            Previous: <a href="datamapping.html">Data Mapping</a>
+
+               |   
+            Next: <a href="adv_datamapping.html">Advanced Data Mapping</a>
+    </div>
+
+    </div>
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

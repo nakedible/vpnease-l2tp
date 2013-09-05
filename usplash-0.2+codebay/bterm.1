@@ -1,0 +1,69 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH bterm 1 "31 March 2002" "BOGL"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+bterm - framebuffer terminal emulator
+.SH SYNOPSIS
+.B bterm
+.B -f
+.RI font.bgf
+.RI "[-l " locale "]"
+.RI "[" program "]"
+.SH DESCRIPTION
+.B bterm
+is a terminal emulator for the Linux framebuffer.  It supports multibyte
+locales and wide characters, in addition to basic terminal features
+such as cursor positioning.
+
+.SH OPTIONS
+.TP
+.B -f font.bgf
+Specify the font.  BGF fonts are produced by
+.BR bdftobogl (1)
+from standard BDF font files.
+.TP
+.B -l locale
+Specify a locale for
+.B bterm
+and processes run within it.  The locale may also be specified
+normally in the environment.  If a locale, especially one with a
+different character set than the current locale, will be used inside
+of
+.B bterm,
+it should be specified on the command line.
+.SH EXIT STATUS
+The following exit values are returned:
+.TP
+0
+Successful completion.
+.TP
+1-125
+Exit code from executed program
+.TP
+127
+Failed to exec program
+.TP
+>=128
+Program terminated by signal.
+.SH NOTES
+On Debian systems, one appropriate BDF font can be found in the
+.B bf-utf-source
+package.
+.SH SEE ALSO
+.BR bdftobogl (1)
+.SH AUTHOR
+This manual page was written by Daniel Jacobowitz <dan@debian.org>.

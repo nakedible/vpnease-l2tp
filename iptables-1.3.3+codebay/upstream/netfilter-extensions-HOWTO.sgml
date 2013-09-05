@@ -1,0 +1,1781 @@
+<!doctype linuxdoc system>
+
+<!-- This is the Netfilter Extensions HOWTO.
+ -->
+
+<article>
+
+<!-- Title information -->
+
+<title>Netfilter Extensions HOWTO</title>
+<author>Fabrice MARIE &lt;fabrice@netfilter.org&gt;, mailing list <tt>netfilter-devel@lists.samba.org</tt></author>
+<date>$Revision: 1.28 $</date>
+<abstract>
+This document describes how to install and use current iptables extensions for netfilter.
+</abstract>
+
+<!-- Table of contents -->
+<toc>
+
+<!-- Begin the document -->
+
+<sect>Introduction<label id="intro">
+
+<p>
+Hello. This is a great opportunity for me to thank all the people
+spending a lot of time developing, testing, reporting bugs of, and using netfilter.
+So, thanks to you all !!
+
+<p>
+This HOWTO assumes you have read and understood Rusty's
+<url url="http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO.html" name="Linux 2.4 Packet Filtering HOWTO">.
+It is assumed as well that you know how to compile and install a kernel properly.
+
+<p>
+<tt>iptables</tt> distribution contains extensions that are not used by regular users
+or that are still quite experimental or finally, that are pending for kernel inclusion.
+These extensions are usually not compiled, unless you've asked for it.
+
+<p>
+You should find the latest version of this document on
+<url url="http://www.netfilter.org/documentation/index.html#HOWTO" name="netfilter documentation"> web page.
+
+<p>
+The goal of this HOWTO is to help people get started with the netfilter extensions
+by explaining how you can install them, and how to basically use them.
+
+<p>
+Finally, there's a script generated complete list of patches that are available in patch-o-matic :
+<url url="http://www.netfilter.org/documentation/pomlist/pom-summary.html" name="Patch-O-Matic Listing - Summary">.
+
+<p>(C) 2001-2002 Fabrice MARIE.  Licensed under the GNU GPL.
+
+<sect>Patch-O-Matic
+
+<sect1>What is Patch-O-Matic ?
+<p>
+Netfilter developers distribute a set of patches that they package
+so that it can be used by their `patch-o-matic' (or `p-o-m') system.
+p-o-m is a script that guides you through the process of choosing/selecting
+the patches you want to apply, and automatically patch the kernel for you.
+
+<p>
+First, you should get the latest CVS tree, to be sure that you are using the
+latest extensions. To do so, perform :
+
+<tscreen><verb>
+# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
+
+(When it asks you for a password type `cvs').
+
+# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic co netfilter/userspace netfilter/patch-o-matic
+</verb></tscreen>
+
+<p>
+This will create the toplevel directory `netfilter/', and will
+check out all the files inside for you :
+
+<tscreen>
+<verb>
+# ls -l netfilter/
+total 3
+drwxr-xr-x    2 root     root          160 Nov  7 14:48 CVS/
+drwxr-xr-x   13 root     root          488 Nov  7 14:54 patch-o-matic/
+drwxr-xr-x    9 root     root          864 Nov  7 14:48 userspace/
+</verb>
+</tscreen>
+
+<p>
+Make sure your kernel source is ready in `/usr/src/linux/'.
+If for whatever reason the kernel you want to patch is not
+in `/usr/src/linux/' then you can make the variable KERNEL_DIR
+point to the patch where your kernel is :
+
+<tscreen><verb>
+# export KERNEL_DIR=/the/path/linux
+</verb></tscreen>
+
+<p>
+Make sure the dependencies are made already. If unsure :
+
+<tscreen><verb>
+# cd /usr/src/linux/
+# make dep
+</verb></tscreen>
+
+<p>
+Then you can go back to the netfilter directory, in the `patch-o-matic/' directory.
+You can now invoke p-o-m.
+
+<sect1>Running Patch-O-Matic
+<p>
+While in the `patch-o-matic/' directory, let's run p-o-m :
+
+<tscreen><verb>
+# ./runme extra
+
+Welcome to Rusty's Patch-o-matic!
+
+Each patch is a new feature: many have minimal impact, some do not.
+Almost every one has bugs, so I don't recommend applying them all!
+-------------------------------------------------------
+
+Already applied: 2.4.1 2.4.4
+Testing... name_of_the_patch NOT APPLIED ( 2 missing files)
+The name_of_the_patch patch:
+   Here usually is the help text describing what
+   the patch is for, what you can expect from it,
+   and what you should not expect from it.
+Do you want to apply this patch [N/y/t/f/q/?]
+</verb></tscreen>
+
+<p>
+p-o-m will go through most of the patches. If they are already applied,
+you will see so on the `Already applied:' first line. If they are not applied
+yet, it will display the name of the patch with some explanations.
+p-o-m will tell you what is going on : `NOT APPLIED ( n missing files)' simply means
+the patch has not been applied yet, whereas `NOT APPLIED ( n rejects out of n hunks)'
+generally means that :
+<enum>
+<item>Either the patch cannot be applied cleanly...
+<item>...Or the patch has already been included in the kernel you are trying to patch.
+</enum>
+
+<p>
+Finally it will prompt you to decide whether or not to patch it. 
+
+<itemize>
+<item>Simply press enter if you do not want to apply it.
+<item>Type `y' if you want p-o-m to test the patch and apply it,
+if the attempt fail then it will tell you so and prompt you again for confirmation.
+If not, the patch will be applied, and you will see the name of the patch
+on the `Already Applied' line.
+<item>Type `t' if you just want to test if the patch would apply normally.
+<item>Type `f' if you
+want to force p-o-m to apply the patch.
+<item>Finally type `q' if you want to quit p-o-m.
+</itemize>
+
+<p>
+A rule of thumb is to read carefully the little explanation text of each patch
+before actually applying it. As there are currently a LOT of official patches for patch-o-matic
+(and probably more unofficial ones), it is not recommended to apply them all !
+You should really consider applying only the ones you need, even if it means recompiling
+netfilter when you need more patches later on.
+
+<p>
+Patch-o-matic in fact, is mainly the `runme' shell script. If you run it without arguments, it will
+display its help message :
+
+<tscreen>
+<verb>
+Usage: ./runme [--batch] [--reverse] [--exclude suite/patch-file ...] suite|suite/patch-file
+
+  --batch       batch mode, automatically applying patches
+  --reverse     back out the selected patches
+  --exclude     excludes the named patches
+</verb>
+</tscreen>
+
+<p>
+The patches are contained in `patch-o-matic/pending/', `patch-o-matic/base', etc.. Here, `pending' and `base'
+are two suite names. ls the `patch-o-matic' directory to see all the suites. Example of `runme' commands :
+
+<tscreen>
+<verb>
+./runme --batch pending
+./runme --batch userspace/ipt_REJECT-fake-source.patch
+</verb>
+</tscreen>
+
+<p>
+The first command will attempt to apply all the patches from submitted suite,
+then the pending suite (we explain further why two suites). The second command
+will only apply the patch `ipt_REJECT-fake-source.patch' from the userspace suite.
+
+<p>
+The most relevant patches `suites' or repositories are (in their order or application) :
+<itemize>
+<item>submitted
+<item>pending
+<item>base
+<item>extra
+<item>userspace
+</itemize>
+
+<p>
+When you instruct `./runme' to apply patches from the `extra/' patch repository it will first
+present you with the patches from the `submitted/', `pending/', and `base/' directories.
+Each suite, maintain a file named `SUITE' that instruct p-o-m of the order in which
+it should attempt to apply the patches. For example, what I explained above is written
+in the `userspace/' repository's `SUITE' file :
+
+<tscreen>
+<verb>
+# cat userspace/SUITE
+submitted pending base extra userspace
+</verb>
+</tscreen>
+
+<sect1>So what's next ?
+
+<p>
+Once you have applied all the patches you wished to apply, the next step is recompile
+your kernel and install it. This HOWTO will not explain how to do this. Instead, you
+can read the <url url="http://www.linuxdoc.org/HOWTO/Kernel-HOWTO.html" name="Linux Kernel HOWTO">.
+
+<p>
+While configuring your kernel, you will see new options in
+``Networking Options -&gt; Netfilter Configuration''. Choose the options
+you need, recompile &amp; install your new kernel.
+
+<p>
+Once your new kernel is installed, you can go ahead and compile and install the ``iptables''
+package, from the `userspace/' directory as follows :
+
+<tscreen>
+<verb>
+# make all install
+</verb>
+</tscreen>
+
+<p>
+That's it ! Your new shiny iptables package is installed ! Now it's time
+to use these brand new functionalities.
+
+<sect>New netfilter matches
+
+<p>
+In this section, we will attempt to explain the usage of new netfilter matches.
+The patches will appear in alphabetical order. Additionally, we will not explain
+patches that break other patches. But this might come later.
+
+<p>
+Generally speaking, for matches, you can get the help hints from a particular
+module by typing :
+
+<tscreen>
+<verb>
+# iptables -m the_match_you_want --help
+</verb>
+</tscreen>
+
+<p>
+This would display the normal iptables help message, plus the specific
+``the_match_you_want'' match help message at the end.
+
+<sect1>ah-esp patch
+<p>
+This patch by Yon Uriarte &lt;yon@astaro.de&gt; adds 2 new matches :
+
+<itemize>
+<item>``ah'' : lets you match an AH packet based on its Security Parameter Index (SPI).
+<item>``esp'' : lets you match an ESP packet based on its SPI.
+</itemize>
+
+<p>
+This patch can be quite useful for people using IPSEC who are willing
+to discriminate connections based on their SPI.
+
+<p>
+For example, we will drop all the AH packets that have a SPI equal to
+500 :
+
+<tscreen><verb>
+# iptables -A INPUT -p 51 -m ah --ahspi 500 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       ipv6-auth--  anywhere             anywhere           ah spi:500
+</verb></tscreen>
+
+<p>
+Supported options for the ah match are :
+
+<descrip>
+<tag>--ahspi [!] spi[:spi]</> -&gt; match spi (range)
+</descrip>
+
+<p>
+The esp match works exactly the same :
+
+<tscreen><verb>
+# iptables -A INPUT -p 50 -m esp --espspi 500 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       ipv6-crypt--  anywhere             anywhere           esp spi:500 
+</verb></tscreen>
+
+<p>
+Supported options for the esp match are :
+
+<descrip>
+<tag>--espspi [!] spi[:spi]</>  -&gt; match spi (range)
+</descrip>
+
+<p>
+Do not forget to specify the proper protocol through ``-p 50'' or ``-p 51'' (for esp &amp; ah respectively)
+when you use the ah or esp matches, or else the rule insertion will simply abort
+for obvious reasons.
+
+<sect1>condition match
+<p>
+This patch by Stephane Ouellette &lt;ouellettes@videotron.ca&gt; adds a new match that is used
+to enable or disable a set of rules using condition variables stored in `/proc' files.
+
+<p>
+Notes:
+
+<itemize>
+<item>The condition variables are stored in the `/proc/net/ipt_condition/' directory.
+<item>A condition variable can only be set to ``0'' (FALSE) or ``1'' (TRUE).
+<item>One or many rules can be affected by the state of a single condition variable.
+<item>A condition proc file is automatically created when a new condition is first referenced.
+<item>A condition proc file is automatically deleted when the last reference to it is removed.
+</itemize>
+
+<p>
+Supported options for the condition match are :
+
+<descrip>
+<tag>--condition [!] conditionfile</>  -&gt; match on condition variable.
+</descrip>
+
+<p>
+For example, if you want to prohibit access to your web server while doing maintenance, you can use the
+following :
+
+<tscreen><verb>
+# iptables -A FORWARD -p tcp -d 192.168.1.10 --dport http -m condition --condition webdown -j REJECT --reject-with tcp-reset
+
+# echo 1 &gt; /proc/net/ipt_condition/webdown
+</verb></tscreen>
+
+<p>
+The following rule will match only if the ``webdown'' condition is set to ``1''.
+
+
+<sect1>conntrack patch
+<p>
+This patch by Marc Boucher &lt;marc+nf@mbsi.ca&gt; adds a new general conntrack match module
+(a superset of the state match) that allows you to match on additional conntrack information.
+
+<p>
+For example, if you want to allow all the RELATED connections for TCP protocols only,
+then you can proceed as follows :
+
+<tscreen><verb>
+# iptables -A FORWARD -m conntrack --ctstate RELATED --ctproto tcp -j ACCEPT
+
+# iptables --list
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere           ctstate RELATED
+</verb></tscreen>
+
+<p>
+Supported options for the conntrack match are :
+
+<descrip>
+<tag>[!] --ctstate [INVALID|ESTABLISHED|NEW|RELATED|SNAT|DNAT][,...]</>
+-&gt; State(s) to match. The "new" `SNAT' and `DNAT' states are virtual ones, matching if the original
+source address differs from the reply destination, or if the original destination differs from the reply source.
+
+<tag>[!] --ctproto proto</> -&gt Protocol to match; by number or name, eg. `tcp'.
+
+<tag>--ctorigsrc [!] address[/mask]</> -&gt Original source specification.
+
+<tag>--ctorigdst [!] address[/mask]</> -&gt Original destination specification.
+
+<tag>--ctreplsrc [!] address[/mask]</> -&gt Reply source specification.
+
+<tag>--ctrepldst [!] address[/mask]</> -&gt Reply destination specification.
+
+<tag>[!] --ctstatus [NONE|EXPECTED|SEEN_REPLY|ASSURED][,...]</>
+-&gt; Status(es) to match.
+
+<tag>[!] --ctexpire time[:time]</> -&gt Match remaining lifetime in seconds against
+value or range of values (inclusive).
+</descrip>
+
+<sect1>fuzzy patch
+<p>
+This patch by Hime Aguiar e Oliveira Jr. &lt;hime@engineer.com&gt; adds a new module
+which allows you to match packets according to a dynamic profile
+implemented by means of a simple Fuzzy Logic Controller (FLC).
+
+<p>
+This match implements a TSK FLC (Takagi-Sugeno-Kang Fuzzy Logic
+Controller). The basic idea is that the match is given two parameters
+that tell it the desired filtering interval.
+
+<itemize>
+<item>When the packet rate is below `lower-limit' the rule will never match.
+<item>Between `lower-limit' and `upper-limit', matching will occurs according a
+increasing (mean) rate.
+<item>Finally, when the packet rate comes to `upper-limit',
+(mean) matching rate attains its maximum value, 99%.
+</itemize>
+
+<p>
+Taking into account that the sampling rate is variable and is of approximately 100ms
+(on a busy machine), the author believes that the module presents good responsiveness,
+adapting fast to changing traffic patterns.
+
+<p>
+For example, if you wish to avoid Denials Of Service, you could use the following rule:
+
+<tscreen><verb>
+iptables -A INPUT -m fuzzy --lower-limit 100 --upper-limit 1000 -j REJECT 
+</verb></tscreen>
+
+<itemize>
+<item>Below the 100 pps (packets per second) rate, the filter is inactive.
+<item>Between 100 and 1000 pps the mean acceptance rate drops
+from 100% (when we are at 100 pps) to 1% (when we are at 1000 pps).
+<item>Above 1000 pps the acceptance rate keeps constant at 1%.
+</itemize>
+
+<p>
+Supported options for the fuzzy patch are :
+
+<descrip>
+<tag>--upper-limit n</> -&gt; Desired upper bound for traffic rate matching.
+<tag>--lower-limit n</> -&gt; Lower bound over which the FLC starts to match.
+</descrip>
+
+<sect1>iplimit patch
+<p>
+This patch by Gerd Knorr &lt;kraxel@bytesex.org&gt; adds a new match that
+will allow you to restrict the number of parallel TCP connections
+from a particular host or network.
+
+<p>
+For example, let's limit the number of parallel HTTP connections made by a single
+IP address to 4 :
+
+<tscreen><verb>
+# iptables -A INPUT -p tcp --syn --dport http -m iplimit --iplimit-above 4 -j REJECT
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target   prot opt source    destination         
+REJECT   tcp  --  anywhere  anywhere     tcp dpt:http flags:SYN,RST,ACK/SYN #conn/32 > 4 reject-with icmp-port-unreachable
+</verb></tscreen>
+
+<p>
+Or you might want to limit the number of parallel connections made by a whole class A for example :
+
+<tscreen><verb>
+# iptables -A INPUT -p tcp --syn --dport http -m iplimit --iplimit-mask 8 --iplimit-above 4 -j REJECT
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target   prot opt source    destination         
+REJECT   tcp  --  anywhere  anywhere     tcp dpt:http flags:SYN,RST,ACK/SYN #conn/8 > 4 reject-with icmp-port-unreachable
+</verb></tscreen>
+
+<p>
+Supported options for the iplimit patch are :
+
+<descrip>
+<tag>[!] --iplimit-above n</> -&gt; match if the number of existing tcp connections is (not) above n
+<tag>--iplimit-mask n</> -&gt; group hosts using mask
+</descrip>
+
+<sect1>ipv4options patch
+
+<p>
+This patch by Fabrice MARIE &lt;fabrice@netfilter.org&gt; adds a news match
+that allows you to match packets based on the IP options they have set.
+
+<p>
+For example, let's drop all packets that have the record-route or the timestamp
+IP option set :
+
+<tscreen><verb>
+# iptables -A INPUT -m ipv4options --rr -j DROP
+# iptables -A INPUT -m ipv4options --ts -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all  --  anywhere             anywhere            IPV4OPTS RR
+DROP       all  --  anywhere             anywhere            IPV4OPTS TS
+</verb></tscreen>
+
+<p>
+Supported options for the ipv4options match are :
+
+<descrip>
+<tag>--ssrr</> -&gt; match strict source routing flag.
+<tag>--lsrr</> -&gt; match loose  source routing flag.
+<tag>--no-srr</> -&gt; match packets with no source routing.
+<tag>[!] --rr</> -&gt; match record route flag.
+<tag>[!] --ts</> -&gt; match timestamp flag.
+<tag>[!] --ra</> -&gt; match router-alert option.
+<tag>[!] --any-opt</> -&gt; Match a packet that has at least one IP option
+(or that has no IP option at all if ! is chosen).
+</descrip>
+
+<sect1>length patch
+<p>
+This patch by James Morris &lt;jmorris@intercode.com.au&gt; adds a new match
+that allows you to match a packet based on its length.
+
+<p>
+For example, let's drop all the pings with a packet size greater than
+85 bytes :
+
+<tscreen><verb>
+# iptables -A INPUT -p icmp --icmp-type echo-request -m length --length 86:0xffff -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       icmp --  anywhere             anywhere           icmp echo-request length 86:65535
+</verb></tscreen>
+
+<p>
+Supported options for the length match are :
+
+<descrip>
+<tag>[!] --length length[:length]</> -&gt; Match packet length
+against value or range of values (inclusive)
+</descrip>
+
+<p>
+Values of the range not present will be implied. The implied value for minimum
+is 0, and for maximum is 65535.
+
+<sect1>mport patch
+<p>
+This patch by Andreas Ferber &lt;af@devcon.net&gt; adds a new match that allows
+you to specify ports with a mix of port-ranges and single ports for UDP and TCP protocols.
+
+<p>
+For example, if you want to block ftp, ssh, telnet and http in one line, you can :
+
+<tscreen><verb>
+# iptables -A INPUT -p tcp -m mport --ports 20:23,80 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       tcp  --  anywhere             anywhere           mport ports ftp-data:telnet,http
+</verb></tscreen>
+
+<p>
+Supported options for the mport match are :
+
+<descrip>
+<tag>--source-ports port[,port:port,port...]</> -&gt; match source port(s)
+<tag>--sports port[,port:port,port...]</> -&gt; match source port(s)
+<tag>--destination-ports port[,port:port,port...]</> -&gt; match destination port(s)
+<tag>--dports port[,port:port,port...]</> -&gt; match destination port(s)
+<tag>--ports port[,port:port,port]</> -&gt; match both source and destination port(s)
+</descrip>
+
+<sect1>nth patch
+<p>
+This patch by Fabrice MARIE &lt;fabrice@netfilter.org&gt; adds a new match that allows
+you to match a particular Nth packet received by the rule.
+
+<p>
+For example, if you want to drop every 2 ping packets, you can do as follows :
+
+<tscreen><verb>
+# iptables -A INPUT -p icmp --icmp-type echo-request -m nth --every 2 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       icmp --  anywhere             anywhere           icmp echo-request every 2th 
+</verb></tscreen>
+
+<p>
+Extensions by Richard Wagner &lt;rwagner@cloudnet.com&gt; allows
+you to create an easy and quick method to produce load-balancing for both inbound and outbound
+connections.
+
+<p>
+For example, if you want to balance the load to the 3 addresses 10.0.0.5, 10.0.0.6 and 10.0.0.7,
+then you can do as follows :
+
+<tscreen><verb>
+# iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 3 --packet 0 -j SNAT --to-source 10.0.0.5
+# iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 3 --packet 1 -j SNAT --to-source 10.0.0.6
+# iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 3 --packet 2 -j SNAT --to-source 10.0.0.7
+
+# iptables -t nat --list
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+SNAT       all  --  anywhere             anywhere           every 3th packet #0 to:10.0.0.5 
+SNAT       all  --  anywhere             anywhere           every 3th packet #1 to:10.0.0.6 
+SNAT       all  --  anywhere             anywhere           every 3th packet #2 to:10.0.0.7 
+</verb></tscreen>
+
+<p>
+Supported options for the nth match are :
+
+<descrip>
+<tag>--every Nth</> -&gt; Match every Nth packet.
+<tag>[--counter]  num</> -&gt; Use counter 0-15 (default:0).
+<tag>[--start] num</> -&gt; Initialize the counter at the number `num' instead of 0. Must be between 0 and (Nth-1).
+<tag>[--packet] num</> -&gt; Match on the `num' packet. Must be between 0 and Nth-1.
+If `--packet' is used for a counter, then there must be Nth number of --packet rules, covering all values between 0 and
+(Nth-1) inclusively.
+</descrip>
+
+<sect1>pkttype patch
+<p>
+This patch by Michal Ludvig &lt;michal@logix.cz&gt; adds a new match that allows
+you to match a packet based on its type : host/broadcast/multicast.
+
+<p>
+If For example you want to silently drop all the broadcasted packets :
+
+<tscreen><verb>
+# iptables -A INPUT -m pkttype --pkt-type broadcast -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all  --  anywhere             anywhere           PKTTYPE = broadcast 
+</verb></tscreen>
+
+<p>
+Supported options for this match are :
+
+<descrip>
+<tag>--pkt-type [!] packettype</> -&gt match packet type where packet type is one of
+<descrip>
+<tag>host</> -&gt; to us
+<tag>broadcast</> -&gt; to all
+<tag>multicast</> -&gt; to group
+</descrip>
+</descrip>
+
+<sect1>pool patch
+<p>
+Patch by Patrick Schaaf &lt;bof@bof.de&gt;. Joakim Axelsson and Patrick are in the process
+of re-writing it, therefore they will replace this section with the actual
+explanations once its written. 
+
+<sect1>psd patch
+<p>
+This patch by Dennis Koslowski &lt;dkoslowski@astaro.de&gt; adds a new match that will
+attempt to detect port scans.
+
+<p>
+In its simplest form, psd match can be used as follows :
+
+<tscreen><verb>
+# iptables -A INPUT -m psd -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target  prot opt source    destination         
+DROP    all  --  anywhere  anywhere    psd weight-threshold: 21 delay-threshold: 300 lo-ports-weight: 3 hi-ports-weight: 1
+</verb></tscreen>
+
+<p>
+Supported options for psd match are :
+
+<descrip>
+<tag>[--psd-weight-threshold threshold]</> -&gt; Portscan detection weight threshold
+<tag>[--psd-delay-threshold delay]</> -&gt; Portscan detection delay threshold
+<tag>[--psd-lo-ports-weight lo]</> -&gt; Privileged ports weight
+<tag>[--psd-hi-ports-weight hi]</> -&gt; High ports weight
+</descrip>
+
+<sect1>quota patch
+<p>
+This patch by Sam Johnston &lt;samj@samj.net&gt; adds a new match that
+allows you to set quotas. When the quota is reached, the rule doesn't
+match any more.
+
+<p>
+For example, if you want to limit put a quota of 50Megs on incoming http data
+you can do as follows :
+
+<tscreen><verb>
+# iptables -A INPUT -p tcp --dport 80 -m quota --quota 52428800 -j ACCEPT
+# iptables -A INPUT -p tcp --dport 80 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:http quota: 52428800 bytes
+DROP       tcp  --  anywhere             anywhere           tcp dpt:http 
+</verb></tscreen>
+
+<p>
+Supported options for quota match are :
+
+<descrip>
+<tag> --quota quota</> -&gt; The quota you want to set.
+</descrip>
+
+<sect1>random patch
+<p>
+This patch by Fabrice MARIE &lt;fabrice@netfilter.org&gt; adds a new match that
+allows you to math a packet randomly based on given probability.
+
+<p>
+For example, if you want to drop 50% of the pings randomly, you can do as follows :
+
+<tscreen><verb>
+# iptables -A INPUT -p icmp --icmp-type echo-request -m random --average 50 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source       destination         
+DROP       icmp --  anywhere     anywhere        icmp echo-request  random 50% 
+</verb></tscreen>
+
+<p>
+Supported options for random match are :
+
+<descrip>
+<tag>[--average percent]</> -&gt; The probability in percentage of the match.
+If omitted, a probability of 50% percent is set. Percentage must be within : 1 &lt;= percent &lt;= 99.
+</descrip>
+
+<sect1>realm patch
+<p>
+This patch by Sampsa Ranta &lt;sampsa@netsonic.fi&gt; adds a new match that allows you
+to use realm key from routing as match criteria similar to the one found in the packet
+classifier.
+
+<p>
+For example, to log all the outgoing packet with a realm of 10, you can do the following :
+
+<tscreen><verb>
+# iptables -A OUTPUT -m realm --realm 10 -j LOG
+
+# iptables --list
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+LOG        all  --  anywhere             anywhere           REALM match 0xa LOG level warning
+</verb></tscreen>
+
+<p>
+Supported options for the realm match are :
+
+<descrip>
+<tag>--realm [!] value[/mask]</> -&gt; Match realm
+</descrip>
+
+<sect1>recent patch
+<p>
+This patch by Stephen Frost &lt;sfrost@snowman.net&gt; adds a new match that allows you
+to dynamically create a list of IP addresses and then match against that list in a few
+different ways.
+
+<p>
+For example, you can create a `badguy' list out of people attempting to connect to port 139
+on your firewall and then DROP all future packets from them without considering them.
+
+<tscreen><verb>
+# iptables -A FORWARD -m recent --name badguy --rcheck --seconds 60 -j DROP
+# iptables -A FORWARD -p tcp -i eth0 --dport 139 -m recent --name badguy --set -j DROP
+
+# iptables --list
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+DROP       all  --  anywhere             anywhere           recent: CHECK seconds: 60
+DROP       tcp  --  anywhere             anywhere           tcp dpt:netbios-ssn recent: SET
+</verb></tscreen>
+
+<p>
+Supported options for the recent match are :
+
+<descrip>
+<tag>--name name</> -&gt; Specify the list to use for the commands.  If no name is given
+then 'DEFAULT' will be used.
+
+<tag>[!] --set</> -&gt; This will add the source address of the packet to the list.
+If the source address is already in the list, this will update the existing entry.  This will
+always return success or failure if `!' is passed in.
+
+<tag>[!] --rcheck</> -&gt; This will check if the source address of the packet is currently
+in the list and return true if it is, and false otherwise.  Opposite is returned if `!' is passed in.
+
+<tag>[!] --update</> -&gt; This will check if the source address of the packet is currently
+in the list.  If it is then that entry will be updated and the rule will return true.  If the source
+address is not in the list then the rule will return false.  Opposite is returned if `!' is passed in.
+
+<tag>[!] --remove</> -&gt; This will check if the source address of the packet is currently
+in the list and if so that address will be removed from the list and the rule will return true.
+If the address is not found, false is returned.  Opposite is returned if `!' is passed in.
+
+<tag>[!] --seconds seconds</> -&gt; This option must be used in conjunction with one of `rcheck' or
+`update'.  When used, this will narrow the match to only happen when the address is in the list and was seen
+within the last given number of seconds.  Opposite is returned if `!' is passed in.
+
+<tag>[!] --hitcount hits</> -&gt; This option must be used in conjunction with one of `rcheck' or
+`update'.  When used, this will narrow the match to only happen when the address is in the list and packets
+had been received greater than or equal to the given value.  This option may be used along with `seconds'
+to create an even narrower match requiring a certain number of hits within a specific time frame.
+Opposite returned if `!' passed in.
+
+<tag>--rttl</> -&gt; This option must be used in conjunction with one of `rcheck' or `update'.
+When used, this will narrow the match to only happen when the address is in the list and the TTL of
+the current packet matches that of the packet which hit the --set rule.  This may be useful if you have
+problems with people faking their source address in order to DoS you via this module by disallowing others
+access to your site by sending bogus packets to you.
+</descrip>
+
+<sect1>record-rpc patch
+<p>
+This patch by Marcelo Barbosa Lima &lt;marcelo.lima@dcc.unicamp.br&gt; adds a new match that allows
+you to match if the source of the packet has requested that port through the portmapper before,
+or it is a new GET request to the portmapper, allowing effective RPC filtering.
+
+<p>
+To match RPC connection tracking information, simply do the following :
+
+<tscreen><verb>
+# iptables -A INPUT -m record_rpc -j ACCEPT
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination 
+ACCEPT     all  --  anywhere             anywhere
+</verb></tscreen>
+
+<p>
+The record_rpc match does not take any option.
+
+<p>
+Do not worry for the match information not printed,
+it's simply because the print() function of this match is empty :
+
+<tscreen><verb>
+/* Prints out the union ipt_matchinfo. */
+static void
+print(const struct ipt_ip *ip,
+      const struct ipt_entry_match *match,
+      int numeric)
+{
+}
+</verb></tscreen>
+
+<sect1>string patch
+<p>
+This patch by Emmanuel Roger &lt;winfield@freegates.be&gt; adds a new match that allows
+you to match a string anywhere in the packet.
+
+<p>
+For example, to match packets containing the string ``cmd.exe'' anywhere
+in the packet and queue them to a userland IDS, you could use :
+
+<tscreen><verb>
+# iptables -A INPUT -m string --string 'cmd.exe' -j QUEUE
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+QUEUE      all  --  anywhere             anywhere           STRING match cmd.exe 
+</verb></tscreen>
+
+<p>
+Please do use this match with caution. A lot of people want to use
+this match to stop worms, along with the DROP target. This is a major mistake.
+It would be defeated by any IDS evasion method.
+
+<p>
+In a similar fashion, a lot of people have been using this match as a mean
+to stop particular functions in HTTP like POST or GET by dropping
+any HTTP packet containing the string POST. Please understand that this job
+is better done by a filtering proxy. Additionally, any HTML content with
+the word POST would get dropped with the former method.
+This match has been designed to be able to queue to userland interesting packets
+for better analysis, that's all. Dropping packet based on this would be defeated
+by any IDS evasion method.
+
+<p>
+Supported options for the string match are :
+
+<descrip>
+<tag>--string [!] string</> -&gt; Match a string in a packet
+</descrip>
+
+<sect1>time patch
+<p>
+This patch by  Fabrice MARIE &lt;fabrice@netfilter.org&gt; adds a new match that allows
+you to match a packet based on its arrival or departure (for locally generated packets) timestamp.
+
+<p>
+for example, to accept packets that have an arrival time from 8:00H to 18:00H from Monday
+to Friday you can do as follows :
+
+<tscreen><verb>
+# iptables -A INPUT -m time --timestart 8:00 --timestop 18:00 --days Mon,Tue,Wed,Thu,Fri -j ACCEPT
+
+# iptables --list 
+Chain INPUT (policy ACCEPT)
+target     prot opt source           destination
+ACCEPT     all  --  anywhere         anywhere        TIME from 8:0 to 18:0 on Mon,Tue,Wed,Thu,Fri 
+</verb></tscreen>
+
+<p>
+Supported options for the time match are :
+
+<descrip>
+<tag>--timestart value</> -&gt; minimum HH:MM
+<tag>--timestop value</> -&gt; maximum HH:MM
+<tag>--days listofdays</> -&gt; a list of days to apply, from (case sensitive)
+<itemize>
+<item>Mon
+<item>Tue
+<item>Wed
+<item>Thu
+<item>Fri
+<item>Sat
+<item>Sun
+</itemize>
+</descrip>
+
+<sect1>ttl patch
+<p>
+This patch by Harald Welte &lt;laforge@gnumonks.org&gt; adds a new match that allows you
+to match a packet based on its TTL.
+
+<p>
+For example if you want to log any packet that have a TTL less than 5, you can do as follows :
+
+<tscreen><verb>
+# iptables -A INPUT -m ttl --ttl-lt 5 -j LOG
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere           TTL match TTL < 5 LOG level warning
+</verb></tscreen>
+
+<p>
+Options supported by the ttl match are :
+
+<descrip>
+<tag>--ttl-eq value</> -&gt; Match time to live value
+<tag>--ttl-lt value</> -&gt; Match TTL &lt; value
+<tag>--ttl-gt value</> -&gt; Match TTL &gt; value
+</descrip>
+
+<sect>New netfilter targets
+<p>
+In this section, we will attempt to explain the usage of new netfilter targets.
+The patches will appear in alphabetical order. Additionally, we will not explain
+patches that break other patches. But this might come later.
+
+<p>
+Generally speaking, for targets, you can get the help hints from a particular
+module by typing :
+
+<tscreen>
+<verb>
+# iptables -j THE_TARGET_YOU_WANT --help
+</verb>
+</tscreen>
+
+<p>
+This would display the normal iptables help message, plus the specific
+``THE_TARGET_YOU_WANT'' target help message at the end.
+
+<sect1>ftos patch
+<p>
+This patch by Matthew G. Marsh &lt;mgm@paktronix.com&gt; adds a new target that allows you
+to set the TOS of packets to an arbitrary value.
+
+<p>
+For example, if you want to set the TOS of all the outgoing packets to be 15, you can do as follows :
+
+<tscreen><verb>
+# iptables -t mangle -A OUTPUT -j FTOS --set-ftos 15
+
+# iptables -t mangle --list
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+FTOS       all  --  anywhere             anywhere           TOS set 0x0f 
+</verb></tscreen>
+
+<p>
+Supported options for the FTOS target are :
+
+<descrip>
+<tag>--set-ftos value</> -&gt; Set TOS field in packet header to value. This value can be in decimal (ex: <tt>32</tt>)
+or in hex (ex: <tt>0x20</tt>)
+</descrip>
+
+<sect1>IPV4OPTSSTRIP patch
+<p>
+This patch by Fabrice MARIE &lt;fabrice@netfilter.org&gt; adds a new target that allows you
+to strip all the IP options from an IPv4 packet.
+
+<p>
+It's simpled loaded as follows :
+
+<tscreen><verb>
+# iptables -t mangle -A PREROUTING -j IPV4OPTSSTRIP
+
+# iptables -t mangle --list
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+IPV4OPTSSTRIP  all  --  anywhere             anywhere
+</verb></tscreen>
+
+<p>
+This target doesn't support any option.
+
+<sect1>NETLINK patch
+<p>
+This patch by Gianni Tedesco &lt;gianni@ecsc.co.uk&gt; adds a new target that allows you to
+send dropped packets to userspace via a netlink socket.
+
+<p>
+For example, if you want to drop all pings and send them to a userland netlink socket instead,
+you can do as follows :
+
+<tscreen><verb>
+# iptables -A INPUT -p icmp --icmp-type echo-request -j NETLINK --nldrop
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+NETLINK    icmp --  anywhere             anywhere           icmp echo-request nldrop 
+</verb></tscreen>
+
+<p>
+Supported options for the NETLINK target are :
+
+<descrip>
+<tag>--nldrop</> -&gt; Drop the packet too
+<tag>--nlmark &lt;number&gt;</> -&gt; Mark the packet
+<tag>--nlsize &lt;bytes&gt;</> -&gt; Limit packet size
+</descrip>
+
+<p>
+For more information on netlink sockets, you can refer to the
+<url url="http://www.skyfree.org/linux/kernel_network/netlink.html" name="Netlink Sockets Tour">.
+
+<sect1>NETMAP patch
+<p>
+This patch by Svenning Soerensen &lt;svenning@post5.tele.dk&gt; adds a new target that allows you
+create a static 1:1 mapping of the network address, while keeping host addresses intact.
+
+<p>
+For example, if you want to alter the destination of incoming connections from
+1.2.3.0/24 to 5.6.7.0/24, you can do as follows :
+
+<tscreen><verb>
+# iptables -t nat -A PREROUTING -d 1.2.3.0/24 -j NETMAP --to 5.6.7.0/24
+
+# iptables -t nat --list
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+NETMAP     all  --  anywhere             1.2.3.0/24         5.6.7.0/24
+</verb></tscreen>
+
+<p>
+Supported options for NETMAP target are :
+
+<descrip>
+<tag>--to address[/mask]</> -&gt; Network address to map to.
+</descrip>
+
+<sect1>ROUTE patch
+<p>
+This patch by Cédric de Launois &lt;delaunois@info.ucl.ac.be&gt; adds a new 
+target which allows you to setup unusual routes not supported by the 
+standard kernel routing table. The ROUTE target lets you route 
+a received packet through an interface or towards a host, even if the 
+regular destination of the packet is the router itself. The ROUTE target is 
+also able to change the incoming interface of a packet. Packets are
+directly put on the wire and do not traverse any other table.
+
+<p>
+This target does not modify the packets and is a final target.
+It has to be used inside the mangle table.
+
+<p>
+Whenever possible, you should use the MARK target together with
+iproute2 instead of this ROUTE target. However, this target is useful
+to force the use of an interface or a next hop and to change the 
+incoming interface of a packet. People also use it for easiness 
+and to simplify their rules (one rule to route a packet is easier 
+that one MARK rule + one iproute2 rule).
+
+<p>
+Options supported by the ROUTE target are :
+
+<descrip>
+<tag>--oif ifname</>
+Send the packet out using `ifname' network interface. The destination
+host must be on the same link or the interface must be a tunnel.
+Otherwise, arp resolution cannot be performed and the packet is dropped.
+<tag>--iif ifname</>
+Change the packet's incoming interface to `ifname'.
+<tag>--gw ip</>
+Route the packet via this gateway. The packet is routed as if
+its destination IP address was this ip.
+</descrip>
+
+
+<p>
+For example, assume that you want to redirect ssh packets towards a 
+server inside your network, without modifying those packets in any way 
+(this excludes the use of the standard port forwarding mechanism).
+A solution is to use an ipip tunnel and the ROUTE target to reroute ssh 
+packets to the real ssh server, which has the same IP address as the router.
+It is not possible to reroute those packets using the standard routing
+mechanisms, because the kernel locally delivers a packet having
+a destination address belonging to the router itself.
+
+<p>
+Time for ASCII art :
+<verb>
+              eth0  +------+ 192.168.0.1        192.168.0.2 +----+
+    ----------------|router|--------------------------------|host|
+    IP: 150.150.0.1 +------+                                +----+
+                       | | tunl1              IP: 150.150.0.1 | |
+                       | +------------------------------------+ |
+                       +----------------------------------------+
+                                      IPIP tunnel
+</verb>
+
+<p>
+For the example above, you can do as follows :
+
+<tscreen><verb>
+# iptables -A PREROUTING -t mangle -i eth0 -p tcp --dport 22 -j ROUTE --oif tunl1
+# iptables -A PREROUTING -t mangle -i tunl1 -j ROUTE --oif eth0
+
+# iptables -L PREROUTING -t mangle
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+ROUTE      tcp  --  anywhere             anywhere           tcp dpt:ssh ROUTE oif tunl1
+ROUTE      all  --  anywhere             anywhere           ROUTE oif eth0
+</verb></tscreen>
+
+<p>
+Another example : if you want to quickly and easily balance the load between two 
+gateways 10.0.0.1 and 10.0.0.2, then you can do as follows :
+
+<tscreen><verb>
+# iptables -A PREROUTING -t mangle -m random --average 50 -j ROUTE --gw 10.0.0.1
+# iptables -A PREROUTING -t mangle -j ROUTE --gw 10.0.0.2
+
+# iptables -L PREROUTING -t mangle
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+ROUTE      all  --  anywhere             anywhere           random 50% ROUTE gw 10.0.0.1
+ROUTE      all  --  anywhere             anywhere           ROUTE gw 10.0.0.2
+</verb></tscreen>
+
+<sect1>SAME patch
+<p>
+This patch by Martin Josefsson &lt;gandalf@wlug.westbo.se&gt; adds a new target
+which is similar to SNAT and will gives a client the same address for each connection.
+
+<p>
+For example, if you want to modify the source address of the connections
+to be 1.2.3.4-1.2.3.7 you can do as follows :
+
+<tscreen><verb>
+# iptables -t nat -A POSTROUTING -j SAME --to 1.2.3.4-1.2.3.7
+
+# iptables -t nat --list
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+SAME       all  --  anywhere             anywhere           same:1.2.3.4-1.2.3.7 
+</verb></tscreen>
+
+<p>
+Options supported by the SAME target are :
+
+<descrip>
+<tag>--to &lt;ipaddr&gt;-&lt;ipaddr&gt;</> -&gt; Addresses to map source to.
+May be specified more than once for multiple ranges.
+<tag>--nodst</> -&gt; Don't use destination-ip in source selection
+</descrip>
+
+<sect1>tcp-MSS patch
+<p>
+This patch by Marc Boucher &lt;marc+nf@mbsi.ca&gt; adds a new target that allows you to examine and
+alter the MSS value of TCP SYN packets, to control the maximum size
+for that connection.
+
+<p>
+As explained by Marc himself, THIS IS A HACK, used to overcome criminally
+brain-dead ISPs or servers which block ICMP Fragmentation Needed
+packets.
+
+<p>
+Typical usage would be :
+
+<tscreen><verb>
+# iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+
+# iptables --list
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+TCPMSS     tcp  --  anywhere             anywhere           tcp flags:SYN,RST/SYN TCPMSS clamp to PMTU 
+</verb></tscreen>
+
+<p>
+Options supported by the tcp-MSS target are (mutually-exclusive) :
+
+<descrip>
+<tag>--set-mss value</> explicitly set MSS option to specified value
+<tag>--clamp-mss-to-pmtu</> automatically clamp MSS value to (path_MTU - 40)
+</descrip>
+
+<sect1>TTL patch
+<p>
+This patch by Harald Welte &lt;laforge@gnumonks.org&gt; adds a new target that
+enables the user to set the TTL value of an IP packet or to increment/decrement it 
+by a given value.
+
+<p>
+For example, if you want to set the TTL of all outgoing connections
+to 126, you can do as follows :
+
+<tscreen><verb>
+# iptables -t mangle -A OUTPUT -j TTL --ttl-set 126
+
+# iptables -t mangle --list
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+TTL        all  --  anywhere             anywhere           TTL set to 126 
+</verb></tscreen>
+
+<p>
+Supported options for the TTL target are :
+
+<descrip>
+<tag>--ttl-set value</> -&gt; Set TTL to &lt;value&gt;
+<tag>--ttl-dec value</> -&gt; Decrement TTL by &lt;value&gt;
+<tag>--ttl-inc value</> -&gt; Increment TTL by &lt;value&gt;
+</descrip>
+
+<sect1>ulog patch
+<p>
+This patch by Harald Welte &lt;laforge@gnumonks.org&gt; adds a new target
+which supplies a more advanced packet logging mechanism than the standard LOG target.
+The `libipulog/' contains a library for receiving the ULOG messages.
+
+<p>
+Harald maintains a 
+<url url="http://www.gnumonks.org/projects/ulogd" name="web page"> containing the proper documentation
+for ULOG, so there is no point for me to explain this here..
+
+<sect>New connection tracking patches
+<p>
+In this sections, we will show the available connection tracking/nat patches.
+To use them, simply load the corresponding modules (with options if needed)
+for them to be in effect.
+
+<sect1>amanda-conntrack-nat patch
+<p>
+This patch by Brian J. Murrell &lt;netfilter@interlinx.bc.ca&gt; adds support
+for connection tracking and nat of the Amanda backup tool protocol.
+
+<sect1>eggdrop-conntrack patch
+<p>
+This patch by Magnus Sandin &lt;magnus@sandin.cx&gt; adds support
+for connection tracking for eggdrop bot networks.
+
+<sect1>h323-conntrack-nat patch
+<p>
+This patch by Jozsef Kadlecsik &lt;kadlec@blackhole.kfki.hu&gt; adds
+H.323/netmeeting support module for netfilter connection tracking and NAT.
+
+<p>
+H.323 uses/relies on the following data streams :
+
+<itemize>
+<item>port 389 -&gt; Internet Locator Server (TCP).
+<item>port 522 -&gt; User Location Server (TCP).
+<item>port 1503 -&gt; T.120 Protocol (TCP).
+<item>port 1720 -&gt; H.323 (H.225 call setup, TCP)
+<item>port 1731 -&gt; Audio call control (TCP)
+<item>Dynamic port -&gt; H.245 call control (TCP)
+<item>Dynamic port -&gt; RTCP/RTP streaming (UDP)
+</itemize>
+
+<p>
+The H.323 conntrack/NAT modules support the connection tracking/NATing of 
+the data streams requested on the dynamic ports. The helpers use the
+search/replace hack from the ip_masq_h323.c module for the 2.2 kernel
+series.
+
+<p>
+At the very minimum, H.323/netmeeting (video/audio) is functional by letting 
+trough the 1720 port and loading these H.323 module(s).
+
+<p>
+The H.323 conntrack/NAT modules do not support :
+
+<itemize>
+<item>H.245 tunnelling
+<item>H.225 RAS (gatekeepers)
+</itemize>
+
+<sect1>irc-conntrack-nat patch
+<p>
+This patch by Harald Welte &lt;laforge@gnumonks.org&gt; allows DCC to work though NAT and
+connection tracking. By default, this module will track IRC connection on port 6667.
+But you can change this for another port with the `ports=xx' argument.
+
+<sect1>mms-conntrack-nat patch
+<p>
+This patch by Filip Sneppe &lt;filip.sneppe@cronos.be&gt; adds support for
+connection tracking of Microsoft Streaming Media Services protocol.
+
+<p>
+This allows client (Windows Media Player) and server
+to negotiate protocol (UDP, TCP) and port for the media stream.
+A partially reverse engineered protocol analysis is available 
+from <url url="http://get.to/sdp" name="here">, together with a link to a Linux client.
+
+<p>
+It is recommended to open UDP port 1755 to the server, as this port is used 
+for retransmission requests.
+
+<p>
+This helper has been tested in SNAT and DNAT setups.
+
+<sect1>pptp patch
+<p>
+This patch by Harald Welte &lt;laforge@gnumonks.org&gt; allows netfilter to track pptp connection as well as to NAT them.
+
+<sect1>quake3-conntrack patch
+<p>
+This patch by Filip Sneppe &lt;filip.sneppe@cronos.be&gt; adds support for
+Quake III Arena connection tracking and nat.
+
+<sect1>rsh patch
+<p>
+This patch by Ian Larry Latter &lt;Ian.Latter@mq.edu.au&gt; adds support for
+RSH connection tracking.
+
+<p>
+An RSH connection tracker is required if the dynamic stderr "Server
+to Client" connection is to occur during a normal RSH session.  This
+typically operates as follows :
+
+<tscreen><verb>
+    Client 0:1023 --> Server 514    (stream 1 - stdin/stdout)
+    Client 0:1023 <-- Server 0:1023 (stream 2 - stderr)
+</verb></tscreen>
+
+<p>
+The author of this patch is warning you that this module could be dangerous, and
+that it is not "best practice" to use RSH, and you should use SSH in all instances.
+
+<sect1>snmp-nat patch
+<p>
+This patch by James Morris &lt;jmorris@intercode.com.au&gt; allows netfilter to NAT basic SNMP
+This is the ``basic'' form of SNMP-ALG, as described in 
+<url url="http://www.faqs.org/rfcs/rfc2962.html" name="RFC 2962">,
+it works by modifying IP addresses inside SNMP payloads
+to match IP-layer NAT mapping.
+
+<sect1>talk-conntrack-nat patch
+<p>
+This patch by Jozsef Kadlecsik &lt;kadlec@blackhole.kfki.hu&gt; allows netfilter to track
+talk connections, as well as to NAT them. By default both otalk (UDP port 517) and talk (UDP port 518) are
+supported. otalk/talk supports can selectively be enabled/disabled 
+by the module parameters of the ip_conntrack_talk and ip_nat_talk modules. The options are :
+
+<itemize>
+<item>otalk = 0 | 1
+<item>talk = 0 | 1
+</itemize>
+
+<p>
+where `0' means `do not support' while `1' means `do support'
+the given protocol flavor.
+
+<sect1>tcp-window-tracking patch
+<p>
+This patch by Jozsef Kadlecsik &lt;kadlec@blackhole.kfki.hu&gt; allows netfilter
+do TCP connection tracking according to the article
+<url url="http://www.iae.nl/users/guido/papers/tcp_filtering.ps.gz" name="Real Stateful TCP Packet Filtering in IP Filter"> by
+Guido van Rooij. It supports window scaling, and can now handle already established connections.
+
+<sect1>tftp patch
+<p>
+This patch by Magnus Boden &lt;mb@ozaba.mine.nu&gt; allows netfilter to track
+tftp connections as well as to NAT them. By default, this module will track
+tftp connections on port 69. But you can change this for another port with the
+`ports=xx' argument.
+
+<sect>New IPv6 netfilter matches
+<p>
+In this section, we will attempt to explain the usage of new netfilter matches.
+The patches will appear in alphabetical order. Additionally, we will not explain
+patches that break other patches. But this might come later.
+
+<p>
+Generally speaking, for matches, you can get the help hints from a particular
+module by typing :
+
+<tscreen>
+<verb>
+# ip6tables -m the_match_you_want --help
+</verb>
+</tscreen>
+
+<p>
+This would display the normal ip6tables help message, plus the specific
+``the_match_you_want'' match help message at the end.
+
+<sect1>agr patch
+<p>
+This patch by Andras Kis-Szabo &lt;kisza@sch.bme.hu&gt; adds 1 new match :
+
+<itemize>
+<item>``eui64'' : lets you match the IPv6 packet based on it's addressing parameters.
+</itemize>
+
+<p>
+This patch can be quite useful for people using EUI-64 IPv6 addressing scheme
+who are willing to check the packets based on the delivered address on a LAN.
+
+<p>
+For example, we will redirect the packets that have a correct EUI-64 address:
+
+<tscreen><verb>
+# ip6tables -N ipv6ok
+# ip6tables -A INPUT -m eui64 -j ipv6ok
+# ip6tables -A INPUT -s ! 3FFE:2F00:A0::/64 -j ipv6ok
+# ip6tables -A INPUT -j LOG
+# ip6tables -A ipv6ok -j ACCEPT
+
+# ip6tables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ipv6ok     all      anywhere             anywhere           eui64 
+ipv6ok     all     !3ffe:2f00:a0::/64    anywhere           
+LOG        all      anywhere             anywhere           LOG level warning 
+
+Chain ipv6ok (2 references)
+target     prot opt source               destination         
+ACCEPT     all      anywhere             anywhere           
+</verb></tscreen>
+
+<p>
+This match hasn't got any option.
+
+<sect1>ahesp6 patch
+<p>
+This patch by Andras Kis-Szabo &lt;kisza@sch.bme.hu&gt; adds a new match
+that allows you to match a packet based on its ah and esp headers' content.
+The name of the matches:
+<itemize>
+<item>``ah'' : lets you match the IPv6 packet based on its ah header.
+<item>``esp'' : lets you match the IPv6 packet based on its esp header.
+</itemize>
+
+<p>
+For example, we will drop all the AH packets that have a SPI equal to
+500, and check the contents of the restricted area in the header :
+
+<tscreen><verb>
+# ip6tables -A INPUT -m ah --ahspi 500 --ahres -j DROP
+
+# ip6tables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all      anywhere             anywhere           ah spi:500 reserved
+</verb></tscreen>
+
+<p>
+Supported options for the ah match are :
+
+<descrip>
+<tag>--ahspi [!] spi[:spi]</> -&gt; match spi (range)
+<tag>--ahlen [!] length</> -&gt; length ot this header
+<tag>--ahres </> -&gt; checks the contents of the reserved field
+</descrip>
+
+<p>
+The esp match works exactly the same as in IPv4 :
+
+<tscreen><verb>
+# ip6tables -A INPUT -m esp --espspi 500 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all      anywhere             anywhere           esp spi:500 
+</verb></tscreen>
+
+<p>
+Supported options for the esp match are :
+
+<descrip>
+<tag>--espspi [!] spi[:spi]</>  -&gt; match spi (range)
+</descrip>
+
+In IPv6 these matches can be concatenated:
+
+<tscreen><verb>
+# ip6tables -A INPUT -m ah --ahspi 500 --ahres --ahlen ! 40 -m esp --espspi 500 -j DROP
+
+# iptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all      anywhere             anywhere           ah spi:500 length:!40 reserved esp spi:500
+</verb></tscreen>
+
+<sect1>frag6 patch
+<p>
+This patch by Andras Kis-Szabo &lt;kisza@sch.bme.hu&gt; adds a new match
+that allows you to match a packet based on the content of its fragmentation
+header.
+The name of the match:
+<itemize>
+<item>``frag'' : lets you match the IPv6 packet based on its fragmentation
+header.
+</itemize>
+
+<p>
+For example, we will drop all the packets that have an ID between 100 and 200,
+and the packet is the first fragment :
+
+<tscreen><verb>
+# ip6tables -A INPUT -m frag --fragid 100:200 --fragfirst -j DROP
+
+# ip6tables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all      anywhere             anywhere           frag ids:100:200 first
+</verb></tscreen>
+
+<p>
+Supported options for the frag match are :
+
+<descrip>
+<tag>--fragid [!] id[:id]</> -&gt; match the id (range) of the fragmenation
+<tag>--fraglen [!] length</> -&gt; match total length of this header
+<tag>--fragres</> -&gt; checks the contents of the reserved field
+<tag>--fragfirst</> -&gt; matches on the first fragment
+<tag>--fragmore</> -&gt; there are more fragments 
+<tag>--fraglast</> -&gt; this is the last fragment
+</descrip>
+
+<sect1>ipv6header patch
+<p>
+This patch by Andras Kis-Szabo &lt;kisza@sch.bme.hu&gt; adds a new match
+that allows you to match a packet based on its extension headers. 
+The name of the match:
+<itemize>
+<item>``ipv6header'' : lets you match the IPv6 packet based on its headers.
+</itemize>
+
+<p>
+For example, let's drop the packets which have got hop-by-hop, ipv6-route 
+headers and a protocol payload:
+
+<tscreen><verb>
+# ip6tables -A INPUT -m ipv6header --header hop-by-hop,ipv6-route,protocol -j DROP
+
+# ip6tables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all      anywhere             anywhere           ipv6header flags:hop-by-hop,ipv6-route,protocol
+</verb></tscreen>
+
+<p>
+And now, let's drop the packets which have got an ipv6-route extension header:
+
+<tscreen><verb>
+# ip6tables -A INPUT -m ipv6header --header ipv6-route --soft -j DROP
+
+# ip6ptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all      anywhere             anywhere           ipv6header flags:ipv6-route soft
+</verb></tscreen>
+
+<p>
+Supported options for the ipv6header match are :
+<descrip>
+<tag>[!] --header headers</> -&gt; You can specify the interested 
+headers with this option. Accepted formats:
+<itemize>
+<item>hop,dst,route,frag,auth,esp,none,proto
+<item>hop-by-hop,ipv6-opts,ipv6-route,ipv6-frag,ah,esp,ipv6-nonxt,protocol
+<item>0,60,43,44,51,50,59
+</itemize>
+<tag>--soft</> -&gt; You can specify the soft mode: in this mode 
+the match checks the existance of the header, not the full match!
+</descrip>
+
+<sect1>ipv6-ports patch
+<p>
+This patch by Jan Rekorajski &lt;baggins@pld.org.pl&gt; adds 4 new matches :
+
+<itemize>
+<item>``limit'' : lets you to restrict the number of parallel TCP connections from a particular host or network.
+<item>``mac'' : lets you match a packet based on its MAC address.
+<item>``multiport'' : lets you to specify ports with a mix of port-ranges and single ports for UDP and TCP protocols.
+<item>``owner'' : lets you match a packet based on its originator process' owner id.
+</itemize>
+
+<p>
+These matches are the ports of the IPv4 versions. See the main documentation for the details!
+
+<sect1>length patch
+<p>
+This patch by Imran Patel &lt;ipatel@crosswinds.net&gt; adds a new match
+that allows you to match a packet based on its length. (This patch is shameless adaption from the
+IPv4 match written by James Morris &lt;jmorris@intercode.com.au&gt;)
+
+<p>
+For example, let's drop all the pings with a packet size greater than
+85 bytes :
+
+<tscreen><verb>
+# ip6tables -A INPUT -p ipv6-icmp --icmpv6-type echo-request -m length --length 85:0xffff -j DROP
+
+# ip6ptables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       ipv6-icmp --  anywhere             anywhere           ipv6-icmp echo-request length 85:65535
+</verb></tscreen>
+
+<p>
+Supported options for the length match are :
+
+<descrip>
+<tag>[!] --length length[:length]</> -&gt; Match packet length
+against value or range of values (inclusive)
+</descrip>
+
+<p>
+Values of the range not present will be implied. The implied value for minimum
+is 0, and for maximum is 65535.
+
+<sect1>route6 patch
+<p>
+This patch by Andras Kis-Szabo &lt;kisza@sch.bme.hu&gt; adds a new match
+that allows you to match a packet based on the content of its routing
+header.
+The name of the match:
+<itemize>
+<item>``rt'' : lets you match the IPv6 packet based on its routing
+header.
+</itemize>
+
+<p>
+For example, we will drop all the packets that have 0 routing type, the packet
+is near the last hop (max 2 hops far), the routing path contains ::1 and ::2
+(but not exactly):
+
+<tscreen><verb>
+# ip6tables -A INPUT -m rt --rt-type 0 --rt-segsleft :2 --rt-0-addrs ::1,::2 --rt-0-not-strict -j DROP
+
+# ip6tables --list
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       all      anywhere             anywhere           rt type:0 segslefts:0:2 0-addrs ::1,::2 0-not-strict
+</verb></tscreen>
+
+<p>
+Supported options for the rt match are :
+
+<descrip>
+<tag>--rt-type [!] type</> -&gt; matches the type
+<tag>--rt-segsleft [!] num[:num]</> -&gt; matches the Segments Left field (range)
+<tag>--rt-len [!] length</> -&gt; total length of this header
+<tag>--rt-0-res</> -&gt; checks the contents of the reserved field
+<tag>--rt-0-addrs ADDR[,ADDR...]</> -&gt; Type=0 addresses (list, max: 16)
+<tag>--rt-0-not-strict</> -&gt; List of Type=0 addresses not a strict list
+</descrip>
+
+<sect>New IPv6 netfilter targets
+<p>
+In this section, we will attempt to explain the usage of new netfilter targets.
+The patches will appear in alphabetical order. Additionally, we will not explain
+patches that break other patches. But this might come later.
+
+<p>
+Generally speaking, for targets, you can get the help hints from a particular
+module by typing :
+
+<tscreen>
+<verb>
+# ip6tables -j THE_TARGET_YOU_WANT --help
+</verb>
+</tscreen>
+
+<p>
+This would display the normal iptables help message, plus the specific
+``THE_TARGET_YOU_WANT'' target help message at the end.
+
+<sect1>LOG patch
+<p>
+This patch by Jan Rekorajski &lt;baggins@pld.org.pl&gt; adds a new target that allows you
+to LOG the packets as in the IPv4 version of iptables.
+
+<p>
+The examples are the same as in iptables. See the man page for details!
+
+<sect1>REJECT patch
+<p>
+This patch by Harald Welte &lt;laforge@gnumonks.org&gt; adds a new target that allows you
+to REJECT the packets as in the IPv4 version of iptables.
+
+<p>
+The examples are the same as in iptables. See the man page for details!
+
+<sect>New IPv6 connection tracking patches
+<p>
+The connection tracking hasn't supported, yet.
+
+<sect>Contributing
+
+<sect1>Contributing a new extension
+<p>
+Netfilter core-team always welcome new extensions/bug-fixes. In this section we will not focus
+on how to package a new extension to ease its inclusion into patch-o-matic yet. But this might
+come in a future version of this HOWTO.
+
+<p>
+First of all, you should be familiar with the
+<url url="http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO.html" name="Netfilter Hacking HOWTO">.
+
+<p>
+Rusty has already written a guideline on how to make new patches for netfilter,
+it's in :
+
+<tscreen><verb>
+/path/to/netfiltercvs/netfilter/patch-o-matic/NEWPATCHES
+</verb></tscreen>
+
+<p>
+Or read the latest version online at :
+<url url="http://cvs.netfilter.org/cgi-bin/cvsweb/netfilter/patch-o-matic/NEWPATCHES" name="NEWPATCHES">.
+
+<p>
+Finally, it's a good idea to subscribe to netfilter-devel mailing list.
+More info on how to subscribe can be found on the netfilter homepage.
+
+<sect1>Contributing to this HOWTO
+<p>
+You are mostly welcome to update this HOWTO. To do so, the preferred way
+is to send a patch of the SGML master of this document to the
+netfilter-devel mailing list.
+
+<p>
+Thanks for your help! Thanks to the developers who contributed the
+netfilter-extensions-HOWTO parts related to their patches.
+</article>

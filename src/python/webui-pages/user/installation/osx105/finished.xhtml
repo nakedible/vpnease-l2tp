@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <h2 class="step-heading">Using the VPN connection</h2>
+
+        <p>
+          You can open VPN connection from top right hand corner VPN menu:
+        </p>
+        <ul>
+          <li>Select <strong class="cb-guilabel">Connect</strong> from the VPN menu.</li>
+          <li>If you have not save your <n:invisible n:macro="productname" /> password, a password dialog opens.</li>
+          <li>Enter your <n:invisible n:macro="productname" /> password and accept by clicking <strong class="cb-guilabel">OK</strong>.</li>
+          <li>
+            Ensure that connectivity to your company network resources works correctly by e.g. using your
+            e-mail client or opening a web page from an intranet server.
+          </li>
+        </ul>
+        <p>
+          You can disconnect the VPN connection by selecting <strong class="cb-guilabel">Disconnect</strong> 
+          from the top right hand corner VPN menu.  
+        </p>
+        
+        <h2 class="step-heading">VPN on Demand</h2>
+
+        <p>
+          Mac OS X 10.5 (Leopard) supports VPN on Demand, which automatically dials up the VPN connection
+          when you access a network resource in your company network.  To enable VPN on Demand, do as follows:
+        </p>
+        <ul>
+          <li>
+            Open <strong class="cb-guilabel">System Preferences</strong> and click <strong class="cb-guilabel">Network</strong>.
+            Select the VPN service (<strong class="cb-guilabel">VPN (L2TP)</strong>) from the service menu on the left.
+            Click <strong class="cb-guilabel">Advanced</strong> and select the
+            <strong class="cb-guilabel">VPN on Demand</strong> tab.
+          </li>
+          <li>
+            Enter all domain names which need this VPN connection to be accessed,
+            i.e. all relevant intranet services.  For each domain name, click
+            <strong class="cb-guilabel">+</strong> (plus sign), enter the domain name into the
+            <strong class="cb-guilabel">Domain</strong> field, and select the name of your VPN
+            connection profile from the <strong class="cb-guilabel">Configuration</strong> dropdown.
+            Each domain name is interpreted as a "wildcard" suffix; for instance, if you enter
+            <strong class="cb-guilabel">intra.example.com</strong>, all sub-domains are automatically
+            included (e.g. <strong class="cb-guilabel">server.intra.example.com</strong>).
+            Click <strong class="cb-guilabel">OK</strong> when you have finished adding all intranet
+            addresses.
+          </li>
+          <li>
+            Click <strong class="cb-guilabel">Apply</strong> and close the Network window.
+            Open a browser window, and enter a URI to one of the intranet
+            resources to the browser address bar.  The VPN connection should now be automatically
+            connected (you may be prompted for a password), and the intranet resource opened in your
+            browser.  The browser may confirm changes to your keychains, which you must allow.
+          </li>
+        </ul>
+
+        <div class="cb-note">
+          <p>
+            If a configured domain name is accessible directly (without the VPN), the VPN is not dialed.
+            This allows you to connect your computer to the intranet directly, without causing an unnecessary
+            VPN connection to be opened.
+          </p>
+        </div>
+
+        <h2 class="step-heading">Known limitations</h2>
+        <ul>
+          <li>
+            When switching from one user to another, the VPN connection is automatically
+            dropped by the operating system for security reasons.  This behavior can be
+            changed from VPN profile Advanced settings.
+          </li>
+        </ul>
+
+<n:invisible n:render="form user_information_form" />
+
+      </div>
+    </n:invisible>
+  </body>
+</html>

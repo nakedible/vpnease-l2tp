@@ -1,0 +1,39 @@
+= VMware Issues =
+
+[[PageOutline]]
+
+----
+
+== What is VMware? ==
+
+[http://www.vmware.com/] is a hardware virtualization platform which can be used
+to install VPNease on an existing server.
+
+----
+
+== Virtual network bridge problems with VMware Server on Windows platforms ==
+
+There are some virtual network bridge problems with VMware Server on Windows
+platforms.  When the problem occurs, all network traffic from and to the
+virtual machine is dropped by VMware, causing a network outage.  The problem
+occurs randomly with bridged networking mode (which is the most typical mode
+for VPNease).  VMware has not as of this writing (June 2008) confirmed or
+fixed the problem.
+
+VPNease 1.2 incorporates a workaround around this VMware issue:
+
+  * The network outage is detected when all routers stop responding to ARP
+    requests.  If this happens, the VPNease service is restarted in an attempt
+    to fix the VMware bridge problem.  Usually VPNease service restart is
+    sufficient to fix the problem.
+
+  * If the problem persists, VPNease server will eventually reboot in an
+    attempt to fix the problem through a reboot.
+
+These measures are currently sufficient to work around the VMware bridge
+problem in all known cases.
+
+
+
+
+----

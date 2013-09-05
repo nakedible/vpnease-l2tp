@@ -1,0 +1,43 @@
+#ifndef _CPHL_BUFFER_H_
+#define _CPHL_BUFFER_H_
+
+#include <string>
+#include <stdlib.h>
+
+struct  byte_traits;
+
+//
+// Generic byte buffer
+//
+typedef std::basic_string<unsigned char, byte_traits> buffer;
+
+//
+// Speed things up by using library functions for memory manipulation
+//
+struct byte_traits : std::char_traits<unsigned char>
+{
+  typedef char_type E;
+
+  static int compare(const E * x, const E * y, size_t n)
+  { return memcmp(x, y, n); }
+
+  static size_t length(const E * x)
+  { return strlen(reinterpret_cast<const char*>(x)); }
+
+  static E * copy(E * x, const E * y, size_t n)
+  { return (E *)memcpy(x, y, n); }
+
+  static const E * find(const E * x, size_t n, const E & y)
+  { return (E *)memchr(x, y, n); }
+
+  static E * move(E * x, const E * y, size_t n)
+  { return (E *)memmove(x, y, n); }
+
+  static E * assign(E * x, size_t n, const E & y)
+  { return (E *)memset(x, y, n); }
+
+  static void assign(E & x, const E & y)
+  { x = y; }
+};
+
+#endif

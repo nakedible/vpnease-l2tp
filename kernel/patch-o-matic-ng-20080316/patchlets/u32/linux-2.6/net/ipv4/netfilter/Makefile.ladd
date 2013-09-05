@@ -1,0 +1,2 @@
+obj-$(CONFIG_IP_NF_MATCH_RECENT) += ipt_recent.o
+obj-$(CONFIG_IP_NF_MATCH_U32) += ipt_u32.o

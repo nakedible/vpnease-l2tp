@@ -1,0 +1,51 @@
+= VPNease Compatibility with Third Party VPN Clients =
+
+[[PageOutline]]
+
+----
+
+== Cisco VPN ==
+
+There are multiple Cisco VPN client versions with slightly different behavior.  VPNease and Cisco VPN
+client can be used together in most versions.  When Cisco VPN client is stopped (exit the VPN client from
+its Windows tray icon), Windows IPsec services are restarted, and you can use VPNease normally, and vice
+versa.
+
+----
+
+== Safenet VPN ==
+
+When Safenet VPN is installed, Windows RASMAN (remote access) service is prohibited from using IPsec
+encryption: the RASMAN prohibitIpsec registry setting is set to DWORD value 1 in the registry.  This
+prevents encrypted L2TP/IPsec traffic from working with the Windows built-in VPN client.  The condition
+may persist even after Safenet VPN has been uninstalled.
+
+Workaround: run VPNease 1.2 (or later) autoconfiguration.  The autoconfiguration tool re-enables all
+necessary services.  For VPNease 1.1 (or below), the RASMAN prohibitIpsec registry value needs to be
+set manually to DWORD value zero.  The registry path is as follows:
+{{{
+HKEY_LOCAL_MACHINE\
+    SYSTEM\
+        CurrentControlSet\
+            Services\
+                RasMan\
+                    Parameters\
+                        prohibitIpsec
+}}}
+
+----
+
+== Greenbow VPN ==
+
+Greenbow VPN client may leave Windows IPsec services disabled after uninstallation.  Please run
+VPNease autoconfigure to restore proper service startup settings.  You can also restore the
+settings manually from service settings.
+
+While Greenbow VPN client is installed, Windows IPsec services will be disabled.  If you wish
+to use VPNease and Greenbow VPN client on the same machine, you need to start and stop the services
+as appropriate using e.g. BAT files:
+  * When starting VPNease, BAT file !#1 should start IPsec services.
+  * When starting Greenbow, BAT file !#2 should stop IPsec services.
+
+
+----

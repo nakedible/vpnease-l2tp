@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/l2tp-config">
+    <ns0:network-config xmlns:ns0="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/">
+      <rdf:Description>
+        <ns0:public-interface>
+          <rdf:Description>
+            <ns0:interface-name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">eth1</ns0:interface-name>
+            <ns0:use-dhcp rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns0:use-dhcp>
+            <ns0:mtu rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1492</ns0:mtu>
+            <ns0:proxyarp rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns0:proxyarp>
+          </rdf:Description>
+        </ns0:public-interface>
+        <ns0:private-interface>
+          <rdf:Description>
+            <ns0:interface-name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">eth0</ns0:interface-name>
+            <ns0:use-dhcp rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns0:use-dhcp>
+            <ns0:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10.1.2.3</ns0:address>
+            <ns0:mask rdf:datatype="http://www.w3.org/2001/XMLSchema#string">255.255.0.0</ns0:mask>
+            <ns0:mtu rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1280</ns0:mtu>
+            <ns0:proxyarp rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns0:proxyarp>
+          </rdf:Description>
+        </ns0:private-interface>
+        <ns0:routes>
+          <rdf:Bag>
+            <rdf:_1>
+              <rdf:Description>
+                <ns0:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10.0.0.0</ns0:address>
+                <ns0:mask rdf:datatype="http://www.w3.org/2001/XMLSchema#string">255.0.0.0</ns0:mask>
+                <ns0:gateway rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10.2.3.254</ns0:gateway>
+              </rdf:Description>
+            </rdf:_1>
+            <rdf:_2>
+              <rdf:Description>
+                <ns0:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10.0.0.0</ns0:address>
+                <ns0:mask rdf:datatype="http://www.w3.org/2001/XMLSchema#string">255.0.0.0</ns0:mask>
+                <ns0:gateway rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10.2.3.254</ns0:gateway>
+              </rdf:Description>
+            </rdf:_2>
+            <rdf:_3>
+              <rdf:Description>
+                <ns0:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.0.0.0</ns0:address>
+                <ns0:mask rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.0.0.0</ns0:mask>
+                <ns0:gateway rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10.2.3.254</ns0:gateway>
+              </rdf:Description>
+            </rdf:_3>
+          </rdf:Bag>
+        </ns0:routes>
+        <ns0:dns-servers>
+          <rdf:Seq>
+            <rdf:_1>
+              <rdf:Description>
+                <ns0:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4.2.2.1</ns0:address>
+              </rdf:Description>
+            </rdf:_1>
+            <rdf:_2>
+              <rdf:Description>
+                <ns0:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5.2.2.1</ns0:address>
+              </rdf:Description>
+            </rdf:_2>
+          </rdf:Seq>
+        </ns0:dns-servers>
+        <ns0:client-to-client-routing rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns0:client-to-client-routing>
+      </rdf:Description>
+    </ns0:network-config>
+    <ns1:admin-config xmlns:ns1="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/">
+      <rdf:Description>
+        <ns1:admin-email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">admin@example.com</ns1:admin-email>
+        <ns1:admin-smtp-server rdf:datatype="http://www.w3.org/2001/XMLSchema#string">smtp.example.com</ns1:admin-smtp-server>
+      </rdf:Description>
+    </ns1:admin-config>
+    <ns2:license-config xmlns:ns2="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/">
+      <rdf:Description>
+        <ns2:account-name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">jdoe2006</ns2:account-name>
+        <ns2:account-password rdf:datatype="http://www.w3.org/2001/XMLSchema#string">qwerty</ns2:account-password>
+        <ns2:max-users rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">20</ns2:max-users>
+      </rdf:Description>
+    </ns2:license-config>
+    <ns3:ipsec-config xmlns:ns3="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/">
+      <rdf:Description>
+        <ns3:pre-shared-key rdf:datatype="http://www.w3.org/2001/XMLSchema#string">test123</ns3:pre-shared-key>
+      </rdf:Description>
+    </ns3:ipsec-config>
+    <ns4:l2tp-config xmlns:ns4="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/">
+      <rdf:Description>
+        <ns4:fixme-none rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FIXME - none?</ns4:fixme-none>
+      </rdf:Description>
+    </ns4:l2tp-config>
+    <ns5:ppp-config xmlns:ns5="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/">
+      <rdf:Description>
+        <ns5:ppp-subnet rdf:datatype="http://www.w3.org/2001/XMLSchema#string">192.168.0.0/16</ns5:ppp-subnet>
+        <ns5:ppp-dns-servers>
+          <rdf:Seq>
+            <rdf:_1>
+              <rdf:Description>
+                <ns5:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4.2.2.1</ns5:address>
+              </rdf:Description>
+            </rdf:_1>
+            <rdf:_2>
+              <rdf:Description>
+                <ns5:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5.2.2.1</ns5:address>
+              </rdf:Description>
+            </rdf:_2>
+          </rdf:Seq>
+        </ns5:ppp-dns-servers>
+        <ns5:ppp-wins-servers>
+          <rdf:Seq>
+            <rdf:_1>
+              <rdf:Description>
+                <ns5:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.2.3.4</ns5:address>
+              </rdf:Description>
+            </rdf:_1>
+            <rdf:_2>
+              <rdf:Description>
+                <ns5:address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.3.4.5</ns5:address>
+              </rdf:Description>
+            </rdf:_2>
+          </rdf:Seq>
+        </ns5:ppp-wins-servers>
+        <ns5:ppp-auth>
+          <rdf:Description>
+            <ns5:ppp-pap rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns5:ppp-pap>
+            <ns5:ppp-chap rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns5:ppp-chap>
+            <ns5:ppp-mschap rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns5:ppp-mschap>
+            <ns5:ppp-mschapv2 rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns5:ppp-mschapv2>
+            <ns5:ppp-eap rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns5:ppp-eap>
+          </rdf:Description>
+        </ns5:ppp-auth>
+        <ns5:ppp-idle-timeout rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">120</ns5:ppp-idle-timeout>
+        <ns5:ppp-mtu rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1300</ns5:ppp-mtu>
+        <ns5:ppp-debug rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns5:ppp-debug>
+        <ns5:ppp-lcp-echo-timeout rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">60</ns5:ppp-lcp-echo-timeout>
+        <ns5:ppp-lcp-echo-failure rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</ns5:ppp-lcp-echo-failure>
+      </rdf:Description>
+    </ns5:ppp-config>
+    <ns6:users-config xmlns:ns6="http://purl.org/NET/codebay/1.0/l2tp/config/1.0/" rdf:nodeID="_r1147910846r16349r7"/>
+  </rdf:Description>
+</rdf:RDF>
+

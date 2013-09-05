@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Server BIOS Setup</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          The PC <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/BIOS">BIOS</a> controls many
+          aspects of PC hardware relevant to <n:invisible n:macro="productname" /> use,
+          such as computer startup procedure and low level hardware configuration.
+          BIOS settings are specific to each motherboard, so the configuration procedure
+          varies widely between BIOS versions.
+        </p>
+        <p>
+          <n:invisible n:macro="productname" /> server does not require any specific BIOS settings.
+          The BIOS setup steps described below are recommended in order to minimize problems during
+          the product installation and usage.  
+        </p>
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">BIOS Setup Steps</h1>
+
+        <p>
+          We recommend the following BIOS setup steps.
+        </p>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">BIOS Update</h1>
+
+          <p>
+            Check your BIOS version and install a BIOS update if available from your motherboard manufacturer.
+            BIOS updates can prevent problems with operating system hardware drivers, and are especially
+            important for recently introduced motherboard models.
+          </p>
+        </div> <!-- bios update -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">BIOS Configuration</h1>
+
+          <ul>
+            <li>
+              Enter BIOS configuration by booting your computer and pressing your BIOS specific
+              settings activation key (typically
+              <strong class="cb-keycap">DEL</strong>,
+              <strong class="cb-keycap">F2</strong>,
+              <strong class="cb-keycap">F8</strong>, or
+              <strong class="cb-keycap">ESC</strong>)
+            </li>
+
+            <li>Reset BIOS settings to default values</li>
+
+            <li>Configure processor, bus, memory, and performance settings.
+                Use conservative settings (labeled <strong class="cb-guilabel">Normal</strong> or similar)
+                unless you have a good reason for doing otherwise
+            </li>
+
+            <li>Configure boot order
+              <ul>
+                <li>Enable booting from the CD/DVD drive</li>  
+                <li>Enable booting from USB HDD (for USB stick installation)</li>
+                <li>Enable booting from hard disk</li>
+                <li>Select boot order as follows: CD/DVD first, USB HDD second, and HDD last</li>
+              </ul>
+            </li>
+
+            <li>Disable any automatic power management features
+              <ul>
+                <li>These include features such as screen savers, timed shutdown, etc</li>
+                <li>Such features are not desired in server systems as they may cause unpredictable
+                    operating system interactions and service disruptions</li>
+              </ul>
+            </li>
+
+            <li>Disable extra devices
+              <ul>
+                <li>
+                  Disable any extra integrated audio, video capture, wireless LAN, or other unnecessary
+                  motherboard-specific devices
+                </li>
+                <li>
+                   Integrated video (VGA) and integrated network interface cards (NICs) should be left
+                   enabled as appropriate
+                </li>
+              </ul>
+            </li>
+
+            <li>Disable anti-virus features (anti-virus detection and warning)</li>
+
+            <li>Set BIOS date and time
+              <ul>
+                <li>
+                   Note that <n:invisible n:macro="productname" /> will update its time automatically,
+                   but setting BIOS date and
+                   time is still recommended, as it minimizes system discrepancies (e.g. in log files)
+                </li>
+                <li>Set BIOS time to UTC (Coordinated Universal Time), <strong class="cb-bold">not</strong>
+                    your local time zone</li>
+              </ul>
+            </li>
+
+            <li>Other settings
+              <ul>
+                <li>Enable Quick POST (Power On Self Test) if available; this speeds up the boot-up sequence</li>
+              </ul>  
+            </li>
+
+            <li>Save settings and exit BIOS setup</li>
+          </ul>
+        
+          <div class="cb-note">
+            <p>
+              If any of your BIOS settings is out of the ordinary, write down any special
+              settings for later use.  This will help reconfigure the system should BIOS settings be
+              lost due to motherboard NVRAM battery problems.
+            </p>
+          </div>
+        </div> <!-- bios configuration -->
+      </div> <!-- bios setup steps -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">BIOS in Virtualization Products</h1>
+
+        <p>
+          Most virtualization products, such as VMware and Virtual PC, also have BIOS settings
+          for the virtual machine hardware.  Setting hardware and power management features is not
+          crucial for such environments, as the defaults are usually acceptable for server use.
+          However, boot order must still be configured correctly.
+        </p>
+      </div> <!-- bios in virtualization products -->
+    </n:invisible>
+  </body>
+</html>

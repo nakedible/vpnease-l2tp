@@ -1,0 +1,5 @@
+- unpack openswan-2.4.0rc4.tar.gz
+- apply patches
+- /usr/bin/dpkg-buildpackage -rfakeroot -uc -us -b
+- (use -d -flag if needed)
+

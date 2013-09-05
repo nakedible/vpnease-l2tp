@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <p>
+          A USB stick used as a <n:invisible n:macro="productname" /> installation target
+          is not suitable for USB storage unless it is reformatted after use.
+        </p>
+
+        <n:invisible n:render="check_disks_one_or_multiple">
+          <p>
+            To proceed with formatting, select a target device to be formatted from the list below
+            and click <strong class="cb-guilabel">Next</strong>.
+            The Live CD will repartition and reformat the device with the FAT filesystem, which is
+            suitable for e.g. USB sticks.
+          </p>
+          <n:invisible n:render="form select_target" />
+        </n:invisible>
+
+        <n:invisible n:render="check_disks_none">
+          <div class="cb-warning">
+            <p>
+              The Live CD did not find a suitable formatting target.
+              If you intend to format a USB stick, connect the stick now, wait
+              for a few seconds for the device to be detected, and click
+              <strong class="cb-guilabel">Rescan</strong>.
+            </p>
+          </div>
+          <n:invisible n:render="form rescan_targets" />
+        </n:invisible>
+      </div>
+
+    </n:invisible>
+  </body>
+</html>

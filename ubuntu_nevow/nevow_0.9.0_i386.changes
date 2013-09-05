@@ -1,0 +1,22 @@
+Format: 1.7
+Date: Thu, 27 Jul 2006 19:17:05 +0300
+Source: nevow
+Binary: python-nevow python2.4-nevow
+Architecture: source all
+Version: 0.9.0
+Distribution: unstable
+Urgency: low
+Maintainer: Tommi Virtanen <tv@debian.org>
+Changed-By: Mikko Varso <build@dapper-build>
+Description: 
+ python-nevow - Web application templating system for Python and Twisted
+ python2.4-nevow - Web application templating system for Python and Twisted
+Changes: 
+ nevow (0.9.0) unstable; urgency=low
+ .
+   * New upstream version.
+Files: 
+ 205684ac2b3a439741350dbad97df742 309 devel extra nevow_0.9.0.dsc
+ 1d5a81bc69c97a5ac3e2134ba05dfa8f 588849 devel extra nevow_0.9.0.tar.gz
+ 577f4a86b4b954f467adf5bdb571c2ac 4322 devel extra python-nevow_0.9.0_all.deb
+ 448da1a077f99fe696ddf5a5454ebf11 430736 devel extra python2.4-nevow_0.9.0_all.deb

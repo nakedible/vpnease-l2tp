@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# monitoring server crontab entry
+# placed in cron-hourly
+
+set -e
+
+/usr/bin/vpneaseadmin mon check silent 1> /dev/null 2> /dev/null
+
+exit 0

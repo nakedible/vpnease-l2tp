@@ -1,0 +1,5 @@
+Title: netfilter hooks for layer 2
+Author:	Marc Zyngier <Marc.Zyngier@evidian.com>
+Status: Testing
+Requires: linux == 2.4
+Repository: extra

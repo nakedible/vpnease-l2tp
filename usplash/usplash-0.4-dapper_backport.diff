@@ -1,0 +1,24 @@
+diff -ru usplash-0.4.orig/debian/control usplash-0.4/debian/control
+--- usplash-0.4.orig/debian/control	2007-02-10 10:10:31.000000000 +0200
++++ usplash-0.4/debian/control	2007-02-21 09:48:58.000000000 +0200
+@@ -23,7 +23,7 @@
+ 
+ Package: libusplash-dev
+ Architecture: any
+-Depends: ${shlibs:Depends}, libusplash0 (= ${source:Version})
++Depends: ${shlibs:Depends}, libusplash0
+ Description: Theming support files for usplash
+  This package contains everything you need to make a usplash theme,
+  including an example
+diff -ru usplash-0.4.orig/debian/rules usplash-0.4/debian/rules
+--- usplash-0.4.orig/debian/rules	2007-02-06 15:43:18.000000000 +0200
++++ usplash-0.4/debian/rules	2007-02-21 09:46:25.000000000 +0200
+@@ -23,6 +23,8 @@
+ 	BACKEND =
+ endif
+ 
++BACKEND = 
++
+ # Build the package
+ build: build-stamp
+ build-stamp:

@@ -1,0 +1,692 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Unused</n:invisible></title>
+  </head>
+  <body>
+    <n:invisible n:pattern="pagetitle">Encryption and Standards</n:invisible>
+
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Overview</h1>
+
+        <p>
+          <n:invisible n:macro="productname" /> uses only the highest quality encryption standards
+          to minimize risks to your data.  The VPN standard used by <n:invisible n:macro="productname" /> is
+          called <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/L2TP">L2TP/IPsec</a>,
+          which relies on <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/IPsec">IPsec</a>
+          encryption for protection of all VPN
+          traffic, including user names, passwords, and actual data traffic.
+          IPsec is a widely-deployed Internet standard for encryption and authentication
+          of IP packets, and has been used commercially for almost 10 years.
+          It uses the best available, up-to-date encryption algorithms,
+          and provides military-grade encryption for end users.
+        </p>
+
+        <p>
+          In more detail, the L2TP/IPsec standard consists of three protocol layers.
+          The lowest one, IPsec, provides all traffic security functions for all VPN
+          data packets between the client and the server.  The L2TP
+          (Layer 2 Tunneling Protocol) runs on top of IPsec and provides a reliable
+          transport mechanism for sending data units of the highest layer protocol, PPP
+          (Point-to-Point Protocol).  The IPsec layer protects all L2TP and PPP data,
+          resulting in a highly secure VPN system, despite minimal security
+          functions of L2TP and PPP.
+        </p>
+      </div> <!-- overview -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Cryptographic and Compression Algorithms Used</h1>
+
+        <p>
+          The cryptographic algorithms used in IPsec encryption and authentication
+          depend on the client platform.  The client and server negotiate the most
+          secure available algorithms during IPsec connection setup.  Data compression
+          is provided by the PPP protocol, with a similar automatic negotiation
+          mechanism.
+        </p>
+      
+        <div class="cb-note">
+          <p>
+            <n:invisible n:macro="productname" /> will automatically use
+            the strongest encryption and best compression algorithm available for
+            a particular VPN client, without any configuration.
+          </p>
+        </div>
+
+        <p>
+          IPsec employs one set of algorithms for connection negotiation (using the
+          Internet Key Exchange, <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/IKE">IKE</a>, protocol)
+          and another set for encryption of all
+          data traffic, including user names and passwords
+          (using the IPsec <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/IPsec">ESP</a> protocol).
+          The following algorithms are used by currently supported client platforms:
+        </p>
+  
+        <table border="0" cellpadding="0" cellspacing="0" id="encryption-and-standards-table">
+
+          <tr>
+            <th>Operating system</th>
+            <th>IKE encr</th>
+            <th>IKE auth</th>
+            <th>IKE D-H</th>
+            <th>ESP encr</th>
+            <th>ESP auth</th>
+            <th>ESP D-H</th>
+            <th>Compression</th>
+          </tr>
+
+          <tr>
+            <td>Windows 2000</td>
+            <td>3DES-CBC</td>
+            <td>SHA1</td>
+            <td>1024-bit MODP</td>
+            <td>3DES-CBC</td>
+            <td>HMAC-MD5-96</td>
+            <td>no</td>
+            <td>PPP MPPC</td>
+          </tr>
+      
+          <tr>
+            <td class="cb-alt">Windows XP w/o SP</td>
+            <td class="cb-alt">3DES-CBC</td>
+            <td class="cb-alt">SHA1</td>
+            <td class="cb-alt">1024-bit MODP</td>
+            <td class="cb-alt">3DES-CBC</td>
+            <td class="cb-alt">HMAC-MD5-96</td>
+            <td class="cb-alt">no</td>
+            <td class="cb-alt">PPP MPPC</td>
+          </tr>
+
+          <tr>
+            <td>Windows XP SP1(a)</td>
+            <td>3DES-CBC</td>
+            <td>SHA1</td>
+            <td>1024-bit MODP</td>
+            <td>3DES-CBC</td>
+            <td>HMAC-MD5-96</td>
+            <td>no</td>
+            <td>PPP MPPC</td>
+          </tr>
+      
+          <!-- NAT-T update no longer available for SP1.
+          <tr>
+            <td class="cb-alt">Windows XP SP1(a) + NAT-T</td>
+            <td class="cb-alt">3DES-CBC</td>
+            <td class="cb-alt">SHA1</td>
+            <td class="cb-alt">2048-bit MODP</td>
+            <td class="cb-alt">3DES-CBC</td>
+            <td class="cb-alt">HMAC-MD5-96</td>
+            <td class="cb-alt">no</td>
+            <td class="cb-alt">PPP MPPC</td>
+          </tr>
+          -->
+      
+          <tr>
+            <td>Windows XP SP2</td>
+            <td>3DES-CBC</td>
+            <td>SHA1</td>
+            <td>2048-bit MODP</td>
+            <td>3DES-CBC</td>
+            <td>HMAC-SHA1-96</td>
+            <td>no</td>
+            <td>PPP MPPC</td>
+          </tr>
+
+          <tr>
+            <td>Windows Vista</td>
+            <td>3DES-CBC</td>
+            <td>SHA1</td>
+            <td>2048-bit MODP</td>
+            <td>AES-128-CBC</td>
+            <td>HMAC-SHA1-96</td>
+            <td>no</td>
+            <td>PPP MPPC</td> <!-- if ccp enabled from client -->
+          </tr>
+      
+          <tr>
+            <td>Windows Mobile</td>
+            <td>3DES-CBC</td>
+            <td>SHA1</td>
+            <td>2048-bit MODP</td>
+            <td>3DES-CBC</td>
+            <td>HMAC-SHA1-96</td>
+            <td>no</td>
+            <td>PPP MPPC</td> <!-- if ccp enabled from client -->
+          </tr>
+      
+          <tr>
+            <td class="cb-alt">Mac Os X 10.3.x (Panther)</td>
+            <td class="cb-alt">3DES-CBC</td>
+            <td class="cb-alt">SHA1</td>
+            <td class="cb-alt">1024-bit MODP</td>
+            <td class="cb-alt">AES-128-CBC</td>
+            <td class="cb-alt">HMAC-SHA1-96</td>
+            <td class="cb-alt">no</td>
+            <td class="cb-alt">no</td>
+          </tr>
+
+          <tr>
+            <td>Mac Os X 10.4.x (Tiger)</td> <!-- 10.4.7 build 8J135 -->
+            <td>3DES-CBC</td>
+            <td>SHA1</td>
+            <td>1024-bit MODP</td>
+            <td>AES-128-CBC</td>
+            <td>HMAC-SHA1-96</td>
+            <td>no</td>
+            <td>no</td>
+          </tr>
+      
+          <tr>
+            <td>Mac Os X 10.5.x (Leopard)</td>
+            <td>3DES-CBC</td>
+            <td>SHA1</td>
+            <td>1024-bit MODP</td>
+            <td>AES-128-CBC</td>
+            <td>HMAC-SHA1-96</td>
+            <td>no</td>
+            <td>no</td>
+          </tr>
+      
+          <tr>
+            <td class="cb-alt"><n:invisible n:macro="productname" /> Linux Client</td>
+            <td class="cb-alt">AES-128-CBC</td>
+            <td class="cb-alt">SHA1</td>
+            <td class="cb-alt">1536-bit MODP</td>
+            <td class="cb-alt">AES-128-CBC</td>
+            <td class="cb-alt">HMAC-SHA1-96</td>
+            <td class="cb-alt">no</td>
+            <td class="cb-alt">PPP Deflate</td>
+          </tr>
+      
+          <tr>
+            <td><n:invisible n:macro="productname" /> Nokia Internet Table Client</td>
+            <td>AES-128-CBC</td>
+            <td>SHA1</td>
+            <td>1536-bit MODP</td>
+            <td>AES-128-CBC</td>
+            <td>HMAC-SHA1-96</td>
+            <td>no</td>
+            <td>PPP Deflate</td>
+          </tr>
+      
+          <tr>
+            <td class="cb-alt"><n:invisible n:macro="productname" /> Site-to-Site Connections</td>
+            <td class="cb-alt">AES-128-CBC</td>
+            <td class="cb-alt">SHA1</td>
+            <td class="cb-alt">1536-bit MODP</td>
+            <td class="cb-alt">AES-128-CBC</td>
+            <td class="cb-alt">HMAC-SHA1-96</td>
+            <td class="cb-alt">no</td>
+            <td class="cb-alt">PPP Deflate</td>
+          </tr>
+        </table>
+
+        <p>
+          Abbreviations and terms used in the table:
+        </p>
+        <ul>
+          <li>IKE encr: IKE (key exchange) encryption algorithm</li>
+          <li>IKE auth: IKE (key exchange) authentication and integrity protection algorithm
+              (pre-shared key authentication used in all cases)</li>
+          <li>IKE D-H: IKE (key exchange) Diffie-Hellman group used to generate
+              a random session key for IKE encryption algorithm</li>
+          <li>ESP encr: IPsec ESP (bulk data) encryption algorithm</li>
+          <li>ESP auth: IPsec ESP (bulk data) authentication and integrity protection algorithm</li>
+          <li>ESP D-H: Diffie-Hellman group used by IKE
+              to generate a random session key for IPsec ESP (bulk data) encryption algorithm
+              (if not used, IKE uses the same Diffie-Hellman computation used for IKE encryption)</li>
+          <li>Compression: PPP layer compression algorithm</li>
+        </ul>
+
+        <p>
+        Other platforms, such as Linux, will use one of the following algorithms:
+        </p>
+        <ul>
+          <li>IKE encryption: 3DES-CBC or AES-128-CBC</li>
+          <li>IKE authentication: MD5 or SHA1 (with pre-shared key)</li>
+          <li>IKE Diffie-Hellman: 1024-bit, 1536-bit, 2048-bit or larger MODP</li>
+          <li>ESP encryption: 3DES-CBC or AES-128-CBC</li>
+          <li>ESP authentication: HMAC-MD5-96 or HMAC-SHA1-96</li>
+          <li>ESP Diffie-Hellman: none, or 1024-bit, 1536-bit, 2048-bit or larger MODP</li>
+          <li>Compression: PPP Deflate or MPPC/MPPE (or none); IPcomp not supported</li>
+        </ul>
+      </div> <!-- algorithms -->
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+        <h1 class="cb-heading">Related Standards</h1>
+
+        <p>
+          For more information on the related standards, see:
+        </p>
+        <ul>
+          <li>
+            IPsec
+            <ul>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2401.txt">RFC 2401</a>:
+                Security Architecture for the Internet Protocol
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2402.txt">RFC 2402</a>:
+                IP Authentication Header
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2403.txt">RFC 2403</a>:
+                The Use of HMAC-MD5-96 within ESP and AH
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2404.txt">RFC 2404</a>:
+                The Use of HMAC-SHA-1-96 within ESP and AH
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2405.txt">RFC 2405</a>:
+                The ESP DES-CBC Cipher Algorithm With Explicit IV
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2406.txt">RFC 2406</a>:
+                IP Encapsulating Security Payload (ESP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2407.txt">RFC 2407</a>:
+                The Internet IP Security Domain of Interpretation for ISAKMP
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2408.txt">RFC 2408</a>:
+                Internet Security Association and Key Management Protocol (ISAKMP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>:
+                The Internet Key Exchange (IKE)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2410.txt">RFC 2410</a>:
+                The NULL Encryption Algorithm and Its Use With IPsec
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2411.txt">RFC 2411</a>:
+                IP Security Document Roadmap
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2451.txt">RFC 2451</a>:
+                The ESP CBC-Mode Cipher Algorithms
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2857.txt">RFC 2857</a>:
+                The Use of HMAC-RIPEMD-160-96 within ESP and AH
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>:
+                More Modular Exponential (MODP) Diffie-Hellman groups for Internet Key Exchange (IKE)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3554.txt">RFC 3554</a>:
+                On the Use of Stream Control Transmission Protocol (SCTP) with IPsec
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3566.txt">RFC 3566</a>:
+                The AES-XCBC-MAC-96 Algorithm and Its Use With IPsec
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3602.txt">RFC 3602</a>:
+                The AES-CBC Cipher Algorithm and Its Use with IPsec
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3664.txt">RFC 3664</a>:
+                The AES-XCBC-PRF-128 Algorithm for the Internet Key Exchange Protocol (IKE)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3686.txt">RFC 3686</a>:
+                Using Advanced Encryption Standard (AES) Counter Mode With IPsec Encapsulating Security Payload (ESP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3706.txt">RFC 3706</a>:
+                A Traffic-Based Method of Detecting Dead Internet Key Exchange (IKE) Peers
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3715.txt">RFC 3715</a>:
+                IPsec-Network Address Translation (NAT) Compatibility Requirements
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3947.txt">RFC 3947</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-00.txt">draft-ietf-ipsec-nat-t-ike-00</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-01.txt">draft-ietf-ipsec-nat-t-ike-01</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-02.txt">draft-ietf-ipsec-nat-t-ike-02</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-03.txt">draft-ietf-ipsec-nat-t-ike-03</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-04.txt">draft-ietf-ipsec-nat-t-ike-04</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-05.txt">draft-ietf-ipsec-nat-t-ike-05</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-06.txt">draft-ietf-ipsec-nat-t-ike-06</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-07.txt">draft-ietf-ipsec-nat-t-ike-07</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-nat-t-ike-08.txt">draft-ietf-ipsec-nat-t-ike-08</a>:
+                Negotiation of NAT-Traversal in the IKE
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3948.txt">RFC 3948</a>:
+                UDP Encapsulation of IPsec ESP Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-00.txt">draft-ietf-ipsec-udp-encaps-00</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-01.txt">draft-ietf-ipsec-udp-encaps-01</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-02.txt">draft-ietf-ipsec-udp-encaps-02</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-03.txt">draft-ietf-ipsec-udp-encaps-03</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-04.txt">draft-ietf-ipsec-udp-encaps-04</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-05.txt">draft-ietf-ipsec-udp-encaps-05</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-06.txt">draft-ietf-ipsec-udp-encaps-06</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-07.txt">draft-ietf-ipsec-udp-encaps-07</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-08.txt">draft-ietf-ipsec-udp-encaps-08</a>:
+                UDP Encapsulation of IPsec Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.watersprings.org/pub/id/draft-ietf-ipsec-udp-encaps-09.txt">draft-ietf-ipsec-udp-encaps-09</a>:
+                UDP Encapsulation of IPsec ESP Packets
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4106.txt">RFC 4106</a>:
+                The Use of Galois/Counter Mode (GCM) in IPsec Encapsulating Security Payload (ESP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4301.txt">RFC 4301</a>:
+                Security Architecture for the Internet Protocol
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4302.txt">RFC 4302</a>:
+                IP Authentication Header
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4303.txt">RFC 4303</a>:
+                IP Encapsulating Security Payload (ESP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4304.txt">RFC 4304</a>:
+                Extended Sequence Number (ESN) Addendum to IPsec Domain of Interpretation (DOI) for Internet Security Association and Key Management Protocol (ISAKMP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4305.txt">RFC 4305</a>:
+                Cryptographic Algorithm Implementation Requirements for Encapsulating Security Payload (ESP) and Authentication Header (AH)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4306.txt">RFC 4306</a>:
+                Internet Key Exchange (IKEv2) Protocol
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4307.txt">RFC 4307</a>:
+                Cryptographic Algorithms for Use in the Internet Key Exchange Version 2 (IKEv2)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4308.txt">RFC 4308</a>:
+                Cryptographic Suites for IPsec
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc4309.txt">RFC 4309</a>:
+                Using Advanced Encryption Standard (AES) CCM Mode with IPsec Encapsulating Security Payload (ESP)
+              </li>
+
+            </ul>
+          </li>
+          <li>
+            L2TP
+            <ul>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2661.txt">RFC 2661</a>:
+                Layer Two Tunneling Protocol "L2TP"
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2888.txt">RFC 2888</a>:
+                Secure Remote Access with L2TP
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3193.txt">RFC 3193</a>:
+                Securing L2TP using IPsec
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3437.txt">RFC 3437</a>:
+                Layer-Two Tunneling Protocol Extensions for PPP Link Control Protocol Negotiation
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3931.txt">RFC 3931</a>:
+                Layer Two Tunneling Protocol - Version 3 (L2TPv3)
+              </li>
+
+            </ul>
+          </li>
+          <li>
+            PPP
+            <ul>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc1661.txt">RFC 1661</a>:
+                The Point-to-Point Protocol (PPP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2153.txt">RFC 2153</a>:
+                PPP Vendor Extensions
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc1332.txt">RFC 1332</a>:
+                The PPP Internet Protocol Control Protocol (IPCP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc1570.txt">RFC 1570</a>:
+                PPP LCP Extensions
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc1877.txt">RFC 1877</a>:
+                PPP Internet Protocol Control Protocol Extensions for Name Server Addresses
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc1962.txt">RFC 1962</a>:
+                The PPP Compression Control Protocol (CCP)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc1979.txt">RFC 1979</a>:
+                PPP Deflate Protocol
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2118.txt">RFC 2118</a>:
+                Microsoft Point-To-Point Compression (MPPC) Protocol
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2433.txt">RFC 2433</a>:
+                Microsoft PPP CHAP Extensions
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2759.txt">RFC 2759</a>:
+                Microsoft PPP CHAP Extensions, Version 2
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3078.txt">RFC 3078</a>:
+                Microsoft Point-To-Point Encryption (MPPE) Protocol
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3079.txt">RFC 3079</a>:
+                Deriving Keys for use with Microsoft Point-to-Point Encryption (MPPE)
+              </li>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc3772.txt">RFC 3772</a>:
+                Point-to-Point Protocol (PPP) Vendor Protocol
+              </li>
+
+            </ul>
+          </li>
+          <li>
+            RADIUS
+            <ul>
+
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2865.txt">RFC 2865</a>:
+                Remote Authentication Dial In User Service (RADIUS)
+              </li>
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.ietf.org/rfc/rfc2548.txt">RFC 2548</a>:
+                Microsoft Vendor-specific RADIUS Attributes
+              </li>
+
+            </ul>
+          </li>
+          <li>
+            SNMP
+            <ul>
+              <li>SNMPv1 and SNMPv2c</li>
+            </ul>
+          </li>
+          <li>
+            Miscellaneous
+            <ul>
+              <li>
+                <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/L2TP">L2TP</a> (Wikipedia)
+              </li>
+              <li>
+                <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/IPsec">IPsec</a> (Wikipedia)
+              </li>
+              <li>
+                <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/RADIUS">RADIUS</a> (Wikipedia)
+              </li>
+              <li>
+                <a class="cb-external" target="_blank" href="http://en.wikipedia.org/wiki/SNMP">SNMP</a> (Wikipedia)
+              </li>
+              <li>
+                <a class="cb-external" target="_blank" href="http://www.jacco2.dds.nl/networking/freeswan-l2tp.html">Using a Linux L2TP/IPsec VPN server</a> (Jacco de Leeuw)
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <p>
+          <n:invisible n:macro="productname" /> currently supports the IPsec standard
+          specified in RFCs 24xx.  The newer RFC 43xx version is not currently supported
+          due to lack of compatible clients.  When newer operating systems start supporting
+          the newer standard versions, <n:invisible n:macro="productname" /> will be
+          automatically updated to support the newer standard versions.
+        </p>
+      </div> <!-- related standards -->
+
+    </n:invisible>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/spdb_struct.c
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/spdb_struct.c	2006-12-03 15:54:11.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/spdb_struct.c	2006-12-03 15:54:18.000000000 +0200
+@@ -1007,6 +1007,24 @@
+ 			ugh = "NULL encrypter with seen OAKLEY_ENCRYPTION_ALGORITHM";
+ 		        break;
+ 		    }
++
++#if 1 /* l2tp-workaround: Windows Vista beta 2 sends AES key length
++       * in wrong byte order: 0x0080 => 0x8000.
++       * Here is a generic fix for insanely large keylengths assuming that
++       * they are caused by peer byte-order problems.
++       * This works for keylengths of >=16 and <=4096 bits regardless of
++       * byte order and for all other keylengths the check produces garbage.
++       */
++		    {
++			u_int16_t v = (u_int16_t)val;
++			if (v > 4096 || v < 16) {
++			    val = htons(v);
++			} else {
++			    val = v;
++			}
++		    }
++#endif
++
+ 		    /*
+ 		     * check if this keylen is compatible with 
+ 		     * specified alg_info_ike
+@@ -1547,7 +1565,24 @@
+ 		attrs->auth = val;
+ 		break;
+ 	    case KEY_LENGTH | ISAKMP_ATTR_AF_TV:
++#if 1 /* l2tp-workaround: Windows Vista beta 2 sends AES key length
++       * in wrong byte order: 0x0080 => 0x8000.
++       * Here is a generic fix for insanely large keylengths assuming that
++       * they are caused by peer byte-order problems.
++       * This works for keylengths of >=16 and <=4096 bits regardless of
++       * byte order and for all other keylengths the check produces garbage.
++       */
++		{
++		    u_int16_t v = (u_int16_t)val;
++		    if (v > 4096 || v < 16) {
++			attrs->key_len = htons(v);
++		    } else {
++			attrs->key_len = v;
++		    }
++		}
++#else
+ 		attrs->key_len = val;
++#endif
+ 		break;
+ 	    case KEY_ROUNDS | ISAKMP_ATTR_AF_TV:
+ 		attrs->key_rounds = val;

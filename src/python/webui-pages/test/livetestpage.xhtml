@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title><n:invisible n:pattern="title">Live Test Page</n:invisible></title>
+    <link rel="stylesheet" type="text/css" href="static/common.css" />
+    <n:invisible n:pattern="head">
+      <n:invisible n:render="liveglue" />
+    </n:invisible>
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+      <p>
+	Live Test Page
+      </p>
+      <p>
+      <n:invisible n:render="debug" />
+      </p>
+    </n:invisible>
+  </body>
+</html>

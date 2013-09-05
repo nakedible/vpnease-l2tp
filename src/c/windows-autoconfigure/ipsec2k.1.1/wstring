@@ -1,0 +1,39 @@
+#ifndef _WSTRING_H_
+#define _WSTRING_H_
+
+#include <string>
+#include <stdlib.h>
+#include <assert.h>
+
+//
+// wstring = basic_string<wchar>
+//
+using std::wstring;
+
+//
+// conversion
+//
+inline wstring to_wstring(const char * p, size_t size)
+{
+  wstring  res;
+  size_t   len;
+
+  len = ::mbstowcs(0, p, size);
+  assert(len >= 0);
+  res.resize(len);
+  ::mbstowcs((wchar_t*)res.data(), p, size);
+  return res;
+}
+
+inline wstring to_wstring(const char * p)
+{
+  return to_wstring(p, strlen(p));
+}
+
+inline wstring to_wstring(const std::string & s)
+{
+  return to_wstring(s.data(), s.size());
+}
+
+
+#endif

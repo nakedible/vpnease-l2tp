@@ -1,0 +1,20 @@
+Format: 1.7
+Date: Sat,  7 Oct 2006 19:45:26 +0300
+Source: libnetfilter-conntrack
+Binary: libnetfilter-conntrack-dev libnetfilter-conntrack1
+Architecture: source
+Version: 0.0.31
+Distribution: unstable
+Urgency: low
+Maintainer: Max Kellermann <max@duempel.org>
+Changed-By: root <root@dapper-builder-2>
+Description: 
+ libnetfilter-conntrack-dev - Netfilter netlink-conntrack library
+ libnetfilter-conntrack1 - Netfilter netlink-conntrack library
+Changes: 
+ libnetfilter-conntrack (0.0.31) unstable; urgency=low
+ .
+   * new upstream release
+Files: 
+ 26c243774ea1cd09dd7ddea17fac06f9 386 libs optional libnetfilter-conntrack_0.0.31.dsc
+ 6426d7f7961c3c91ed20147d96a8d227 333975 libs optional libnetfilter-conntrack_0.0.31.tar.gz

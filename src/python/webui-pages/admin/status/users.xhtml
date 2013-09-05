@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <br />
+        <br />
+        <n:invisible n:render="usergraph" />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <n:invisible n:render="include_history">
+          <n:invisible n:render="userlist_with_retired" />
+        </n:invisible>
+        <n:invisible n:render="dont_include_history">
+          <n:invisible n:render="userlist" />
+        </n:invisible>
+        <br />
+        <n:invisible n:render="history_switch_link" />
+      </div>
+
+      <n:invisible n:render="selected_device_maybe">
+        <h3>Details for Selected User</h3>
+
+        <table class="key-value">
+          <tr>
+            <th>Username</th>
+            <td><n:invisible n:render="selected_device_username" /></td>
+          </tr>
+          <tr>
+            <th>Connection start time</th>
+            <td><n:invisible n:render="selected_device_connection_start" /></td>
+          </tr>
+          <tr>
+            <th>Connection end time</th>
+            <td><n:invisible n:render="selected_device_connection_end" /></td>
+          </tr>
+          <tr>
+            <th>Connection duration</th>
+            <td><n:invisible n:render="selected_device_connection_duration" /></td>
+          </tr>
+          <tr>
+            <th>Remote address</th>
+            <td><n:invisible n:render="selected_device_remote_address" /></td>
+          </tr>
+          <tr>
+            <th>VPN address</th>
+            <td><n:invisible n:render="selected_device_ppp_address" /><br /><n:invisible n:render="selected_device_ppp_address_reverse" /></td>
+          </tr>
+          <tr>
+            <th>Linux PPP device</th>
+            <td><n:invisible n:render="selected_device_ppp_device" /></td>
+          </tr>
+          <tr>
+            <th>Linux PPP MTU</th>
+            <td><n:invisible n:render="selected_device_ppp_mtu" /></td>
+          </tr>
+          <tr>
+            <th>Total bytes transferred</th>
+            <td><n:invisible n:render="selected_device_total_rxtx_bytes" /></td>
+          </tr>
+          <tr>
+            <th>Total packets transferred</th>
+            <td><n:invisible n:render="selected_device_total_rxtx_packets" /></td>
+          </tr>
+          <tr>
+            <th>Current transfer rate</th>
+            <td><n:invisible n:render="selected_device_current_rxtx" /></td>
+          </tr>
+          <tr>
+            <th>Maximum transfer rate</th>
+            <td><n:invisible n:render="selected_device_maximum_rxtx" /></td>
+          </tr>
+          <tr>
+            <th>Pre-shared key</th>
+            <td><n:invisible n:render="selected_device_psk" /></td>
+          </tr>
+          <tr>
+            <th>NAT traversal (NAT-T) support</th>
+            <td><n:invisible n:render="selected_device_natt_ok" /></td>
+          </tr>
+          <tr>
+            <th>Connection restricted by license</th>
+            <td><n:invisible n:render="selected_device_connection_restricted" /></td>
+          </tr>
+        </table>
+
+      </n:invisible>
+
+    </n:invisible>
+
+    <n:invisible n:pattern="contexthelp">
+    <div class="context-help-items">
+        <div id="ctx-page">
+            <div class="ctx-title">
+            </div>
+            <div class="ctx-content">
+            </div>
+        </div>
+    </div>
+    </n:invisible>
+  </body>
+</html>

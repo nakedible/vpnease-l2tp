@@ -1,0 +1,30 @@
+#!/bin/sh
+
+PREREQ="framebuffer"
+prereqs()
+{
+	echo "$PREREQ"
+}
+case $1 in
+# get pre-requisites
+prereqs)
+	prereqs
+	exit 0
+	;;
+esac
+
+SPLASH=false;
+VESA=false;
+
+for x in $(cat /proc/cmdline); do
+	case $x in
+	splash*)
+		SPLASH=true;
+		;;
+	esac
+done
+
+if [ $SPLASH = "true" ]; then
+	/sbin/usplash -c &
+	sleep 1
+fi

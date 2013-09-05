@@ -1,0 +1,77 @@
+CONFIG_IP_NF_TARGET_LOG
+IP set support
+CONFIG_IP_NF_SET
+  This option adds IP set support to the kernel.
+
+  In order to define and use sets, you need userlevel utilities: an
+  iptables binary which knows about IP sets and the program ipset(8), 
+  by which you can define and setup the sets themselves. 
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+set match support
+CONFIG_IP_NF_MATCH_SET
+  This option adds IP set match support.
+  You need the ipset utility to create and set up the sets.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+SET target support
+CONFIG_IP_NF_TARGET_SET
+  This option adds IP set target support.
+  You need the ipset utility to create and set up the sets.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+ipmap set type support
+CONFIG_IP_NF_SET_IPMAP
+  This option adds the ipmap set type support.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+macipmap set type support
+CONFIG_IP_NF_SET_MACIPMAP
+  This option adds the macipmap set type support.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+portmap set type support
+CONFIG_IP_NF_SET_PORTMAP
+  This option adds the portmap set type support.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+iphash set type support
+CONFIG_IP_NF_SET_IPHASH
+  This option adds the iphash set type support.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+nethash set type support
+CONFIG_IP_NF_SET_NETHASH
+  This option adds the nethash set type support.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+ipporthash set type support
+CONFIG_IP_NF_SET_IPPORTHASH
+  This option adds the ipporthash set type support.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+
+iptree set type support
+CONFIG_IP_NF_SET_IPTREE
+  This option adds the iptree set type support.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+

@@ -1,0 +1,156 @@
+#! /usr/bin/perl -w
+use strict;
+
+use File::Find;
+
+if (@ARGV != 1) {
+    print STDERR "Usage: $0 unpacked-console-keymaps-*-udeb\n";
+    exit 1;
+}
+
+my $consoledata = $ARGV[0];
+
+my %keymaps;
+open LIST, '<:utf8', "$consoledata/usr/share/console/lists/console-keymaps-at"
+    or die "$0: can't open $consoledata/usr/share/console/lists/console-keymaps-at";
+while (<LIST>) {
+    chomp;
+    next if /^#/ or not /\S/;
+    my ($locales, $keymap, $keymapname) = split /\t/;
+    $keymapname =~ s/\s+$//;
+    if ($keymapname =~ /^German \(/) {
+	$keymapname =~ s/ \(.*//;
+    }
+    $keymaps{$keymap} = [[split(':', $locales)], $keymapname];
+}
+
+binmode STDOUT, ':utf8';
+
+print <<EOF;
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% Keyboard mappings.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+/.km.name    0 def
+/.km.map     1 def
+/.km.display 2 def
+/.km.locales 3 def
+
+EOF
+
+my %pad_map = (
+    0x00 => 'keyIns',
+    0x01 => 'keyEnd',
+    0x02 => 'keyDown',
+    0x03 => 'keyPgDown',
+    0x04 => 'keyLeft',
+    0x06 => 'keyRight',
+    0x07 => 'keyHome',
+    0x08 => 'keyUp',
+    0x09 => 'keyPgUp',
+    0x10 => 'keyDel',
+);
+
+my %spec_map = (
+    0x01 => 'keyEnter',
+);
+
+sub map_keycode ($) {
+    my $type = ($_[0] >> 8) & 0xff;
+    my $code = $_[0] & 0xff;
+    if ($type == 0xf0 or $type == 0xfb) {
+	# KT_LATIN or KT_LETTER
+	if ($code == 0x08 or $code == 0x7f) {
+	    # Backspace vs. Delete is a tricky case. gfxboot understands
+	    # both (0x08 for delete-left, keyDel for delete-right), so we
+	    # should map 0x7f to KeyDel. Unfortunately many keymaps only
+	    # appear to define Delete, and the situation in console-data
+	    # seems to be quite confused. Accordingly, we just ignore both
+	    # and let gfxboot work it out for itself, which seems to work
+	    # better.
+	    return '0x00';
+	} else {
+	    return sprintf '0x%02x', $code;
+	}
+    } elsif ($type == 0xf2) {
+	# KT_SPEC
+	return $spec_map{$code} if exists $spec_map{$code};
+    } elsif ($type == 0xf3) {
+	# KT_PAD
+	return $pad_map{$code} if exists $pad_map{$code};
+    }
+    return '0x00';
+}
+
+my %keycodes;
+for my $keymap (sort { $a cmp $b } keys %keymaps) {
+    my $file;
+    find(
+	sub {
+	    return if defined $file;
+	    return if not -f;
+	    (my $name = $_) =~ s/\..*//;
+	    $file = $File::Find::name if $name eq $keymap;
+	},
+	$consoledata
+    );
+    next unless defined $file;
+    my $table = `sudo loadkeys -m \Q$file\E 2>/dev/null`;
+    for my $map (qw(plain shift altgr)) {
+	if ($table =~ /${map}_map\[\] = {\s*(.*?)(?:\s|,)*}/s) {
+	    $keycodes{$keymap}{$map} =
+		[map { map_keycode(hex) } split(/,\s+/, $1)];
+	} else {
+	    $keycodes{$keymap}{$map} = [('0x00') x 128];
+	}
+    }
+}
+
+my %keymapfunc;
+
+for my $keymap (sort { $a cmp $b } keys %keymaps) {
+    my $found = 0;
+    for my $index (0 .. 127) {
+	# Never map keys that are special when unshifted; this caused
+	# problems for the French keymap, and made it difficult in general
+	# to get out of a keymap you selected by accident.
+	if ($keycodes{us}{plain}[$index] =~ /^key/) {
+	    next;
+	}
+	my $plain = $keycodes{$keymap}{plain}[$index];
+	my $shift = $keycodes{$keymap}{shift}[$index];
+	my $altgr = $keycodes{$keymap}{altgr}[$index];
+	if ($plain eq $keycodes{us}{plain}[$index] and
+	    $shift eq $keycodes{us}{shift}[$index] and
+	    $altgr eq $keycodes{us}{altgr}[$index]) {
+	    next;
+	}
+	if (($plain ne '0x00') or ($shift ne '0x00') or ($altgr ne '0x00')) {
+	    print "/keymap.$keymap [\n" unless $found;
+	    $found = 1;
+	    my $hexindex = sprintf '0x%02x', $index;
+	    print "  [ $hexindex $plain $shift $altgr ]\n";
+	}
+    }
+    if ($found) {
+	$keymapfunc{$keymap} = "keymap.$keymap";
+    } else {
+	$keymapfunc{$keymap} = '.undef';
+    }
+    print "] def\n\n" if $found;
+}
+
+print "/keymaps [\n";
+for my $keymap (sort { $keymaps{$a}[1] cmp $keymaps{$b}[1] } keys %keymaps) {
+    my $localelist = join(' ', map(qq{"$_"}, @{$keymaps{$keymap}[0]}));
+    print qq{  [ "$keymap" $keymapfunc{$keymap} "$keymaps{$keymap}[1]" [ $localelist ] ]\n};
+}
+print "] def\n\n";
+
+print <<EOF;
+% for safety
+/config.keymap keymaps 0 get def
+EOF

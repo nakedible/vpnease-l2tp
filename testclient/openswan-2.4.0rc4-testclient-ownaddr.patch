@@ -1,0 +1,12 @@
+diff -ru openswan-2.4.0rc4.orig/programs/pluto/connections.c openswan-2.4.0rc4/programs/pluto/connections.c
+--- openswan-2.4.0rc4.orig/programs/pluto/connections.c	2005-08-25 04:13:48.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/connections.c	2006-08-17 22:14:15.000000000 +0300
+@@ -3389,6 +3389,8 @@
+ 
+ 	    for (src = &c->spd; src; src=src->next)
+ 	    {
++		if (!sameaddr(&(src->this.host_addr), &(srd->this.host_addr)))
++		    continue;
+ 		if (!samesubnet(&src->that.client, &srd->that.client))
+ 		    continue;
+ 		if (src->that.protocol != srd->that.protocol)

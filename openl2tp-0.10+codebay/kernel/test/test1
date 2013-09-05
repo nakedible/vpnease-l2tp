@@ -1,0 +1,16 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+set -e
+
+# echo "Test 1: Load and unload module"
+
+./subtest-load
+
+echo "Sleeping"
+sleep 1
+
+./subtest-unload
+
+echo "Done"

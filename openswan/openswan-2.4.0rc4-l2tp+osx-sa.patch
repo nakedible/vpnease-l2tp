@@ -1,0 +1,1519 @@
+diff -ru openswan-2.4.0rc4/debian/changelog openswan-2.4.0rc4_l2tp+osx/debian/changelog
+--- openswan-2.4.0rc4/debian/changelog	2005-01-19 19:09:15.000000000 +0200
++++ openswan-2.4.0rc4_l2tp+osx/debian/changelog	2005-11-25 11:11:53.000000000 +0200
+@@ -1,3 +1,9 @@
++openswan (2.4.0rc4-1) unstable; urgency=low
++
++  * New upstream release.
++
++ -- Mikko Varso <support@stinghorn.com>  Fri, 14 Oct 2005 15:48:52 +0200
++
+ openswan (2.3.0-1) unstable; urgency=low
+ 
+   * New upstream release.
+diff -ru openswan-2.4.0rc4/debian/rules openswan-2.4.0rc4_l2tp+osx/debian/rules
+--- openswan-2.4.0rc4/debian/rules	2005-01-19 19:09:16.000000000 +0200
++++ openswan-2.4.0rc4_l2tp+osx/debian/rules	2005-10-28 19:15:38.000000000 +0300
+@@ -196,8 +196,9 @@
+ 
+ 	# This creates the NAT-T patch that can be used on the kernel tree 
+ 	# even with openswan-modules-source.
+-	make nattpatch > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
+-        
++	echo "Not created." > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
++	#make nattpatch > $(BUILDDIR)/modules/openswan/debian/nat-t.diff
++
+ 	tar -C $(BUILDDIR) -c modules/ | gzip -9 > \
+         	"$(PKGDIR)/usr/src/openswan-modules.tar.gz"
+ 		
+diff -ru openswan-2.4.0rc4/include/ietf_constants.h openswan-2.4.0rc4_l2tp+osx/include/ietf_constants.h
+--- openswan-2.4.0rc4/include/ietf_constants.h	2005-06-23 04:45:55.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/include/ietf_constants.h	2005-11-24 15:45:41.000000000 +0200
+@@ -270,6 +270,8 @@
+ #define ISAKMP_NEXT_D          12	/* Delete */
+ #define ISAKMP_NEXT_VID        13	/* Vendor ID */
+ #define ISAKMP_NEXT_ATTR       14       /* Mode config Attribute */
++#define ISAKMP_NEXT_NATD_OSX   15       /* NAT-Traversal: NAT-D (osx) */
++#define ISAKMP_NEXT_NATOA_OSX  16       /* NAT-Traversal: NAT-OA (osx) */
+ #define ISAKMP_NEXT_NATD_RFC   20       /* NAT-Traversal: NAT-D (rfc) */
+ #define ISAKMP_NEXT_NATOA_RFC  21       /* NAT-Traversal: NAT-OA (rfc) */
+ #define ISAKMP_NEXT_ROOF       22	/* roof on payload types */
+Only in openswan-2.4.0rc4_l2tp+osx/include: ietf_constants.h~
+diff -ru openswan-2.4.0rc4/include/pluto_constants.h openswan-2.4.0rc4_l2tp+osx/include/pluto_constants.h
+--- openswan-2.4.0rc4/include/pluto_constants.h	2005-08-19 20:53:03.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/include/pluto_constants.h	2005-12-05 10:02:02.173454352 +0200
+@@ -284,7 +284,13 @@
+ #define IS_PHASE1(s) (STATE_MAIN_R0 <= (s) && (s) <= STATE_AGGR_R2)
+ #define IS_PHASE15(s) (STATE_XAUTH_R0 <= (s) && (s) <= STATE_XAUTH_I1)
+ #define IS_QUICK(s) (STATE_QUICK_R0 <= (s) && (s) <= STATE_QUICK_R2)
+-#define IS_ISAKMP_ENCRYPTED(s)     (STATE_MAIN_R2 <= (s) && STATE_AGGR_R0!=(s) && STATE_AGGR_I1 != (s))
++/* l2tp-workaround: backported openswan-2.4.x fix for
++   "NISCC Vulnerability Advisory 273756/NISCC/ISAKMP" http://www.openswan.org/niscc2/
++   openswan CVS commit reference:
++   "Diff for /openswan-2/include/pluto_constants.h between version 1.33.2.2 and 1.33.2.3"
++   msg: "oulu c09 isakmp test case info-sa-notification-message-type-and-data  Ee-notify-msg-type, ee-string  306  4313  4618"
++*/
++#define IS_ISAKMP_ENCRYPTED(s)     (STATE_MAIN_R2 <= (s) && STATE_AGGR_R0!=(s) && STATE_AGGR_I1 != (s) && STATE_INFO != (s))
+ #define IS_ISAKMP_AUTHENTICATED(s) (STATE_MAIN_R3 <= (s))
+ #define IS_ISAKMP_SA_ESTABLISHED(s) ((s) == STATE_MAIN_R3 || (s) == STATE_MAIN_I4 \
+ 				  || (s) == STATE_AGGR_I2 || (s) == STATE_AGGR_R2 \
+Only in openswan-2.4.0rc4_l2tp+osx/include: pluto_constants.h~
+diff -ru openswan-2.4.0rc4/lib/libopenswan/constants.c openswan-2.4.0rc4_l2tp+osx/lib/libopenswan/constants.c
+--- openswan-2.4.0rc4/lib/libopenswan/constants.c	2005-06-23 04:45:55.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/lib/libopenswan/constants.c	2005-11-24 16:00:53.000000000 +0200
+@@ -123,8 +123,8 @@
+ 	"ISAKMP_NEXT_D",
+ 	"ISAKMP_NEXT_VID",
+ 	"ISAKMP_NEXT_MODECFG",  /* 14 */
+-	"ISAKMP_NEXT_15",
+-	"ISAKMP_NEXT_16",
++	"ISAKMP_NEXT_NAT-D-OSX",
++	"ISAKMP_NEXT_NAT-OA-OSX",
+ 	"ISAKMP_NEXT_17",
+ 	"ISAKMP_NEXT_18",
+ 	"ISAKMP_NEXT_19",
+@@ -917,7 +917,11 @@
+   "draft-ietf-ipsec-nat-t-ike-00/01",    /* 0 */
+   "draft-ietf-ipsec-nat-t-ike-02/03",
+   "RFC 3947 (NAT-Traversal)",
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++  "draft-ietf-ipsec-nat-t-ike",          /* 3 */
++#else
+   "3",                                   /* 3 */
++#endif
+   "4",   "5",   "6",   "7", 
+   "8",   "9",   "10",  "11",
+   "12",  "13",  "14",  "15",
+diff -ru openswan-2.4.0rc4/lib/libopenswan/packet.c openswan-2.4.0rc4_l2tp+osx/lib/libopenswan/packet.c
+--- openswan-2.4.0rc4/lib/libopenswan/packet.c	2005-01-23 20:53:56.000000000 +0200
++++ openswan-2.4.0rc4_l2tp+osx/lib/libopenswan/packet.c	2005-11-24 16:48:41.000000000 +0200
+@@ -631,8 +631,13 @@
+     &isakmp_delete_desc,		/* 12 ISAKMP_NEXT_D (Delete) */
+     &isakmp_vendor_id_desc,		/* 13 ISAKMP_NEXT_VID (Vendor ID) */
+     &isakmp_attr_desc,                  /* 14 ISAKMP_NEXT_ATTR (ModeCfg)  */
++#if 1 /* l2tp-workaround: include the OSX nat-d */
++    &isakmp_nat_d,                      /* 15 */
++    &isakmp_nat_oa,                     /* 16 */
++#else
+     NULL,                               /* 15 */
+     NULL,                               /* 16 */
++#endif
+     NULL,                               /* 17 */
+     NULL,                               /* 18 */
+     NULL,                               /* 19 */
+Only in openswan-2.4.0rc4_l2tp+osx/lib/libopenswan: portof.c~
+Only in openswan-2.4.0rc4_l2tp+osx/lib/libopenswan: subnettot.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/Makefile openswan-2.4.0rc4_l2tp+osx/programs/pluto/Makefile
+--- openswan-2.4.0rc4/programs/pluto/Makefile	2005-08-12 04:12:38.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/Makefile	2005-10-28 19:15:38.000000000 +0300
+@@ -201,7 +201,9 @@
+ endif
+ 
+ ifeq ($(USE_NAT_TRAVERSAL),true)
+-NAT_DEFS=-DNAT_TRAVERSAL -DVIRTUAL_IP 
++# l2tp-workaround: disable virtual IP support
++#NAT_DEFS=-DNAT_TRAVERSAL -DVIRTUAL_IP 
++NAT_DEFS=-DNAT_TRAVERSAL
+ endif
+ 
+ ifeq ($(USE_NAT_TRAVERSAL_TRANSPORT_MODE),true)
+diff -ru openswan-2.4.0rc4/programs/pluto/connections.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/connections.c
+--- openswan-2.4.0rc4/programs/pluto/connections.c	2005-10-13 11:08:17.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/connections.c	2005-11-30 17:14:56.000000000 +0200
+@@ -44,12 +44,12 @@
+ #ifdef XAUTH_USEPAM
+ #include <security/pam_appl.h>
+ #endif
++#include "state.h"
+ #include "connections.h"	/* needs id.h */
+ #include "pending.h"
+ #include "foodgroups.h"
+ #include "packet.h"
+ #include "demux.h"	/* needs packet.h */
+-#include "state.h"
+ #include "timer.h"
+ #include "ipsec_doi.h"	/* needs demux.h and state.h */
+ #include "server.h"
+@@ -158,9 +158,26 @@
+      * but other ports are not.
+      * So if any port==4500, then set it to 500.
+      */
++
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: find_host_pair (before): %s:%d %s:%d\n",
++		 (addrtot(myaddr, 0, b1, sizeof(b1)), b1),
++		 myport,
++		 (addrtot(hisaddr, 0, b2, sizeof(b2)), b2),
++		 hisport);
++#endif
++
+     if(myport == 4500) myport=500;
+     if(hisport== 4500) hisport=500;
+ 
++#if L2TP_DEBUG
++    openswan_log("l2tp-debug: find_host_pair (after): %s:%d %s:%d\n",
++		 (addrtot(myaddr, 0, b1, sizeof(b1)), b1),
++		 myport,
++		 (addrtot(hisaddr, 0, b2, sizeof(b2)), b2),
++		 hisport);
++#endif
++
+     for (prev = NULL, p = host_pairs; p != NULL; prev = p, p = p->next)
+     {
+ 	DBG(DBG_CONTROLMORE
+@@ -169,13 +186,24 @@
+ 		      , p->me.host_port
+ 		      , (addrtot(&p->him.addr, 0, b2, sizeof(b2)), b2)
+ 		      , p->him.host_port));
+-		   
++
++#if L2TP_DEBUG
++	openswan_log("l2tp-debug: find_host_pair: comparing to %s:%d %s:%d\n"
++		     , (addrtot(&p->me.addr, 0, b1, sizeof(b1)), b1)
++		     , p->me.host_port
++		     , (addrtot(&p->him.addr, 0, b2, sizeof(b2)), b2)
++		     , p->him.host_port);
++#endif
++
+ 	if (sameaddr(&p->me.addr, myaddr)
+ 	    && (!p->me.host_port_specific || p->me.host_port == myport)
+ 	    && sameaddr(&p->him.addr, hisaddr)
+ 	    && (!p->him.host_port_specific || p->him.host_port == hisport)
+ 	    )
+ 	{
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: found match");
++#endif
+ 	    if (prev != NULL)
+ 	    {
+ 		prev->next = p->next;	/* remove p from list */
+@@ -228,7 +256,15 @@
+ 		      , (addrtot(&c->spd.that.host_addr, 0, b2,sizeof(b2)), b2)
+ 		      , c->spd.that.host_port
+ 		      , (hp && hp->connections) ? hp->connections->name : "none"));
+-		   
++
++#if L2TP_DEBUG
++	openswan_log("l2tp-debug: connect_to_host_pair: %s:%d %s:%d -> hp:%s\n"
++		     , (addrtot(&c->spd.this.host_addr, 0, b1,sizeof(b1)), b1)
++		     , c->spd.this.host_port
++		     , (addrtot(&c->spd.that.host_addr, 0, b2,sizeof(b2)), b2)
++		     , c->spd.that.host_port
++		     , (hp && hp->connections) ? hp->connections->name : "none");
++#endif
+ 	if (hp == NULL)
+ 	{
+ 	    /* no suitable host_pair -- build one */
+@@ -238,6 +274,18 @@
+ #ifdef NAT_TRAVERSAL
+ 	    hp->me.host_port = nat_traversal_enabled ? pluto_port : c->spd.this.host_port;
+ 	    hp->him.host_port = nat_traversal_enabled ? pluto_port : c->spd.that.host_port;
++
++#if 1
++	    /* l2tp-workaround: must enable "host_port_specific" here so
++	     * that find_host_pair will not match later for the different
++	     * client which comes from behind the same NAT. */
++	    /* Note: this requires a fix in find_host_pair, too to match
++	     * with the wildcard connections.
++	     */
++	    openswan_log ("l2tp-workaround: enabling port specific lookup for host-pair: c: 0x%p, remote port: %d", c, hp->him.host_port);
++	    hp->him.host_port_specific = TRUE;
++#endif
++
+ #else
+ 	    hp->me.host_port = c->spd.this.host_port;
+  	    hp->him.host_port = c->spd.that.host_port;
+@@ -1312,6 +1360,11 @@
+ 	    c->spd.that = t;
+ 	}
+ 
++	/* XXX this is dubious, maybe should not use port-specific anywhere. */
++#if 1 /* l2tp-workaround: enable host-port-specific on remote end. */
++	c->spd.that.host_port_specific = TRUE;
++#endif
++
+ 	c->spd.next = NULL;
+ 	c->spd.reqid = gen_reqid();
+ 
+@@ -1499,6 +1552,11 @@
+  *
+  * Note that instantiate can only deal with a single SPD/eroute.
+  */
++
++/* l2tp-workaround: note that port numbers must be used in instantiation
++ * because there is no other way to get two Road Warrior connections to
++ * work from behind the same NAT. This is taken care in connect_to_host_pair.
++ */
+ static struct connection *
+ instantiate(struct connection *c, const ip_address *him
+ 	    , const struct id *his_id)
+@@ -1541,6 +1599,7 @@
+      * (whack will not allow nexthop to be elided in RW case.)
+      */
+     default_end(&d->spd.this, &d->spd.that.host_addr);
++
+     d->spd.next = NULL;
+     d->spd.reqid = gen_reqid();
+ 
+@@ -3319,6 +3378,66 @@
+  */
+ bool uniqueIDs = FALSE;	/* --uniqueids? */
+ 
++#if 1 /* l2tp-workaround: release conflicting connections.*/
++void
++release_old_connections(struct state *st)
++{
++    struct connection *d;
++    struct connection *c = st ? st->st_connection : NULL;
++    char b1[ADDRTOT_BUF],b2[ADDRTOT_BUF];
++
++    if (c == NULL) return;
++
++    openswan_log("l2tp-workaround: release conflicting connections when ISAKMP SA is established for new connection: %s", c->name);
++
++    for (d = connections; d != NULL; ) {
++	struct connection *next = d->ac_next;
++
++	if (c == d) {
++	    d = next;
++	    continue;
++	}
++	if (d->kind != CK_INSTANCE) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore connection with kind: %d",
++			 d->kind);
++#endif
++	    d = next;
++	    continue;
++	}
++
++	if (!sameaddr(&c->spd.that.host_addr, &d->spd.that.host_addr)) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore by remote address");
++#endif
++	    d = next;
++	    continue;
++	}
++
++	if (c->spd.that.host_port != d->spd.that.host_port) {
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: ignore by remote port");
++#endif
++	    d = next;
++	    continue;
++	}
++
++	openswan_log("l2tp-workaround: releasing connection: %s [%s:%d]",
++		     d->name, ip_str(&(d->spd.that.host_addr)),
++		     d->spd.that.host_port);
++
++	/* Note: unroute_connection cannot unroute used
++	   connection, could maybe use sag_eroute instead
++	   but seems like it is not needed. */
++	/*unroute_connection(d);*/
++	/*(void) sag_eroute(st, d->spd, ERO_DELETE, "delete");*/
++	release_connection(d, FALSE);
++	d = next;
++    }
++}
++#endif
++
++
+ void
+ ISAKMP_SA_established(struct connection *c, so_serial_t serial)
+ {
+@@ -3391,6 +3510,11 @@
+ 	    {
+ 		if (!samesubnet(&src->that.client, &srd->that.client))
+ 		    continue;
++#if 1 /* l2tp-workaround: include client ports in owner check */
++		if (portof(&src->that.client.addr) !=
++		    portof(&srd->that.client.addr))
++		    continue;
++#endif
+ 		if (src->that.protocol != srd->that.protocol)
+ 		    continue;
+ 		if (src->that.port != srd->that.port)
+@@ -3405,6 +3529,11 @@
+ 
+ 		if (!samesubnet(&src->this.client, &srd->this.client))
+ 		    continue;
++#if 1 /* l2tp-workaround: include client ports in owner check */
++		if (portof(&src->this.client.addr) !=
++		    portof(&srd->this.client.addr))
++		    continue;
++#endif
+ 		if (src->this.protocol != srd->this.protocol)
+ 		    continue;
+ 		if (src->this.port != srd->this.port)
+@@ -3585,6 +3714,8 @@
+  * less important than the disadvantages, so after FreeS/WAN 1.9, we
+  * don't do this.
+  */
++#if 1 /* l2tp-workaround: not needed anymore. */
++#else
+ struct connection *
+ refine_host_connection(const struct state *st, const struct id *peer_id
+ 		       , bool initiator, bool aggrmode, bool ignore_psk_change)
+@@ -3796,6 +3927,7 @@
+ 				       , c->spd.that.host_port);
+     }
+ }
++#endif
+ 
+ #ifdef VIRTUAL_IP
+ /**
+@@ -4113,8 +4245,8 @@
+ 	subnettot(our_net,  0, s1, sizeof(s1));
+ 	subnettot(peer_net, 0, d1, sizeof(d1));
+ 
+-	DBG_log("find_client_connection starting with %s"
+-	    , (c ? c->name : "(none)"));
++	DBG_log("find_client_connection starting with %s: #%d"
++	    , (c ? c->name : "(none)"), (c ? c->instance_serial : 0));
+ 	DBG_log("  looking for %s:%d/%d -> %s:%d/%d"
+ 	    , s1, our_protocol, our_port
+ 	    , d1, peer_protocol, peer_port);
+@@ -4164,9 +4296,11 @@
+ 	    , our_protocol, our_port, peer_protocol, peer_port);
+ 
+ 	DBG(DBG_CONTROLMORE,
+-	    DBG_log("  fc_try %s gives %s"
++	    DBG_log("  fc_try %s:#%d gives %s:#%d"
+ 		    , c->name
+-		    , (d ? d->name : "none"))
++		    , (c ? c->instance_serial : 0)
++		    , (d ? d->name : "none")
++		    , (d ? d->instance_serial : 0))
+ 	)
+ 
+ 	if (d == NULL)
+@@ -4221,8 +4355,8 @@
+     }
+ 
+     DBG(DBG_CONTROLMORE,
+-	DBG_log("  concluding with d = %s"
+-		, (d ? d->name : "none"))
++	DBG_log("  concluding with d = %s: #%d"
++		, (d ? d->name : "none"), (d ? d->instance_serial : 0))
+     )
+     return d;
+ }
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: connections.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/connections.h openswan-2.4.0rc4_l2tp+osx/programs/pluto/connections.h
+--- openswan-2.4.0rc4/programs/pluto/connections.h	2005-10-13 11:08:17.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/connections.h	2005-10-28 19:15:38.000000000 +0300
+@@ -283,6 +283,7 @@
+ extern bool uniqueIDs;	/* --uniqueids? */
+ extern void ISAKMP_SA_established(struct connection *c, so_serial_t serial);
+ 
++
+ #define his_id_was_instantiated(c) ((c)->kind == CK_INSTANCE \
+     && (id_is_ipaddr(&(c)->spd.that.id)? \
+     sameaddr(&(c)->spd.that.id.ip_addr, &(c)->spd.that.host_addr) : TRUE))
+diff -ru openswan-2.4.0rc4/programs/pluto/demux.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/demux.c
+--- openswan-2.4.0rc4/programs/pluto/demux.c	2005-08-19 20:52:42.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/demux.c	2005-11-24 19:18:34.000000000 +0200
+@@ -295,7 +295,7 @@
+     { STATE_MAIN_R1, STATE_MAIN_R2
+     , SMF_PSK_AUTH | SMF_DS_AUTH | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC), PT(KE)
++    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC) | P(NATD_OSX), PT(KE)
+ #else
+     , P(KE) | P(NONCE), P(VID) | P(CR), PT(KE)
+ #endif
+@@ -324,7 +324,7 @@
+     { STATE_MAIN_I2, STATE_MAIN_I3
+     , SMF_PSK_AUTH | SMF_DS_AUTH | SMF_INITIATOR | SMF_OUTPUT_ENCRYPTED | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC), PT(ID)
++    , P(KE) | P(NONCE), P(VID) | P(CR) | P(NATD_RFC) | P(NATD_OSX), PT(ID)
+ #else
+     , P(KE) | P(NONCE), P(VID) | P(CR), PT(ID)
+ #endif
+@@ -430,12 +430,12 @@
+      */
+     { STATE_AGGR_I1, STATE_AGGR_I2,
+       SMF_PSK_AUTH | SMF_INITIATOR | SMF_OUTPUT_ENCRYPTED | SMF_REPLY | SMF_RELEASE_PENDING_P2,
+-      P(SA) | P(KE) | P(NONCE) | P(ID) | P(HASH), P(VID) | P(NATD_RFC) , PT(NONE),
++      P(SA) | P(KE) | P(NONCE) | P(ID) | P(HASH), P(VID) | P(NATD_RFC) | P(NATD_OSX), PT(NONE),
+       EVENT_SA_REPLACE, aggr_inR1_outI2 },
+ 
+     { STATE_AGGR_I1, STATE_AGGR_I2,
+       SMF_DS_AUTH | SMF_INITIATOR | SMF_OUTPUT_ENCRYPTED | SMF_REPLY | SMF_RELEASE_PENDING_P2,
+-      P(SA) | P(KE) | P(NONCE) | P(ID) | P(SIG), P(VID) | P(NATD_RFC) , PT(NONE),
++      P(SA) | P(KE) | P(NONCE) | P(ID) | P(SIG), P(VID) | P(NATD_RFC) | P(NATD_OSX), PT(NONE),
+       EVENT_SA_REPLACE, aggr_inR1_outI2 },
+ 
+     /* STATE_AGGR_R1:
+@@ -496,7 +496,7 @@
+     { STATE_QUICK_R0, STATE_QUICK_R1
+     , SMF_ALL_AUTH | SMF_ENCRYPTED | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC), PT(NONE)
++    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC) | P(NATOA_OSX), PT(NONE)
+ #else
+     , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID), PT(NONE)
+ #endif
+@@ -511,7 +511,7 @@
+     { STATE_QUICK_I1, STATE_QUICK_I2
+     , SMF_ALL_AUTH | SMF_INITIATOR | SMF_ENCRYPTED | SMF_REPLY
+ #ifdef NAT_TRAVERSAL
+-    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC), PT(HASH)
++    , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID) | P(NATOA_RFC) | P(NATOA_OSX), PT(HASH)
+ #else
+     , P(HASH) | P(SA) | P(NONCE), /* P(SA) | */ P(KE) | P(ID), PT(HASH)
+ #endif
+@@ -2094,7 +2094,9 @@
+ 	    {
+ 		case ISAKMP_NEXT_NATD_RFC:
+ 		case ISAKMP_NEXT_NATOA_RFC:
+-		    if ((!st) || (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES))) {
++		case ISAKMP_NEXT_NATD_OSX:
++		case ISAKMP_NEXT_NATOA_OSX:
++		    if ((!st) || (!(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) && !(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES))) {
+ 			/*
+ 			 * don't accept NAT-D/NAT-OA reloc directly in message,
+ 			 * unless we're using NAT-T RFC
+@@ -2305,8 +2307,12 @@
+ 
+ 	for (p = md->chain[ISAKMP_NEXT_D]; p != NULL; p = p->next)
+ 	{
++#if 1 /* l2tp-workaround: ignore Delete SA notifications */
++	    openswan_log("l2tp-workaround: ignoring Delete SA notification.");
++#else
+ 	    accept_delete(st, md, p);
+ 	    DBG_cond_dump(DBG_PARSING, "del:", p->pbs.cur, pbs_left(&p->pbs));
++#endif
+ 	}
+ 
+ 	for (p = md->chain[ISAKMP_NEXT_VID]; p != NULL; p = p->next)
+@@ -2553,6 +2559,11 @@
+ 		     * Note: for ISAKMP SA, we let the negotiated
+ 		     * time stand (implemented by earlier logic).
+ 		     */
++
++#if 1 /* l2tp-workaround: let SA expire always. */
++		    openswan_log("l2tp-workaround: let SA expire always.");
++		    kind = EVENT_SA_EXPIRE;
++#else
+ 		    if (agreed_time
+ 		    && (c->policy & POLICY_DONT_REKEY))
+ 		    {
+@@ -2581,10 +2592,14 @@
+ 			    kind = EVENT_SA_EXPIRE;
+ 			}
+ 		    }
++#endif
+ 		    break;
+ 
+ 		case EVENT_NULL:	/* non-event */
+ 		case EVENT_REINIT_SECRET:	/* Refresh cookie secret */
++#if 1 /* l2tp-workaround: do not panic on every EVENT_REINIT_SECRET. */
++		    break;
++#endif
+ 		default:
+ 		    bad_case(kind);
+ 		}
+diff -ru openswan-2.4.0rc4/programs/pluto/ikev1_quick.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/ikev1_quick.c
+--- openswan-2.4.0rc4/programs/pluto/ikev1_quick.c	2005-05-18 22:29:29.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/ikev1_quick.c	2005-11-30 15:12:44.000000000 +0200
+@@ -878,6 +878,9 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1 /* l2tp-workaround: racoon does not accept NAT-OA and it is not
++	 actually needed, so prevent sending it. */
++#else
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)
+ 	&& (!(st->st_policy & POLICY_TUNNEL))
+ 	&& (st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME))) {
+@@ -888,6 +891,7 @@
+ 	}
+     }
+ #endif
++#endif
+ 
+     /* finish computing  HASH(1), inserting it in output */
+     (void) quick_mode_hash12(r_hashval, r_hash_start, rbody.cur
+@@ -1107,6 +1111,38 @@
+ 	b.his.proto = b.my.proto = 0;
+ 	b.his.port = b.my.port = 0;
+     }
++
++#if 1 /* l2tp-workaround: force addresses and ports always in connections. */
++    openswan_log ("l2tp-workaround: forcing addresses and ports in connection regardless of ID payloads.");
++
++    b.his.proto = 17;
++
++    /* XXX Must do something because the host_port always remains as 500.
++       This is a bit dubious, but should work anyways.*/
++    b.his.port = md->sender_port;
++    /* Cannot use this, but should inestigate further why not.. 
++       b.his.port = c->spd.that.host_port;*/
++
++    happy(addrtosubnet(&c->spd.that.host_addr, &b.his.net));
++    b.his.net.addr.u.v4.sin_port = htons(b.his.port);
++
++    b.my.proto = 17;
++    b.my.port = 1701;
++
++    happy(addrtosubnet(&c->spd.this.host_addr, &b.my.net));
++    b.my.net.addr.u.v4.sin_port = htons(b.my.port);
++
++    {
++	char my[SUBNETTOT_BUF],his[SUBNETTOT_BUF];
++	subnettot(&b.his.net, 0, his, sizeof(his));
++	subnettot(&b.my.net,  0, my, sizeof(my));
++	openswan_log ("l2tp-workaround: peer: net: %s, proto: %d, port: %d",
++		      his, b.his.proto, b.his.port);
++	openswan_log ("l2tp-workaround: host: net: %s, proto: %d, port: %d",
++		      my, b.my.proto, b.my.port);
++    }
++#endif
++
+     b.step = vos_start;
+     b.md = md;
+     b.new_iv_len = p1st->st_new_iv_len;
+@@ -1564,6 +1600,10 @@
+ 	}
+ 	else if (p != c)
+ 	{
++#if L2TP_DEBUG /* l2tp-workaround: debug. */
++	    openswan_log ("l2tp-debug: better connection found, be careful here!");
++#endif
++
+ 	    /* We've got a better connection: it can support the
+ 	     * specified clients.  But it may need instantiation.
+ 	     */
+@@ -1625,13 +1665,30 @@
+ 			, NULL, &our_client, &his_client);
+ 		}
+ 		else
+-		{
++		    {
+ 		    /* Plain Road Warrior:
+ 		     * instantiate, carrying over authenticated peer ID
+ 		     */
++#if L2TP_DEBUG /* l2tp-workaround: debug. */
++		    {
++			char that_id[512];
++			char his_subnet[32];
++
++			idtoa(&c->spd.that.id, that_id, 512);
++			subnettot(his_net, 0, his_subnet, 32);
++
++			openswan_log ("l2tp-debug: instantiating new rw connection in quick_inI1_outR1: p: 0x%p, that.host_addr: %s, his_net: %s, that.id: %s",
++				      p, ip_str(&c->spd.that.host_addr),
++				      his_subnet, that_id);
++		    }
++#endif
+ 		    p = rw_instantiate(p, &c->spd.that.host_addr,
+ 				       his_net, 
+ 				       &c->spd.that.id);
++		    
++#if L2TP_DEBUG
++		    openswan_log("l2tp-debug: instantiated connection: 0x%p", p);
++#endif
+ 		}
+ 	    }
+ #ifdef DEBUG
+@@ -1739,11 +1796,15 @@
+ 	else {
+ 	    st->hidden_variables.st_nat_traversal = 0;
+ 	}
++#if 1 /* l2tp-workaround: racoon does not accept NAT-OA and it is not
++	 actually needed, so prevent sending it. */
++#else
+ 	if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	    (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)) {
+ 	    nat_traversal_natoa_lookup(md);
+ 	}
+ #endif
++#endif
+ 
+ 	passert(st->st_connection != NULL);
+ 	passert(st->st_connection == c);
+@@ -1910,6 +1971,9 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1 /* l2tp-workaround: racoon does not accept NAT-OA and it is not
++	 actually needed, so prevent sending it. */
++#else
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA) &&
+ 	(st->hidden_variables.st_nat_traversal & LELEM(NAT_TRAVERSAL_NAT_BHND_ME)) &&
+ 	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT)) {
+@@ -1918,6 +1982,7 @@
+ 	    return STF_INTERNAL_ERROR;
+ 	}
+     }
++#endif
+     if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	(st->st_esp.attrs.encapsulation == ENCAPSULATION_MODE_TRANSPORT) &&
+ 	(c->spd.that.has_client)) {
+@@ -1934,13 +1999,16 @@
+     /* Derive new keying material */
+     compute_keymats(st);
+ 
++#if 1 /* l2tp-workaround: this is wrong: install SAs after the last message. */
+     /* Tell the kernel to establish the new inbound SA
+      * (unless the commit bit is set -- which we don't support).
+      * We do this before any state updating so that
+      * failure won't look like success.
+      */
++#else
+     if (!install_inbound_ipsec_sa(st))
+ 	return STF_INTERNAL_ERROR;	/* ??? we may be partly committed */
++#endif
+     
+     /* encrypt message, except for fixed part of header */
+     
+@@ -2031,11 +2099,15 @@
+     }
+ 
+ #ifdef NAT_TRAVERSAL
++#if 1 /* l2tp-workaround: racoon does not accept NAT-OA and it is not
++	 actually needed, so prevent sending it. */
++#else
+ 	if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+ 	    (st->hidden_variables.st_nat_traversal & NAT_T_WITH_NATOA)) {
+ 	    nat_traversal_natoa_lookup(md);
+ 	}
+ #endif
++#endif
+ 
+     /* ??? We used to copy the accepted proposal into the state, but it was
+      * never used.  From sa_pd->pbs.start, length pbs_room(&sa_pd->pbs).
+@@ -2063,6 +2135,7 @@
+      * We do this before any state updating so that
+      * failure won't look like success.
+      */
++
+     if (!install_ipsec_sa(st, TRUE))
+ 	return STF_INTERNAL_ERROR;
+ 
+@@ -2117,8 +2190,13 @@
+      * We do this before any state updating so that
+      * failure won't look like success.
+      */
++#if 1 /* l2tp-workaround: install both SAs here. */
++    if (!install_ipsec_sa(st, TRUE))
++	return STF_INTERNAL_ERROR;
++#else
+     if (!install_ipsec_sa(st, FALSE))
+ 	return STF_INTERNAL_ERROR;
++#endif
+ 
+     {
+       DBG(DBG_CONTROLMORE, DBG_log("inI2: instance %s[%ld], setting newest_ipsec_sa to #%ld (was #%ld) (spd.eroute=#%ld)"
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: ikev1_quick.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/ipsec_doi.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/ipsec_doi.c
+--- openswan-2.4.0rc4/programs/pluto/ipsec_doi.c	2005-10-13 11:08:17.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/ipsec_doi.c	2005-12-01 15:55:19.000000000 +0200
+@@ -511,6 +511,11 @@
+ 	*r_hash_start;	/* start of what is to be hashed */
+     bool isakmp_sa = FALSE;
+ 
++#if 1 /* l2tp-workaround: do not ever send Delete SA messages */
++    openswan_log("l2tp-workaround: not sending Delete SA messages.");
++    return;
++#endif
++
+     /* If there are IPsec SA's related to this state struct... */
+     if (IS_IPSEC_SA_ESTABLISHED(st->st_state))
+     {
+@@ -1881,6 +1886,11 @@
+ 		     , enum_show(&ident_names, id->isaid_idtype), buf);
+     }
+ 
++#if 1 /* l2tp-workaround: never switch connections, certificates not used. */
++    openswan_log("l2tp-workaround: do not switch connections based on id payload.");
++    return TRUE;
++#else
++
+      /* check for certificates */
+      decode_cert(md);
+ 
+@@ -1965,6 +1975,7 @@
+     }
+ 
+     return TRUE;
++#endif
+ }
+ 
+ /* State Transition Functions.
+@@ -2038,6 +2049,20 @@
+ 			     , &md->sender
+ 			     , md->sender_port);
+ 
++#if L2TP_DEBUG
++    {
++	if (c != NULL) {
++	    openswan_log("l2tp-debug: MI1: find connection returned: 0x%p !, not instantiating from template.", c);
++	}
++    }
++#endif
++
++#if 1 /* l2tp-workaround: in mainmode start we always want to use
++	 a wilcard connection. */
++    openswan_log("l2tp-workaround: use wildcard connection always in mainmode start.");
++    c = NULL;
++#endif
++
+     if (c == NULL)
+     {
+ 	/* See if a wildcarded connection can be found.
+@@ -2054,7 +2079,15 @@
+ 	    struct connection *d;
+ 	    d = find_host_connection(&md->iface->ip_addr, pluto_port
+ 				     , (ip_address*)NULL
++				     /* XXXX this is propably wrong !!!. */
++#if 1 /* l2tp-workaround: no port in wildcard connections anyways.
++	 and this does not work otherwise anymore because we have
++	 flagged the remote end with host_port_specific.
++      */
++				     , 500);
++#else
+ 				     , md->sender_port);
++#endif
+ 
+ 	    for (; d != NULL; d = d->hp_next)
+ 	    {
+@@ -2100,8 +2133,28 @@
+ 	    /* Create a temporary connection that is a copy of this one.
+ 	     * His ID isn't declared yet.
+ 	     */
++#if L2TP_DEBUG
++	    {
++		openswan_log("l2tp-debug: instantiating: c: 0x%p, sender: %s, this_port_specific: %d, that_port_specific: %d",
++			     c,
++			     ip_str(&md->sender),
++			     c->spd.this.host_port_specific,
++			     c->spd.that.host_port_specific);
++	    }
++#endif
+ 	    c = rw_instantiate(c, &md->sender
+ 			       , NULL, NULL);
++#if 1
++	    /* l2tp-workaround: update remote port here.
++	     */
++	    openswan_log("l2tp-workaround: updating host_port with sender_port after instantiation: c: 0x%p, this_port_specific: %d, that_port_specific: %d, %d -> %d\n",
++			 c,
++			 c->spd.this.host_port_specific,
++			 c->spd.that.host_port_specific,
++			 c->spd.that.host_port,
++			 md->sender_port);
++	    c->spd.that.host_port = md->sender_port;
++#endif
+ 	}
+     }
+ 
+@@ -2972,11 +3025,15 @@
+     size_t hash_len;
+     stf_status r = STF_OK;
+ 
++#if 1 /* l2tp-workaround: ignore peer ID in main mode. */
++    openswan_log("l2tp-workaround: ignoring peer ID in main mode (MR3 and MI3).");
++#else
+     /* ID Payload in.
+      * Note: this may switch the connection being used!
+      */
+     if (!decode_peer_id(md, initiator, aggrmode, FALSE))
+ 	return STF_FAIL + INVALID_ID_INFORMATION;
++#endif
+ 
+     /* Hash the ID Payload.
+      * main_mode_hash requires idpl->cur to be at end of payload
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: ipsec_doi.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/kernel.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel.c
+--- openswan-2.4.0rc4/programs/pluto/kernel.c	2005-07-13 04:54:14.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel.c	2005-12-01 15:58:58.000000000 +0200
+@@ -72,6 +72,10 @@
+ #include "nat_traversal.h"
+ #endif
+ 
++#if 1 /* l2tp-workaround: use this from connections.c */
++extern void release_old_connections(struct state *st);
++#endif
++
+ bool can_do_IPcomp = TRUE;  /* can system actually perform IPCOMP? */
+ 
+ /* test if the routes required for two different connections agree
+@@ -1532,6 +1536,10 @@
+     unsigned int proto = 0, satype = 0;
+     bool replace;
+ 
++#if 1 /* l2tp-workaround */
++    int rc;
++#endif
++
+     /* SPIs, saved for spigrouping or undoing, if necessary */
+     struct kernel_sa
+         said[EM_MAXRELSPIS],
+@@ -1915,8 +1923,12 @@
+         encapsulation = ENCAPSULATION_MODE_TUNNEL;
+     }
+ 
++#if 1 /* l2tp-workaround: may safely eroute inbound always: ignore possible errors. */
++    if (kernel_ops->inbound_eroute || (encapsulation == ENCAPSULATION_MODE_TUNNEL))
++#else
+     if (kernel_ops->inbound_eroute ? c->spd.eroute_owner == SOS_NOBODY
+         : encapsulation == ENCAPSULATION_MODE_TUNNEL)
++#endif
+     {
+         /* If inbound, and policy does not specifie DISABLEARRIVALCHECK,
+          * tell KLIPS to enforce the IP addresses appropriate for this tunnel.
+@@ -1927,7 +1939,11 @@
+         {
+             struct pfkey_proto_info proto_info[4];
+             int i = 0;
+-            
++
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: try to insert inbound policy.");
++#endif
++
+             if (st->st_ipcomp.present)
+             {
+                 proto_info[i].proto = IPPROTO_COMP;
+@@ -1963,15 +1979,41 @@
+                     proto_info[i].encapsulation = ENCAPSULATION_MODE_TRANSPORT;
+                 }
+             }
+-            
+-            /* MCR - should be passed a spd_eroute structure here */
+-            (void) raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
+-                              , &c->spd.this.host_addr, &c->spd.this.client
++
++#if 1 /* l2tp-workaround: use replace instead of add when the policy already exists. */
++	    if (c->spd.eroute_owner == SOS_NOBODY) {
++		rc = raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
++				, &c->spd.this.host_addr, &c->spd.this.client
++				, inner_spi, proto
++				, c->spd.this.protocol
++				, satype
++				, proto_info, 0
++				, ERO_ADD_INBOUND, "add inbound");
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: raw_eroute: add inbound: %d", rc);
++#endif
++	    } else {
++		rc = raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
++				, &c->spd.this.host_addr, &c->spd.this.client
++				, inner_spi, proto
++				, c->spd.this.protocol
++				, satype
++				, proto_info, 0
++				, ERO_REPLACE_INBOUND, "replace inbound");
++#if L2TP_DEBUG
++		openswan_log("l2tp-debug: raw_eroute: replace inbound: %d", rc);
++#endif
++	    }
++#else
++	    /* MCR - should be passed a spd_eroute structure here */
++	    (void) raw_eroute(&c->spd.that.host_addr, &c->spd.that.client
++			      , &c->spd.this.host_addr, &c->spd.this.client
+                               , inner_spi, proto
+                               , c->spd.this.protocol
+                               , satype
+                               , proto_info, 0
+                               , ERO_ADD_INBOUND, "add inbound");
++#endif /* 1 */
+         }
+     }
+ 
+@@ -2206,10 +2248,12 @@
+     }
+ }
+ 
++
+ /* Note: install_inbound_ipsec_sa is only used by the Responder.
+  * The Responder will subsequently use install_ipsec_sa for the outbound.
+  * The Initiator uses install_ipsec_sa to install both at once.
+  */
++#if 1 /* l2tp-workaround: not used anymore. */
+ bool
+ install_inbound_ipsec_sa(struct state *st)
+ {
+@@ -2246,6 +2290,10 @@
+         }
+     }
+ 
++#if 1 /* l2tp-workaround: release conflicting old connections before SA setup. */
++    release_old_connections(st);
++#endif
++
+     DBG(DBG_CONTROL, DBG_log("install_inbound_ipsec_sa() checking if we can route"));
+     /* check that we will be able to route and eroute */
+     switch (could_route(c))
+@@ -2266,6 +2314,7 @@
+     return TRUE;
+ #endif /* !KLIPS */
+ }
++#endif
+ 
+ /* Install a route and then a prospective shunt eroute or an SA group eroute.
+  * Assumption: could_route gave a go-ahead.
+@@ -2566,6 +2615,10 @@
+                              , inbound_also?
+                              "inbound and outbound" : "outbound only"));
+ 
++#if 1 /* l2tp-workaround: release conflicting old connections before SA setup. */
++    release_old_connections(st);
++#endif
++
+     switch (could_route(st->st_connection))
+     {
+     case route_easy:
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: kernel.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/kernel.h openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel.h
+--- openswan-2.4.0rc4/programs/pluto/kernel.h	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel.h	2005-12-01 16:01:05.000000000 +0200
+@@ -33,6 +33,8 @@
+ #define ERO_REPLACE	(SADB_X_ADDFLOW | (SADB_X_SAFLAGS_REPLACEFLOW << ERO_FLAG_SHIFT))
+ #define ERO_ADD_INBOUND	(SADB_X_ADDFLOW | (SADB_X_SAFLAGS_INFLOW << ERO_FLAG_SHIFT))
+ #define ERO_DEL_INBOUND	(SADB_X_DELFLOW | (SADB_X_SAFLAGS_INFLOW << ERO_FLAG_SHIFT))
++/* l2tp-workaround: inbound replace needed for safety. */
++#define ERO_REPLACE_INBOUND (SADB_X_ADDFLOW | (SADB_X_SAFLAGS_REPLACEFLOW << ERO_FLAG_SHIFT) | (SADB_X_SAFLAGS_INFLOW << ERO_FLAG_SHIFT))
+ 
+ struct pfkey_proto_info {
+ 	int proto;
+@@ -186,7 +188,10 @@
+ 				 , bool tunnel_mode);
+ extern ipsec_spi_t get_my_cpi(struct spd_route *sr, bool tunnel_mode);
+ 
++#if 1 /* l2tp-workaround: not used. */
++#else
+ extern bool install_inbound_ipsec_sa(struct state *st);
++#endif
+ extern bool install_ipsec_sa(struct state *st, bool inbound_also);
+ extern void delete_ipsec_sa(struct state *st, bool inbound_only);
+ extern bool route_and_eroute(struct connection *c
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: kernel.h~
+diff -ru openswan-2.4.0rc4/programs/pluto/kernel_netlink.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel_netlink.c
+--- openswan-2.4.0rc4/programs/pluto/kernel_netlink.c	2005-07-08 22:14:43.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel_netlink.c	2005-11-24 19:42:57.000000000 +0200
+@@ -793,6 +793,11 @@
+     unsigned transport_proto;
+     err_t ugh = NULL;
+ 
++#if 1 /* l2tp-workaround: never trigger. */
++    openswan_log("l2tp-workaround: netlink_acquire: skip.");
++    return;
++#endif
++
+     if (n->nlmsg_len < NLMSG_LENGTH(sizeof(*acquire)))
+     {
+ 	openswan_log("netlink_acquire got message with length %lu < %lu bytes; ignore message"
+diff -ru openswan-2.4.0rc4/programs/pluto/kernel_pfkey.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel_pfkey.c
+--- openswan-2.4.0rc4/programs/pluto/kernel_pfkey.c	2005-07-08 20:55:28.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/kernel_pfkey.c	2005-11-24 19:42:40.000000000 +0200
+@@ -393,6 +393,11 @@
+      * keep going as long as things are OK.
+      */
+ 
++#if 1 /* l2tp-workaround: never trigger. */
++    openswan_log("l2tp-workaround: process_pfkey_acquire: skip.");
++    return;
++#endif
++
+     if (buf->msg.sadb_msg_pid == 0	/* we only wish to hear from kernel */
+ 	&& !(ugh = src_proto == dst_proto? NULL : "src and dst protocols differ")
+ 	&& !(ugh = addrtypeof(src) == addrtypeof(dst)? NULL : "conflicting address types")
+diff -ru openswan-2.4.0rc4/programs/pluto/log.h openswan-2.4.0rc4_l2tp+osx/programs/pluto/log.h
+--- openswan-2.4.0rc4/programs/pluto/log.h	2004-10-21 22:13:37.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/log.h	2005-12-02 14:29:09.000000000 +0200
+@@ -15,6 +15,9 @@
+  * RCSID $Id: log.h,v 1.54 2004/10/21 19:13:37 mcr Exp $
+  */
+ 
++/*#define L2TP_DEBUG 1*/
++#define L2TP_DEBUG 0
++
+ #include <openswan.h>
+ 
+ #include "oswlog.h"
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: log.h~
+diff -ru openswan-2.4.0rc4/programs/pluto/nat_traversal.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/nat_traversal.c
+--- openswan-2.4.0rc4/programs/pluto/nat_traversal.c	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/nat_traversal.c	2005-12-02 13:56:54.000000000 +0200
+@@ -186,6 +186,8 @@
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_RFC);
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_IETF_03);
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_IETF_02);
++#if 1 /* l2tp-workaround: no need to include OSX natt vid here.. */
++#endif
+ 	}
+ 	if (nat_traversal_support_non_ike) {
+ 		if (r) r = out_vendorid(np, outs, VID_NATT_IETF_00);
+@@ -207,6 +209,11 @@
+ 		case VID_NATT_RFC:
+ 			return LELEM(NAT_TRAVERSAL_RFC);
+ 			break;
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++	        case VID_NATT_DRAFT_IETF_IPSEC_NAT_T_IKE:
++		        return LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE);
++			break;
++#endif
+ 	}
+ 	return 0;
+ }
+@@ -216,7 +223,7 @@
+ 	char hash[MAX_DIGEST_LEN];
+ 	struct payload_digest *p;
+ 	struct state *st = md->st;
+-	int i;
++	int i, found;
+ 
+ 	if (!st || !md->iface || !st->st_oakley.hasher) {
+ 		loglog(RC_LOG_SERIOUS, "NAT-Traversal: assert failed %s:%d",
+@@ -225,7 +232,7 @@
+ 	}
+ 
+ 	/** Count NAT-D **/
+-	for (p = md->chain[ISAKMP_NEXT_NATD_RFC], i=0;
++	for (p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC], i=0;
+ 	     p != NULL;
+ 	     p = p->next, i++);
+ 
+@@ -242,29 +249,47 @@
+ 	/**
+ 	 * First one with my IP & port
+ 	 */
+-	p = md->chain[ISAKMP_NEXT_NATD_RFC];
++	p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
+ 	_natd_hash(st->st_oakley.hasher, hash
+ 		   , st->st_icookie, st->st_rcookie
+ 		   , &(md->iface->ip_addr)
+ 		   , ntohs(st->st_localport));
+ 
+-	if (!( (pbs_left(&p->pbs) == st->st_oakley.hasher->hash_digest_len)
+-	       && (memcmp(p->pbs.cur, hash, st->st_oakley.hasher->hash_digest_len)==0)))
+-	{
+-#ifdef NAT_D_DEBUG
++#if 1 /* l2tp-workaround: check all NAT-D payloads. This helps with clients
++	 that send the NAT-D payloads in wrong order (eq. OSX Panther).
++	 Note that the other payload is not a problem: it will never match
++	 anyways because we use 'forceencaps' and deliberately break the
++	 peer NAT-D hash.
++      */
++	found=0;
++	for (i=0 ; p != NULL; p = p->next,i++) {
++		if ( (pbs_left(&p->pbs) == st->st_oakley.hasher->hash_digest_len) &&
++		     (memcmp(p->pbs.cur, hash, st->st_oakley.hasher->hash_digest_len)==0)
++		     ) {
++			found=i+1;
++		}
++	}
++
++	if (!found) {
+ 	    DBG(DBG_NATT,
+ 		DBG_log("NAT_TRAVERSAL_NAT_BHND_ME");
+ 		DBG_dump("expected NAT-D:", hash,
+ 			 st->st_oakley.hasher->hash_digest_len);
+-		DBG_dump("received NAT-D:", p->pbs.cur, pbs_left(&p->pbs));
++		p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
++		for (i=0 ; p != NULL; p = p->next) {
++		    DBG_dump("received NAT-D:", p->pbs.cur, pbs_left(&p->pbs));
++		}
+ 		);
+-#endif
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_ME);
++	} else {
++	    openswan_log ("l2tp-workaround: my NAT-D hash matched with hash number: %d", found);
+ 	}
++#endif
+ 
+ 	/**
+ 	 * The others with sender IP & port
+ 	 */
++	p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
+ 	_natd_hash(st->st_oakley.hasher, hash
+ 		   , st->st_icookie, st->st_rcookie
+ 		   , &(md->sender), ntohs(md->sender_port));
+@@ -279,17 +304,15 @@
+ 	}
+ 
+ 	if (!i) {
+-#ifdef NAT_D_DEBUG
+ 	    DBG(DBG_NATT,
+ 		DBG_log("NAT_TRAVERSAL_NAT_BHND_PEER");
+ 		DBG_dump("expected NAT-D:", hash,
+ 			 st->st_oakley.hasher->hash_digest_len);
+-		p = md->chain[ISAKMP_NEXT_NATD_RFC];
++		p = md->chain[(st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_RFC];
+ 		for (p = p->next, i=0 ; p != NULL; p = p->next) {
+ 		    DBG_dump("received NAT-D:", p->pbs.cur, pbs_left(&p->pbs));
+ 		}
+ 		);
+-#endif
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_PEER);
+ 	}
+ 	
+@@ -297,7 +320,13 @@
+ 
+ 	if(st->st_connection->forceencaps) {
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_PEER);
++#if 1 /* l2tp-workaround: do not break our nat-t hash: this is needed for
++	 interoperating with clients that do not wish to talk to servers
++	 behind NATs (eq. WinXP-sp2 without registry modification).
++	 Note: now we use 'forceencaps' option always. */
++#else
+ 	    st->hidden_variables.st_nat_traversal |= LELEM(NAT_TRAVERSAL_NAT_BHND_ME);
++#endif
+ 	}
+ }
+ 
+@@ -316,8 +345,8 @@
+ 
+ 	DBG(DBG_EMITTING, DBG_log("sending NATD payloads"));
+ 
+-	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES
+-	      ? ISAKMP_NEXT_NATD_RFC : ISAKMP_NEXT_NATD_DRAFTS);
++	nat_np = ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES)
++		  ? ISAKMP_NEXT_NATD_RFC : ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES) ? ISAKMP_NEXT_NATD_OSX : ISAKMP_NEXT_NATD_DRAFTS));
+ 	if (!out_modify_previous_np(nat_np, outs)) {
+ 		return FALSE;
+ 	}
+@@ -485,7 +514,7 @@
+ 	ip = &(st->st_localaddr);
+ 
+ 	nat_np = (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES
+-		  ? ISAKMP_NEXT_NATOA_RFC : ISAKMP_NEXT_NATOA_DRAFTS);
++		  ? ISAKMP_NEXT_NATOA_RFC : (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES ? ISAKMP_NEXT_NATOA_OSX : ISAKMP_NEXT_NATOA_DRAFTS));
+ 	if (!out_modify_previous_np(nat_np, outs)) {
+ 		return FALSE;
+ 	}
+@@ -537,6 +566,11 @@
+ 	case LELEM(NAT_TRAVERSAL_RFC):
+ 	    mth = natt_type_bitnames[2];
+ 	    break;
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++	case LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE):
++	    mth = natt_type_bitnames[3];
++	    break;
++#endif
+ 	}
+ 	switch (nt & NAT_T_DETECTED) {
+ 		case 0:
+@@ -746,6 +780,27 @@
+ 	}
+ 
+ 	if (md) {
++
++#if 1 /* l2tp-workaround: update remote port of client subnet, too.
++       * Note: the usage of connection structure to hold the st_remoteport
++       * and such has changed from 2.3.0 -> 2.4.0.
++       */
++		if (st->st_connection != NULL){
++			openswan_log("l2tp-workaround: update remote port in connection in NAT port lookup: %d -> %d", st->st_connection->spd.that.host_port, md->sender_port);
++			st->st_connection->spd.that.host_port = md->sender_port;
++			{
++				char client_subnet[32];
++				subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 32);
++				openswan_log("l2tp-workaround: client subnet before: %s", client_subnet);
++				setportof(htons(st->st_remoteport), &(st->st_connection->spd.that.client.addr));
++				subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 32);
++				openswan_log("l2tp-workaround: client subnet after: %s", client_subnet);
++			}
++		} else {
++			openswan_log("l2tp-workaround: new NAT mapping, but no connection!");
++		}
++#endif
++
+ 		/**
+ 		 * If source port has changed, update (including other
+ 		 * states and established kernel SA)
+@@ -761,6 +816,9 @@
+ 		 */
+ 		if (md->iface->port != st->st_localport)
+ 		{
++#if L2TP_DEBUG
++		    openswan_log("l2tp-debug: NAT-T: update local port: %d -> %d", st->st_localport, md->iface->port);
++#endif
+ 		    st->st_localport = md->iface->port;
+ 		    DBG(DBG_NATT,
+ 			DBG_log("NAT-T: updating local port to %d"
+@@ -783,6 +841,9 @@
+ 	    
+ 	    st->st_localport  = NAT_T_IKE_FLOAT_PORT;
+ 	    st->st_remoteport = NAT_T_IKE_FLOAT_PORT;
++#if 1 /* l2tp-workaround: no need to change client subnet port
++	 here because we never initiate. */
++#endif
+ 	    
+ 	    /*
+ 	     * Also update pending connections or they will be deleted if
+@@ -801,6 +862,10 @@
+ 	{
+ 	    char b1[ADDRTOT_BUF], b2[ADDRTOT_BUF];
+ 
++#if L2TP_DEBUG
++	    openswan_log("l2tp-debug: NAT-T: wrong interface definition: %d vs.. %d", st->st_localport, st->st_interface->port);
++#endif
++
+ 	    DBG(DBG_NATT,
+ 		DBG_log("NAT-T connection has wrong interface definition %s:%u vs %s:%u"
+ 			, (addrtot(&st->st_localaddr, 0, b1, sizeof(b1)),b1)
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: nat_traversal.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/nat_traversal.h openswan-2.4.0rc4_l2tp+osx/programs/pluto/nat_traversal.h
+--- openswan-2.4.0rc4/programs/pluto/nat_traversal.h	2005-01-23 21:17:25.000000000 +0200
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/nat_traversal.h	2005-11-24 16:32:05.000000000 +0200
+@@ -22,6 +22,9 @@
+ #define NAT_TRAVERSAL_IETF_00_01     1
+ #define NAT_TRAVERSAL_IETF_02_03     2
+ #define NAT_TRAVERSAL_RFC            3
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE 4
++#endif
+ 
+ #define NAT_TRAVERSAL_NAT_BHND_ME    30
+ #define NAT_TRAVERSAL_NAT_BHND_PEER  31
+@@ -31,30 +34,56 @@
+ /**
+  * NAT-Traversal methods which need NAT-D
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_NATD \
++	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
++	  LELEM(NAT_TRAVERSAL_RFC) | LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE) )
++#else
+ #define NAT_T_WITH_NATD \
+ 	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
+ 	LELEM(NAT_TRAVERSAL_RFC) )
++#endif
++
+ /**
+  * NAT-Traversal methods which need NAT-OA
+  */
++/* l2tp-workaround: draft-ietf-ipsec-nat-t-ike not included in NATOA
++   because NATOA not supported by OSX (which is the only one to use
++   draft-ietf-ipsec-nat-t-ike. */
+ #define NAT_T_WITH_NATOA \
+ 	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
+ 	LELEM(NAT_TRAVERSAL_RFC) )
++
+ /**
+  * NAT-Traversal methods which use NAT-KeepAlive
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_KA \
++	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
++	LELEM(NAT_TRAVERSAL_RFC) | LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE))
++#else
+ #define NAT_T_WITH_KA \
+ 	( LELEM(NAT_TRAVERSAL_IETF_00_01) | LELEM(NAT_TRAVERSAL_IETF_02_03) | \
+ 	LELEM(NAT_TRAVERSAL_RFC) )
++#endif
+ /**
+  * NAT-Traversal methods which use floating port
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_PORT_FLOATING \
++        ( LELEM(NAT_TRAVERSAL_IETF_02_03) | LELEM(NAT_TRAVERSAL_RFC) | LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE) )
++#else
+ #define NAT_T_WITH_PORT_FLOATING \
+ 	( LELEM(NAT_TRAVERSAL_IETF_02_03) | LELEM(NAT_TRAVERSAL_RFC) )
++#endif
+ 
+ /**
+  * NAT-Traversal methods which use officials values (RFC)
+  */
++#if 1 /* l2tp-workaround: draft-ietf-ipsec-nat-t-ike. */
++#define NAT_T_WITH_OSX_VALUES \
++        ( LELEM(NAT_TRAVERSAL_DRAFT_IETF_IPSEC_NAT_T_IKE) )
++#endif
+ #define NAT_T_WITH_RFC_VALUES \
+ 	( LELEM(NAT_TRAVERSAL_RFC) )
+ 
+@@ -137,11 +166,11 @@
+ #define NAT_T_ENCAPSULATION_MODE(st,nat_t_policy) ( \
+ 	((st)->hidden_variables.st_nat_traversal & NAT_T_DETECTED) \
+ 		? ( ((nat_t_policy) & POLICY_TUNNEL) \
+-			? ( ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) \
++		        ? ( (( (st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES)) \
+ 				? (ENCAPSULATION_MODE_UDP_TUNNEL_RFC) \
+-				: (ENCAPSULATION_MODE_UDP_TUNNEL_DRAFTS) \
++		                : (ENCAPSULATION_MODE_UDP_TUNNEL_DRAFTS)	      \
+ 			  ) \
+-			: ( ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) \
++		        : ( (( (st)->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || ((st)->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES)) \
+ 				? (ENCAPSULATION_MODE_UDP_TRANSPORT_RFC) \
+ 				: (ENCAPSULATION_MODE_UDP_TRANSPORT_DRAFTS) \
+ 			  ) \
+diff -ru openswan-2.4.0rc4/programs/pluto/pending.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/pending.c
+--- openswan-2.4.0rc4/programs/pluto/pending.c	2005-03-27 23:18:13.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/pending.c	2005-11-30 16:53:09.000000000 +0200
+@@ -238,6 +238,41 @@
+ 	 p = p->next) {
+ 	if (p->isakmp_sa == os)
+ 	    p->isakmp_sa = ns;
++
++	/**
++	 * l2tp-workaround:
++	 * Note: this is how things were done in openswan 2.3.0.
++	 * This should not break anything and if the code was just
++	 * forgotten, then this could be beneficial.
++	 * The patch was just upgraded and the if-block below taken back
++	 * from the openswan version 2.3.0.
++	 */
++#ifdef NAT_TRAVERSAL
++	if (p->connection->spd.this.host_port != ns->st_connection->spd.this.host_port) {
++	    p->connection->spd.this.host_port = ns->st_connection->spd.this.host_port;
++	    p->connection->spd.that.host_port = ns->st_connection->spd.that.host_port;
++#if 1 /* l2tp-workaround: update remote port of client subnet, too. */
++#if L2TP_DEBUG
++	    {
++		char client_subnet[32];
++		subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 32);
++		openswan_log("l2tp-debug: update_pending: client subnet before update: %s", client_subnet, htons(p->connection->spd.that.host_port));
++	    }
++#endif
++	    setportof(htons(p->connection->spd.that.host_port), &(p->connection->spd.that.client.addr));
++
++#if L2TP_DEBUG
++	    {
++		char client_subnet[32];
++		subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 32);
++		openswan_log("l2tp-debug: update_pending: client subnet after update: %s", client_subnet, htons(p->connection->spd.that.host_port));
++	    }
++#endif
++
++#endif /* 1 */
++	}
++#endif
++
+     }	    
+ }
+ 
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: pending.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/spdb_struct.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/spdb_struct.c
+--- openswan-2.4.0rc4/programs/pluto/spdb_struct.c	2005-07-26 05:11:23.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/spdb_struct.c	2005-12-05 10:21:26.598434848 +0200
+@@ -1011,10 +1011,22 @@
+ 		     * check if this keylen is compatible with 
+ 		     * specified alg_info_ike
+ 		     */
+-		    if (!ike_alg_enc_ok(ta.encrypt, val, c->alg_info_ike, &ugh)) {
+-			ugh = "peer proposed key_len not valid for encrypt algo setup specified";
++		    /* l2tp-workaround: backported a patch to prevent DoS attack.
++		       From: Diff for /openswan-2/programs/pluto/spdb_struct.c between version 1.19 and 1.20.
++		       Msg: Michael's short term fix for bug #486.
++		       NISCC Vulnerability Advisory 273756/NISCC/ISAKMP
++		       http://www.openswan.org/niscc2/
++		    */
++		    if(ta.encrypt == OAKLEY_3DES_CBC) {
++			ta.enckeylen = 24;
++		    } else if(ta.encrypt == OAKLEY_DES_CBC) {
++			ta.enckeylen = 8;
++		    } else {
++			if (!ike_alg_enc_ok(ta.encrypt, val, c->alg_info_ike, &ugh)) {
++			    ugh = "peer proposed key_len not valid for encrypt algo setup specified";
++			}
++			ta.enckeylen=val;
+ 		    }
+-		    ta.enckeylen=val;
+ 		    break;
+ #else
+ 		case OAKLEY_KEY_LENGTH | ISAKMP_ATTR_AF_TV:
+@@ -1475,7 +1487,7 @@
+ #endif
+ 
+ 			case ENCAPSULATION_MODE_UDP_TUNNEL_DRAFTS:
+-				if (st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) {
++				if ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES)) {
+ 					loglog(RC_LOG_SERIOUS,
+ 						"%s must only be used with old IETF drafts",
+ 						enum_name(&enc_mode_names, val));
+@@ -1504,7 +1516,7 @@
+ 
+ 			case ENCAPSULATION_MODE_UDP_TUNNEL_RFC:
+ 				if ((st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) &&
+-					(st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES)) {
++				    ((st->hidden_variables.st_nat_traversal & NAT_T_WITH_RFC_VALUES) || (st->hidden_variables.st_nat_traversal & NAT_T_WITH_OSX_VALUES))) {
+ 					attrs->encapsulation = val - ENCAPSULATION_MODE_UDP_TUNNEL_RFC + ENCAPSULATION_MODE_TUNNEL;
+ 				}
+ 				else if (st->hidden_variables.st_nat_traversal & NAT_T_DETECTED) {
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: spdb_struct.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/state.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/state.c
+--- openswan-2.4.0rc4/programs/pluto/state.c	2005-08-12 20:04:08.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/state.c	2005-11-29 12:29:01.000000000 +0200
+@@ -621,6 +621,18 @@
+ }
+ #endif
+ 
++#if 1
++static void print_hex(u_char *dst, const u_char *src, int len)
++{
++    char t[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
++    int i = 0;
++    for (i = 0; i < len; i++){
++	dst[2*i] = t[src[i] / 16];
++	dst[2*i + 1] = t[src[i] % 16];
++    }
++}
++#endif
++
+ /*
+  * Find a state object.
+  */
+@@ -632,6 +644,18 @@
+ {
+     struct state *st = *state_hash(icookie, rcookie, peer);
+ 
++#if L2TP_DEBUG
++    char b1[ADDRTOT_BUF],b2[ADDRTOT_BUF];
++    u_char i[2*COOKIE_SIZE+1] = {0};
++    u_char r[2*COOKIE_SIZE+1] = {0};
++
++    print_hex (i, icookie, COOKIE_SIZE);
++    print_hex (r, rcookie, COOKIE_SIZE);
++    openswan_log("l2tp-debug: find hash: %s:%s, %s, 0x%08x", i, r,
++		 (addrtot(peer, 0, b1, sizeof(b1)), b1), msgid);
++    openswan_log("l2tp-debug: state: %p", st);
++#endif
++
+     while (st != (struct state *) NULL)
+     {
+ 	if (sameaddr(peer, &st->st_connection->spd.that.host_addr)
+@@ -645,6 +669,16 @@
+ 	    if(msgid == st->st_msgid)
+ 		break;
+ 	}
++
++#if L2TP_DEBUG
++	print_hex (i, st->st_icookie, COOKIE_SIZE);
++	print_hex (r, st->st_rcookie, COOKIE_SIZE);
++	openswan_log("l2tp-debug: no match: %s:%s, %s, 0x%08x", i, r,
++		     (addrtot(&(st->st_connection->spd.that.host_addr),
++			      0, b1, sizeof(b1)), b1),
++		     st->st_msgid);
++#endif
++
+ 	st = st->st_hashchain_next;
+     }
+ 
+Only in openswan-2.4.0rc4_l2tp+osx/programs/pluto: state.c~
+diff -ru openswan-2.4.0rc4/programs/pluto/timer.c openswan-2.4.0rc4_l2tp+osx/programs/pluto/timer.c
+--- openswan-2.4.0rc4/programs/pluto/timer.c	2005-08-12 20:03:02.000000000 +0300
++++ openswan-2.4.0rc4_l2tp+osx/programs/pluto/timer.c	2005-10-28 19:15:38.000000000 +0300
+@@ -367,6 +367,9 @@
+ 	case EVENT_SA_REPLACE:
+ 	case EVENT_SA_REPLACE_IF_USED:
+ 	    {
++#if 1 /* l2tp-workaround: do not take any action on replace (just to make sure). */
++		openswan_log("l2tp-workaround: no action on EVENT_SA_REPLACE.");
++#else
+ 		struct connection *c;
+ 		so_serial_t newest;
+ 
+@@ -416,6 +419,7 @@
+ 			    , IS_PHASE1(st->st_state)? "ISAKMP" : "IPsec"));
+ 		    ipsecdoi_replace(st, 1);
+ 		}
++#endif
+ 		delete_dpd_event(st);
+ 		event_schedule(EVENT_SA_EXPIRE, st->st_margin, st);
+ 	    }

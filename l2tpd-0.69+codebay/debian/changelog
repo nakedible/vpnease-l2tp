@@ -1,0 +1,7 @@
+l2tpd (0.69+codebay) dapper; urgency=low
+
+  * Initial version - packaging based on RPM package made by
+    Jacco de Leeuw <jacco2@dds.nl>. Patches from RPM package changed
+    to dpatch format.
+
+ -- Mikko Varso <mikko.varso@codebay.fi>  Sat,  1 Jul 2006 13:39:06 +0300

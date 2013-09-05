@@ -1,0 +1,14 @@
+Index: openswan-2.4.0rc4.quilt/programs/pluto/log.h
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/log.h	2006-12-03 21:02:23.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/log.h	2006-12-03 21:02:34.000000000 +0200
+@@ -15,6 +15,9 @@
+  * RCSID $Id: log.h,v 1.54 2004/10/21 19:13:37 mcr Exp $
+  */
+ 
++/*#define L2TP_DEBUG 1 */
++#define L2TP_DEBUG 0
++
+ #include <openswan.h>
+ 
+ #include "oswlog.h"

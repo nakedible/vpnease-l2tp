@@ -1,0 +1,4 @@
+obj-$(CONFIG_IP_NF_MATCH_LENGTH) += ipt_length.o
+
+obj-$(CONFIG_IP_NF_MATCH_U32) += ipt_u32.o
+

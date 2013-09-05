@@ -1,0 +1,16 @@
+
+This option allows you to match firewall rules against condition variables
+stored in the /proc/net/ipt_condition directory. Multiple rules can match on a
+single condition variable.
+
+Example:
+iptables -A INPUT -p tcp -m condition --condition web_ok --dport 80 -j ACCEPT
+
+To allow this rule to match:
+echo 1 > /proc/net/nf_condition/web_ok
+
+To disable this rule: 
+echo 0 > /proc/net/nf_condition/web_ok
+
+NB: it was /proc/net/ipt_condition on 2.4.
+

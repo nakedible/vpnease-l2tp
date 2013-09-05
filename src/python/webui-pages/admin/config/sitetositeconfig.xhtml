@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <n:invisible n:pattern="head" />
+  </head>
+  <body>
+    <n:invisible n:pattern="content">
+      <div class="cb-section">
+        <hr class="cb-section" />
+
+        <n:invisible n:render="s2s_warning_normal">
+          <div class="cb-note">
+            <p>
+              When configuring site-to-site VPN connections, please ensure that the
+              VPN client subnet configuration setting of each endpoint is different.
+              If the VPN client subnets overlap, the VPN connection will fail, and the
+              initiating server will display an
+              "address check error" on its status overview page.
+            </p>
+          </div>
+        </n:invisible>
+
+        <n:invisible n:render="s2s_warning_heavy">
+          <div class="cb-warning">
+            <p>
+              <strong class="cb-bold">NOTE:</strong>
+              When configuring site-to-site VPN connections, please ensure that the
+              VPN client subnet configuration setting of each endpoint is different.
+              If the VPN client subnets overlap, the VPN connection will fail, and the
+              initiating server will display an
+              "address check error" on its status overview page.
+            </p>
+          </div>
+        </n:invisible>
+
+        <n:invisible n:render="form config" />
+
+      </div>
+    </n:invisible>
+    
+    <n:invisible n:pattern="contexthelp">
+    <div class="context-help-items">
+        <div id="ctx-page">
+            <div class="ctx-title">
+            </div>
+            <div class="ctx-content">
+            </div>
+        </div>
+    </div>
+    </n:invisible>
+    
+  </body>
+</html>

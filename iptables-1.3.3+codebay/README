@@ -1,0 +1,47 @@
+iptables has numerous upstream sources used to create the actual
+Debian package. All of those pristine sources are in the upstream
+subdirectory of this archive. The linux kernel sources have been
+pruned to just the COPYRIGHT, MAINTAINER, and CREDITS files along
+with netfilter directories and files.
+
+To unpack and prepare everything, run "make" in the top directory.
+Be aware that the results are all expanded to a temporary work
+space, debian/build/, and the prep.sh script has no provision for 
+reversing anything.
+
+Select patch-o-matic patches are applied to the kernel source tree
+that is unpacked into debian/build/; however, the kernel source trees
+used to build the iptables packages are absolutely NOT left in a
+state intended for any particular use beyond the iptables package
+build. And some of the patching is entirely pointless.
+
+Current local patches/* patches applied to source code:
+
+  all/###-link_with_gcc.patch  
+    
+    link with gcc instead of ldd, Bug#12271, addresses build failure 
+    on HP and other archs. Courtesy of Lamont Jones.
+     http://bugs.debian.org/122712
+
+  all/###-weird_spelling.patch
+
+    spelling correction, s/wierd/weird/
+
+  all/###-weird_character.patch
+
+    avoid "weird character" warning for interface names that contain
+    dashes
+
+  all/###-man_pages.patch
+
+    sed 's/is the examined/is examined/' iptables.8.old > iptables.8
+    also adds information about the default logging level
+
+  hppa/###-atomic_t_silly_hack.patch
+  s390/###-atomic_t_silly_hack.patch
+
+    This is a silly, possibly detrimental hppa and s390 hack, which 
+    copies the atmomic_t typedef out of /usr/include/asm/atom.h 
+    instead of including that header. If anyone knows how to fix the 
+    FTBFS in Bug#232418 (http://bugs.debian.org/232418), please mail 
+    iptables@packages.debian.org.

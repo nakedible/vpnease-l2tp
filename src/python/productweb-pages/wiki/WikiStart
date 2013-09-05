@@ -1,0 +1,43 @@
+= VPNease Wiki =
+
+[[PageOutline]]
+
+Welcome to the VPNease Wiki!
+
+On these pages you can find detailed product, support, and sales information.
+If you have any questions, you can contact us using a [http://www.vpnease.com/support-request.html Support Request].
+
+== Product information ==
+  * Product releases
+    * [wiki:VpneaseServerRelease_1_2_8605 VPNease 1.2.8605]
+    * [wiki:VpneaseServerRelease_1_1_6708 VPNease 1.1.6708]
+    * [wiki:VpneaseServerRelease_1_0_5529 VPNease 1.0.5529]
+    * [wiki:VpneaseServerRelease_1_0_5287 VPNease 1.0.5287]
+  * [wiki:VpneaseServerChangeLog VPNease Server changelog]
+
+== Support information ==
+  * [wiki:FAQ Frequently Asked Questions]
+  * Client software compatibility
+    * ThirdPartyVpnClientCompatibility
+  * Client platforms
+    * [wiki:Windows2000ClientIssues]
+    * [wiki:WindowsXpClientIssues]
+    * [wiki:WindowsVistaClientIssues]
+    * [wiki:WindowsMobileClientIssues]
+    * [wiki:MacOsXClientIssues]
+    * [wiki:LinuxClientIssues]
+  * Server hardware
+    * [https://wiki.ubuntu.com/HardwareSupport Ubuntu Hardware Support]
+    * [http://releases.ubuntu.com/6.06/ Ubuntu 6.06.2 LTS (Dapper Drake)] (operating system platform used by VPNease)
+    * [https://help.ubuntu.com/6.06/ Documentation for Ubuntu 6.06 LTS (Dapper Drake)]
+  * Server virtualization
+    * [wiki:VmwareIssues VMware]
+    * [wiki:VirtualPcIssues Microsoft Virtual PC]
+    * [wiki:VirtualServerIssues Microsoft Virtual Server]
+    * [wiki:HyperVIssues Microsoft Hyper-V]
+    * [wiki:KvmIssues KVM]
+
+== Sales information ==
+  * [http://www.vpnease.com/product-home.html VPNease product information]
+  * [http://www.vpnease.com/partners-home.html VPNease partner information]
+

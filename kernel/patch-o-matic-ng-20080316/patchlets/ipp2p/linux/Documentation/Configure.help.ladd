@@ -1,0 +1,9 @@
+CONFIG_IP_NF_MATCH_TOS
+IPP2P match support
+CONFIG_IP_NF_MATCH_IPP2P
+  This option makes possible to match some P2P packets
+  therefore helps controlling such traffic.
+
+  If you want to compile it as a module, say M here and read
+  <file:Documentation/modules.txt>.  If unsure, say `N'.
+

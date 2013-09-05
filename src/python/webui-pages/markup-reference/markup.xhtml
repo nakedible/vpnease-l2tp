@@ -1,0 +1,558 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:n="http://nevow.com/ns/nevow/0.1">
+
+  <head>
+    <title><n:invisible n:pattern="title">Product markup reference</n:invisible></title>
+    <link rel="stylesheet" type="text/css" href="common.css" />
+    <link rel="stylesheet" type="text/css" href="example.css" />
+    <n:invisible n:pattern="head" />
+  </head>
+
+  <body>
+    <!-- This content class is here for example only; it is not part of the markup
+         described here.
+
+         The id, 'main-w' here is for compatibility with web UI CSS files, it is not
+         part of the markup.
+     -->
+    <div class="content" id="main-w">
+
+      <!-- Some form of extracting content is used by Nevow; here that mechanism
+           is a named "pattern".   FIXME -->
+      <n:invisible n:pattern="content">
+        <h1 class="cb-page-heading">Page heading</h1>
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+
+          <h1 class="cb-heading">Introduction</h1>
+
+          <p>
+          The markup used in the Nevow templates of the VPNease product is described
+          and documented in full in this example markup file.  This document provides
+          the only "normative reference" for the conventions used.
+          </p>
+
+          <p>
+          The overall approach to the markup is as follows:
+          </p>
+
+          <ul>
+            <li>
+            Existing HTML constructs are used exclusively; no "transformations" from
+            own tags to HTML tags are performed (cf. transformation from Docbook to
+            HTML).
+            </li>
+            <li>
+            CSS classes are used in all DIV/SPAN elements to provide context for CSS
+            layout and styling.  Whenever the meaning of the element is clear from
+            the context (e.g. a P element inside a "section" DIV), class is omitted.
+            </li>
+            <li>
+            Ordinary sections (H1, H2, ...) are not used, because they use absolute
+            nesting level and document fragments using such tags cannot thus be
+            embedded in other fragments.  Further, the heading elements don't nest,
+            so there is no nesting information.  Instead, DIV elements with class
+            "section" are used; they have inner "heading" DIVs for labeling.
+            </li>
+            <li>
+            A side-effect of the heading approach is that numbering is not easily
+            accomplished.  It can be implemented as a post-transformation if
+            necessary, because section DIVs nest properly.
+            </li>
+          </ul>
+
+          <p>
+          This document contains a reference for the kind of XHTML markup that
+          should be used in VPNease XHTML documents.  The document covers the
+          tags to be used, and the relevant CSS classes that go with them.
+          </p>
+
+          <p>
+          Basic text is a P elements without a class (the meaning is obvious
+          from the DIV "section" context.  Note that paragraphs are at the same
+          level as the heading element.  Paragraphs must not be nested, and must
+          not contain lists (e.g. OL, UL) because XHTML forbids it.
+          </p>
+
+          <p>
+          Section headings are H1 elements; this makes them behave better
+          in text browsers, though having all headings as "h1" is suboptimal.
+          </p>
+        </div> <!-- introduction -->
+
+        <div class="cb-section"> <!-- page-related elements -->
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Page-related elements</h1>
+
+          <p>
+          Most of the markup is not related to page structure at all
+          (as much of the content is "included" onto a page).  Pages
+          have some styling that is not covered here (such as page
+          layout through DIVs etc).  Some elements are, though, and
+          they are defined here.
+          </p>
+
+          <p>
+          Pages have a heading, which is a H1 with class "page-heading".
+          <strong class="cb-bold">It is uncertain whether this will remain in the final
+          product</strong>: page heading may be fully programmatic and
+          have special styling.
+          </p>
+        </div> <!-- page-related elements -->
+
+        <div class="cb-section"> <!-- section structure -->
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Section structure</h1>
+
+          <p>Sections are DIVs with class "section".  The DIV begins with a HR element
+          with class "section" immediately following the DIV.  The HR is followed by
+          a H1 with class "heading", containing the section heading.  After the H1,
+          normal content continues.  (The HR is used to make sections more readable
+          in a text browser.)</p>
+
+          <p>Sections can be nested.</p>
+
+          <div class="cb-section">
+            <hr class="cb-section" />
+            <h1 class="cb-heading">Second level heading</h1>
+
+            <p>Sections are nested by placing a section DIV (directly) inside a section DIV.</p>
+
+            <div class="cb-section">
+              <hr class="cb-section" />
+              <h1 class="cb-heading">Third level heading</h1>
+
+              <p>
+              Sections can be nested; paragraphs must never be nested.  Further,
+              lists must not occur inside paragraphs (XHTML forbids it).
+              </p>
+
+              <p>
+              Orderedlists (OL) and unordered lists (UL) do not need a class.
+              Content for list items is placed in LI elements which also don't
+              have a class.  If multiple paragraphs of text are required for
+              a list item, the LI element must contain multiple P tags and
+              no direct content (direct child of LI).
+              </p>
+
+              <p>Ordered list:</p>
+              <ol>
+                <li>Listitem #1</li>
+                <li>Listitem #2</li>
+                <li>Listitem #3</li>
+                <li>
+                  <p>Multiple paragraphs...</p>
+                  <p>... inside a list item.</p>
+                </li>
+                <li>Listitem #5</li>
+              </ol>
+
+              <p>Unordered list:</p>
+              <ul>
+                <li>Listitem #1</li>
+                <li>Listitem #2</li>
+                <li>Listitem #3</li>
+                <li>
+                  <p>Multiple paragraphs...</p>
+                  <p>... inside a list item.</p>
+                </li>
+                <li>Listitem #5</li>
+              </ul>
+            </div> <!-- third level div -->
+          </div> <!-- second level div -->
+        </div> <!-- section structure -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Styling text</h1>
+
+          <p>
+          Specific text styles are represented by SPAN or natural XHTML tags
+          as follows:
+          </p>
+
+          <ul>
+            <li>Bold text: <strong class="cb-bold">STRONG tag with "bold" class</strong></li>
+            <li>Filename: <strong class="cb-filename">STRONG tag with "filename" class</strong></li>
+            <li>Registry path: <strong class="cb-registry">STRONG with "registry" class</strong></li>
+            <li>GUI label / system response: <strong class="cb-guilabel">STRONG with "guilabel" class</strong></li>
+            <li>User input: <strong class="cb-userinput">STRONG with "userinput" class</strong></li>
+            <li>Keycap: <strong class="cb-keycap">STRONG with "keycap" class</strong></li>
+            <li>FIXME note (inline): <strong class="cb-fixme">STRONG with "fixme" class</strong></li>
+          </ul>
+
+          <p>
+          The STRONG tag is used to ensure that the "special text" is highlighted
+          in a text browser.  Text styles that don't need highlighting in a text
+          browser should use the SPAN tag instead.  However, no such styles are
+          currently defined.
+          </p>
+
+          <p>
+          Preformatted text areas are represented by a PRE tag:
+            <pre>File listing:
+    - file 1
+    - file 2
+    - file 3
+</pre>
+          </p>
+        </div> <!-- styling -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Links</h1>
+
+          <p>
+          Links are straightforward A tags with href and no class.  They are
+          styled based on context.  Links can contain either text or an IMG
+          tag.
+          </p>
+
+          <ul>
+            <li>
+              Normal link with text: <a href="fixme">plain link</a>.  Link must not open a popup or go to an
+              external site.
+            </li>
+            <li>
+              External link (opens a popup or goes to an external site):
+              <a class="cb-external" href="fixme">external link</a>.
+            </li>
+            <li>
+              Image link: <a href="http://www.codebay.fi"><img src="http://www.codebay.fi/logo_126x41.png" /></a>.
+            </li>
+          </ul>
+
+          <p>
+          Anchors can be used normally inside a page by setting href=#foo in a link, and adding the
+          corresponding A element with "name" attribute.
+          </p>
+        </div> <!-- linking -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Special DIVs</h1>
+
+          <p>
+          There special DIVs are DIV tags with a specific class ("error", "warning", etc).
+          Content inside the div should be in paragraphs or other containing element
+          (OL, UL, etc).  <strong class="cb-bold">Plain content must not be used</strong>.
+          </p>
+
+          <div class="cb-section">
+            <hr class="cb-section" />
+            <h1 class="cb-heading">Error</h1>
+
+            <p>Error is a DIV with "error" class.</p>
+
+            <div class="cb-error">
+            <p>
+            All data on the selected hard disks was lost!
+            </p>
+            </div>
+
+            <div class="cb-error">
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            <p>
+            This is a long error.
+            </p>
+            </div>
+          </div> <!-- error -->
+
+          <div class="cb-section">
+            <hr class="cb-section" />
+            <h1 class="cb-heading">Warning</h1>
+
+            <p>Warning is a DIV with "warning" class.</p>
+
+            <div class="cb-warning">
+            <p>
+            All data on the selected hard disks will be lost!
+            </p>
+            </div>
+
+            <div class="cb-warning">
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            <p>
+            This is a long warning.
+            </p>
+            </div>
+          </div> <!-- warning -->
+
+          <div class="cb-section">
+            <hr class="cb-section" />
+            <h1 class="cb-heading">Note</h1>
+
+            <p>Note is a DIV with "note" class.</p>
+
+            <div class="cb-note">
+            <p>
+            This update is not required in the Hebrew version of Windows XP.
+            </p>
+            </div>
+
+            <div class="cb-note">
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            <p>
+            This is a long note.
+            </p>
+            </div>
+          </div> <!-- note -->
+
+          <div class="cb-section">
+            <hr class="cb-section" />
+            <h1 class="cb-heading">Tip</h1>
+
+            <p>Tip is a DIV with "tip" class.</p>
+
+            <div class="cb-tip">
+            <p>
+            You might want to take a backup before wiping your hard disk.
+            </p>
+            </div>
+
+            <div class="cb-tip">
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            <p>
+            This is a long tip.
+            </p>
+            </div>
+          </div> <!-- tip -->
+
+          <div class="cb-section">
+            <hr class="cb-section" />
+            <h1 class="cb-heading">Fixme</h1>
+
+            <p>FIXME is a DIV with "fixme" class.</p>
+
+            <div class="cb-fixme">
+            <p>
+            This must be removed from the final product!
+            </p>
+            </div>
+
+            <div class="cb-fixme">
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            <p>
+            This is a long fixme.
+            </p>
+            </div>
+          </div>
+
+        </div> <!-- special divs -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Unspecified / missing / maybe needed</h1>
+
+          <p>
+            Table styling using CSS is somewhat complicated, but supported in the markup.
+            The following features are provided:
+          </p>
+          <ul>
+            <li>
+              Table captions
+            </li>
+            <li>
+              Two alternative cell colors, allowing for colored rows.
+            </li>
+            <li>
+              Table heading styling
+            </li>
+          </ul>
+
+          <p>
+            Here's a prototypical table (see source for details):
+          </p>
+
+          <table border="0" cellpadding="0" cellspacing="0">
+            <caption>Example table caption</caption>
+
+            <tr>
+              <td>&nbsp;</td>
+              <th>Col 1</th>
+              <th>Col 2</th>
+              <th>Col 3</th>
+            </tr>
+
+            <tr>
+              <td>variable</td>
+              <td>test</td>
+              <td>content</td>
+              <td>width</td>
+            </tr>
+
+            <tr>
+              <td class="cb-alt">test</td>
+              <td class="cb-alt">width</td>
+              <td class="cb-alt">content</td>
+              <td class="cb-alt">variable</td>
+            </tr>
+
+            <tr>
+              <td>variable</td>
+              <td>test</td>
+              <td>content</td>
+              <td>width</td>
+            </tr>
+
+            <tr>
+              <td class="cb-alt">width</td>
+              <td class="cb-alt">content</td>
+              <td class="cb-alt">test</td>
+              <td class="cb-alt">variable</td>
+            </tr>
+          </table>
+
+        </div> <!-- tables -->
+
+        <div class="cb-section">
+          <hr class="cb-section" />
+          <h1 class="cb-heading">Unspecified / missing / maybe needed</h1>
+
+          <p>
+          The following may be needed but are unspecified:
+          </p>
+          <ul>
+            <li>Styling of &lt;table> elements - e.g. installation uses a table now</li>
+          </ul>
+        </div>
+      </n:invisible>
+
+    </div>  <!-- content -->
+  </body>
+</html>

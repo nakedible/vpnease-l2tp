@@ -1,0 +1,136 @@
+
+/* ---------------------------------------------------
+=banner
+------------------------------------------------------ */
+
+#banner-w {
+	background: #B2D9AD url(../i/bg-banner.gif) top left repeat-x;
+	
+	margin-bottom: 3em;
+	
+	
+	border-top: 5px solid #6ba663;
+	border-bottom: 5px solid #6ba663;
+	
+}
+
+
+#banner {
+	padding: 1.5em 0;	
+}
+
+
+#banner h2 {
+
+	
+	font: normal 21px/36px Georgia, serif;	
+	
+	letter-spacing: -1px;
+	
+	/*text-transform: capitalize;
+	*/
+	
+	margin: 0 0 0.75em 0;
+}
+
+#banner ul {
+	list-style: outside url(../i/bullet-star.gif);
+}
+
+
+#banner li  {
+	margin-bottom: 1em;
+}
+
+#bannertext {
+        margin-top: 1em;
+	margin-left: 0em;
+	margin-right: 4.5em;
+}
+
+.banner-heading {
+        font-size: 125%;
+        font-weight: bold;
+}
+
+/* ---------------------------------------------------
+=misc frontpage
+------------------------------------------------------ */
+
+.home-subheading {
+	font-size: 16px;
+	color: #5577bb;
+}
+
+.home-column { 
+        padding: 2px;
+        background: #ffffff;
+}
+
+/* ---------------------------------------------------
+=home buttons
+------------------------------------------------------ */
+
+#freetrialbutton {
+	margin-top: 1.0em;
+	margin-bottom: 1.0em;
+}
+
+#buynowbutton {
+	margin-top: 1.0em;
+	margin-bottom: 1.0em;
+}
+
+/* ---------------------------------------------------
+=doc-listing
+------------------------------------------------------ */
+
+#doc-listing {
+	list-style: none;
+	
+	padding-bottom: .75em;
+	border-bottom: 1px solid #ccc;
+}
+
+#doc-listing li {
+	margin-top: .75em;
+	padding-top: .75em;
+	
+	border-top: 1px solid #ccc;
+	
+}
+
+
+/* ---------------------------------------------------
+=contact-us
+------------------------------------------------------ */
+
+#contact-us {
+	
+	
+}
+
+#contact-us dt {
+	font-weight: bold;
+	
+}
+
+#contact-us dd {
+	margin-bottom: .75em;
+	
+}
+
+#home-box1 {
+  margin-left: auto;
+  margin-right: 0;
+/*  width: 130px;*/
+  padding: 1em;
+  border: 3px solid #dddddd;
+  background: #ffffff;
+  font-size: 12px;
+  color: #444444;
+}
+
+#home-box1-button {
+  margin-left: -5px;
+}

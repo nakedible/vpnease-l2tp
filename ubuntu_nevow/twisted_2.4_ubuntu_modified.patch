@@ -1,0 +1,1268 @@
+diff -ruN twisted-2.4.0.orig/debian/changelog twisted-2.4.0/debian/changelog
+--- twisted-2.4.0.orig/debian/changelog	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/changelog	2006-07-27 19:00:20.000000000 +0300
+@@ -0,0 +1,486 @@
++twisted (2.4.0) dapper; urgency=low
++
++  * New upstream version.
++
++ -- VPNease support <support@vpnease.com>  Thu, 27 Jul 2006 19:00:20 +0300
++
++twisted (2.2.0-2ubuntu1) dapper; urgency=low
++
++  * Synchronize with Debian unstable.
++
++ -- Matthias Klose <doko@ubuntu.com>  Fri, 14 Apr 2006 23:58:53 +0000
++
++twisted (2.2.0-2) unstable; urgency=low
++
++  * Fix classname in python/dispatch.py (closes: #359225).
++  * Fix spelling errors in man pages (closes: #355227).
++  * Drop conflicts on packages not tested with twisted >= 2.0 (closes: #359179).
++
++ -- Matthias Klose <doko@debian.org>  Fri, 14 Apr 2006 23:25:37 +0000
++
++twisted (2.2.0-1ubuntu1) dapper; urgency=low
++
++  * Synchronize with Debian unstable.
++
++ -- Matthias Klose <doko@ubuntu.com>  Wed, 22 Feb 2006 22:52:47 +0000
++
++twisted (2.2.0-1) unstable; urgency=low
++
++  * New upstream version.
++
++ -- Matthias Klose <doko@debian.org>  Wed, 22 Feb 2006 08:28:04 +0100
++
++twisted (2.1.0-4ubuntu1) dapper; urgency=low
++
++  * Drop python2.3 packages.
++
++ -- Matthias Klose <doko@ubuntu.com>  Tue, 14 Feb 2006 13:07:38 +0000
++
++twisted (2.1.0-4) unstable; urgency=low
++
++  * Fix typo in versioned dependencies on *-conch packages (closes: #349627).
++  * Fix location of the core documentation in the doc-base file.
++    Closes: #349627.
++
++ -- Matthias Klose <doko@debian.org>  Thu,  2 Feb 2006 15:39:10 +0000
++
++twisted (2.1.0-3) unstable; urgency=low
++
++  * Rename python-twisted to python-twisted-core; python-twisted is now
++    a transitional package, depending on python-twisted-core and all
++    twisted modules, which were split out into separate packages.
++
++ -- Matthias Klose <doko@debian.org>  Wed, 25 Jan 2006 17:56:16 +0100
++
++twisted (2.1.0-2) unstable; urgency=low
++
++  * debian/copyright: Include copyright for python 2.3; some 2.3 files
++    are included in the upstream tarball, but not in the binary packages.
++
++ -- Matthias Klose <doko@debian.org>  Mon, 16 Jan 2006 19:59:05 +0100
++
++twisted (2.1.0-1) unstable; urgency=low
++
++  * New upstream version.
++
++ -- Matthias Klose <doko@debian.org>  Sun, 15 Jan 2006 22:07:22 +0000
++
++twisted (2.0.1-4) unstable; urgency=low
++
++  * Fix doc symlinks (closes: #313313).
++  * Remove conflict with supyb, requested by the supyb maintainer.
++  * Suggest python-wxgtk2.4 | python-wxgtk2.6.
++  * Fix man page symlinks (closes: #326021, #314508, #315307, #323551).
++  * Fix location of the tutorial in the doc-base file (closes: #318167).
++  * python-twisted: Add dependency on python-soappy (closes: #317290).
++
++ -- Matthias Klose <doko@debian.org>  Thu,  1 Sep 2005 15:49:29 +0200
++
++twisted (2.0.1-3) unstable; urgency=low
++
++  * Drop python2.2 packages, build python2.4 packages.
++
++ -- Matthias Klose <doko@debian.org>  Sun, 12 Jun 2005 19:05:59 +0200
++
++twisted (2.0.1-2) unstable; urgency=low
++
++  * Reupload as -2, -1 is sticking in the NEW queue from a hijack attempt.
++
++ -- Matthias Klose <doko@debian.org>  Sun, 12 Jun 2005 18:41:05 +0200
++
++twisted (2.0.1-1) unstable; urgency=low
++
++  * New upstream version, built from the sumo tarball.
++  * (Build-)depend on zope-interface.
++  * Explicitely conflict with all current packages depending on
++    python-twisted and python-twisted-conch. Please check for
++    compatibility first.
++  * Do provide menu entries for the default version only.
++  * Empty twisted-doc-api package at the moment.
++  * Use debhelper for the packaging.
++  * Change priority to optional.
++
++ -- Matthias Klose <doko@debian.org>  Sun, 12 Jun 2005 14:52:40 +0200
++
++twisted (1.3.0-8) unstable; urgency=low
++
++  * Fix the fix in gtk2reactor.
++
++ -- Matthias Klose <doko@debian.org>  Fri, 11 Feb 2005 14:45:43 +0100
++
++twisted (1.3.0-7) unstable; urgency=low
++
++  * Conditionally import the profile module (closes: #294493).
++  * Add suggestions to the python-profiler package.
++  * Suppress gtk2 user warning in gtk2reactor (closes: #291310).
++
++ -- Matthias Klose <doko@debian.org>  Thu, 10 Feb 2005 13:12:20 +0100
++
++twisted (1.3.0-6) unstable; urgency=medium
++
++  * Fix two bad mail-related bugs, which are really harmful for the
++    scalemail application (Tommi Virtanen):
++    - insufficient error handling in mail delivery, causing mail loss
++      (fixed by r12036)
++    - unable to send mail from <> (fixed by r12767, which broke receiving
++      mail from <>, which is fixed in r12858).
++    Closes: #289993.
++
++ -- Matthias Klose <doko@debian.org>  Sat, 15 Jan 2005 23:49:03 +0100
++
++twisted (1.3.0-5) unstable; urgency=low
++
++  * Fix memory leak in _c_urlarg.c (closes: #284818).
++  * python2.3-twisted: Add python-glade-1.2 python-gtk-1.2 suggests.
++    Closes: #283238.
++
++ -- Matthias Klose <doko@debian.org>  Mon, 20 Dec 2004 19:23:11 +0100
++
++twisted (1.3.0-4) unstable; urgency=low
++
++  * Fix package recommendations.
++  * twisted/xish/domish.py: Add fixes for jabber protocol implementation.
++    Alexandre Fayolle. Closes: #273141.
++
++ -- Matthias Klose <doko@debian.org>  Wed,  6 Oct 2004 08:06:47 +0200
++
++twisted (1.3.0-3) unstable; urgency=medium
++
++  * twisted-doc-api: Add link to docs (closes: #255888).
++  * twisted-doc: Rename examples/xindex.html (closes: #255887).
++  * twisted-doc: Include the Twisted tutorial (closes: #256598).
++  * Install the PDF version of the Twisted Book, not the PostScript version.
++  * python-twisted: Recommend the python-serial package.
++  * Fix nmea protocol failing when checksums turned off (closes: #243136).
++  * Add support for bool types in Twisted Serialize module (python2.3 only).
++    Closes: #217053.
++
++ -- Matthias Klose <doko@debian.org>  Sun, 29 Aug 2004 15:31:36 +0200
++
++twisted (1.3.0-2) unstable; urgency=low
++
++  * Fix links in twisted-doc's index.html (closes: #255548).
++
++ -- Matthias Klose <doko@debian.org>  Mon, 21 Jun 2004 22:01:11 +0200
++
++twisted (1.3.0-1) unstable; urgency=low
++
++  * New upstream version.
++  * Hijacking the package.
++    See http://lists.debian.org/debian-qa/2004/06/msg00070.html.
++  * Fix doc-base file (closes: #220698, #220699).
++  * html files are included as .html, not .xhtml (closes: #192600).
++  * Make package descriptions more verbose (closes: #209816).
++  * Fix some lintian errors.
++
++ -- Matthias Klose <doko@debian.org>  Sat, 19 Jun 2004 00:54:55 +0200
++
++twisted (1.2.0-1.1) unstable; urgency=low
++
++  * NMU.
++  * Fix suggestions and recommendations:
++    - Make python-pyopenssl, python-pam recommendations.
++    - Make python-tk, python-gtk2, python-glade2, python-qt3,
++      libwxgtk2.4-python suggestions.
++    Closes: #240564.
++  * python-twisted-conch: Depend on python2.3-twisted-conch.
++  * Use Debian's way importing gtk2:
++    - doc/examples/pbgtk2.py
++    - twisted/spread/ui/gtk2util.py
++  * The Debian package provided upstream isn't a big help, as it's just
++    an outdated copy of the Debian package :-(
++
++ -- Matthias Klose <doko@debian.org>  Sat, 17 Apr 2004 14:25:26 +0200
++
++twisted (1.2.0-1) unstable; urgency=low
++
++  * New upstream version (closes: #211102).
++
++ -- Matthias Klose <doko@debian.org>  Thu, 26 Feb 2004 07:05:22 +0100
++
++twisted (1.1.2-1) unstable; urgency=low
++
++  * New upstream version
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 18 Feb 2004 12:03:02 -0500
++
++twisted (1.1.1-1) unstable; urgency=low
++
++  * New upstream version
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 15 Jan 2004 12:03:02 -0500
++
++twisted (1.1.0-1) unstable; urgency=low
++
++  * New upstream version
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 21 Nov 2003 14:56:54 -0500
++
++twisted (1.0.7-1) unstable; urgency=low
++
++  * New upstream version
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 17 Sep 2003 00:33:51 -0500
++
++twisted (1.0.6-1) unstable; urgency=low
++
++  * New upstream version.
++  * NMU (encouraged by maintainer)
++
++ -- Martin Sjogren <sjogren@debian.org>  Thu,  3 Jul 2003 07:45:27 +0200
++ 
++twisted (1.0.5-1) unstable; urgency=low
++
++  * New upstream version
++  * Remove Python 2.1 packages -- upstream no longer supports 2.1 
++
++ -- Moshe Zadka <moshez@debian.org>  Thu,  1 May 2003 09:06:49 +0300
++
++twisted (1.0.4-1) unstable; urgency=low
++
++  * New upstream version
++
++ -- Moshe Zadka <moshez@debian.org>  Fri, 18 Apr 2003 03:46:22 +0000
++
++twisted (1.0.3-1) unstable; urgency=low
++
++  * Split out conch
++    * This allows us to have conch properly depend on python-crypto
++  * Documentation improvements
++    * Installing xhtml versions of everything
++    * Distributing ps and pdf versions of book
++    * doc-base support
++  * Split out doc-api
++    * It's HUGE and many people don't need it (since it is available on the
++      web) 
++
++ -- Moshe Zadka <moshez@debian.org>  Tue, 12 Nov 2002 02:59:56 -0600
++
++twisted (1.0.0-2) unstable; urgency=low
++
++  * Put api docs in api/ (Closes: #167196) 
++
++ -- Moshe Zadka <moshez@debian.org>  Thu,  7 Nov 2002 12:27:37 -0600
++
++twisted (1.0.0-1) unstable; urgency=low
++
++  * New upstream release 
++
++ -- Moshe Zadka <moshez@debian.org>  Tue, 22 Oct 2002 06:22:49 -0500
++
++twisted (0.99.2-4) unstable; urgency=low
++
++  * UGH! Python 2.3 distutils bug is back 
++  * Working around it
++
++ -- Moshe Zadka <moshez@debian.org>  Wed,  2 Oct 2002 12:07:25 +0000
++
++twisted (0.99.2-3) unstable; urgency=low
++
++  * Adding "/usr/bin/python" to build dependencies.
++
++ -- Moshe Zadka <moshez@debian.org>  Mon, 30 Sep 2002 15:46:56 +0000
++
++twisted (0.99.2-2) unstable; urgency=low
++
++  * Enabling Python 2.3 support 
++
++ -- Moshe Zadka <moshez@debian.org>  Fri, 27 Sep 2002 10:49:43 -0500
++
++twisted (0.99.2-1) unstable; urgency=low
++
++  * New upstream
++  * Fixed build dependencies (Closes: #159258)
++
++ -- Moshe Zadka <moshez@debian.org>  Mon, 23 Sep 2002 08:56:05 -0500
++
++twisted (0.99.0-1) unstable; urgency=low
++
++  * New upstream version.
++  * Packaging changes:
++    * "Twisted" is now a package, to facilitate upgrades from woody
++      (there are verioned depends:)
++    * New package: twisted-quotes -- quotes collected by the Twisted release
++      team
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 29 Aug 2002 08:05:38 -0500
++
++twisted (0.19.0-2) unstable; urgency=low
++
++  * Gagh, make python2.2-twisted any, not all. 
++
++ -- Moshe Zadka <moshez@debian.org>  Wed, 31 Jul 2002 02:25:23 -0500
++
++twisted (0.19.0-1) unstable; urgency=low
++
++  * New upstream release
++  * Debian packaging changes:
++    * split python2.x-twisted into python2.x-twisted and python2.x-twisted-bin
++    * unfortunately, because of distutils mind boggling stupidity, it will
++      do most of the work for building the arch-independant utilities when
++      building the c module
++    * fortunately, twisted will now take up much less room in the archive
++
++ -- Moshe Zadka <moshez@debian.org>  Wed, 19 Jun 2002 18:01:50 +0300
++
++twisted (0.18.0-2) unstable; urgency=low
++
++  * The "Aaaaarrrgghhh, I'm stupid release"
++  * debian/control: python2.1-twisted needs to Conflict:/Replace: twisted too
++
++ -- Moshe Zadka <moshez@debian.org>  Tue, 18 Jun 2002 20:22:08 +0300
++
++twisted (0.18.0-1) unstable; urgency=low
++
++  * New upstream release
++  * Lots of debian changes:
++    * building python2.1-twisted, python2.2-twisted
++    * python-twisted depends on python2.1-twisted
++    * menu support for t-im and manhole enabled
++  * Removed debelper
++    * Added debian/scripts/ directory with helper scripts
++    * This will (hopefully) mean support python2.3 will be easy 
++  * Upstream fixed tcp client (Closes: #142789)
++
++ -- Moshe Zadka <moshez@debian.org>  Tue, 28 May 2002 12:35:35 +0300
++
++twisted (0.17.3-1) unstable; urgency=low
++
++  * New upstream release 
++
++ -- Moshe Zadka <moshez@debian.org>  Fri, 19 Apr 2002 02:55:43 -0500
++
++twisted (0.17.0-1) unstable; urgency=low
++
++  * New upstream release
++  * Now building two packages -- one for the code, one for the docs
++    + If you want the docs, install twisted-docs too
++    + Feedback is encouraged about whether a 2.2-supporting version is needed
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 14 Mar 2002 07:24:07 +0200
++
++twisted (0.15.5-1) unstable; urgency=low
++
++  * New upstream release 
++
++ -- Moshe Zadka <moshez@debian.org>  Fri,  8 Mar 2002 07:14:16 +0200
++
++twisted (0.15.4-1) unstable; urgency=low
++
++  * New upstream version
++  * Better DNS support
++
++ -- Moshe Zadka <moshez@debian.org>  Tue,  5 Mar 2002 13:54:37 +0200
++
++twisted (0.15.3-1) unstable; urgency=low
++
++  * New upstream release
++  * Fixed stupidproxy bug, where connections weren't closed 
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 28 Feb 2002 21:07:28 +0200
++
++twisted (0.15.1-1) unstable; urgency=low
++
++  * New upstream release
++
++ -- Moshe Zadka <moshez@debian.org>  Tue, 12 Feb 2002 20:36:38 +0200
++
++twisted (0.15.0-1) unstable; urgency=low
++
++  * New upstream release
++  * IM application: many improvements, new GTK+ client
++  * easier to add error callbacks to deferred
++  * SOCKSv4 support
++  * bugs fixed in t.i.tcp
++  * added approveConnection (again ;-)
++  * All non-blocking methods now return deferreds instead of accepting 
++    callbacks (hopefully)
++  * low-level protocol changes
++  * New t.web applications and features
++  * Perspective retrieval now async
++  * Enterprise now fixed
++
++ -- Moshe Zadka <moshez@debian.org>  Wed,  6 Feb 2002 14:38:38 +0200
++
++twisted (0.13.0-1) unstable; urgency=low
++
++  * New upstream version 
++  * New forum
++  * New config interface
++  * New metrics
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 10 Jan 2002 20:04:30 +0200
++
++twisted (0.12.2-1) unstable; urgency=low
++
++  * New upstream versions (many bugfixes) 
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 29 Nov 2001 08:01:23 +0200
++
++twisted (0.12.1-1) unstable; urgency=low
++
++  * New upstream version (mainly bugfixes) 
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 22 Nov 2001 09:09:14 +0200
++
++twisted (0.12.0-1) unstable; urgency=low
++
++  * New upstream version
++  * Using Python 2.1 
++
++ -- Moshe Zadka <moshez@debian.org>  Wed, 21 Nov 2001 15:17:25 +0200
++
++twisted (0.10.3-1) unstable; urgency=low
++
++  * New upstream release
++  * twisted.names, resolving internet names
++  * optimizations
++  * works with Jython too
++
++ -- Moshe Zadka <moshez@debian.org>  Sun, 30 Sep 2001 23:46:45 +0200
++
++twisted (0.10.2-1) unstable; urgency=low
++
++  * New upstream release
++  * bug fixes
++  * timeouts for client sockets 
++  * Tutorial about plugins
++  * Mail has changed API in an incompatible way
++
++ -- Moshe Zadka <moshez@debian.org>  Wed, 12 Sep 2001 23:00:59 +0300
++
++twisted (0.10.1-1) unstable; urgency=low
++
++  * New upstream release 
++  * Massive renaming in prespective broker classes
++  * web proxying
++  * TCP connection forwarding
++  * Lots of new protocols: LDAP, finger and obscure RFCs
++  * --plugin option to twistd
++  * web widgets
++  * twisted.enterprise improved a lot 
++
++ -- Moshe Zadka <moshez@debian.org>  Fri, 31 Aug 2001 06:49:00 +0300
++
++twisted (0.10.0-1) unstable; urgency=low
++
++  * New upstream release
++  * Added twisted.tap and twisted.mail to distribution
++  * Added docs about writing new twisted servers
++  * Changed mail API: now, saveMessage gets the SMTP from too
++  * Removed spurious prints from twisted.mail.mail
++  * Possible to relay mail to unknown domains via smart host
++  * tap2deb can create policy compliant Debian packages around .tap's
++  * Fixed debian/rules clean target (closes: Bug#108245)
++  * New arguments to twistd: --python, --no_save
++  * New arguments to mktap: --append
++  * twisted.tcp.Port can now change the size of the backlog from 5
++  * UDP servers now possible
++
++ -- Moshe Zadka <moshez@debian.org>  Thu,  9 Aug 2001 09:37:03 +0300
++
++twisted (0.9.4-1) unstable; urgency=low
++
++  * Initial Release. (closes: #105843)
++
++ -- Moshe Zadka <moshez@debian.org>  Thu, 26 Jul 2001 21:09:53 +0300
+diff -ruN twisted-2.4.0.orig/debian/compat twisted-2.4.0/debian/compat
+--- twisted-2.4.0.orig/debian/compat	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/compat	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1 @@
++4
+diff -ruN twisted-2.4.0.orig/debian/control twisted-2.4.0/debian/control
+--- twisted-2.4.0.orig/debian/control	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/control	2006-07-27 21:48:48.000000000 +0300
+@@ -0,0 +1,82 @@
++Source: twisted
++Section: python
++Priority: optional
++Maintainer: Matthias Klose <doko@debian.org>
++Build-Depends: debhelper (>= 4.2), python2.4-dev, python-zopeinterface, python, patch
++Standards-Version: 3.6.1
++
++Package: python-twisted-core
++Architecture: all
++Depends: ${python:Depends}, python-zopeinterface
++Suggests: python-tk, python-gtk2, python-glade-1.2, python-glade2, python-qt3, python-wxgtk2.4 | python-wxgtk2.6, python-profiler
++Recommends: python-pyopenssl, python-pam, python-serial
++Conflicts: python2.3-twisted (<< 2.1.0-4), python2.4-twisted (<< 2.1.0-4), python-twisted (<< 2.1.0-4)
++Replaces: python2.3-twisted (<< 2.1.0-4), python2.4-twisted (<< 2.1.0-4), python-twisted (<< 2.1.0-4)
++Description: Event-based framework for internet applications (dummy package)
++ This is a dummy package that depends on the twisted library for the
++ default version of Python.
++ .
++ It replaces the "twisted" package, which was non-policy compliant.
++
++Package: python2.4-twisted-core
++Architecture: all
++Depends: ${python:Depends}, python2.4-twisted-bin, python-zopeinterface
++Suggests: python2.4-tk, python2.4-gtk2, python2.4-glade2, python2.4-qt3, twisted-doc, python2.4-twisted-conch, python2.4-profiler
++Replaces: python2.1-twisted, python2.4-twisted (<< 2.1.0-4)
++Conflicts: python2.4-twisted (<< 2.1.0-4)
++Recommends: python2.4-pyopenssl, python2.4-pam
++Description: Event-based framework for internet applications
++ It includes a web server, a telnet server, a multiplayer RPG engine, a 
++ generic client and server for remote object access, and APIs for creating 
++ new protocols.
++ . 
++ This version is usable with python2.4
++
++Package: python2.4-twisted-bin
++Architecture: any
++Depends: ${python:Depends}, ${shlibs:Depends}
++Description: Event-based framework for internet applications
++ It includes a web server, a telnet server, a multiplayer RPG engine, a 
++ generic client and server for remote object access, and APIs for creating 
++ new protocols.
++ . 
++ This package contains the architectures specific files for python2.4-twisted
++
++Package: twisted-doc
++Section: doc
++Architecture: all
++Suggests: twisted
++Recommends: www-browser | postscript-viewer | pdf-viewer, twisted-doc-api
++Description: The official documentation of Twisted
++ This contains various HOWTOs and overviews in various formats
++ .
++ Twisted is an event-based framework for internet applications.
++ It includes a web server, a telnet server, a multiplayer RPG engine, a 
++ generic client and server for remote object access, and APIs for creating 
++ new protocols.
++
++Package: twisted-doc-api
++Section: doc
++Architecture: all
++Depends: twisted-doc
++Description: The auto-generated API docs of Twisted
++ Epydoc-generated HTML API docs of Twisted classes, modules and functions.
++ .
++ Twisted is an event-based framework for internet applications
++ It includes a web server, a telnet server, a multiplayer RPG engine, a 
++ generic client and server for remote object access, and APIs for creating 
++ new protocols.
++
++Package: python-twisted
++Architecture: all
++Depends: ${python:Depends}, python-twisted-core (>= 2.1), python-twisted-conch (>= 1:0.6), python-twisted-mail (>= 0.2), python-twisted-lore (>= 0.1), python-twisted-names (>= 0.2), python-twisted-news (>= 0.1), python-twisted-runner (>= 0.1), python-twisted-web (>= 0.5), python-twisted-words (>= 0.3)
++Description: Event-based framework for internet applications (transitional package)
++ This is a transitional package that depends on the twisted core library and
++ all the libraries split out to separate packages starting with Twisted-2.0.1.
++
++Package: python2.4-twisted
++Architecture: all
++Depends: python2.4-twisted-core (>= 2.1), python2.4-twisted-conch (>= 1:0.6), python2.4-twisted-mail (>= 0.2), python2.4-twisted-lore (>= 0.1), python2.4-twisted-names (>= 0.2), python2.4-twisted-news (>= 0.1), python2.4-twisted-runner (>= 0.1), python2.4-twisted-web (>= 0.5), python2.4-twisted-words (>= 0.3)
++Description: Event-based framework for internet applications (transitional package)
++ This is a transitional package that depends on the twisted core library and
++ all the libraries split out to separate packages starting with Twisted-2.0.1.
+diff -ruN twisted-2.4.0.orig/debian/copyright twisted-2.4.0/debian/copyright
+--- twisted-2.4.0.orig/debian/copyright	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/copyright	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,107 @@
++This package was debianized by Moshe Zadka <moshez@debian.org>
++on Sat, 21 Jul 2001 09:35:33 +0300,
++updated for 2.0 by Matthias Klose <doko@debian.org>
++
++It was downloaded from http://www.twistedmatrix.com
++
++Copyright (c) 2005
++Allen Short
++Andrew Bennetts
++Benjamin Bruheim
++Bob Ippolito
++Christopher Armstrong
++Donovan Preston
++Eric Mangold
++Itamar Shtull-Trauring
++James Knight
++Jason A. Mobarak
++Jonathan Lange
++Jonathan D. Simms
++Jp Calderone
++Jürgen Hermann
++Kevin Turner
++Mary Gardiner
++Matthew Lefkowitz
++Massachusetts Institute of Technology
++Moshe Zadka
++Paul Swartz
++Pavel Pergamenshchik
++Sean Riley
++Travis B. Hartwell
++
++except as noted at the end of this file.
++
++Permission is hereby granted, free of charge, to any person obtaining
++a copy of this software and associated documentation files (the
++"Software"), to deal in the Software without restriction, including
++without limitation the rights to use, copy, modify, merge, publish,
++distribute, sublicense, and/or sell copies of the Software, and to
++permit persons to whom the Software is furnished to do so, subject to
++the following conditions:
++
++The above copyright notice and this permission notice shall be
++included in all copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++
++
++Copyright Exceptions:
++
++The source includes in twisted/python/pymodules some files from the
++Python 2.3 upstream tarball (not included in the binary packages).
++The Python 2.3 license follows:
++
++PSF LICENSE AGREEMENT FOR PYTHON 2.3
++------------------------------------
++
++1. This LICENSE AGREEMENT is between the Python Software Foundation
++("PSF"), and the Individual or Organization ("Licensee") accessing and
++otherwise using Python 2.3 software in source or binary form and its
++associated documentation.
++
++2. Subject to the terms and conditions of this License Agreement, PSF
++hereby grants Licensee a nonexclusive, royalty-free, world-wide
++license to reproduce, analyze, test, perform and/or display publicly,
++prepare derivative works, distribute, and otherwise use Python 2.3
++alone or in any derivative version, provided, however, that PSF's
++License Agreement and PSF's notice of copyright, i.e., "Copyright (c)
++2001, 2002, 2003 Python Software Foundation; All Rights Reserved" are
++retained in Python 2.3 alone or in any derivative version prepared by
++Licensee.
++
++3. In the event Licensee prepares a derivative work that is based on
++or incorporates Python 2.3 or any part thereof, and wants to make
++the derivative work available to others as provided herein, then
++Licensee hereby agrees to include in any such work a brief summary of
++the changes made to Python 2.3.
++
++4. PSF is making Python 2.3 available to Licensee on an "AS IS"
++basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
++IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
++DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
++FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 2.3 WILL NOT
++INFRINGE ANY THIRD PARTY RIGHTS.
++
++5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
++2.3 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
++A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 2.3,
++OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
++
++6. This License Agreement will automatically terminate upon a material
++breach of its terms and conditions.
++
++7. Nothing in this License Agreement shall be deemed to create any
++relationship of agency, partnership, or joint venture between PSF and
++Licensee.  This License Agreement does not grant permission to use PSF
++trademarks or trade name in a trademark sense to endorse or promote
++products or services of Licensee, or any third party.
++
++8. By copying, installing or otherwise using Python 2.3, Licensee
++agrees to be bound by the terms and conditions of this License
++Agreement.
+diff -ruN twisted-2.4.0.orig/debian/dh_python twisted-2.4.0/debian/dh_python
+--- twisted-2.4.0.orig/debian/dh_python	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/dh_python	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,278 @@
++#!/usr/bin/perl -w
++
++=head1 NAME
++
++dh_python - calculates python dependencies and adds postinst and prerm python scripts
++
++=cut
++
++use strict;
++use File::Find;
++use Debian::Debhelper::Dh_Lib;
++
++=head1 SYNOPSIS
++
++B<dh_python> [S<I<debhelper options>>] [B<-n>] [B<-V> I<version>] [S<I<module dirs ...>>]
++
++=head1 DESCRIPTION
++
++dh_python is a debhelper program that is responsible for generating the
++${python:Depends} substitutions and adding them to substvars files. It
++will also add a postinst and a prerm script if required.
++
++The program will look at python scripts and modules in your package, and
++will use this information to generate a dependency on python, with the
++current major version, or on pythonX.Y if your scripts or modules need a
++specific python version. The dependency will be substituted into your
++package's control file wherever you place the token "${python:Depends}".
++
++If some modules need to be byte-compiled at install time, appropriate
++postinst and prerm scripts will be generated. If already byte-compiled
++modules are found, they are removed.
++
++If you use this program, your package should build-depend on python.
++
++=head1 OPTIONS
++
++=over 4
++
++=item I<module dirs>
++
++If your package installs python modules in non-standard directories, you
++can make dh_python check those directories by passing their names on the
++command line. By default, it will check /usr/lib/site-python,
++/usr/lib/$PACKAGE, /usr/share/$PACKAGE, /usr/lib/games/$PACKAGE,
++/usr/share/games/$PACKAGE and /usr/lib/python?.?/site-packages.
++
++Note: only /usr/lib/site-python, /usr/lib/python?.?/site-packages and the
++extra names on the command line are searched for binary (.so) modules.
++
++=item B<-V> I<version>
++
++If the .py files your package ships are meant to be used by a specific
++pythonX.Y version, you can use this option to specify the desired version,
++such as 2.3. Do not use if you ship modules in /usr/lib/site-python.
++
++=item B<-n>, B<--noscripts>
++
++Do not modify postinst/postrm scripts.
++
++=back
++
++=head1 CONFORMS TO
++
++Debian policy, version 3.5.7
++
++Python policy, version 0.3.7
++
++=cut
++
++init();
++
++my $python = 'python';
++
++# The current python major version
++my $python_major;
++my $python_version = `$python -V 2>&1`;
++if (! defined $python_version || $python_version eq "") {
++	error("Python is not installed, aborting. (Probably forgot to Build-Depend on python.)");
++}
++elsif ($python_version =~ m/^Python\s+(\d+)\.(\d+)(\.\d+)*/) {
++	$python_version = "$1.$2" ;
++	$python_major = $1 ;
++} else { 
++	error("Unable to parse python version out of \"$python_version\".");
++}
++
++# The next python version
++my $python_nextversion = $python_version + 0.1;
++my $python_nextmajor = $python_major + 1;
++
++my @python_allversions = ('1.5','2.1','2.2','2.3','2.4');
++foreach (@python_allversions) {
++	s/^/python/;
++}
++
++# Check for -V
++my $usepython = "python$python_version";
++if($dh{V_FLAG_SET}) {
++	$usepython = $dh{V_FLAG};
++	$usepython =~ s/^/python/;
++	if (! grep { $_ eq $usepython } @python_allversions) {
++		error("Unknown python version $dh{V_FLAG}");
++	}
++}
++
++# Cleaning the paths given on the command line
++foreach (@ARGV) {
++	s#/$##;
++	s#^/##;
++}
++
++# dependency types
++use constant PROGRAM   => 1;
++use constant PY_MODULE => 2;
++use constant PY_MODULE_NONSTANDARD => 4;
++use constant SO_MODULE => 8;
++use constant SO_MODULE_NONSTANDARD => 16;
++
++foreach my $package (@{$dh{DOPACKAGES}}) {
++	my $tmp = tmpdir($package);
++
++	delsubstvar($package, "python:Depends");
++
++	my @dirs = ("usr/lib/site-python", "usr/lib/$package", "usr/share/$package", "usr/lib/games/$package", "usr/share/games/$package", @ARGV );
++	my @dirs_so = ("usr/lib/site-python", @ARGV );
++
++	my $dep_on_python = 0;
++	my $strong_dep = 0;
++	my $look_for_pythonXY = 1;
++
++	# First, the case of python-foo and pythonX.Y-foo
++	if ($package =~ /^python-/) {
++		$dep_on_python = 1;
++		$strong_dep = 1;
++		my $pack = $package;
++		$pack =~ s/^python/python$python_version/;
++		if (grep { "$_" eq "$pack" } getpackages()) {
++			addsubstvar($package, "python:Depends", $pack);
++		}
++	}
++	if ($package !~ /^python[0-9].[0-9]-/) {
++		push @dirs, "usr/lib/$usepython/site-packages";
++		push @dirs_so, "usr/lib/$usepython/site-packages";
++		$look_for_pythonXY = 0;
++	}
++
++	@dirs = grep -d, map "$tmp/$_", @dirs;
++	@dirs_so = grep -d, map "$tmp/$_", @dirs_so;
++
++	my $deps = 0;
++	my %verdeps = ();
++	foreach (@python_allversions) {
++		$verdeps{$_} = 0;
++	}
++
++	# Find scripts
++	find sub {
++		return unless -f and (-x or /\.py$/);
++		local *F;
++		return unless open F, $_;
++		if (read F, local $_, 32 and m%^#!\s*/usr/bin/(env\s+)?(python(\d+\.\d+)?)\s%) {
++			if ( "python" eq $2 ) {
++				$deps |= PROGRAM;
++			} elsif(defined $verdeps{$2}) {
++				$verdeps{$2} |= PROGRAM;
++			}
++		}
++		close F;
++	}, $tmp;
++
++	# Look for python modules
++	my $dirlist="";
++	if (@dirs) {
++		foreach my $curdir (@dirs) {
++			my $has_module = 0;
++			$curdir =~ s%^$tmp/%%;
++			find sub {
++				return unless -f;
++				if (/\.py$/) {
++					$has_module = 1;
++					doit(("rm","-f",$_."c",$_."o"));
++				}
++			}, "$tmp/$curdir" ;
++			if ($has_module) {
++				if ($dh{V_FLAG_SET}) {
++					$verdeps{$usepython} |= PY_MODULE_NONSTANDARD;
++				} else {
++					$deps |= PY_MODULE;
++				}
++				$dirlist="$dirlist /$curdir";
++			}
++		}
++	}
++	if (@dirs_so) {
++		foreach my $curdir (@dirs_so) {
++			my $has_module = 0;
++			$curdir =~ s%^$tmp/%%;
++			find sub {
++				return unless -f;
++				$has_module = 1 if /\.so$/;
++			}, "$tmp/$curdir" ;
++			if ($has_module) {
++				if ($dh{V_FLAG_SET}) {
++					$verdeps{$usepython} |= SO_MODULE_NONSTANDARD;
++				}
++				else {
++					$deps |= SO_MODULE;
++				}
++			}
++		}
++	}
++
++	# Dependencies on current python
++	$dep_on_python = 1 if $deps;
++	$strong_dep = 1 if($deps & (PY_MODULE|SO_MODULE));
++
++	if ($dep_on_python) {
++		addsubstvar($package, "python:Depends", $python, ">= $python_version");
++		if ($strong_dep) {
++			addsubstvar($package, "python:Depends", $python, "<< $python_nextversion");
++		} else {
++			addsubstvar($package, "python:Depends", $python, "<< $python_nextmajor");
++		}
++	}
++
++	my $need_prerm = 0;
++
++	# Look for specific pythonX.Y modules
++	foreach my $pyver (@python_allversions) {
++		my $pydir="/usr/lib/$pyver/site-packages";
++		if ($look_for_pythonXY) {
++			if (grep -d,"$tmp$pydir") {
++				find sub {
++					return unless -f;
++					if (/\.py$/) {
++						$verdeps{$pyver} |= PY_MODULE;
++						doit(("rm","-f",$_."c",$_."o"));
++					}
++					$verdeps{$pyver} |= SO_MODULE if /\.so$/;
++				}, "$tmp$pydir";
++			}
++		}
++	
++		# Go for the dependencies
++		addsubstvar($package, "python:Depends", $pyver) if $verdeps{$pyver};
++
++		# And now, the postinst and prerm stuff
++		if ($pyver eq "$usepython") {
++			if ($verdeps{$pyver} & PY_MODULE) {
++				$pydir = $pydir.$dirlist;
++			} else {
++				$pydir = $dirlist;
++			}
++			$verdeps{$pyver} |= PY_MODULE if($deps & PY_MODULE);
++		}
++		if ($verdeps{$pyver} & (PY_MODULE|PY_MODULE_NONSTANDARD) && ! $dh{NOSCRIPTS}) {
++			autoscript($package,"postinst","postinst-python","s%#PYVER#%$pyver%;s%#DIRLIST#%$pydir%");
++			$need_prerm = 1;
++		}
++	}
++	if ($need_prerm && ! $dh{NOSCRIPTS}) {
++		autoscript($package,"prerm","prerm-python","s%#PACKAGE#%$package%");
++	}
++}
++
++=head1 SEE ALSO
++
++L<debhelper(7)>
++
++This program is a part of debhelper.
++
++=head1 AUTHOR
++
++Josselin Mouette <joss@debian.org>
++
++most ideas stolen from Brendan O'Dea <bod@debian.org>
++
++=cut
+diff -ruN twisted-2.4.0.orig/debian/python-twisted.menu twisted-2.4.0/debian/python-twisted.menu
+--- twisted-2.4.0.orig/debian/python-twisted.menu	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/python-twisted.menu	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,11 @@
++?package(python-twisted):\
++	needs="x11"\
++	section="Apps/Net"\
++	title="Manhole Twisted Client"\
++	command="/usr/bin/manhole"
++
++?package(python-twisted):\
++	needs="x11"\
++	section="Apps/Net"\
++	title="Twisted Application Generator"\
++	command="/usr/bin/tkmktap"
+diff -ruN twisted-2.4.0.orig/debian/python-twisted.menu.old twisted-2.4.0/debian/python-twisted.menu.old
+--- twisted-2.4.0.orig/debian/python-twisted.menu.old	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/python-twisted.menu.old	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,17 @@
++?package(python-twisted):\
++	needs="x11"\
++	section="Apps/Net"\
++	title="Twisted Instance Messenger"\
++	command="/usr/bin/t-im"
++
++?package(python-twisted):\
++	needs="x11"\
++	section="Apps/Net"\
++	title="Manhole Twisted Client"\
++	command="/usr/bin/manhole"
++
++?package(python-twisted):\
++	needs="x11"\
++	section="Apps/Net"\
++	title="Twisted Application Generator"\
++	command="/usr/bin/tkmktap"
+diff -ruN twisted-2.4.0.orig/debian/python-twisted.preinst twisted-2.4.0/debian/python-twisted.preinst
+--- twisted-2.4.0.orig/debian/python-twisted.preinst	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/python-twisted.preinst	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,7 @@
++#! /bin/sh -e
++
++if [ ! -h /usr/share/doc/python-twisted ]; then
++    rm -rf /usr/share/doc/python-twisted
++fi
++
++#DEBHELPER#
+diff -ruN twisted-2.4.0.orig/debian/rules twisted-2.4.0/debian/rules
+--- twisted-2.4.0.orig/debian/rules	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/rules	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,134 @@
++#! /usr/bin/make -f
++
++SHELL = /bin/bash
++
++# all versions
++PYVERS=$(subst -dev,,\
++           $(subst python,,\
++             $(filter python%-dev,\
++               $(shell sed -n '/^Build-Depends/s/,//gp' debian/control))))
++
++# default version
++VER := $(shell /usr/bin/python -c 'import sys; print sys.version[:3]')
++
++gamesdir = debian/twisted-quotes/usr/share/games/fortunes
++
++build: build-stamp
++build-stamp: $(PYVERS:%=build-python%)
++	touch $@
++build-python%:
++	python$* setup.py build
++	touch $@
++
++clean:
++	rm -rf *-stamp build-python* build
++	rm -rf $(addprefix debian/,$(packages)) debian/files debian/substvars
++	rm -rf _trial_temp test.log
++	find . -name "*.pyc" |xargs -r rm
++	dh_clean
++
++install: build-stamp install-prereq $(PYVERS:%=install-python%) install-nover
++
++install-prereq: build-stamp
++	dh_testdir
++	dh_testroot
++	dh_clean -k
++
++install-python%: install-prereq
++	: # python-$*-twisted-core
++	python$* setup.py install --prefix=debian/python$*-twisted-core/usr
++	-find debian/python$*-twisted-core -name '*.py[co]' | xargs rm -f
++	for i in debian/python$*-twisted-core/usr/bin/*; do \
++	  mv $$i $${i}$*; \
++	done
++	mkdir -p debian/python$*-twisted-core/usr/share/man/man1
++	for i in doc/man/{manhole,*tap*,trial,twistd}.1; do \
++	  iv=`basename $$i .1`$*.1; \
++	  cp -p $$i debian/python$*-twisted-core/usr/share/man/man1/$$iv; \
++	done
++	case $* in \
++	  1.5|2.0|2.1|2.2) ;; \
++	  *) rm -rf debian/python$*-twisted-core/usr/lib/python$*/site-packages/twisted/python/pymodules; \
++	esac
++
++	: # python-$*-twisted-bin
++	dh_movefiles -ppython$*-twisted-bin \
++	  --sourcedir=debian/python$*-twisted-core \
++	    usr/lib/python$*/site-packages/twisted/protocols/_c_urlarg.so \
++	    usr/lib/python$*/site-packages/twisted/spread/cBanana.so
++
++	: # Replace all '#!' calls to python with python$*
++	: # and make them executable
++	for i in `find debian/python$** -mindepth 3 -type f`; do \
++	  sed '1s,#!.*python[^ ]*\(.*\),#! /usr/bin/python$*\1,' \
++		$$i > $$i.temp; \
++	  if cmp --quiet $$i $$i.temp; then \
++	    rm -f $$i.temp; \
++	  else \
++	    mv -f $$i.temp $$i; \
++	    chmod 755 $$i; \
++	    echo "fixed interpreter: $$i"; \
++	  fi; \
++	done
++
++install-nover:
++	: # twisted-doc
++	mkdir -p debian/twisted-doc/usr/share/doc/twisted-doc
++	cp -a doc/* debian/twisted-doc/usr/share/doc/twisted-doc/
++	-find debian/twisted-doc -type d -name man | xargs rm -rf
++
++	: # python-twisted-core
++	mkdir -p debian/python-twisted-core/usr/bin
++	for i in debian/python$(VER)-twisted-core/usr/bin/*; do \
++	  iv=`basename $$i $(VER)`; \
++	  ln -sf $${iv}$(VER) debian/python-twisted-core/usr/bin/$$iv; \
++	done
++	mkdir -p debian/python-twisted-core/usr/share/man/man1
++	for i in debian/python$(VER)-twisted-core/usr/share/man/man1/*; do \
++	  iv=`basename $$i $(VER).1`; \
++	  ln -sf $${iv}$(VER).1.gz \
++	    debian/python-twisted-core/usr/share/man/man1/$$iv.1.gz; \
++	done
++
++binary-indep: build install
++	dh_testdir
++	dh_testroot
++	dh_installchangelogs -i
++	dh_installdocs -i
++	rm -rf debian/twisted-doc-api/usr/share/doc/twisted-doc-api
++	ln -s twisted-doc debian/twisted-doc-api/usr/share/doc/twisted-doc-api
++	for p in python-twisted; do \
++	  rm -rf debian/$$p/usr/share/doc/$$p; \
++	  ln -sf python$(VER)$${p#python*} debian/$$p/usr/share/doc/$$p; \
++	done
++	dh_installmenu -i
++	dh_compress -i -X.py
++	dh_fixperms -i
++#	chmod +x debian/dh_python
++#	debian/dh_python -i
++	dh_python -i
++	dh_installdeb -i
++	dh_gencontrol -i
++	dh_md5sums -i
++	dh_builddeb -i
++
++binary-arch: build install
++	dh_testdir
++	dh_testroot
++	dh_installchangelogs -a
++	dh_installdocs -a
++	dh_installmenu -a
++	dh_strip -a
++	dh_compress -a -X.py
++	dh_fixperms -a
++#	chmod +x debian/dh_python
++#	debian/dh_python -a
++	dh_python -a
++	dh_installdeb -a
++	dh_shlibdeps -a
++	dh_gencontrol -a
++	dh_md5sums -a
++	dh_builddeb -a
++
++binary: binary-indep binary-arch
++.PHONY: build clean binary-indep binary-arch binary install install-nover install-prereq
+diff -ruN twisted-2.4.0.orig/debian/twisted-api twisted-2.4.0/debian/twisted-api
+--- twisted-2.4.0.orig/debian/twisted-api	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/twisted-api	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,10 @@
++Document: twisted-api
++Title: The Twisted API Reference
++Author: The Twisted Team
++Abstract: This collection of autogenerated API references describes how
++ to use the various classes and function in Twisted
++Section: Apps/Programming
++
++Format: HTML
++Index: /usr/share/doc/twisted-doc/api/index.html
++Files: /usr/share/doc/twisted-doc/api/*.html
+diff -ruN twisted-2.4.0.orig/debian/twisted-doc.doc-base twisted-2.4.0/debian/twisted-doc.doc-base
+--- twisted-2.4.0.orig/debian/twisted-doc.doc-base	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/twisted-doc.doc-base	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,10 @@
++Document: twisted-howto
++Title: The Twisted Book
++Author: The Twisted Team
++Abstract: This book describes how to use Twisted for any use --
++ from bringing up a simple web site to coding distributed applications
++Section: Apps/Programming
++
++Format: HTML
++Index: /usr/share/doc/twisted-doc/howto/index.html
++Files: /usr/share/doc/twisted-doc/howto/*.html
+diff -ruN twisted-2.4.0.orig/debian/watch twisted-2.4.0/debian/watch
+--- twisted-2.4.0.orig/debian/watch	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/debian/watch	2006-07-27 18:34:12.000000000 +0300
+@@ -0,0 +1,2 @@
++version=2
++http://www.twistedmatrix.com/downloads/Twisted-([\d\.]*)\.tar\.bz2
+diff -ruN twisted-2.4.0.orig/doc/man/tap2deb.1 twisted-2.4.0/doc/man/tap2deb.1
+--- twisted-2.4.0.orig/doc/man/tap2deb.1	2005-10-08 09:02:05.000000000 +0300
++++ twisted-2.4.0/doc/man/tap2deb.1	2006-07-27 18:34:12.000000000 +0300
+@@ -8,7 +8,7 @@
+ Create a ready to upload Debian package in ".build"
+ .TP
+ \fB\-u\fR, \fB\--unsigned\fR 
+-do not sign the Debian pacakge
++do not sign the Debian package
+ .TP
+ \fB\-t\fR, \fB\--tapfile\fR \fI<tapfile>\fR
+ Build the application around the given .tap (default twistd.tap)
+@@ -35,7 +35,7 @@
+ The one-line description. Default is uninteresting.
+ .TP
+ \fB\-l\fR, \fB\--long_description\fR \fI<long_description>\fR
+-A multi-line description. Default is explanantion about
++A multi-line description. Default is explanation about
+ this being an automatic package created from tap2deb.
+ .TP
+ \fB\-m\fR, \fB\--maintainer\fR \fI<maintainer>\fR
+diff -ruN twisted-2.4.0.orig/doc/man/tap2rpm.1 twisted-2.4.0/doc/man/tap2rpm.1
+--- twisted-2.4.0.orig/doc/man/tap2rpm.1	2005-10-08 09:02:05.000000000 +0300
++++ twisted-2.4.0/doc/man/tap2rpm.1	2006-07-27 18:34:12.000000000 +0300
+@@ -8,7 +8,7 @@
+ Create a set of RPM/SRPM packages in the current directory
+ .TP
+ \fB\-u\fR, \fB\--unsigned\fR 
+-do not sign the RPM pacakge
++do not sign the RPM package
+ .TP
+ \fB\-t\fR, \fB\--tapfile\fR \fI<tapfile>\fR
+ Build the application around the given .tap (default twistd.tap)
+@@ -35,7 +35,7 @@
+ The one-line description. Default is uninteresting.
+ .TP
+ \fB\-l\fR, \fB\--long_description\fR \fI<long_description>\fR
+-A multi-line description. Default is explanantion about
++A multi-line description. Default is explanation about
+ this being an automatic package created from tap2rpm.
+ .TP
+ \fB\-m\fR, \fB\--maintainer\fR \fI<maintainer>\fR
+diff -ruN twisted-2.4.0.orig/twisted/python/dispatch.py.rej twisted-2.4.0/twisted/python/dispatch.py.rej
+--- twisted-2.4.0.orig/twisted/python/dispatch.py.rej	1970-01-01 02:00:00.000000000 +0200
++++ twisted-2.4.0/twisted/python/dispatch.py.rej	2006-07-27 18:32:25.000000000 +0300
+@@ -0,0 +1,17 @@
++***************
++*** 5,11 ****
++  warnings.warn(
++      "Create your own event dispatching mechanism, "
++      "twisted.python.dispatch will soon be no more.",
++-     DeprecationgWarning, 2)
++  
++  
++  class EventDispatcher:
++--- 5,11 ----
++  warnings.warn(
++      "Create your own event dispatching mechanism, "
++      "twisted.python.dispatch will soon be no more.",
+++     DeprecationWarning, 2)
++  
++  
++  class EventDispatcher:
+diff -ruN twisted-2.4.0.orig/twisted/test/stdio_test_halfclose.py twisted-2.4.0/twisted/test/stdio_test_halfclose.py
+--- twisted-2.4.0.orig/twisted/test/stdio_test_halfclose.py	2006-04-13 16:59:16.000000000 +0300
++++ twisted-2.4.0/twisted/test/stdio_test_halfclose.py	2006-07-27 18:49:58.000000000 +0300
+@@ -17,7 +17,7 @@
+ class ProducerChild(protocol.Protocol):
+     _paused = False
+ 
+-    ???
++#    ???
+ 
+     def connectionLost(self, reason):
+         reactor.stop()

@@ -1,0 +1,67 @@
+= VPNease Server Changelog =
+
+[[PageOutline]]
+
+----
+
+== Changelog ==
+
+{{{
+vpnease (1.2.8605) dapper; urgency=high
+
+  * Automatic VPN connection configuration improvements.  Check and
+    re-enable Windows IPsec and RasMan services if disabled, re-enable
+    L2TP encryption if disabled, support for Windows 2000 and 64-bit
+    Windows versions, avoid initial Windows reboot if possible,
+    automatic Desktop shortcut, automatic defaulting
+    of username, automatic administrative privilege elevation for Vista.
+    Mac OS X Leopard configuration using a configuration template.
+  * Site-to-site error feedback improved.  Address check failures caused
+    by overlapping VPN subnets in client and server are now shown on web
+    UI status page.
+  * Installer improvements.  Recovery feature allows configuration from
+    a previous installation to be recovered and imported into a new installation
+.
+    Installer now uses separate partitions for boot (/boot) and root (/)
+    partitions if installation target is 4 GB or larger.  This improves
+    compatibility with old BIOSes unable to boot from partitions larger
+    than 512 MB.
+  * Dynamic DNS improvements.  Addressing options now include forced address
+    and NATted address of the server.  More providers supported.
+    
+  * External SSL certificate can be configured to reduce browser warnings for
+    administrator and user web user interface connections.
+    
+  * Minor improvements to status views, other cosmetic improvements.
+
+ -- VPNease support <support@vpnease.com>  Sat, 12 Jul 2008 17:44:00 +0000
+
+vpnease (1.1.6708) dapper; urgency=high
+
+  * RADIUS authentication support.  Users can now be authenticated
+    using a remote RADIUS server.  The Internet Authentication Service
+    (IAS) component available for Windows servers provides RADIUS support,
+    and allows existing Windows accounts to be used for VPN and web access
+    authentication.
+  * SNMP support.  VPNease server can now be monitored using an SNMP
+    monitoring system.  A custom VPNease Management Information Base
+    (MIB) module provides access to VPNease specific monitoring values.
+  * Automatic VPN connection configuration for Windows XP and Windows Vista 
+    (available for 32-bit Windows platforms).
+  * Minor improvements and bug fixes.
+
+ -- VPNease support <support@vpnease.com>  Fri, 19 Oct 2007 20:36:00 +0000
+
+vpnease (1.0.5529) dapper; urgency=high
+
+  * Minor improvements to handling of system time synchronization, 
+    other minor fixes.
+
+ -- VPNease support <support@vpnease.com>  Thu, 19 Jul 2007 14:58:00 +0000
+
+vpnease (1.0.5287) dapper; urgency=high
+
+  * First release.
+
+ -- VPNease support <support@vpnease.com>  Fri,  6 Jul 2007 15:05:00 +0000
+}}}

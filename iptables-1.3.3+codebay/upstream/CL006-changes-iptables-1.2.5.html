@@ -1,0 +1,66 @@
+<html>
+<head><title>The Netfilter HomePage: iptables 1.2.5</title></head>
+<body bgcolor="#ffffff" text="#101010">
+<center><h1>The Netfilter HomePage: iptables 1.2.5</h1></center>
+
+This version requires kernel &gt;= 2.4.4
+This version recommends kernel &gt; 2.4.14
+
+<p>
+<strong>Bugs Fixed from 1.2.4:</strong>
+<ul>
+<li> make iptables-restore accept --table as well as -t option <br>
+	[ Andreas Ferber ]
+<li> make iptables-restore -v / --verbose option work <br>
+	[ Marc Boucher ]
+<li> fix iptables-save problems with saving "ppp+" style interface wildcards<br>
+	[ Harald Welte ]
+<li> make iptables accept '_' and '.' in interface names<br>
+	[ Harald Welte ]
+
+<li> Kernel bugfixes in patch-o-matic:
+  <ul>
+	<li> Fix IRC NAT srcaddr fix (we used to nat DCC connectios to the
+	     address of the IRC server<br>
+		[ Bob Hockney ]
+	<li> Fix potential Oops in TOS target module<br>
+		[ Edward Killips ]
+	<li> Fix problem when raw socket has cloned skb while netfilter doing
+	     payload modification<br>
+		[ Rusty Russell ]
+	<li> Fix memory leak in ipchains redirect code<br>
+		[ Rusty Russell ]
+	<li> Fix reintroduced ECN problem with unclean match<br>
+		[ Guillaume Morin ]
+	<li> Fix MAC adress match problem with small udp packets<br>
+		[ Harald Welte ]
+  </ul>
+</ul>
+
+<strong>Changes from 1.2.4:</strong>
+<ul>
+<li> Whole patch-o-matic system restructured - now supports multiple
+     patch repositories (submitted, pending, base, extra, newnat).<br>
+	[ Jozsef Kadlecsik ]
+
+<li> Add IPv6 support to the QUEUE target and libipq<br>
+	[ Fernando Anton / James Morris ]
+
+<li> New patch-o-matic patches:
+  <ul>
+<li> New IPV4OPTSSTRIP target to strip IP options<br>
+	[ Fabrice Marie ]
+<li> New ipv6header match to match IPv6 header options<br>
+	[ Brad Chapman / Andras Kis-Szabo ]
+<li> New helper match to match RELATED connections on their conntrack helper<br>
+	[ Martin Josefsson ]
+<li> New quota match to have fixed IP quotas<br>
+	[ Sam Johnston ]
+<li> New recent match to match recently seen packets <br>
+	[ Stephen Frost ]
+<li> 
+  </ul>
+
+</ul>
+
+</body></html>

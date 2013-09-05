@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+#  VPNease start preinit step.
+#
+
+PATH=/sbin/:/bin/:/usr/sbin/:/usr/bin
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        log_begin_msg "VPNease preinit..."
+        l2tpgw-init-wrapper preinit
+        log_end_msg $?
+        ;;
+    stop)
+	# Nothing to do
+        ;;
+    restart)
+	# Nothing to do
+        ;;
+    *)
+        log_success_msg "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

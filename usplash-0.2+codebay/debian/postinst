@@ -1,0 +1,21 @@
+#! /bin/sh
+
+set -e
+
+#DEBHELPER#
+
+case "$1" in
+	configure)
+		# the version I finally got this right in; sigh...
+		if dpkg --compare-versions "$2" lt 0.1-21; then
+			update-alternatives --remove usplash-artwork.so /usr/share/usplash/usplash-default.so
+			if [ -h /etc/alternatives/usplash-artwork.so ] && \
+			[ "$(readlink /etc/alternatives/usplash-artwork.so)" = /usr/share/usplash/usplash-default.so ]; then
+				update-alternatives --auto usplash-artwork.so
+			fi
+		fi
+
+		update-alternatives --install /usr/lib/usplash/usplash-artwork.so usplash-artwork.so /usr/lib/usplash/usplash-default.so 10
+		update-initramfs -u
+		;;
+esac

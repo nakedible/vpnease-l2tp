@@ -1,0 +1,337 @@
+= VPNease FAQ =
+
+[[PageOutline]]
+
+----
+
+== How can I test VPNease? ==
+
+To test the product you need to install the VPNease server to a 
+physical computer or into a virtual machine (provided by a supported virtualization product). You can 
+then test remote access connections from your client computers or try the site-to-site connections 
+provided by VPNease. When installed, VPNease 
+automatically allocates a demo license which does not require any registration. 
+If you accept our legal terms, you can test the product without other obligations for the demo period. 
+For more information, see [http://www.vpnease.com/download-home.html VPNease Download].
+
+If you want to test client compatibility without installing VPNease server,  
+you can test your client computers against our test servers.  
+For more information, see [http://www.vpnease.com/test-servers.html Test Servers].
+ 
+----
+
+== VPNease server does not boot after installation ==
+
+There are several reasons which may cause server boot to fail after installation: 
+
+  * VPNease was installed with multiple hard disks connected. 
+    In some cases this may lead to boot problems with some BIOS models. Please reinstall 
+    the product with only one hard disk connected.
+
+  * The VPNease boot loader ([http://en.wikipedia.org/wiki/GRUB GRUB])
+    may have a problem with your BIOS drive settings. 
+    You can try to change BIOS settings or reinstall the product with only one hard disk 
+    connected. As a final measure, you can install the product using a virtualization product. 
+    For more information, see [http://www.vpnease.com/virtualization-products.html Virtualization Products].
+
+  * Your BIOS does not support booting from hard disks larger than 512 MB. This is typically 
+    manifested as Grub error !#18. See: [#Gruberror18whenbootingafterinstallation Grub error #18 when booting after installation].
+
+----
+
+== VPNease does not detect my network interface (NIC) ==
+
+VPNease does not support non-Ethernet network interfaces such as ADSL modems.  
+Such network interfaces are not recognized in the administrator interface. If your network interface supports Ethernet, 
+it may be unsupported by the Ubuntu platform used by VPNease server. 
+To overcome this problem, try another network interface model or use a virtualization product. 
+
+For more information, see [http://www.vpnease.com/server-requirements.html Server Requirements] for hardware compatibility, and  
+[http://www.vpnease.com/virtualization-products.html Virtualization Products] for a list of supported virtualization products. 
+
+----
+
+== VPNease does not detect my hard disk ==
+
+VPNease should automatically detect and support IDE, Serial ATA (SATA), SCSI, and 
+USB storage devices. If your hard disk is one of these types and is not detected, please review your BIOS settings and 
+cabling. You can also check whether other operating systems detect the device to ensure that the device is connected 
+correctly. 
+
+VPNease does not support software or hardware (or hybrid) RAID devices. 
+If your BIOS provides a RAID function, try to disable RAID from BIOS. If you are using a separate RAID 
+controller, you can also try to configure the RAID controller into a "plain disk mode" where individual hard 
+disks are directly exposed to the host computer. 
+
+In case you cannot get the hard disk to work with VPNease installer, try another 
+hard disk model or another disk controller. You can also use a virtualization product to overcome this limitation. See 
+[http://www.vpnease.com/virtualization-products.html Virtualization Products] for a list of supported virtualization products. 
+
+----
+
+== Grub error !#18 when booting after installation ==
+
+[http://wiki.linuxquestions.org/wiki/GRUB#Error_18 Grub error #18]
+is typically caused by old BIOS 
+versions which do not support large hard disks (over 512 megabytes). VPNease requires 
+a BIOS capable of booting from at least a 2 GB hard drive. 
+You can work around this problem by installing a host operating system (e.g. Windows or Linux) and using virtualization 
+for installing the VPNease server; however, we suggest you use more modern hardware. 
+ 
+----
+
+== VPNease server reboots periodically after installation ==
+
+The VPNease has an internal watchdog which reboots the server once in a while 
+whenever the server does not seem to be functioning correctly. If the server has been installed but has not 
+been configured with a working IP address (and DHCP is not providing an address), the server will periodically 
+reboot because it cannot establish working network parameters. 
+
+Solution: configure network settings for the server from the Networking
+page of the administrator interface. 
+ 
+----
+
+== RADIUS authentication works for VPN connections but not for user web interface connections ==
+
+This problem is typically caused by RADIUS server misconfiguration. The two most common configuration errors are: 
+
+  * RADIUS server responds to RADIUS MSCHAPv2 authentication (used for Windows client authentication) but does not respond to 
+    RADIUS PAP authentication (used for web authentication). 
+
+  * RADIUS server responds correctly to Service-Type Framed-User (VPN authentication) but responds incorrectly to 
+    Service-Type Authenticate-Only (web authentication). 
+
+For more information, see [http://www.vpnease.com/authentication-options.html Authentication Options].
+
+----
+
+== My site-to-site connection does not work correctly ==
+
+Site-to-site connections involve configuration of several devices, such as VPNease 
+servers, routers, and firewalls. Typically it is straightforward to configure the site-to-site connection itself. 
+You can verify that the site-to-site connection itself works by ensuring that the VPNease 
+administrator interface reports the connection to be up. After that, problems are typically related to routing and 
+firewall configuration. 
+
+See [http://www.vpnease.com/site-to-site-configuration.html Site-to-Site Configuration] for configuration and 
+troubleshooting guidance. 
+
+----
+
+== What Dynamic DNS providers are supported by VPNease? ==
+
+VPNease currently supports:
+  * [http://www.dyndns.com/ DynDNS]
+  * [http://www.dhs.org/ DHS International]
+  * [http://www.ods.org/ Open Domain Server]
+  * [http://www.dyns.cx/ DyNS]
+
+----
+
+== How can I authenticate VPN users against a Windows server? ==
+
+Windows servers, such as Windows Server 2000, Windows Server 2003, and Windows Server 2008, can 
+be used for VPN user authentication through the 
+[http://www.microsoft.com/technet/network/ias/default.mspx Internet Authentication Service (IAS)] Windows component. 
+IAS provides a RADIUS interface to the Windows Server, which VPNease can use 
+for user authentication. 
+
+For more information, see [http://www.vpnease.com/authentication-options.html Authentication Options].
+
+----
+ 
+== How can I monitor VPNease server with SNMP? ==
+
+You need to enable SNMP from the VPNease administrator interface 
+(License & Maintenance -> SNMP Monitoring), configure a  
+SNMP community string (Password), 
+download the [http://www.vpnease.com/latest-version.html VPNease MIB] file, 
+and configure your SNMP monitoring server accordingly. 
+ 
+For more information, see [http://www.vpnease.com/snmp-monitoring.html SNMP Monitoring].
+
+----
+
+== Does VPNease support server clustering or high availability? ==
+
+Yes, VPNease supports server clustering. You can install multiple 
+servers and use DNS-based load balancing and failover to provide both high throughput and high 
+availability. DNS-based load balancing scales essentially without a limit on the server count. 
+Individual servers don't even need to be in the same physical server network, alleviating bandwidth 
+constraints. 
+
+For more information, see [http://www.vpnease.com/server-clustering.html Server Clustering].
+
+----
+
+== Does VPNease support Internationalized Domain Names (IDN)? ==
+
+Some of the supported operating systems, like Windows XP, have limitations in Internationalized Domain Names support. 
+To avoid client operating system problems, VPNease does not support Internationalized Domain Names. 
+
+----
+
+== How should the VPN client address range be configured? ==
+
+The client address range is configured from VPNease server network 
+configuration page, and determines which IP addresses are assigned to VPN client connections. The 
+assigned address is visible to a VPN client as the IP address of the VPN network interface, and is  
+the address that is used "inside" the VPN connection. 
+
+The client address range is only used by the VPNease when assigning 
+addresses dynamically to users without a fixed IP address (either manually configured or provided 
+by a RADIUS server using the Framed-IP-Address attribute). For the same reason, manually configured 
+or RADIUS server assigned fixed IP addresses must not be contained in the configured client address 
+range. 
+
+Site-to-site connections require careful configuration of client address ranges. The client address 
+range of initiating peer and the responding peer must not overlap. If they do overlap, the site-to-site 
+connection will fail during connection formation and will be dropped. A later retry will have similar 
+fate, resulting in periodic connection attempts that fail silently. 
+
+Finally, the lowest and two highest addresses of the client subnet may not be used for either the 
+client range or for fixed IP addresses. For instance, if the client subnet is configured as 
+192.168.100.0/24, the following addresses cannot be used: 192.168.100.0, 192.168.100.254, 192.168.100.255. 
+The lowest and highest addresses are IP subnet and broadcast address, respectively, while the second to 
+highest address is reserved for the server end of the PPP connection. 
+
+In summary: for the simplest configuration, assign a separate client subnet for each VPNease 
+server (involved in site-to-site connections), and assign all fixed IP addresses (locally configured or RADIUS Framed-IP-Address) 
+outside every configured range (though such addresses may be inside a certain client subnet). 
+This ensures that ranges and reserved addresses never overlap and cause connectivity issues. In particular, there will be 
+no site-to-site connectivity problems caused by overlapping addresses 
+
+----
+
+== Why does my VPNease server connect to management.vpnease.com? ==
+
+The VPNease server connects to a host named management.vpnease.com for various 
+product management functions: to obtain a demo license, to authenticate a purchased license, 
+to provide time synchronization, and to check and receive product updates. Only information covered in the 
+product <a href="privacy-policy.html">Privacy Policy</a> is transferred to management.vpnease.com. 
+In particular, usernames, passwords, or other configuration settings are never transferred. 
+All data transferred between the VPNease server and management.vpnease.com is encrypted 
+using TLS encryption. 
+
+To function correctly, a VPNease server needs to be able to connect to 
+management.vpnease.com at least once a week. Please ensure that your VPNease server can 
+connect to management.vpnease.com (TCP port 443) normally to ensure proper functioning of the product. In particular, 
+if you run your own DNS server, make sure that this DNS name resolves normally if you experience problems. 
+  
+----
+
+== Does VPNease automatically close idle client connections? ==
+
+VPNease does not automatically close idle client connections, because 
+such a mechanism is difficult to implement reliably. Modern operating systems send and receive 
+traffic through the VPN connection even when the user is idle. For  
+instance, Windows and Mac OS X 
+computers synchronize their system time with network servers, update RSS feeds, and poll for e-mail periodically. 
+This makes detection of an idle connection difficult and unreliable. 
+
+----
+
+== Why is the VPNease web UI certificate reported as invalid by my browser? ==
+
+VPNease server uses the HTTPS (HTTP over SSL) 
+protocol for ensuring confidentiality of data between the browser and the server. 
+HTTPS requires the server to be authenticated by a certificate. To ensure 
+security, each VPNease needs to have a distinct 
+certificate created when the product is installed. 
+
+Dynamically generated certificate cannot have 
+certification from a certificate authority such as Thawte or Verisign. Instead, 
+the certificates are self-signed, presented "as is" as proof of identity. 
+Another issue is that the server certificate contains a Common Name field, which 
+should ideally match the domain name 
+of the server. However, because a VPNease server can be 
+accessed by both domain name(s) and often multiple addresses, the Common Name 
+is set to a neutral unique value instead. 
+
+When your browser reports an untrusted certificate from a 
+VPNease server, you should first ensure that 
+your connection to the server is secure (e.g. you are in your company intranet), and 
+then add the certificate to the list of trusted certificates of your browser. 
+How to do this depends on your browser. Finally, some browsers will still 
+report that the Common Name present in the certificate does not match the URI 
+entered. This warning provides essentially no increased security (as an 
+attacker is fully capable of impersonating a specific Common Name). 
+
+You can also create an RSA key pair and obtain a certificate for the public key
+of that key pair from e.g. Verisign.  This removes certificate warnings on all
+widely used browsers.
+See [http://www.vpnease.com/administration-interface.html] for details on setting
+the VPNease SSL certificate.
+
+
+----
+
+== My product update failed, how to recover? ==
+
+Please reinstall the product from the installer CD, and select the recovery option.
+The installer should recover your previous configuration for the new install.
+
+----
+
+== Can I use a VPN connection in Windows 2000/XP without administrative rights? ==
+
+To configure a new VPN connection you need administrative rights to your computer. 
+However, if a VPN connection has been configured to be available to all users, 
+you can use (connect and disconnect) a VPN connection without administrative 
+rights. 
+
+----
+
+== I get an error !#768 (encryption failed) when trying to connect using Windows XP ==
+
+This error is typically caused by a problem with the Windows IPsec policy daemon, 
+which fails to form an encrypted connection for some reason.  Please check that 
+the IPsec service is running. 
+
+Also please check that you have the latest service pack applied to your Windows XP. 
+Windows XP Home Edition versions prior to Service Pack 2 (SP2) are not supported. 
+
+----
+
+== Can a single client computer have multiple VPN connections at the same time? ==
+
+A single client computer can have multiple (simultaneously connected) active VPN connections. 
+For instance, Windows XP and Windows Vista support this feature.  There are two issues that you 
+should be aware of if using this feature: 
+
+  * If you use both VPN connections for routing all traffic, there will be a routing 
+    conflict.  Please check your client routing carefully. 
+
+  * If two VPN connections get the same VPN address (assigned by the VPNease server), 
+    the VPN connections may be succesfully established but be non-functional.  For instance, 
+    Windows Vista will ignore the assigned address and configure an automatic address from the 
+    subnet 169.254.0.0/16 instead, leading to a non-functional connection.  Check your 
+    VPNease server settings to avoid this problem. 
+
+----
+
+== What is the EU VAT ID? ==
+
+EU VAT ID (also known as '''Value Added Tax Identification Number''', VATIN), is used in the European Union for
+value added taxation for commerce within the EU.  In short, if you don't have a EU VAT ID, we cannot invoice
+product licenses with VAT 0.
+
+For more information, see:
+  * [http://en.wikipedia.org/wiki/Value_added_tax_identification_number Wikipedia: Value added tax identification number]
+  * [http://en.wikipedia.org/wiki/Value_added_tax_identification_number#EU_VAT_identification_numbers Wikipedia: Value added tax identification number, examples by country]
+  * [http://ec.europa.eu/taxation_customs/vies/faqvies.do#item11 Taxation and Customs Union: Frequently Asked Questions].
+
+----
+
+== Safe and native mode in VPNease installer ==
+
+When you boot the VPNease installer CD you can choose between safe and native installer modes.
+Safe mode is the default since VPNease 1.2, and means that instead of a native graphics mode,
+a VESA BIOS graphics mode is used by the installer and the product after installation.  This more
+is compatible with more hardware than the native mode, which attempts to use a graphics adapter
+specific driver.  Native mode provides better refresh rates, faster screen updates, better screen
+saver support, and other benefits over the VESA BIOS (safe) mode.  However, since these features
+rarely matter in a server, we recommend that the safe mode is used during installation.
+
+----

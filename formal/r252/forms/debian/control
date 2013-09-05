@@ -1,0 +1,12 @@
+Source: formal
+Section: web
+Priority: optional
+Maintainer: VPNease support <support@vpnease.com>
+Build-Depends: cdbs, debhelper (>= 5.0.6), python-dev
+Standards-Version: 3.6.2
+
+Package: formal
+Architecture: i386
+Depends:
+Provides: vpnease-formal
+Description: Nevow Forms.

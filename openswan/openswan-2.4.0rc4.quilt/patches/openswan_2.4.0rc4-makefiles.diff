@@ -1,0 +1,41 @@
+Index: openswan-2.4.0rc4.quilt/Makefile
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/Makefile	2006-12-03 15:52:10.000000000 +0200
++++ openswan-2.4.0rc4.quilt/Makefile	2006-12-03 15:52:16.000000000 +0200
+@@ -569,7 +569,7 @@
+ # set up for build
+ buildready:
+ 	rm -f dtrmakefile cvs.datemark
+-	cd doc ; $(MAKE) -s
++#	cd doc ; $(MAKE) -s
+ 
+ rpm:
+ 	@echo please cd packaging/redhat and
+Index: openswan-2.4.0rc4.quilt/Makefile.top
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/Makefile.top	2006-12-03 15:52:10.000000000 +0200
++++ openswan-2.4.0rc4.quilt/Makefile.top	2006-12-03 15:52:16.000000000 +0200
+@@ -29,7 +29,7 @@
+ KVUTIL=${MAKEUTILS}/kernelversion
+ KVSHORTUTIL=${MAKEUTILS}/kernelversion-short
+ 
+-SUBDIRS=doc lib programs testing
++SUBDIRS=lib programs
+ 
+ clean::
+ 	-(cd ${OPENSWANSRCDIR} && make modclean && make mod26clean)
+Index: openswan-2.4.0rc4.quilt/programs/pluto/Makefile
+===================================================================
+--- openswan-2.4.0rc4.quilt.orig/programs/pluto/Makefile	2006-12-03 15:52:10.000000000 +0200
++++ openswan-2.4.0rc4.quilt/programs/pluto/Makefile	2006-12-03 15:52:16.000000000 +0200
+@@ -201,7 +201,9 @@
+ endif
+ 
+ ifeq ($(USE_NAT_TRAVERSAL),true)
+-NAT_DEFS=-DNAT_TRAVERSAL -DVIRTUAL_IP 
++# l2tp-workaround: disable virtual IP support
++#NAT_DEFS=-DNAT_TRAVERSAL -DVIRTUAL_IP
++NAT_DEFS=-DNAT_TRAVERSAL
+ endif
+ 
+ ifeq ($(USE_NAT_TRAVERSAL_TRANSPORT_MODE),true)

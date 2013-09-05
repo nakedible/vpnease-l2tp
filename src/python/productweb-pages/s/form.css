@@ -1,0 +1,79 @@
+form {
+}
+
+fieldset {
+    border: none;
+}
+
+.field,
+.actions {
+    margin-top: 1.0em;
+}
+
+legend {
+	
+}
+
+
+label {    
+    cursor: pointer;
+    _cursor: default;
+}
+
+
+input, select, textarea {        
+ 	padding: 3px 3px;   
+    margin: 0;    
+
+	font: inherit; 
+	
+	background: #fff;   
+}
+
+input[type='text'], input[type='password'], select, textarea {    
+ 	border: 1px solid #999;
+}
+
+
+
+textarea {    
+
+}
+
+input:focus, 
+select:focus,
+textarea:focus {    
+	background: #ffffcc;	
+	border-color: #d9d982;   
+}
+
+input.button {
+	
+	font-weight: bold;	
+	
+	padding: 3px 5px;
+	/* IE fix */
+	_padding: 3px 0;
+
+	line-height: 1.0;	
+		
+    margin: 0;
+    margin-right: .75em; /* space between the next button */
+	
+	color: #000;	
+	
+	border: 1px solid #e5ae5c;
+	border-bottom: 1px solid #8c7046;
+	border-right: 1px solid #8c7046;
+	
+	cursor: pointer;
+	/*
+	background: #ffc266 url(../i/bg-button.gif) top left repeat-x;
+	*/
+}
+
+/*div.textarea textarea,*/
+div.textinput input
+{
+  width: 60%;
+}

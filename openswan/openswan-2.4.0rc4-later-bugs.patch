@@ -1,0 +1,188 @@
+diff -ru openswan-2.4.0rc4.orig/include/pluto_constants.h openswan-2.4.0rc4/include/pluto_constants.h
+--- openswan-2.4.0rc4.orig/include/pluto_constants.h	2006-05-05 18:22:58.000000000 +0300
++++ openswan-2.4.0rc4/include/pluto_constants.h	2006-05-05 18:34:29.000000000 +0300
+@@ -299,7 +299,10 @@
+ 				  || (s) == STATE_MODE_CFG_R2 \
+                                   || (s) == STATE_XAUTH_I0 || (s) == STATE_XAUTH_I1)
+ #define IS_IPSEC_SA_ESTABLISHED(s) ((s) == STATE_QUICK_I2 || (s) == STATE_QUICK_R2)
+-#define IS_ONLY_INBOUND_IPSEC_SA_ESTABLISHED(s) ((s) == STATE_QUICK_R1)
++/* this is an ugly hack, disable it */
++/* #define IS_ONLY_INBOUND_IPSEC_SA_ESTABLISHED(s) ((s) == STATE_QUICK_R1) */
++#define IS_ONLY_INBOUND_IPSEC_SA_ESTABLISHED(s) (0)
++
+ #ifdef MODECFG
+ #define IS_MODE_CFG_ESTABLISHED(s) ((s) == STATE_MODE_CFG_R2)
+ #endif
+Only in openswan-2.4.0rc4/include: pluto_constants.h~
+diff -ru openswan-2.4.0rc4.orig/programs/pluto/connections.c openswan-2.4.0rc4/programs/pluto/connections.c
+--- openswan-2.4.0rc4.orig/programs/pluto/connections.c	2006-05-05 18:22:58.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/connections.c	2006-05-05 18:46:49.000000000 +0300
+@@ -144,6 +144,11 @@
+     struct host_pair *p, *prev;
+     char b1[ADDRTOT_BUF],b2[ADDRTOT_BUF];
+ 
++    /* only match port when not wildcard */
++    bool remoteportmatch = TRUE;
++    if (hisaddr == NULL)
++	remoteportmatch = FALSE;
++
+     /* default hisaddr to an appropriate any */
+     if (hisaddr == NULL)
+ 	hisaddr = aftoinfo(addrtypeof(myaddr))->any;
+@@ -168,7 +173,11 @@
+ #endif
+ 
+     if(myport == 4500) myport=500;
+-    if(hisport== 4500) hisport=500;
++
++    /* This equality is not fun.. at least when not wildcard connection match*/
++    if (hisaddr == NULL) {
++	if(hisport== 4500) hisport=500;
++    }
+ 
+ #if L2TP_DEBUG
+     openswan_log("l2tp-debug: find_host_pair (after): %s:%d %s:%d\n",
+@@ -201,6 +210,19 @@
+ 	    && (!p->him.host_port_specific || p->him.host_port == hisport)
+ 	    )
+ 	{
++
++	    /* when portmatch is required, there must exist a suitable
++	       connection */
++   	    if (remoteportmatch) {
++		struct connection *c;
++		for (c = p->connections; c != NULL; c = c->hp_next) {
++		    if (c->spd.that.host_port == hisport) break;
++		}
++		if (c == NULL) {
++		    continue;
++		}
++	    }
++
+ #if L2TP_DEBUG
+ 	    openswan_log("l2tp-debug: found match");
+ #endif
+@@ -275,16 +297,7 @@
+ 	    hp->me.host_port = nat_traversal_enabled ? pluto_port : c->spd.this.host_port;
+ 	    hp->him.host_port = nat_traversal_enabled ? pluto_port : c->spd.that.host_port;
+ 
+-#if 1
+-	    /* l2tp-workaround: must enable "host_port_specific" here so
+-	     * that find_host_pair will not match later for the different
+-	     * client which comes from behind the same NAT. */
+-	    /* Note: this requires a fix in find_host_pair, too to match
+-	     * with the wildcard connections.
+-	     */
+-	    openswan_log ("l2tp-workaround: enabling port specific lookup for host-pair: c: 0x%p, remote port: %d", c, hp->him.host_port);
+-	    hp->him.host_port_specific = TRUE;
+-#endif
++	    /* Note: host-port-specific not set here for a good reason.. */
+ 
+ #else
+ 	    hp->me.host_port = c->spd.this.host_port;
+@@ -1360,10 +1373,7 @@
+ 	    c->spd.that = t;
+ 	}
+ 
+-	/* XXX this is dubious, maybe should not use port-specific anywhere. */
+-#if 1 /* l2tp-workaround: enable host-port-specific on remote end. */
+-	c->spd.that.host_port_specific = TRUE;
+-#endif
++	/* Note: host-port-specific is not the solution. */
+ 
+ 	c->spd.next = NULL;
+ 	c->spd.reqid = gen_reqid();
+Only in openswan-2.4.0rc4/programs/pluto: connections.c~
+diff -ru openswan-2.4.0rc4.orig/programs/pluto/ipsec_doi.c openswan-2.4.0rc4/programs/pluto/ipsec_doi.c
+--- openswan-2.4.0rc4.orig/programs/pluto/ipsec_doi.c	2006-05-05 18:22:58.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/ipsec_doi.c	2006-05-05 18:51:37.000000000 +0300
+@@ -2057,11 +2057,25 @@
+     }
+ #endif
+ 
++    /* main-mode start wildcard connection is not the solution.. */
++#if 0
+ #if 1 /* l2tp-workaround: in mainmode start we always want to use
+ 	 a wilcard connection. */
+     openswan_log("l2tp-workaround: use wildcard connection always in mainmode start.");
+     c = NULL;
+ #endif
++#endif
++
++    /* .. instead we try to find a connection with right remote port or
++       if not found discard the connection. */
++    if (c != NULL) {
++	struct connection *d;
++	for (d = c; d != NULL; d = d->hp_next) {
++	    if (d->spd.that.host_port == md->sender_port)
++		break;
++	}
++	c = d;
++    }
+ 
+     if (c == NULL)
+     {
+Only in openswan-2.4.0rc4/programs/pluto: ipsec_doi.c~
+diff -ru openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.c openswan-2.4.0rc4/programs/pluto/nat_traversal.c
+--- openswan-2.4.0rc4.orig/programs/pluto/nat_traversal.c	2006-05-05 18:22:58.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/nat_traversal.c	2006-05-05 18:56:20.000000000 +0300
+@@ -789,11 +789,14 @@
+ 			openswan_log("l2tp-workaround: update remote port in connection in NAT port lookup: %d -> %d", st->st_connection->spd.that.host_port, md->sender_port);
+ 			st->st_connection->spd.that.host_port = md->sender_port;
+ 			{
+-				char client_subnet[32];
+-				subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 32);
++				char client_subnet[52];
++				subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 52);
+ 				openswan_log("l2tp-workaround: client subnet before: %s", client_subnet);
+-				setportof(htons(st->st_remoteport), &(st->st_connection->spd.that.client.addr));
+-				subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 32);
++
++				/* must use the port from md, not state (st) */
++				setportof(htons(md->sender_port), &(st->st_connection->spd.that.client.addr));
++
++				subnetporttot(&(st->st_connection->spd.that.client), 0, client_subnet, 52);
+ 				openswan_log("l2tp-workaround: client subnet after: %s", client_subnet);
+ 			}
+ 		} else {
+Only in openswan-2.4.0rc4/programs/pluto: nat_traversal.c~
+diff -ru openswan-2.4.0rc4.orig/programs/pluto/pending.c openswan-2.4.0rc4/programs/pluto/pending.c
+--- openswan-2.4.0rc4.orig/programs/pluto/pending.c	2006-05-05 18:22:58.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/pending.c	2006-05-05 18:57:34.000000000 +0300
+@@ -254,8 +254,8 @@
+ #if 1 /* l2tp-workaround: update remote port of client subnet, too. */
+ #if L2TP_DEBUG
+ 	    {
+-		char client_subnet[32];
+-		subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 32);
++		char client_subnet[52];
++		subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 52);
+ 		openswan_log("l2tp-debug: update_pending: client subnet before update: %s", client_subnet, htons(p->connection->spd.that.host_port));
+ 	    }
+ #endif
+@@ -263,8 +263,8 @@
+ 
+ #if L2TP_DEBUG
+ 	    {
+-		char client_subnet[32];
+-		subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 32);
++		char client_subnet[52];
++		subnetporttot(&(p->connection->spd.that.client), 0, client_subnet, 52);
+ 		openswan_log("l2tp-debug: update_pending: client subnet after update: %s", client_subnet, htons(p->connection->spd.that.host_port));
+ 	    }
+ #endif
+Only in openswan-2.4.0rc4/programs/pluto: pending.c~
+diff -ru openswan-2.4.0rc4.orig/programs/pluto/pluto_constants.c openswan-2.4.0rc4/programs/pluto/pluto_constants.c
+--- openswan-2.4.0rc4.orig/programs/pluto/pluto_constants.c	2005-08-19 20:58:09.000000000 +0300
++++ openswan-2.4.0rc4/programs/pluto/pluto_constants.c	2006-05-05 18:59:31.000000000 +0300
+@@ -155,7 +155,8 @@
+ 
+ 	"expecting QI1",	/* STATE_QUICK_R0 */
+ 	"sent QI1, expecting QR1",	/* STATE_QUICK_I1 */
+-	"sent QR1, inbound IPsec SA installed, expecting QI2",	/* STATE_QUICK_R1 */
++	/* half-setup IPsec SAs are the most evil things, get rid of them! */
++	"sent QR1, expecting QI2",	/* STATE_QUICK_R1 */
+ 	"sent QI2, IPsec SA established",	/* STATE_QUICK_I2 */
+ 	"IPsec SA established",	/* STATE_QUICK_R2 */
+ 
+Only in openswan-2.4.0rc4/programs/pluto: pluto_constants.c~

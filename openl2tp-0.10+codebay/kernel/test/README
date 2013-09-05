@@ -1,0 +1,27 @@
+This directory contains tests to test various aspects of the pppol2tp
+Linux kernel module. The subtests are various self-contained tests. If
+the tests can run to completion and you can still unload the module,
+you must be doing something right!
+
+Tests may be run individually or using tcltest.
+
+The tests are:-
+
+test1: Just load and unload the module
+test2: Load module, read proc entry, unload module
+test3: Open sockets and close them again
+test4: Open sockets, connect, read proc entry and close them
+test5: Open sockets, connect, send data through and close
+test6: Open two pairs of sockets and connect them and send a packet through tunnel
+test7: Open two pairs of sockets and connect tham and trasmit more data
+test8: Open a socket pair, then run pppd over them
+test9: Test pppol2tp kernel API (getsockopt, ioctl etc)
+test10: Create lots of sessions
+...
+
+To run the tests as a batch, you can also do
+
+	make test
+
+in this directory. Results go into the results/ subdirectory.
+
